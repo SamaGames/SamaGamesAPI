@@ -2,6 +2,7 @@ package net.samagames.database;
 
 import net.samagames.permissionsapi.database.Database;
 import redis.clients.jedis.*;
+import redis.clients.util.Sharded;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -57,6 +58,13 @@ public class DatabaseConnector {
 		config.setMaxTotal(256);
 		config.setMaxWaitMillis(5000);
 		bungeePool = new JedisPool(config, bungee.getHost(), bungee.getPort(), 500, bungee.getPassword());
+	}
+
+	public String fastGet(String key) {
+		ShardedJedis jedis = getResource();
+		String val = jedis.get(key);
+		jedis.close();
+		return val;
 	}
 
 }

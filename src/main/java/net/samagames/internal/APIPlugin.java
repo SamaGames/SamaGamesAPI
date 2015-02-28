@@ -64,8 +64,6 @@ public class APIPlugin extends JavaPlugin {
 			databaseConnector = new DatabaseConnector();
 		}
 
-
-
 		api = new ApiImplementation(this, database);
 		databaseConnector = new DatabaseConnector();
 	}

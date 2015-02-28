@@ -19,11 +19,11 @@ public interface CoinsManager {
 
 	public void creditPlayer(UUID player, int amount);
 
-	public int creditPlayerSynchronized(UUID player, int amount, String reason, boolean applyMultiplier);
+	public long creditPlayerSynchronized(UUID player, int amount, String reason, boolean applyMultiplier);
 
 	public void withdrawPlayer(UUID player, int amount);
 
-	public int withdrawPlayerSynchronized(UUID player, int amount);
+	public long withdrawPlayerSynchronized(UUID player, int amount);
 
 	public boolean canPay(UUID player, int amount);
 

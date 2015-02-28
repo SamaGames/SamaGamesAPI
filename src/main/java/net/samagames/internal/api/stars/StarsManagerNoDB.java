@@ -1,4 +1,4 @@
-package net.samagames.internal.api.coins;
+package net.samagames.internal.api.stars;
 
 import net.samagames.internal.APIPlugin;
 
@@ -11,9 +11,9 @@ import java.util.UUID;
  * (C) Copyright Elydra Network 2015
  * All rights reserved.
  */
-public class CoinsManagerNoDB extends CoinsManagerBase {
+public class StarsManagerNoDB extends StarsManagerBase {
 
-	public CoinsManagerNoDB(APIPlugin plugin) {
+	public StarsManagerNoDB(APIPlugin plugin) {
 		super(plugin);
 	}
 

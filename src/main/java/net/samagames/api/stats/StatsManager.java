@@ -1,5 +1,7 @@
 package net.samagames.api.stats;
 
+import net.samagames.internal.APIPlugin;
+
 import java.util.UUID;
 
 /**
@@ -12,12 +14,14 @@ import java.util.UUID;
 public abstract class StatsManager {
 
 	protected String game;
+	protected APIPlugin plugin;
 
-	protected StatsManager(String game) {
+	protected StatsManager(String game, APIPlugin plugin) {
 		this.game = game;
+		this.plugin = plugin;
 	}
 
 	public abstract void increase(UUID player, String stat, int amount);
 
-	public abstract int getStatValue(UUID player, String stat);
+	public abstract double getStatValue(UUID player, String stat);
 }
