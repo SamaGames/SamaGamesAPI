@@ -7,8 +7,12 @@ import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.plugin.java.JavaPlugin;
+import redis.clients.jedis.Jedis;
 
 import java.io.File;
+import java.util.Arrays;
+import java.util.List;
+import java.util.concurrent.CopyOnWriteArraySet;
 import java.util.logging.Level;
 
 /**
@@ -25,6 +29,11 @@ public class APIPlugin extends JavaPlugin {
 	protected DatabaseConnector databaseConnector;
 	protected String serverName;
 	protected FileConfiguration configuration;
+	protected CopyOnWriteArraySet<String> ipWhitelist;
+	protected boolean databaseEnabled;
+	protected boolean allowJoin;
+	protected String denyJoinReason;
+	protected boolean serverRegistered;
 
 	public void onEnable() {
 		log("#==========[WELCOME TO SAMAGAMES API]==========#");
@@ -33,8 +42,9 @@ public class APIPlugin extends JavaPlugin {
 		log("#==============================================#");
 
 		log("Loading main configuration...");
+		this.saveDefaultConfig();
 		configuration = this.getConfig();
-		boolean database = configuration.getBoolean("database", true);
+		databaseEnabled = configuration.getBoolean("database", true);
 		serverName = configuration.getString("bungeename");
 		if (serverName == null) {
 			log(Level.SEVERE, "Plugin cannot load : bungeename is empty.");
@@ -42,14 +52,14 @@ public class APIPlugin extends JavaPlugin {
 			return;
 		}
 
-		if (database) {
+		if (databaseEnabled) {
 			File conf = new File(getDataFolder().getAbsoluteFile().getParentFile().getParentFile(), "data.yml");
 			this.getLogger().info("Searching data.yml in " + conf.getAbsolutePath());
 			if (!conf.exists()) {
 				log(Level.SEVERE, "Cannot find database configuration. Disabling database mode.");
 				log(Level.WARNING, "Database is disabled for this session. API will work perfectly, but some plugins might have issues during run.");
-				database = false;
-				databaseConnector = new DatabaseConnector();
+				databaseEnabled = false;
+				databaseConnector = new DatabaseConnector(this);
 			} else {
 				YamlConfiguration dataYML = YamlConfiguration.loadConfiguration(conf);
 				String ip = (String) dataYML.getList("Redis-Ips").get(0);
@@ -57,15 +67,14 @@ public class APIPlugin extends JavaPlugin {
 				ip = dataYML.getString("rb-ip");
 				ConnectionDetails bungee = new ConnectionDetails(ip.split(":")[0], Integer.parseInt(ip.split(":")[1]), dataYML.getString("Redis-Pass"));
 
-				databaseConnector = new DatabaseConnector(main, bungee);
+				databaseConnector = new DatabaseConnector(this, main, bungee);
 			}
 		} else {
 			log(Level.WARNING, "Database is disabled for this session. API will work perfectly, but some plugins might have issues during run.");
-			databaseConnector = new DatabaseConnector();
+			databaseConnector = new DatabaseConnector(this);
 		}
 
-		api = new ApiImplementation(this, database);
-		databaseConnector = new DatabaseConnector();
+		api = new ApiImplementation(this, databaseEnabled);
 	}
 
 	public static SamaGamesAPI getApi() {
@@ -78,5 +87,62 @@ public class APIPlugin extends JavaPlugin {
 
 	public static void log(Level level, String message) {
 		instance.getLogger().log(level, message);
+	}
+
+	public boolean canConnect(String ip) {
+		if (!databaseEnabled)
+			return true;
+		else
+			return containsIp(ip);
+	}
+
+	public void refreshIps(List<String> ips) {
+		for (String ip : ipWhitelist) {
+			if (!ips.contains(ip))
+				ipWhitelist.remove(ip);
+		}
+
+		for (String ip : ips) {
+			if (!ipWhitelist.contains(ip))
+				ipWhitelist.add(ip);
+		}
+	}
+
+	public boolean containsIp(String ip) {
+		return ipWhitelist.contains(ip);
+	}
+
+	public void denyJoin(String reason) {
+		allowJoin = false;
+		denyJoinReason = reason;
+	}
+
+	public void allowJoin() {
+		allowJoin = true;
+	}
+
+	public String getServerName() {
+		return serverName;
+	}
+
+	public boolean doesAllowJoin() {
+		return allowJoin;
+	}
+
+	public void registerServer() {
+		if (serverRegistered)
+			return;
+
+		log("Trying to register server to the proxy");
+		try {
+			String bungeename = getServerName();
+			Jedis rb_jedis = databaseConnector.getBungeeResource();
+			rb_jedis.publish("redisbungee-allservers", "StartServer::" + bungeename + "::" + this.getServer().getIp() + ":" + this.getServer().getPort());
+			rb_jedis.close();
+
+		} catch (Exception ignore) {
+			return;
+		}
+		serverRegistered = true;
 	}
 }

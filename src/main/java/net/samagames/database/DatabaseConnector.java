@@ -1,6 +1,9 @@
 package net.samagames.database;
 
+import net.samagames.internal.APIPlugin;
 import net.samagames.permissionsapi.database.Database;
+import org.bukkit.Bukkit;
+import org.bukkit.scheduler.BukkitTask;
 import redis.clients.jedis.*;
 import redis.clients.util.Sharded;
 
@@ -19,14 +22,23 @@ public class DatabaseConnector {
 
 	protected ShardedJedisPool mainPool;
 	protected JedisPool bungeePool;
+	protected ConnexionKeeper keeper = null;
+	protected BukkitTask keepTask = null;
+	protected ConnectionDetails main;
+	protected ConnectionDetails bungee;
+	protected APIPlugin plugin;
 
-	public DatabaseConnector() {
+	public DatabaseConnector(APIPlugin plugin) {
 		mainPool = new FakeShardedJedisPool();
 		bungeePool = new FakeJedisPool();
+		this.plugin = plugin;
 	}
 
-	public DatabaseConnector(ConnectionDetails main, ConnectionDetails bungee) {
-		initiateConnections(main, bungee);
+	public DatabaseConnector(APIPlugin plugin, ConnectionDetails main, ConnectionDetails bungee) {
+		this.plugin = plugin;
+		setBungee(bungee);
+		setMain(main);
+		initiateConnections();
 	}
 
 	public ShardedJedis getResource() {
@@ -37,7 +49,15 @@ public class DatabaseConnector {
 		return bungeePool.getResource();
 	}
 
-	public void initiateConnections(ConnectionDetails main, ConnectionDetails bungee) {
+	public void setBungee(ConnectionDetails bungee) {
+		this.bungee = bungee;
+	}
+
+	public void setMain(ConnectionDetails main) {
+		this.main = main;
+	}
+
+	public void initiateConnections() {
 		// Préparation de la connexion
 
 		JedisShardInfo shard = new JedisShardInfo(main.getHost(), main.getPort());
@@ -58,11 +78,24 @@ public class DatabaseConnector {
 		config.setMaxTotal(256);
 		config.setMaxWaitMillis(5000);
 		bungeePool = new JedisPool(config, bungee.getHost(), bungee.getPort(), 500, bungee.getPassword());
+
+		// Init du thread
+		if (keeper == null) {
+			keeper = new ConnexionKeeper(plugin);
+			keepTask = Bukkit.getScheduler().runTaskTimerAsynchronously(plugin, keeper, 3*20, 30*20);
+		}
 	}
 
 	public String fastGet(String key) {
 		ShardedJedis jedis = getResource();
 		String val = jedis.get(key);
+		jedis.close();
+		return val;
+	}
+
+	public String fastSet(String key, String value) {
+		ShardedJedis jedis = getResource();
+		String val = jedis.set(key, value);
 		jedis.close();
 		return val;
 	}

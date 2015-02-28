@@ -1,11 +1,18 @@
 package net.samagames.internal;
 
+import net.samagames.api.SamaGamesAPI;
 import net.samagames.api.coins.CoinsManager;
+import net.samagames.api.settings.SettingsManager;
+import net.samagames.api.shops.ShopsManager;
 import net.samagames.api.stars.StarsManager;
 import net.samagames.api.stats.StatsManager;
 import net.samagames.database.DatabaseConnector;
 import net.samagames.internal.api.coins.CoinsManagerDB;
 import net.samagames.internal.api.coins.CoinsManagerNoDB;
+import net.samagames.internal.api.settings.SettingsManagerDB;
+import net.samagames.internal.api.settings.SettingsManagerNoDB;
+import net.samagames.internal.api.shops.ShopsManagerDB;
+import net.samagames.internal.api.shops.ShopsManagerNoDB;
 import net.samagames.internal.api.stars.StarsManagerDB;
 import net.samagames.internal.api.stars.StarsManagerNoDB;
 import net.samagames.internal.api.stats.StatsManagerDB;
@@ -20,12 +27,13 @@ import redis.clients.jedis.ShardedJedis;
  * (C) Copyright Elydra Network 2015
  * All rights reserved.
  */
-class ApiImplementation implements net.samagames.api.SamaGamesAPI {
+class ApiImplementation implements SamaGamesAPI {
 
 	protected APIPlugin plugin;
 	protected boolean database;
 	protected CoinsManager coinsManager;
 	protected StarsManager starsManager;
+	protected SettingsManager settingsManager;
 
 	public ApiImplementation(APIPlugin plugin, boolean database) {
 		this.plugin = plugin;
@@ -34,9 +42,11 @@ class ApiImplementation implements net.samagames.api.SamaGamesAPI {
 		if (database) {
 			coinsManager = new CoinsManagerDB(plugin);
 			starsManager = new StarsManagerDB(plugin);
+			settingsManager = new SettingsManagerDB(this);
 		} else {
 			coinsManager = new CoinsManagerNoDB(plugin);
 			starsManager = new StarsManagerNoDB(plugin);
+			settingsManager = new SettingsManagerNoDB();
 		}
 	}
 
@@ -51,8 +61,26 @@ class ApiImplementation implements net.samagames.api.SamaGamesAPI {
 			return new StatsManagerNoDB(game, plugin);
 	}
 
+	@Override
+	public ShopsManager getShopsManager(String game) {
+		if (database)
+			return new ShopsManagerDB(game, this);
+		else
+			return new ShopsManagerNoDB(game, this);
+	}
+
+	@Override
+	public SettingsManager getSettingsManager() {
+		return settingsManager;
+	}
+
 	public Jedis getBungeeResource() {
 		return plugin.databaseConnector.getBungeeResource();
+	}
+
+	@Override
+	public String getServerName() {
+		return plugin.getServerName();
 	}
 
 	@Override
