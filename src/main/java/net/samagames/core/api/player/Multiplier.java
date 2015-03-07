@@ -1,11 +1,11 @@
-package net.samagames.core.api.coins;
+package net.samagames.core.api.player;
 
 import java.util.HashMap;
 
 /**
  * Created by zyuiop on 18/10/14.
  */
-public class Multiplier {
+class Multiplier {
 
     public int globalAmount = 0;
     public HashMap<String, Integer> infos = new HashMap<>();

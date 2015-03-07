@@ -13,11 +13,17 @@ import java.util.UUID;
  * (C) Copyright Elydra Network 2014 & 2015
  * All rights reserved.
  */
+
 public abstract class ShopsManager {
 
     protected String gameType;
 	protected SamaGamesAPI api;
 
+	/**
+	 * Ne pas utiliser ce constructeur, utiliser <code>api.getShopsManager()</code> à la place
+	 * @param gameType Type du jeu
+	 * @param api	   SamaGamesAPI
+	 */
     public ShopsManager(String gameType, SamaGamesAPI api) {
         this.gameType = gameType;
     	this.api = api;

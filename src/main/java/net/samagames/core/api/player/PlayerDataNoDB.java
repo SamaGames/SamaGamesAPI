@@ -1,8 +1,8 @@
 package net.samagames.core.api.player;
 
-import net.samagames.api.player.PlayerDataManager;
-import java.util.HashMap;
-import java.util.Map;
+import net.samagames.api.player.FinancialCallback;
+import net.samagames.api.player.PlayerData;
+
 import java.util.UUID;
 
 /**
@@ -12,35 +12,80 @@ import java.util.UUID;
  * (C) Copyright Elydra Network 2015
  * All rights reserved.
  */
-public class PlayerDataNoDB implements PlayerDataManager {
+public class PlayerDataNoDB extends PlayerData {
 
-	@Override
-	public Map<String, String> getPlayerData(UUID player) {
-		return getPlayerData(player, false);
+	protected PlayerDataNoDB(UUID player) {
+		super(player);
 	}
 
 	@Override
-	public Map<String, String> getPlayerData(UUID player, boolean forceRefresh) {
-		return new HashMap<>();
+	public void set(String key, String value) {
+		this.playerData.put(key, value);
 	}
 
 	@Override
-	public String getData(UUID player, String data) {
-		return null;
+	public void setInt(String key, int value) {
+		set(key, String.valueOf(value));
 	}
 
 	@Override
-	public void setData(UUID player, String data, String value) {
-
+	public void setBoolean(String key, boolean value) {
+		set(key, String.valueOf(value));
 	}
 
 	@Override
-	public void load(UUID player) {
-
+	public void setDouble(String key, double value) {
+		set(key, String.valueOf(value));
 	}
 
 	@Override
-	public void unload(UUID player) {
+	public void setLong(String key, long value) {
+		set(key, String.valueOf(value));
+	}
 
+	@Override
+	public long increaseCoins(long incrBy) {
+		setLong("coins", getCoins() + incrBy);
+		return getCoins();
+	}
+
+	@Override
+	public long decreaseCoins(long decrBy) {
+		setLong("coins", getCoins() - decrBy);
+		return getCoins();
+	}
+
+	@Override
+	public void creditCoins(long amount, String reason, boolean applyMultiplier, FinancialCallback<Long> financialCallback) {
+		financialCallback.done(increaseCoins(amount), amount, null);
+	}
+
+	@Override
+	public void withdrawCoins(long amount, FinancialCallback<Long> financialCallback) {
+		financialCallback.done(decreaseCoins(amount), -amount, null);
+	}
+
+	@Override
+	public long increaseStars(long incrBy) {
+		setLong("stars", getStars() + incrBy);
+		return getStars();
+	}
+
+	@Override
+	public long decreaseStars(long decrBy) {
+		setLong("stars", getStars() - decrBy);
+		return getStars();
+	}
+
+	@Override
+	public void creditStars(long amount, String reason, boolean applyMultiplier, FinancialCallback<Long> financialCallback) {
+		if (financialCallback != null)
+			financialCallback.done(increaseStars(amount), amount, null);
+	}
+
+	@Override
+	public void withdrawStars(long amount, FinancialCallback<Long> financialCallback) {
+		if (financialCallback != null)
+			financialCallback.done(decreaseStars(amount), -amount, null);
 	}
 }

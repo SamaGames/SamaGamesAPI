@@ -15,6 +15,10 @@ import java.util.UUID;
  * (C) Copyright Elydra Network 2014 & 2015
  * All rights reserved.
  */
+
+/*
+TODO use playerdata instead
+ */
 public class ShopsManagerDB extends ShopsManager {
 
 	public ShopsManagerDB(String gameType, SamaGamesAPI api) {
@@ -23,12 +27,12 @@ public class ShopsManagerDB extends ShopsManager {
 
 	@Override
 	public String getCurrentItemForPlayer(UUID player, String itemCategory) {
-		return api.getDatabase().fastGet(getKey(itemCategory, player, "current"));
+		return api.getPlayerManager().getPlayerData(player).get("shops:"+gameType+":"+itemCategory+":current");
 	}
 
 	@Override
 	public List<String> getOwnedItems(UUID player, String itemCategory) {
-		String value = api.getDatabase().fastGet(getKey(itemCategory, player, "current"));
+		String value = api.getPlayerManager().getPlayerData(player).get("shops:" + gameType + ":" + itemCategory + ":owned");
 		if (value == null)
 			return null;
 		return Arrays.asList(value.split(":"));
@@ -36,9 +40,7 @@ public class ShopsManagerDB extends ShopsManager {
 
 	@Override
 	public void addOwnedItem(UUID player, String itemCategory, String itemName) {
-		String key = getKey(itemCategory, player, "owned");
-		ShardedJedis jedis = api.getResource();
-		String current = jedis.get(key);
+		String current = api.getPlayerManager().getPlayerData(player).get("shops:" + gameType + ":" + itemCategory + ":owned");
 		if (current == null)
 			current = itemName;
 		else {
@@ -47,12 +49,11 @@ public class ShopsManagerDB extends ShopsManager {
 			current += ":" + itemName;
 		}
 
-		jedis.set(key, current);
-		jedis.close();
+		api.getPlayerManager().getPlayerData(player).set("shops:" + gameType + ":" + itemCategory + ":owned", current);
 	}
 
 	@Override
 	public void setCurrentItem(UUID player, String itemCategory, String itemName) {
-		api.getDatabase().fastSet(getKey(itemCategory, player, "current"), itemName);
+		api.getPlayerManager().getPlayerData(player).set("shops:"+gameType+":"+itemCategory+":current", itemName);
 	}
 }

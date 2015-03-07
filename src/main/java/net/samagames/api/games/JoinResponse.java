@@ -1,4 +1,4 @@
-package net.samagames.gameapi;
+package net.samagames.api.games;
 
 import org.bukkit.ChatColor;
 

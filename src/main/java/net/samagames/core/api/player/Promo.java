@@ -1,4 +1,4 @@
-package net.samagames.core.api.coins;
+package net.samagames.core.api.player;
 
 import java.util.Date;
 
@@ -6,7 +6,6 @@ public class Promo {
     public Date end;
     public int multiply;
     public String message = null;
-
 
     public Promo(String promoData) {
         String[] split = promoData.split(":");

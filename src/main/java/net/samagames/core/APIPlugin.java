@@ -1,15 +1,28 @@
 package net.samagames.core;
 
 import net.samagames.api.SamaGamesAPI;
+import net.samagames.core.commands.CommandLag;
 import net.samagames.core.database.ConnectionDetails;
 import net.samagames.core.database.DatabaseConnector;
+import net.samagames.core.listeners.NaturalListener;
+import net.samagames.core.listeners.PlayerDataListener;
+import net.samagames.core.listeners.TabsColorsListener;
+import org.apache.commons.lang.StringUtils;
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
+import org.bukkit.command.CommandExecutor;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.Listener;
+import org.bukkit.event.player.PlayerLoginEvent;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.bukkit.util.StringUtil;
 import redis.clients.jedis.Jedis;
 
 import java.io.File;
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArraySet;
 import java.util.logging.Level;
@@ -21,7 +34,7 @@ import java.util.logging.Level;
  * (C) Copyright Elydra Network 2015
  * All rights reserved.
  */
-public class APIPlugin extends JavaPlugin {
+public class APIPlugin extends JavaPlugin implements Listener {
 
 	protected static ApiImplementation api;
 	protected static APIPlugin instance;
@@ -41,9 +54,13 @@ public class APIPlugin extends JavaPlugin {
 		log("#==============================================#");
 
 		log("Loading main configuration...");
-		this.saveDefaultConfig();;
+		this.saveDefaultConfig();
 		configuration = this.getConfig();
 		databaseEnabled = configuration.getBoolean("database", true);
+
+		// Chargement de l'IPWhitelist le plus tot possible
+		Bukkit.getPluginManager().registerEvents(this, this);
+
 		serverName = configuration.getString("bungeename");
 		if (serverName == null) {
 			log(Level.SEVERE, "Plugin cannot load : bungeename is empty.");
@@ -74,6 +91,35 @@ public class APIPlugin extends JavaPlugin {
 		}
 
 		api = new ApiImplementation(this, databaseEnabled);
+
+		/*
+		Loading listeners
+		 */
+
+		Bukkit.getPluginManager().registerEvents(new PlayerDataListener(this), this);
+		if (configuration.getBoolean("disable-nature", false))
+			Bukkit.getPluginManager().registerEvents(new NaturalListener(), this);
+		if (configuration.getBoolean("tab-colors", true))
+			Bukkit.getPluginManager().registerEvents(new TabsColorsListener(this), this);
+
+		/*
+		Loading commands
+		 */
+
+		for (String command : this.getDescription().getCommands().keySet()) {
+			try {
+				Class clazz = Class.forName("net.samagames.core.commands.Command" + StringUtils.capitalize(command));
+				Constructor ctor = clazz.getConstructor(APIPlugin.class);
+				getCommand(command).setExecutor((CommandExecutor) ctor.newInstance(this));
+				log("Loaded command " + command + " successfully. ");
+			} catch (ClassNotFoundException | NoSuchMethodException | InstantiationException | InvocationTargetException | IllegalAccessException e) {
+				e.printStackTrace();
+			}
+		}
+	}
+
+	public static APIPlugin getInstance() {
+		return instance;
 	}
 
 	public static ApiImplementation getApi() {
@@ -111,6 +157,10 @@ public class APIPlugin extends JavaPlugin {
 		return ipWhitelist.contains(ip);
 	}
 
+	public boolean isDatabaseEnabled() {
+		return databaseEnabled;
+	}
+
 	public void denyJoin(String reason) {
 		allowJoin = false;
 		denyJoinReason = reason;
@@ -143,5 +193,33 @@ public class APIPlugin extends JavaPlugin {
 			return;
 		}
 		serverRegistered = true;
+	}
+
+
+	/*
+	Listen for join
+	 */
+
+	@EventHandler
+	public void onLogin(PlayerLoginEvent event) {
+		if (!allowJoin) {
+			event.disallow(PlayerLoginEvent.Result.KICK_OTHER, ChatColor.RED + denyJoinReason);
+			event.setResult(PlayerLoginEvent.Result.KICK_WHITELIST);
+			event.setKickMessage(ChatColor.RED + denyJoinReason);
+
+			return;
+		}
+
+		String ip = event.getRealAddress().getHostAddress();
+		if (!databaseEnabled) {
+			Bukkit.getLogger().info("[WARNING] Allowing connexion without check from IP "+ip);
+			return;
+		}
+
+		if (!ipWhitelist.contains(ip)) {
+			event.setResult(PlayerLoginEvent.Result.KICK_WHITELIST);
+			event.setKickMessage(ChatColor.RED + "Erreur de connexion vers le serveur... Merci de bien vouloir ré-essayer plus tard.");
+			Bukkit.getLogger().info("[WARNING] An user tried to connect from IP " + event.getRealAddress().getHostAddress());
+		}
 	}
 }

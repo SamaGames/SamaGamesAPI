@@ -83,21 +83,14 @@ public class DatabaseConnector {
 
 		// Init du thread
 		if (keeper == null) {
-			keeper = new ConnexionKeeper(plugin);
+			keeper = new ConnexionKeeper(plugin, this);
 			keepTask = Bukkit.getScheduler().runTaskTimerAsynchronously(plugin, keeper, 3*20, 30*20);
 		}
 	}
 
-	public String fastGet(String key) {
+	protected String fastGet(String key) {
 		ShardedJedis jedis = getResource();
 		String val = jedis.get(key);
-		jedis.close();
-		return val;
-	}
-
-	public String fastSet(String key, String value) {
-		ShardedJedis jedis = getResource();
-		String val = jedis.set(key, value);
 		jedis.close();
 		return val;
 	}

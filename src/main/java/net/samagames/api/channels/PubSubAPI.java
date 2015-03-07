@@ -9,8 +9,18 @@ package net.samagames.api.channels;
  */
 public interface PubSubAPI {
 
+	/**
+	 * Enregistre un listener sur le channel pubsub passé en argument
+	 * @param channel 	Nom du channel à écouter
+	 * @param receiver 	Objet recevant les packets
+	 */
 	public void subscribe(String channel, PacketsReceiver receiver);
 
+	/**
+	 * Envoie un message sur un channel pubsub
+	 * @param channel	Channel sur lequel envoyer le message
+	 * @param message	Message à publier
+	 */
 	public void send(String channel, String message);
 
 }

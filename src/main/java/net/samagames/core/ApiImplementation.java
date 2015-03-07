@@ -2,30 +2,24 @@ package net.samagames.core;
 
 import net.samagames.api.SamaGamesAPI;
 import net.samagames.api.channels.PubSubAPI;
-import net.samagames.api.coins.CoinsManager;
+import net.samagames.api.names.UUIDTranslator;
+import net.samagames.api.player.PlayerDataManager;
+import net.samagames.api.settings.SettingsManager;
 import net.samagames.api.shops.ShopsManager;
-import net.samagames.api.stars.StarsManager;
 import net.samagames.api.stats.StatsManager;
-import net.samagames.core.api.coins.CoinsManagerDB;
-import net.samagames.core.api.coins.CoinsManagerNoDB;
 import net.samagames.core.api.names.UUIDTranslatorDB;
 import net.samagames.core.api.names.UUIDTranslatorNODB;
-import net.samagames.core.api.player.PlayerDataNoDB;
+import net.samagames.core.api.player.PlayerDataManagerNoDB;
+import net.samagames.core.api.player.PlayerDataManagerWithDB;
+import net.samagames.core.api.pubsub.PubSubAPIDB;
 import net.samagames.core.api.pubsub.PubSubNoDB;
 import net.samagames.core.api.settings.SettingsManagerDB;
 import net.samagames.core.api.settings.SettingsManagerNoDB;
 import net.samagames.core.api.shops.ShopsManagerDB;
 import net.samagames.core.api.shops.ShopsManagerNoDB;
-import net.samagames.core.api.stars.StarsManagerDB;
-import net.samagames.core.api.stats.StatsManagerNoDB;
-import net.samagames.api.names.UUIDTranslator;
-import net.samagames.api.player.PlayerDataManager;
-import net.samagames.api.settings.SettingsManager;
-import net.samagames.core.database.DatabaseConnector;
-import net.samagames.core.api.player.PlayerDataWithDB;
-import net.samagames.core.api.pubsub.PubSubAPIDB;
-import net.samagames.core.api.stars.StarsManagerNoDB;
 import net.samagames.core.api.stats.StatsManagerDB;
+import net.samagames.core.api.stats.StatsManagerNoDB;
+import net.samagames.core.database.DatabaseConnector;
 import redis.clients.jedis.Jedis;
 import redis.clients.jedis.ShardedJedis;
 
@@ -36,12 +30,10 @@ import redis.clients.jedis.ShardedJedis;
  * (C) Copyright Elydra Network 2015
  * All rights reserved.
  */
-class ApiImplementation extends SamaGamesAPI {
+public class ApiImplementation extends SamaGamesAPI {
 
 	protected APIPlugin plugin;
 	protected boolean database;
-	protected CoinsManager coinsManager;
-	protected StarsManager starsManager;
 	protected SettingsManager settingsManager;
 	protected PlayerDataManager playerDataManager;
 	protected PubSubAPI pubSub;
@@ -52,17 +44,13 @@ class ApiImplementation extends SamaGamesAPI {
 		this.database = database;
 
 		if (database) {
-			coinsManager = new CoinsManagerDB(plugin);
-			starsManager = new StarsManagerDB(plugin);
 			settingsManager = new SettingsManagerDB(this);
-			playerDataManager = new PlayerDataWithDB(this);
+			playerDataManager = new PlayerDataManagerWithDB(this);
 			pubSub = new PubSubAPIDB(this);
 			uuidTranslator = new UUIDTranslatorDB(plugin);
 		} else {
-			coinsManager = new CoinsManagerNoDB(plugin);
-			starsManager = new StarsManagerNoDB(plugin);
 			settingsManager = new SettingsManagerNoDB();
-			playerDataManager = new PlayerDataNoDB();
+			playerDataManager = new PlayerDataManagerNoDB();
 			pubSub = new PubSubNoDB();
 			uuidTranslator = new UUIDTranslatorNODB();
 		}
@@ -118,16 +106,6 @@ class ApiImplementation extends SamaGamesAPI {
 
 	public DatabaseConnector getDatabase() {
 		return plugin.databaseConnector;
-	}
-
-	@Override
-	public CoinsManager getCoinsManager() {
-		return coinsManager;
-	}
-
-	@Override
-	public StarsManager getStarsManager() {
-		return starsManager;
 	}
 
 	protected void disable() {

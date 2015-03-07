@@ -1,4 +1,4 @@
-package net.samagames.gameapi;
+package net.samagames.api.games;
 
 import net.samagames.core.APIPlugin;
 import org.bukkit.craftbukkit.libs.com.google.gson.Gson;

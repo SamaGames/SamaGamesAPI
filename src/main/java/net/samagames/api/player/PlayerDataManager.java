@@ -1,6 +1,5 @@
 package net.samagames.api.player;
 
-import java.util.Map;
 import java.util.UUID;
 
 /**
@@ -12,11 +11,25 @@ import java.util.UUID;
  */
 public interface PlayerDataManager {
 
-	public Map<String, String> getPlayerData(UUID player);
-	public Map<String, String> getPlayerData(UUID player, boolean forceRefresh);
-	public String getData(UUID player, String data);
-	public void setData(UUID player, String data, String value);
-	public void load(UUID player);
+	/**
+	 * Retourne les données d'un joueur
+	 * @param player UUID du joueur
+	 * @return les données du joueur
+	 */
+	public PlayerData getPlayerData(UUID player);
+
+	/**
+	 * Retourne les données d'un joueur
+	 * @param player	UUID du joueur
+	 * @param forceRefresh	Forcer le rafraichissement depuis la base de données
+	 * @return les données du joueur
+	 */
+	public PlayerData getPlayerData(UUID player, boolean forceRefresh);
+
+	/**
+	 * Décharge les données du joueur du cache local
+	 * @param player uuid du joueur
+	 */
 	public void unload(UUID player);
 
 }

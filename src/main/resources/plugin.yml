@@ -4,3 +4,13 @@ version: gitcommit
 authors: [zyuiop, geekpower14, BlueSlime]
 website: http://samagames.net/
 softdepend: [SamaPermissionsBukkit]
+commands:
+   coins:
+     description: Commandes relatives aux coins
+     usage: /coins [get <joueur> |credit <joueur> <montant>|withdraw <joueur> <montant>]
+   stars:
+     description: Commandes relatives aux étoiles
+     usage: /stars [get <joueur> |credit <joueur> <montant>|withdraw <joueur> <montant>]
+   lag:
+     description: Donne des informations sur le serveur actuel et sur les latences
+     usage: /lag
