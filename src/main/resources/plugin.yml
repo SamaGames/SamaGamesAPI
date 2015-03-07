@@ -1,5 +1,5 @@
 name: SamaGamesAPI
-main: net.samagames.samagamesapi.internal.APIPlugin
+main: APIPlugin
 version: gitcommit
 authors: [zyuiop, geekpower14, BlueSlime]
 website: http://samagames.net/
