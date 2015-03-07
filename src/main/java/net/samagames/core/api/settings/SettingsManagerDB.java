@@ -16,21 +16,21 @@ public class SettingsManagerDB implements SettingsManager {
 	}
 
     public Map<String, String> getSettings(UUID player) {
-        ShardedJedis j = api.getDatabase().getResource();
+        ShardedJedis j = api.getResource();
         Map<String, String> r = j.hgetAll("settings:" + player);
 		j.close();
         return r;
     }
 
     public String getSetting(UUID player, String setting) {
-		ShardedJedis j = api.getDatabase().getResource();
+		ShardedJedis j = api.getResource();
         String r = j.hget("settings:" + player, setting);
 		j.close();
         return r;
     }
 
     public void setSetting(UUID player, String setting, String value) {
-		ShardedJedis j = api.getDatabase().getResource();
+		ShardedJedis j = api.getResource();
         j.hset("settings:" + player, setting, value);
 		j.close();
     }
