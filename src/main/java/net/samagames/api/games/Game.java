@@ -43,4 +43,12 @@ public interface Game {
 	 */
 	public void logout(Player player);
 
+	/**
+	 * Display a message, prepending it with the game tag.
+	 * @param message Message to display
+	 */
+	public void displayMessage(String message);
+
+
+	public GameInfo getGameInfo();
 }

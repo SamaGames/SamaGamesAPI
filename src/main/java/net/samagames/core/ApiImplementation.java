@@ -2,11 +2,13 @@ package net.samagames.core;
 
 import net.samagames.api.SamaGamesAPI;
 import net.samagames.api.channels.PubSubAPI;
+import net.samagames.api.games.GameAPI;
 import net.samagames.api.names.UUIDTranslator;
 import net.samagames.api.player.PlayerDataManager;
 import net.samagames.api.settings.SettingsManager;
 import net.samagames.api.shops.ShopsManager;
 import net.samagames.api.stats.StatsManager;
+import net.samagames.core.api.games.GameApiDB;
 import net.samagames.core.api.names.UUIDTranslatorDB;
 import net.samagames.core.api.names.UUIDTranslatorNODB;
 import net.samagames.core.api.player.PlayerDataManagerNoDB;
@@ -20,6 +22,7 @@ import net.samagames.core.api.shops.ShopsManagerNoDB;
 import net.samagames.core.api.stats.StatsManagerDB;
 import net.samagames.core.api.stats.StatsManagerNoDB;
 import net.samagames.core.database.DatabaseConnector;
+import net.samagames.core.listeners.GlobalChannelHandler;
 import redis.clients.jedis.Jedis;
 import redis.clients.jedis.ShardedJedis;
 
@@ -38,6 +41,7 @@ public class ApiImplementation extends SamaGamesAPI {
 	protected PlayerDataManager playerDataManager;
 	protected PubSubAPI pubSub;
 	protected UUIDTranslator uuidTranslator;
+	protected GameAPI gameAPI;
 
 	public ApiImplementation(APIPlugin plugin, boolean database) {
 		this.plugin = plugin;
@@ -47,13 +51,22 @@ public class ApiImplementation extends SamaGamesAPI {
 			settingsManager = new SettingsManagerDB(this);
 			playerDataManager = new PlayerDataManagerWithDB(this);
 			pubSub = new PubSubAPIDB(this);
+			pubSub.subscribe("global", new GlobalChannelHandler(plugin));
+			pubSub.subscribe(plugin.getServerName(), new GlobalChannelHandler(plugin));
+
 			uuidTranslator = new UUIDTranslatorDB(plugin, this);
+			gameAPI = new GameApiDB(this, plugin);
 		} else {
 			settingsManager = new SettingsManagerNoDB();
 			playerDataManager = new PlayerDataManagerNoDB();
 			pubSub = new PubSubNoDB();
 			uuidTranslator = new UUIDTranslatorNODB();
 		}
+	}
+
+	@Override
+	public GameAPI getGameAPI() {
+		return gameAPI;
 	}
 
 	public ShardedJedis getResource() {

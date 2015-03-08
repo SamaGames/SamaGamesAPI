@@ -86,9 +86,4 @@ public class GameSignData {
 	public void setSignZone(String signZone) {
 		this.signZone = signZone;
 	}
-
-	public void send() {
-		String encoded = new Gson().toJson(this);
-		APIPlugin.getApi().getPubSub().send("gamesigns", encoded);
-	}
 }

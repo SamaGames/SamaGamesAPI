@@ -4,6 +4,7 @@ import net.samagames.core.database.ConnectionDetails;
 import net.samagames.core.database.DatabaseConnector;
 import net.samagames.core.listeners.NaturalListener;
 import net.samagames.core.listeners.PlayerDataListener;
+import net.samagames.core.listeners.PlayerListener;
 import net.samagames.core.listeners.TabsColorsListener;
 import org.apache.commons.lang.StringUtils;
 import org.bukkit.Bukkit;
@@ -43,6 +44,7 @@ public class APIPlugin extends JavaPlugin implements Listener {
 	protected boolean allowJoin;
 	protected String denyJoinReason;
 	protected boolean serverRegistered;
+	protected PlayerListener playerListener;
 
 	public void onEnable() {
 		instance = this;
@@ -96,6 +98,7 @@ public class APIPlugin extends JavaPlugin implements Listener {
 		 */
 
 		Bukkit.getPluginManager().registerEvents(new PlayerDataListener(this), this);
+		Bukkit.getPluginManager().registerEvents((playerListener = new PlayerListener(this)), this);
 		if (configuration.getBoolean("disable-nature", false))
 			Bukkit.getPluginManager().registerEvents(new NaturalListener(), this);
 		if (configuration.getBoolean("tab-colors", true))
@@ -115,6 +118,10 @@ public class APIPlugin extends JavaPlugin implements Listener {
 				e.printStackTrace();
 			}
 		}
+	}
+
+	public PlayerListener getPlayerListener() {
+		return playerListener;
 	}
 
 	public static APIPlugin getInstance() {

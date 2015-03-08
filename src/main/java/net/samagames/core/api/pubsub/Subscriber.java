@@ -24,11 +24,16 @@ public class Subscriber extends JedisPubSub {
 
 	@Override
 	public void onMessage(String channel, String message) {
-		PacketsReceiver receiver = packetsReceivers.get(channel);
-		if (receiver != null)
-			receiver.receive(channel, message);
-		else
-			APIPlugin.log(Level.WARNING, "{PubSub} Received message on a channel, but no packetsReceivers were found.");
+		try {
+			PacketsReceiver receiver = packetsReceivers.get(channel);
+			if (receiver != null)
+				receiver.receive(channel, message);
+			else
+				APIPlugin.log(Level.WARNING, "{PubSub} Received message on a channel, but no packetsReceivers were found.");
+		} catch (Exception ignored) {
+
+		}
+
 	}
 
 	@Override

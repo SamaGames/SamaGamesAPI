@@ -23,6 +23,9 @@ public class JoinResponse {
 		this.message = message;
 	}
 
+	public JoinResponse() {
+	}
+
 	public ResponseType getResponseType() {
 		return responseType;
 	}

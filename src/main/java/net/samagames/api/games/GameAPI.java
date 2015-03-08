@@ -22,4 +22,6 @@ public interface GameAPI {
 	 */
 	public void sendSign(GameSignData data);
 
+	public Game getGame();
+
 }

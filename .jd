@@ -11,6 +11,7 @@
 "LOCATION/src/main/java/net/samagames/api/games/JoinResponse.java"
 "LOCATION/src/main/java/net/samagames/api/games/GameSignData.java"
 "LOCATION/src/main/java/net/samagames/api/games/Game.java"
+"LOCATION/src/main/java/net/samagames/api/games/GameInfo.java"
 "LOCATION/src/main/java/net/samagames/api/names/UUIDTranslator.java"
 "LOCATION/src/main/java/net/samagames/api/shops/ShopsManager.java"
 "LOCATION/src/main/java/net/samagames/api/stats/StatsManager.java"
