@@ -1,7 +1,5 @@
 package net.samagames.core;
 
-import net.samagames.api.SamaGamesAPI;
-import net.samagames.core.commands.CommandLag;
 import net.samagames.core.database.ConnectionDetails;
 import net.samagames.core.database.DatabaseConnector;
 import net.samagames.core.listeners.NaturalListener;
@@ -17,7 +15,6 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerLoginEvent;
 import org.bukkit.plugin.java.JavaPlugin;
-import org.bukkit.util.StringUtil;
 import redis.clients.jedis.Jedis;
 
 import java.io.File;
@@ -41,13 +38,15 @@ public class APIPlugin extends JavaPlugin implements Listener {
 	protected DatabaseConnector databaseConnector;
 	protected String serverName;
 	protected FileConfiguration configuration;
-	protected CopyOnWriteArraySet<String> ipWhitelist;
+	protected CopyOnWriteArraySet<String> ipWhitelist = new CopyOnWriteArraySet<>();
 	protected boolean databaseEnabled;
 	protected boolean allowJoin;
 	protected String denyJoinReason;
 	protected boolean serverRegistered;
 
 	public void onEnable() {
+		instance = this;
+
 		log("#==========[WELCOME TO SAMAGAMES API]==========#");
 		log("# SamaGamesAPI is now loading. Please read     #");
 		log("# carefully all outputs coming from it.        #");

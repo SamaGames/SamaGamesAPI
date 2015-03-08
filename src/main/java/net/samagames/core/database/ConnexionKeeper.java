@@ -19,18 +19,16 @@ import java.util.List;
 public class ConnexionKeeper implements Runnable {
 
 	protected APIPlugin plugin;
-	protected SamaGamesAPI api;
 	protected DatabaseConnector databaseConnector;
 
 	protected ConnexionKeeper(APIPlugin plugin, DatabaseConnector connector) {
 		this.plugin = plugin;
-		this.api = APIPlugin.getApi();
 		this.databaseConnector = connector;
 	}
 
 	public void run() {
 		try {
-			ShardedJedis jedis = api.getResource();
+			ShardedJedis jedis = databaseConnector.getResource();
 			List<String> whitelist = jedis.lrange("sockets:proxys", 0, - 1);
 			jedis.close();
 

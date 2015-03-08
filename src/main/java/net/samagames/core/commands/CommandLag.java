@@ -35,17 +35,20 @@ public class CommandLag extends AbstractCommand {
 
 		for(int var7 = 0; var7 < length; ++var7) {
 			tps.append(this.format(tab[var7]));
-			tps.append(", ");
+			if (var7 + 1 < length)
+				tps.append(", ");
 		}
 
 		String server = APIPlugin.getInstance().getServerName();
 
-		player.sendMessage(org.bukkit.ChatColor.GOLD + "====== Informations de Lag ======");
-		player.sendMessage(ChatColor.GOLD + "Serveur : " + ChatColor.AQUA + server);
-		player.sendMessage(ChatColor.GOLD + "Latence (ping) : " + ChatColor.AQUA + formatLag(latency) + " ms");
-		player.sendMessage(ChatColor.GOLD + "Ticks par seconde (20 = Parfait - 0 = Catastrophique)");
+		player.sendMessage(org.bukkit.ChatColor.YELLOW + "------[ Informations de Lag ]------");
+		player.sendMessage(ChatColor.GOLD + " ");
+		player.sendMessage(ChatColor.YELLOW + "Serveur : " + ChatColor.AQUA + server);
+		player.sendMessage(ChatColor.GOLD + " ");
+		player.sendMessage(ChatColor.YELLOW + "Latence (ping) : " + ChatColor.AQUA + formatLag(latency) + " ms");
+		player.sendMessage(ChatColor.GOLD + " ");
+		player.sendMessage(ChatColor.YELLOW + "Ticks par seconde (20 = Parfait)");
 		player.sendMessage(tps.toString());
-		player.sendMessage(org.bukkit.ChatColor.GOLD + "====== Informations de Lag ======");
 
 		return true;
 	}
@@ -56,6 +59,6 @@ public class CommandLag extends AbstractCommand {
 	}
 
 	private String formatLag(double lag) {
-		return "" + (lag > 200.0 ? org.bukkit.ChatColor.RED : (lag > 120D? org.bukkit.ChatColor.GOLD: (lag > 70D? org.bukkit.ChatColor.YELLOW: org.bukkit.ChatColor.GREEN))).toString() + Math.min((double)Math.round(lag * 100.0D) / 100.0D, 20.0D);
+		return "" + (lag > 200.0 ? org.bukkit.ChatColor.RED : (lag > 120D? org.bukkit.ChatColor.GOLD: (lag > 70D? org.bukkit.ChatColor.YELLOW: org.bukkit.ChatColor.GREEN))).toString() + (double)Math.round(lag * 100.0D) / 100.0D;
 	}
 }

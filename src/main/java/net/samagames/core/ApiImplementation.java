@@ -47,7 +47,7 @@ public class ApiImplementation extends SamaGamesAPI {
 			settingsManager = new SettingsManagerDB(this);
 			playerDataManager = new PlayerDataManagerWithDB(this);
 			pubSub = new PubSubAPIDB(this);
-			uuidTranslator = new UUIDTranslatorDB(plugin);
+			uuidTranslator = new UUIDTranslatorDB(plugin, this);
 		} else {
 			settingsManager = new SettingsManagerNoDB();
 			playerDataManager = new PlayerDataManagerNoDB();

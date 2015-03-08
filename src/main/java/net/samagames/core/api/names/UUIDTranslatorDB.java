@@ -32,8 +32,8 @@ public final class UUIDTranslatorDB implements UUIDTranslator {
 	private final SamaGamesAPI api;
 	private final APIPlugin plugin;
 
-	public UUIDTranslatorDB(APIPlugin plugin) {
-		this.api = APIPlugin.getApi();
+	public UUIDTranslatorDB(APIPlugin plugin, SamaGamesAPI api) {
+		this.api = api;
 		this.plugin = plugin;
 	}
 

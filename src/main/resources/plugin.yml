@@ -1,5 +1,5 @@
 name: SamaGamesAPI
-main: APIPlugin
+main: net.samagames.core.APIPlugin
 version: gitcommit
 authors: [zyuiop, geekpower14, BlueSlime]
 website: http://samagames.net/
@@ -14,3 +14,6 @@ commands:
    lag:
      description: Donne des informations sur le serveur actuel et sur les latences
      usage: /lag
+   playerdata:
+     description: Renvoie les playerdata d'un joueur
+     usate: /playerdata <pseudo>

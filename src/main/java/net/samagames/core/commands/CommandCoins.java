@@ -53,7 +53,7 @@ public class CommandCoins extends AbstractCommand {
 
 			final String playerName = arguments[1];
 			new Thread(() -> {
-				UUID playerId = SamaGamesAPI.get().getUUIDTranslator().getUUID(operation, true);
+				UUID playerId = SamaGamesAPI.get().getUUIDTranslator().getUUID(playerName, true);
 				PlayerData data = SamaGamesAPI.get().getPlayerManager().getPlayerData(playerId);
 
 				if (data != null) {
@@ -62,6 +62,8 @@ public class CommandCoins extends AbstractCommand {
 					sender.sendMessage(ChatColor.RED + "Une erreur inconnue s'est produite.");
 				}
 			}, "CommandCoinsGetOther").start();
+
+			return true;
 		} else if (operation.equalsIgnoreCase("credit")) {
 			if (arguments.length < 3)
 				return false;
@@ -72,7 +74,7 @@ public class CommandCoins extends AbstractCommand {
 			final String playerName = arguments[1];
 			final String amount = arguments[2];
 			new Thread(() -> {
-				UUID playerId = SamaGamesAPI.get().getUUIDTranslator().getUUID(operation, true);
+				UUID playerId = SamaGamesAPI.get().getUUIDTranslator().getUUID(playerName, true);
 				PlayerData data = SamaGamesAPI.get().getPlayerManager().getPlayerData(playerId);
 
 				try {
@@ -82,6 +84,8 @@ public class CommandCoins extends AbstractCommand {
 					sender.sendMessage(ChatColor.RED + "Format de nombre non valide.");
 				}
 			}, "CommandCoinsCredit").start();
+
+			return true;
 		} else if (operation.equalsIgnoreCase("withdraw")) {
 			if (arguments.length < 3)
 				return false;
@@ -93,7 +97,7 @@ public class CommandCoins extends AbstractCommand {
 			final String amount = arguments[2];
 
 			new Thread(() -> {
-				UUID playerId = SamaGamesAPI.get().getUUIDTranslator().getUUID(operation, true);
+				UUID playerId = SamaGamesAPI.get().getUUIDTranslator().getUUID(playerName, true);
 				PlayerData data = SamaGamesAPI.get().getPlayerManager().getPlayerData(playerId);
 
 				try {
@@ -103,6 +107,8 @@ public class CommandCoins extends AbstractCommand {
 					sender.sendMessage(ChatColor.RED + "Format de nombre non valide.");
 				}
 			}, "CommandCoinsWithdraw").start();
+
+			return true;
 		}
 
 		return false;

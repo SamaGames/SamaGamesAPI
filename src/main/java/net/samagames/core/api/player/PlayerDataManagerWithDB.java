@@ -21,6 +21,8 @@ public class PlayerDataManagerWithDB implements PlayerDataManager {
 
 	public PlayerDataManagerWithDB(SamaGamesAPI api) {
 		this.api = api;
+		coinsManager = new CoinsManager();
+		starsManager = new StarsManager();
 	}
 
 	protected SamaGamesAPI api;
