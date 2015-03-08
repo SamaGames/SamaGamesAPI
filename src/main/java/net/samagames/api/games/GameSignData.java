@@ -28,11 +28,12 @@ public class GameSignData {
 		this.allowJoins = allowJoins;
 	}
 
-	public GameSignData(GameInfo info, String map, CommonStatuses status) {
-		this.mapLine = map;
-		this.stateLine = status.getDisplay();
-		this.allowJoins = status.isCanJoin();
-		this.slotsLine = "" + info.getConnectedPlayers() + ChatColor.DARK_GRAY + "/" + ChatColor.BLACK + info.getTotalMaxPlayers();
+	public GameSignData(Game game, CommonStatuses status) {
+		this(game.getMapName(), status.getDisplay(), "" + game.getConnectedPlayers() + ChatColor.DARK_GRAY + "/" + ChatColor.BLACK + game.getTotalMaxPlayers(), status.isCanJoin());
+	}
+
+	public GameSignData(Game game, String status, boolean allowJoins) {
+		this(game.getMapName(), status, "" + game.getConnectedPlayers() + ChatColor.DARK_GRAY + "/" + ChatColor.BLACK + game.getTotalMaxPlayers(), allowJoins);
 	}
 
 	public GameSignData() {

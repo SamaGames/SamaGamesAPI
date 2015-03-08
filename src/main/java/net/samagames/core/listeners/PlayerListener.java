@@ -1,13 +1,12 @@
 package net.samagames.core.listeners;
 
+import net.samagames.api.games.Game;
 import net.samagames.api.games.GameAPI;
-import net.samagames.api.games.GameInfo;
 import net.samagames.api.games.JoinResponse;
 import net.samagames.core.APIPlugin;
 import net.samagames.permissionsbukkit.PermissionsBukkit;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
-import org.bukkit.craftbukkit.v1_8_R1.entity.CraftPlayer;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -45,10 +44,10 @@ public class PlayerListener extends APIListener {
 		GameAPI api = this.api.getGameAPI();
 		if (api.getGame() != null) {
 			JoinResponse response = new JoinResponse(JoinResponse.ResponseType.ALLOW);
-			GameInfo info = api.getGame().getGameInfo();
-			if (info.getState() == GameInfo.GameState.INGAME) {
+			Game info = api.getGame();
+			if (info.getState() == Game.GameState.INGAME) {
 				response.setResponseType(JoinResponse.ResponseType.DENY_INGAME);
-			} else if (info.getState() == GameInfo.GameState.NOT_READY) {
+			} else if (info.getState() == Game.GameState.NOT_READY) {
 				response.setResponseType(JoinResponse.ResponseType.DENY_NOTREADY);
 			} else if (info.getConnectedPlayers() > info.getTotalMaxPlayers() && !PermissionsBukkit.hasPermission(player, "games.joinfull")) {
 				response.setResponseType(JoinResponse.ResponseType.DENY_SERVER_FULL);
@@ -88,10 +87,10 @@ public class PlayerListener extends APIListener {
 		GameAPI api = this.api.getGameAPI();
 		if (api.getGame() != null) {
 			JoinResponse response = new JoinResponse(JoinResponse.ResponseType.ALLOW);
-			GameInfo info = api.getGame().getGameInfo();
-			if (info.getState() == GameInfo.GameState.INGAME) {
+			Game info = api.getGame();
+			if (info.getState() == Game.GameState.INGAME) {
 				response.setResponseType(JoinResponse.ResponseType.DENY_INGAME);
-			} else if (info.getState() == GameInfo.GameState.NOT_READY) {
+			} else if (info.getState() == Game.GameState.NOT_READY) {
 				response.setResponseType(JoinResponse.ResponseType.DENY_NOTREADY);
 			} else if (info.getConnectedPlayers() > info.getTotalMaxPlayers() && !PermissionsBukkit.hasPermission(player, "games.joinfull")) {
 				response.setResponseType(JoinResponse.ResponseType.DENY_SERVER_FULL);
@@ -122,6 +121,8 @@ public class PlayerListener extends APIListener {
 		if (moderatorsExpected.contains(event.getPlayer().getUniqueId())) {
 			moderatorsExpected.remove(event.getPlayer().getUniqueId());
 		}
+
+		event.setQuitMessage(null);
 
 		GameAPI api = this.api.getGameAPI();
 		if (api.getGame() != null) {

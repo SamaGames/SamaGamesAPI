@@ -2,10 +2,8 @@ package net.samagames.core;
 
 import net.samagames.core.database.ConnectionDetails;
 import net.samagames.core.database.DatabaseConnector;
-import net.samagames.core.listeners.NaturalListener;
-import net.samagames.core.listeners.PlayerDataListener;
-import net.samagames.core.listeners.PlayerListener;
-import net.samagames.core.listeners.TabsColorsListener;
+import net.samagames.core.listeners.*;
+import net.samagames.permissionsbukkit.PermissionsBukkit;
 import org.apache.commons.lang.StringUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -45,6 +43,7 @@ public class APIPlugin extends JavaPlugin implements Listener {
 	protected String denyJoinReason;
 	protected boolean serverRegistered;
 	protected PlayerListener playerListener;
+	protected String joinPermission = null;
 
 	public void onEnable() {
 		instance = this;
@@ -68,6 +67,8 @@ public class APIPlugin extends JavaPlugin implements Listener {
 			Bukkit.getServer().shutdown();
 			return;
 		}
+
+		joinPermission = getConfig().getString("join-permission");
 
 		if (databaseEnabled) {
 			File conf = new File(getDataFolder().getAbsoluteFile().getParentFile().getParentFile(), "data.yml");
@@ -98,6 +99,7 @@ public class APIPlugin extends JavaPlugin implements Listener {
 		 */
 
 		Bukkit.getPluginManager().registerEvents(new PlayerDataListener(this), this);
+		Bukkit.getPluginManager().registerEvents(new ChatFormatter(this), this);
 		Bukkit.getPluginManager().registerEvents((playerListener = new PlayerListener(this)), this);
 		if (configuration.getBoolean("disable-nature", false))
 			Bukkit.getPluginManager().registerEvents(new NaturalListener(), this);
@@ -220,6 +222,10 @@ public class APIPlugin extends JavaPlugin implements Listener {
 		if (!databaseEnabled) {
 			Bukkit.getLogger().info("[WARNING] Allowing connexion without check from IP "+ip);
 			return;
+		}
+
+		if (joinPermission != null && ! PermissionsBukkit.hasPermission(event.getPlayer(), joinPermission)) {
+			event.disallow(PlayerLoginEvent.Result.KICK_WHITELIST, "Vous n'avez pas la permission de rejoindre ce serveur.");
 		}
 
 		if (!ipWhitelist.contains(ip)) {
