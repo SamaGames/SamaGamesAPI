@@ -15,7 +15,7 @@ public interface ProxyDataManager {
 	/**
 	 * Renvoie les données RedisBungee du joueur
 	 * @param player UUID du joueur à récupérer
-	 * @return Une map Clé -> Valeur des données stockées
+	 * @return Une map Clé - Valeur des données stockées
  	 */
 	public Map<String, String> getPlayerData(UUID player);
 

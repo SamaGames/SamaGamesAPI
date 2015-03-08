@@ -38,7 +38,7 @@ public interface FriendsManager {
 	/**
 	 * Permet d'obtenir les amis d'un joueur, sous forme d'association UUID - Pseudo
 	 * @param asking	Joueur dont on veut la liste d'amis
-	 * @return Map d'amis au format UUID -> PSEUDO
+	 * @return Map d'amis au format UUID - PSEUDO
 	 */
 	public Map<UUID, String> associatedFriendsList(UUID asking);
 

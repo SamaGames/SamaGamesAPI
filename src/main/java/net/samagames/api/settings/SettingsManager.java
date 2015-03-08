@@ -12,7 +12,7 @@ public interface SettingsManager {
 	/**
 	 * Renvoie l'ensemble des paramètres du joueur
 	 * @param player Joueur à récupérer
-	 * @return Une map "Paramètre -> Valeur" des paramètres du joueur
+	 * @return Une map "Paramètre - Valeur" des paramètres du joueur
 	 */
     public Map<String, String> getSettings(UUID player);
 

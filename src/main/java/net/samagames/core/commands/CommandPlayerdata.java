@@ -53,6 +53,23 @@ public class CommandPlayerdata extends AbstractCommand {
 			}, "CommandPlayerDataSet").start();
 			return true;
 		}
+
+		if (arguments.length >= 3 && arguments[0].equalsIgnoreCase("del")) {
+			if (!hasPermission(sender, "playerdata.del"))
+				return true;
+
+			final String playerName = arguments[1];
+			final String key = arguments[2];
+
+			new Thread(() -> {
+				UUID playerId = SamaGamesAPI.get().getUUIDTranslator().getUUID(playerName, true);
+				PlayerData data = SamaGamesAPI.get().getPlayerManager().getPlayerData(playerId);
+				data.remove(key);
+				sender.sendMessage(ChatColor.YELLOW + "Données supprimées.");
+			}, "CommandPlayerDataSet").start();
+			return true;
+		}
+
 		final String playerName = arguments[0];
 			new Thread(() -> {
 				UUID playerId = SamaGamesAPI.get().getUUIDTranslator().getUUID(playerName, true);
