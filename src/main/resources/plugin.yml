@@ -4,7 +4,6 @@ version: gitcommit
 authors: [zyuiop, geekpower14, BlueSlime]
 website: http://samagames.net/
 softdepend: [SamaPermissionsBukkit]
-load: STARTUP
 commands:
    coins:
      description: Commandes relatives aux coins
