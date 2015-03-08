@@ -86,6 +86,8 @@ public abstract class PlayerData {
 	 */
 	public abstract void set(String key, String value);
 
+	public abstract void remove(String key);
+
 	/**
 	 * Récupère la valeur d'une clé
 	 * @param key clé à récupérer

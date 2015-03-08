@@ -81,6 +81,15 @@ public class PlayerDataDB extends PlayerData {
 	}
 
 	@Override
+	public void remove(String key) {
+		playerData.remove(key);
+
+		ShardedJedis jedis = api.getResource();
+		jedis.hdel("player:" + playerID, key);
+		jedis.close();
+	}
+
+	@Override
 	public void setInt(String key, int value) {
 		set(key, String.valueOf(value));
 	}

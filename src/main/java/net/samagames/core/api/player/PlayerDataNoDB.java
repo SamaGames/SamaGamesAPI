@@ -24,6 +24,11 @@ public class PlayerDataNoDB extends PlayerData {
 	}
 
 	@Override
+	public void remove(String key) {
+		playerData.remove(key);
+	}
+
+	@Override
 	public void setInt(String key, int value) {
 		set(key, String.valueOf(value));
 	}
