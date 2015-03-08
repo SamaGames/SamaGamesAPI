@@ -1,4 +1,5 @@
 "LOCATION/src/main/java/net/samagames/api/settings/SettingsManager.java"
+"LOCATION/src/main/java/net/samagames/api/games/CommonStatuses.java"
 "LOCATION/src/main/java/net/samagames/api/SamaGamesAPI.java"
 "LOCATION/src/main/java/net/samagames/api/player/PlayerData.java"
 "LOCATION/src/main/java/net/samagames/api/games/GameAPI.java"

@@ -1,7 +1,9 @@
 package net.samagames.api.games;
 
-import net.samagames.core.APIPlugin;
-import org.bukkit.craftbukkit.libs.com.google.gson.Gson;
+import org.bukkit.ChatColor;
+import org.bukkit.block.Sign;
+import org.bukkit.craftbukkit.libs.joptsimple.internal.Strings;
+import org.bukkit.entity.Player;
 
 /**
  * This file is a part of the SamaGames project
@@ -26,8 +28,14 @@ public class GameSignData {
 		this.allowJoins = allowJoins;
 	}
 
-	public GameSignData() {
+	public GameSignData(GameInfo info, String map, CommonStatuses status) {
+		this.mapLine = map;
+		this.stateLine = status.getDisplay();
+		this.allowJoins = status.isCanJoin();
+		this.slotsLine = "" + info.getConnectedPlayers() + ChatColor.DARK_GRAY + "/" + ChatColor.BLACK + info.getTotalMaxPlayers();
+	}
 
+	public GameSignData() {
 	}
 
 	public GameSignData(String serverIdentification, String signZone, String mapLine, String stateLine, String slotsLine, boolean allowJoins) {
@@ -86,4 +94,22 @@ public class GameSignData {
 	public void setSignZone(String signZone) {
 		this.signZone = signZone;
 	}
+
+	public void display(Sign sign) {
+		sign.setLine(0, Strings.join(serverIdentification.split("_"), " "));
+		sign.setLine(1, mapLine);
+		sign.setLine(2, slotsLine);
+		sign.setLine(3, stateLine);
+		sign.update();
+	}
+
+	public void getDebug(Player player) {
+		player.sendMessage(new String[] {
+				ChatColor.YELLOW + "-----[" + ChatColor.AQUA + " Signs Debug " + ChatColor.YELLOW + "]-----",
+				ChatColor.YELLOW + "Server : " + ChatColor.AQUA + serverIdentification,
+				ChatColor.YELLOW + "Sign Zone : " + ChatColor.AQUA + signZone,
+				ChatColor.YELLOW + "State Line : " + ChatColor.AQUA + stateLine
+		});
+	}
+
 }
