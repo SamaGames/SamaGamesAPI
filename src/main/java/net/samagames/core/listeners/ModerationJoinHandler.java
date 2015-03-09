@@ -2,6 +2,7 @@ package net.samagames.core.listeners;
 
 import net.samagames.api.channels.PacketsReceiver;
 import net.samagames.api.network.JoinHandler;
+import net.samagames.permissionsbukkit.PermissionsBukkit;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;

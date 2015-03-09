@@ -7,5 +7,9 @@ import net.samagames.api.network.JoinHandler;
  */
 public interface Game extends JoinHandler {
 
-
+	public int getMaxPlayers();
+	public int getTotalMaxPlayers();
+	public int getConnectedPlayers();
+	public Status getStatus();
+	public void displayMessage(String message);
 }

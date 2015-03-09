@@ -5,20 +5,29 @@ package net.samagames.api.network;
  */
 public class JoinResponse {
 
-    private boolean allow = true;
     private String reason = null;
+	private ResponseType responseType = ResponseType.ALLOW;
 
     public JoinResponse() {
 
     }
 
     public void disallow(String reason) {
-        this.allow = false;
+        responseType = ResponseType.DENY_OTHER;
         this.reason = reason;
     }
 
+	public void disallow(ResponseType responseType) {
+		this.responseType = responseType;
+		this.reason = responseType.getMessage();
+	}
+
+	public ResponseType getResponseType() {
+		return responseType;
+	}
+
     public boolean isAllowed() {
-        return allow;
+        return responseType == ResponseType.ALLOW;
     }
 
     public String getReason() {
@@ -26,7 +35,7 @@ public class JoinResponse {
     }
 
     public void allow() {
-        this.allow = true;
+        this.responseType = ResponseType.ALLOW;
     }
 
 }

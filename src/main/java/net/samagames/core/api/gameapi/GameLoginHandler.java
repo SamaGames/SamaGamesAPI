@@ -1,8 +1,11 @@
 package net.samagames.core.api.gameapi;
 
 import net.samagames.api.gameapi.Game;
+import net.samagames.api.gameapi.Status;
 import net.samagames.api.network.JoinHandler;
 import net.samagames.api.network.JoinResponse;
+import net.samagames.api.network.ResponseType;
+import net.samagames.permissionsbukkit.PermissionsBukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 
@@ -23,14 +26,14 @@ public class GameLoginHandler implements JoinHandler {
                 return api.getGame().onLogin(player, response);
 
             Game info = api.getGame();
-            if (info.getState() == Game.GameState.INGAME) {
-                response.setResponseType(JoinResponse.ResponseType.DENY_INGAME);
-            } else if (info.getState() == Game.GameState.NOT_READY) {
-                response.setResponseType(JoinResponse.ResponseType.DENY_NOTREADY);
-            } else if (info.getConnectedPlayers() > info.getTotalMaxPlayers() && !PermissionsBukkit.hasPermission(player, "games.joinfull")) {
-                response.setResponseType(JoinResponse.ResponseType.DENY_SERVER_FULL);
+            if (info.getStatus() == Status.IN_GAME) {
+                response.disallow(ResponseType.DENY_IN_GAME);
+            } else if (info.getStatus() == Status.STARTING) {
+                response.disallow(ResponseType.DENY_NOT_READY);
+            } else if (info.getConnectedPlayers() > info.getTotalMaxPlayers() && ! PermissionsBukkit.hasPermission(player, "games.joinfull")) {
+                response.disallow(ResponseType.DENY_FULL);
             } else if (info.getConnectedPlayers() > info.getMaxPlayers() && !PermissionsBukkit.hasPermission(player, "games.joinvip")) {
-                response.setResponseType(JoinResponse.ResponseType.DENY_ALMOST_FULL);
+                response.disallow(ResponseType.DENY_VIPONLY);
             }
 
             return api.getGame().onLogin(player, response);
@@ -44,18 +47,18 @@ public class GameLoginHandler implements JoinHandler {
             if (!response.isAllowed())
                 return api.getGame().onJoin(player, response);
 
-            Game info = api.getGame();
-            if (info.getState() == Game.GameState.INGAME) {
-                response.setResponseType(JoinResponse.ResponseType.DENY_INGAME);
-            } else if (info.getState() == Game.GameState.NOT_READY) {
-                response.setResponseType(JoinResponse.ResponseType.DENY_NOTREADY);
-            } else if (info.getConnectedPlayers() > info.getTotalMaxPlayers() && !PermissionsBukkit.hasPermission(player, "games.joinfull")) {
-                response.setResponseType(JoinResponse.ResponseType.DENY_SERVER_FULL);
-            } else if (info.getConnectedPlayers() > info.getMaxPlayers() && !PermissionsBukkit.hasPermission(player, "games.joinvip")) {
-                response.setResponseType(JoinResponse.ResponseType.DENY_ALMOST_FULL);
-            }
+			Game info = api.getGame();
+			if (info.getStatus() == Status.IN_GAME) {
+				response.disallow(ResponseType.DENY_IN_GAME);
+			} else if (info.getStatus() == Status.STARTING) {
+				response.disallow(ResponseType.DENY_NOT_READY);
+			} else if (info.getConnectedPlayers() > info.getTotalMaxPlayers() && ! PermissionsBukkit.hasPermission(player, "games.joinfull")) {
+				response.disallow(ResponseType.DENY_FULL);
+			} else if (info.getConnectedPlayers() > info.getMaxPlayers() && !PermissionsBukkit.hasPermission(player, "games.joinvip")) {
+				response.disallow(ResponseType.DENY_VIPONLY);
+			}
 
-            response = api.getGame().onJoin(player, response);
+			response = api.getGame().onJoin(player, response);
             if (response.isAllowed()) {
                 String message = ChatColor.YELLOW + "${PSEUDO}" + ChatColor.YELLOW + " a rejoint la partie ! " + ChatColor.DARK_GRAY + "[" + ChatColor.RED + "${JOUEURS}" + ChatColor.DARK_GRAY + "/" + ChatColor.RED + "${JOUEURS_MAX}" + ChatColor.DARK_GRAY + "]";
                 message = message.replace("${PSEUDO}", player.getName());
@@ -77,16 +80,11 @@ public class GameLoginHandler implements JoinHandler {
 
     @Override
     public void onModerationJoin(Player player) {
-
+		api.getGame().onModerationJoin(player);
     }
 
     @Override
     public void onLogout(Player player) {
-        /*
-        GameAPI api = this.api.getGameAPI();
-		if (api.getGame() != null) {
-			api.getGame().logout(event.getPlayer());
-		}
-         */
+		api.getGame().onLogout(player);
     }
 }

@@ -4,6 +4,7 @@ import net.samagames.api.channels.PacketsReceiver;
 import net.samagames.api.network.JoinHandler;
 import net.samagames.api.network.JoinManager;
 import net.samagames.api.network.JoinResponse;
+import net.samagames.permissionsbukkit.PermissionsBukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;

@@ -43,7 +43,6 @@ public class APIPlugin extends JavaPlugin implements Listener {
 	protected boolean allowJoin;
 	protected String denyJoinReason;
 	protected boolean serverRegistered;
-	protected PlayerListener playerListener;
 	protected String joinPermission = null;
 
 	public void onEnable() {
@@ -124,10 +123,6 @@ public class APIPlugin extends JavaPlugin implements Listener {
 				e.printStackTrace();
 			}
 		}
-	}
-
-	public PlayerListener getPlayerListener() {
-		return playerListener;
 	}
 
 	public static APIPlugin getInstance() {
