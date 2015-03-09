@@ -20,6 +20,7 @@ import java.io.File;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.util.List;
+import java.util.UUID;
 import java.util.concurrent.CopyOnWriteArraySet;
 import java.util.logging.Level;
 
@@ -98,9 +99,12 @@ public class APIPlugin extends JavaPlugin implements Listener {
 		Loading listeners
 		 */
 
+		ModerationJoinHandler moderationJoinHandler = new ModerationJoinHandler();
+		api.getJoinManager().registerHandler(moderationJoinHandler, -1);
+		api.getPubSub().subscribe(getServerName(), moderationJoinHandler);
+
 		Bukkit.getPluginManager().registerEvents(new PlayerDataListener(this), this);
 		Bukkit.getPluginManager().registerEvents(new ChatFormatter(this), this);
-		Bukkit.getPluginManager().registerEvents((playerListener = new PlayerListener(this)), this);
 		if (configuration.getBoolean("disable-nature", false))
 			Bukkit.getPluginManager().registerEvents(new NaturalListener(), this);
 		if (configuration.getBoolean("tab-colors", true))

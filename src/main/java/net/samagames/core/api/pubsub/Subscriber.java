@@ -5,6 +5,7 @@ import net.samagames.core.APIPlugin;
 import redis.clients.jedis.JedisPubSub;
 
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.logging.Level;
 
 /**
@@ -16,22 +17,24 @@ import java.util.logging.Level;
  */
 public class Subscriber extends JedisPubSub {
 
-	protected HashMap<String, PacketsReceiver> packetsReceivers = new HashMap<>();
+	protected HashMap<String, HashSet<PacketsReceiver>> packetsReceivers = new HashMap<>();
 
 	public void registerReceiver(String channel, PacketsReceiver receiver) {
-		packetsReceivers.put(channel, receiver);
+		if (packetsReceivers.get(channel) == null)
+			packetsReceivers.put(channel, new HashSet<>());
+		packetsReceivers.get(channel).add(receiver);
 	}
 
 	@Override
 	public void onMessage(String channel, String message) {
 		try {
-			PacketsReceiver receiver = packetsReceivers.get(channel);
-			if (receiver != null)
-				receiver.receive(channel, message);
+			HashSet<PacketsReceiver> receivers = packetsReceivers.get(channel);
+			if (receivers != null)
+				receivers.forEach((PacketsReceiver receiver) -> receiver.receive(channel, message));
 			else
 				APIPlugin.log(Level.WARNING, "{PubSub} Received message on a channel, but no packetsReceivers were found.");
 		} catch (Exception ignored) {
-
+			ignored.printStackTrace();
 		}
 
 	}
