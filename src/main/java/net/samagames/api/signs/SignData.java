@@ -1,5 +1,8 @@
 package net.samagames.api.signs;
 
+import net.samagames.api.SamaGamesAPI;
+import org.bukkit.craftbukkit.libs.com.google.gson.Gson;
+
 public class SignData {
 
     private String bungeeName;
@@ -69,4 +72,13 @@ public class SignData {
     public void setCanJoin(boolean canJoin) {
         this.canJoin = canJoin;
     }
+
+	public void send() {
+		if (getBungeeName() == null || getGameType() == null) {
+			throw new IllegalStateException("Sign data is not complete");
+		} else {
+			String json = new Gson().toJson(this);
+			SamaGamesAPI.get().getPubSub().send("lobbysChannel", json);
+		}
+	}
 }

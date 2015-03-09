@@ -41,12 +41,7 @@ public class SignMaker {
     }
 
     public void send() {
-        if (sign.getBungeeName() == null || sign.getGameType() == null) {
-            throw new IllegalStateException("Sign data is not complete");
-        } else {
-            String json = new Gson().toJson(sign);
-            SamaGamesAPI.get().getPubSub().send("lobbysChannel", json);
-        }
+        sign.send();
     }
 
 }
