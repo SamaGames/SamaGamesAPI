@@ -1,8 +1,8 @@
 package net.samagames.tools.scoreboards;
 
 import net.minecraft.server.v1_8_R1.*;
-import net.samagames.tools.ReflectionUtilities;
 import net.samagames.tools.Reflection;
+import net.samagames.tools.ReflectionUtilities;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 
@@ -266,7 +266,7 @@ public class VObjective {
             int i = 0;
             for(VScore score : objective.getScores())
             {
-                updateScoreObjective(p, objective, score, objective.getScores().size()-i);
+                updateScoreObjective(p, objective, score, objective.getScores().size()-i-1);
                 i++;
             }
         }
