@@ -1,5 +1,6 @@
 package net.samagames.tools.scoreboards;
 
+import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 
 import java.util.HashMap;
@@ -14,7 +15,7 @@ public class ObjectiveSign extends VObjective{
     public ObjectiveSign(String name, String displayName) {
         super(name, displayName);
 
-        for(int i = -1; i > -19; i--)
+        for(int i = 0; i < 19; i++)
         {
             lines.put(i, null);
         }
@@ -22,8 +23,10 @@ public class ObjectiveSign extends VObjective{
 
     public void setLine(int nb, String line)
     {
-        if(nb >= 0 || nb < -19)
-            throw new IndexOutOfBoundsException("Scoreboard line :" + nb + " - [-1;-18]");
+        if(nb < 0 || nb >=19)
+        {
+            Bukkit.getLogger().warning("Scoreboard line :" + nb + " - [0;18]");
+        }
 
         VScore remove = getScore(lines.get(nb));
         scores.remove(remove);
@@ -31,7 +34,7 @@ public class ObjectiveSign extends VObjective{
         add.setScore(nb);
         lines.put(nb, line);
 
-       // replaceScore(remove, add);*/
+        // replaceScore(remove, add);*/
     }
 
     public void updateLines()
@@ -42,7 +45,7 @@ public class ObjectiveSign extends VObjective{
             if(op.isOnline())
             {
                 create(op.getPlayer());
-                updateScore(op.getPlayer());
+                updateScore(op.getPlayer(), true);
                 displayToSidebar(op.getPlayer());
                 RawObjective.removeObjective(op.getPlayer(), old);
                 //remove(op.getPlayer());

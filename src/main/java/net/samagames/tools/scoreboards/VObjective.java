@@ -103,7 +103,12 @@ public class VObjective {
 
     protected void updateScore(Player p)
     {
-        RawObjective.updateScoreObjective(p, this);
+        RawObjective.updateScoreObjective(p, this, false);
+    }
+
+    protected void updateScore(Player p, boolean inverse)
+    {
+        RawObjective.updateScoreObjective(p, this, inverse);
     }
 
     public void updateScore()
@@ -111,7 +116,7 @@ public class VObjective {
         for(OfflinePlayer op : receivers)
         {
             if(op.isOnline())
-                RawObjective.updateScoreObjective(op.getPlayer(), this);
+                RawObjective.updateScoreObjective(op.getPlayer(), this, false);
         }
     }
 
@@ -240,7 +245,7 @@ public class VObjective {
 
         public static void createScoreObjective(Player p, VObjective objective)
         {
-            updateScoreObjective(p, objective);
+            updateScoreObjective(p, objective, false);
         }
 
         public static void createScoreObjective(Player p, VObjective objective, VScore score)
@@ -248,17 +253,32 @@ public class VObjective {
             updateScoreObjective(p, objective, score);
         }
 
-        public static void updateScoreObjective(Player p, VObjective objective)
+        public static void updateScoreObjective(Player p, VObjective objective, boolean inverse)
         {
+            if(!inverse)
+            {
+                for(VScore score : objective.getScores())
+                {
+                    updateScoreObjective(p, objective, score);
+                }
+                return;
+            }
+            int i = 0;
             for(VScore score : objective.getScores())
             {
-                updateScoreObjective(p, objective, score);
+                updateScoreObjective(p, objective, score, objective.getScores().size()-i);
+                i++;
             }
         }
 
         public static void updateScoreObjective(Player p, VObjective objective, VScore score)
         {
             sendPacket(makeScoreboardScorePacket(objective.getName(), EnumScoreboardAction.CHANGE, score.getPlayerName(), score.getScore()), p);
+        }
+
+        public static void updateScoreObjective(Player p, VObjective objective, VScore score, int score_int)
+        {
+            sendPacket(makeScoreboardScorePacket(objective.getName(), EnumScoreboardAction.CHANGE, score.getPlayerName(), score_int), p);
         }
 
         public static void removeScoreObjective(Player p, VObjective objective)
@@ -352,7 +372,12 @@ public class VObjective {
 
         public void setScore(int score)
         {
+            //int old = this.score;
             this.score = score;
+           /*if(old != this.score)
+            {
+                //TODO: HANDLE si besoin de updateScore auto
+            }*/
         }
 
         public void removeScore(int score)
@@ -377,3 +402,4 @@ public class VObjective {
     }
 
 }
+
