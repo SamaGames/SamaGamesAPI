@@ -20,9 +20,11 @@ public class Subscriber extends JedisPubSub {
 	protected HashMap<String, HashSet<PacketsReceiver>> packetsReceivers = new HashMap<>();
 
 	public void registerReceiver(String channel, PacketsReceiver receiver) {
-		if (packetsReceivers.get(channel) == null)
-			packetsReceivers.put(channel, new HashSet<>());
-		packetsReceivers.get(channel).add(receiver);
+		HashSet<PacketsReceiver> receivers = packetsReceivers.get(channel);
+		if (receivers == null)
+			receivers = new HashSet<>();
+		receivers.add(receiver);
+		packetsReceivers.put(channel, receivers);
 	}
 
 	@Override
