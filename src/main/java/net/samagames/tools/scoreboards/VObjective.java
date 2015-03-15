@@ -266,7 +266,7 @@ public class VObjective {
             int i = 0;
             for(VScore score : objective.getScores())
             {
-                updateScoreObjective(p, objective, score, objective.getScores().size()-i-1);
+                updateScoreObjective(p, objective, score, objective.getScores().size()-score.getScore()-1);
                 i++;
             }
         }

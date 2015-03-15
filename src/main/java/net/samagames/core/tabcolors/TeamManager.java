@@ -1,7 +1,6 @@
 package net.samagames.core.tabcolors;
 
 import net.samagames.core.APIPlugin;
-import net.samagames.permissionsapi.PermissionsAPI;
 import net.samagames.permissionsapi.permissions.PermissionGroup;
 import net.samagames.permissionsapi.permissions.PermissionUser;
 import net.samagames.permissionsbukkit.PermissionsBukkit;
@@ -14,6 +13,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
+import java.util.stream.Collectors;
 
 public class TeamManager {
 
@@ -21,9 +21,8 @@ public class TeamManager {
      * The escape sequence for minecraft special chat codes
      */
     public static final char ESCAPE = '\u00A7';
-    public List<PermissionGroup> groups = new ArrayList<>();
 	private final APIPlugin plugin;
-
+    public List<PermissionGroup> groups = new ArrayList<>();
     public TeamHandler teamHandler;
 
     public Executor executor = Executors.newSingleThreadExecutor();
@@ -36,8 +35,7 @@ public class TeamManager {
         if (!pl.isDatabaseEnabled())
             return;
 
-        for (PermissionGroup g : PermissionsBukkit.getApi().getManager().getGroupsCache().values())
-            groups.add(g);
+        groups.addAll(PermissionsBukkit.getApi().getManager().getGroupsCache().values().stream().collect(Collectors.toList()));
 
         for (PermissionGroup pg : groups) {
             TeamHandler.VTeam vt = teamHandler.createNewTeam(pg.getGroupName(), "");
@@ -108,31 +106,23 @@ public class TeamManager {
      */
 
     public void playerLeave(final Player p) {
-        executor.execute(new Runnable() {
-            @Override
-            public void run() {
-                teamHandler.removeReceiver(p);
-            }
-        });
+        executor.execute(() -> teamHandler.removeReceiver(p));
 
     }
 
     public void playerJoin(final Player p) {
-        executor.execute(new Runnable() {
-            @Override
-            public void run() {
-                teamHandler.addReceiver(p);
+        executor.execute(() -> {
+            teamHandler.addReceiver(p);
 
-                final PermissionUser user = PermissionsBukkit.getApi().getUser(p.getUniqueId());
-                final String prefix = PermissionsBukkit.getDisplay(user);
+            final PermissionUser user = PermissionsBukkit.getApi().getUser(p.getUniqueId());
+            final String prefix = PermissionsBukkit.getDisplay(user);
 
-                TeamHandler.VTeam vtt = teamHandler.getTeamByPrefix(prefix);
-                if (vtt == null) {
-                    vtt = teamHandler.getTeamByName("Joueur");
-                }
-
-                teamHandler.addPlayerToTeam(p, vtt);
+            TeamHandler.VTeam vtt = teamHandler.getTeamByPrefix(prefix);
+            if (vtt == null) {
+                vtt = teamHandler.getTeamByName("Joueur");
             }
+
+            teamHandler.addPlayerToTeam(p, vtt);
         });
     }
 
