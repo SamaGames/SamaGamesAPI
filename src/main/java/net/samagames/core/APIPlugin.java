@@ -19,8 +19,7 @@ import redis.clients.jedis.Jedis;
 import java.io.File;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 import java.util.concurrent.CopyOnWriteArraySet;
 import java.util.logging.Level;
 
@@ -122,6 +121,49 @@ public class APIPlugin extends JavaPlugin implements Listener {
 			} catch (ClassNotFoundException | NoSuchMethodException | InstantiationException | InvocationTargetException | IllegalAccessException e) {
 				e.printStackTrace();
 			}
+		}
+
+		try {
+			Calendar calendar = new GregorianCalendar();
+			calendar.setTime(new Date());
+			if (calendar.get(Calendar.HOUR_OF_DAY) > 3 || (calendar.get(Calendar.HOUR_OF_DAY) == 3 && calendar.get(Calendar.MINUTE) >= 45))
+				calendar.set(Calendar.DAY_OF_YEAR, calendar.get(Calendar.DAY_OF_YEAR) + 1);
+			calendar.set(Calendar.HOUR_OF_DAY, 3);
+			calendar.set(Calendar.MINUTE, 45);
+			Date sched = calendar.getTime();
+
+			Timer timer = new Timer();
+			timer.schedule(new TimerTask() {
+				@Override
+				public void run() {
+					Bukkit.getScheduler().runTaskTimer(instance, new Runnable() {
+						int minutes = 15;
+						int seconds = 01;
+
+						@Override
+						public void run() {
+							seconds --;
+							if (seconds < 0) {
+								seconds = 59;
+								minutes --;
+							}
+
+							if (minutes < 0) {
+								Bukkit.getServer().shutdown();
+
+								return;
+							}
+
+							if ((seconds == 0 && (minutes % 5 == 0 || minutes >= 3)) || (minutes == 0 && seconds % 10 == 0))
+								Bukkit.broadcastMessage(ChatColor.RED + "[REBOOT] Le serveur redémarre dans " + ((minutes > 0) ? minutes + "minute" + ((minutes > 1) ? "s " : " ") : "") + ((seconds > 0) ? seconds + "seconde" + ((seconds > 1) ? "s " : " ") : ""));
+						}
+					}, 20L, 20L);
+				}
+			}, sched);
+			this.getLogger().info("Scheduled automatic reboot at : " + calendar.toString());
+		} catch (Exception e) {
+			this.getLogger().severe("CANNOT SCHEDULE AUTOMATIC SHUTDOWN.");
+			e.printStackTrace();
 		}
 	}
 
