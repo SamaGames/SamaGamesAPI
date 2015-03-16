@@ -73,7 +73,7 @@ public class ApiImplementation extends SamaGamesAPI {
 	}
 
 	// On ne crée l'API que sur demande, pour éviter de surcharger la mémoire.
-	public GameAPI getGameApi() {
+	public GameAPI getGameAPI() {
 		return (gameApi == null) ? (this.gameApi = new GameAPIImplement(this)) : this.gameApi;
 	}
 

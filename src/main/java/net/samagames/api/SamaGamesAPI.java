@@ -1,6 +1,7 @@
 package net.samagames.api;
 
 import net.samagames.api.channels.PubSubAPI;
+import net.samagames.api.gameapi.GameAPI;
 import net.samagames.api.names.UUIDTranslator;
 import net.samagames.api.player.PlayerDataManager;
 import net.samagames.api.settings.SettingsManager;
@@ -50,5 +51,6 @@ public abstract class SamaGamesAPI {
 	public abstract PlayerDataManager getPlayerManager();
 	public abstract PubSubAPI getPubSub();
 	public abstract UUIDTranslator getUUIDTranslator();
+	public abstract GameAPI getGameAPI();
 
 }
