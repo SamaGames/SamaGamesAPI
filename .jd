@@ -10,5 +10,6 @@
 "LOCATION/src/main/java/net/samagames/api/signs/*"
 "LOCATION/src/main/java/net/samagames/api/stats/*"
 "LOCATION/src/main/java/net/samagames/api/SamaGamesAPI.java"
+"LOCATION/src/main/java/net/samagames/retrocompatibility/*"
 -sourcepath
 "LOCATION/src/main/java"
