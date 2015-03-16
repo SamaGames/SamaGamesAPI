@@ -22,6 +22,6 @@
 "LOCATION/src/main/java/net/samagames/api/signs/SignBuilder.java"
 "LOCATION/src/main/java/net/samagames/api/stats/StatsManager.java"
 "LOCATION/src/main/java/net/samagames/api/SamaGamesAPI.java"
-"LOCATION/src/main/java/net/samagames/retrocompatibility/*"
+"LOCATION/src/main/java/net/samagames/retrocompatibility/JsonArena.java"
 -sourcepath
 "LOCATION/src/main/java"
