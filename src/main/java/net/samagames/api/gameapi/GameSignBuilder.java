@@ -24,6 +24,7 @@ public class GameSignBuilder extends SignBuilder {
 			this.setStateLine(status.getDisplay());
 
 		this.setAllowJoin(status.isAllowJoin());
+		this.setMap(game.getMapName());
 	}
 
 }

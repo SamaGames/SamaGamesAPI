@@ -2,12 +2,14 @@ package net.samagames.core;
 
 import net.samagames.api.SamaGamesAPI;
 import net.samagames.api.channels.PubSubAPI;
+import net.samagames.api.gameapi.GameAPI;
 import net.samagames.api.names.UUIDTranslator;
 import net.samagames.api.network.JoinManager;
 import net.samagames.api.player.PlayerDataManager;
 import net.samagames.api.settings.SettingsManager;
 import net.samagames.api.shops.ShopsManager;
 import net.samagames.api.stats.StatsManager;
+import net.samagames.core.api.gameapi.GameAPIImplement;
 import net.samagames.core.api.names.UUIDTranslatorDB;
 import net.samagames.core.api.names.UUIDTranslatorNODB;
 import net.samagames.core.api.network.JoinManagerImplement;
@@ -43,6 +45,7 @@ public class ApiImplementation extends SamaGamesAPI {
 	protected PubSubAPI pubSub;
 	protected UUIDTranslator uuidTranslator;
 	protected JoinManager joinManager;
+	protected GameAPIImplement gameApi;
 
 	public ApiImplementation(APIPlugin plugin, boolean database) {
 		this.plugin = plugin;
@@ -67,6 +70,11 @@ public class ApiImplementation extends SamaGamesAPI {
 			pubSub.subscribe(plugin.getServerName(), implement);
 			uuidTranslator = new UUIDTranslatorNODB();
 		}
+	}
+
+	// On ne crée l'API que sur demande, pour éviter de surcharger la mémoire.
+	public GameAPI getGameApi() {
+		return (gameApi == null) ? (this.gameApi = new GameAPIImplement(this)) : this.gameApi;
 	}
 
 	public JoinManager getJoinManager() {

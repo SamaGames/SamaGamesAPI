@@ -13,9 +13,9 @@ import java.util.UUID;
 
 public class GameLoginHandler implements JoinHandler {
 
-    private final GameAPI api;
+    private final GameAPIImplement api;
 
-    GameLoginHandler(GameAPI api) {
+    GameLoginHandler(GameAPIImplement api) {
         this.api = api;
     }
 

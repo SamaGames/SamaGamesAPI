@@ -3,10 +3,7 @@ package net.samagames.api.settings;
 import java.util.Map;
 import java.util.UUID;
 
-/**
- * @deprecated Use playerData instead * migration usage only
- */
-@Deprecated
+
 public interface SettingsManager {
 
 	/**

@@ -2,8 +2,8 @@ package net.samagames.core.api.settings;
 
 import net.samagames.api.SamaGamesAPI;
 import net.samagames.api.settings.SettingsManager;
-import redis.clients.jedis.ShardedJedis;
 
+import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
@@ -16,22 +16,23 @@ public class SettingsManagerDB implements SettingsManager {
 	}
 
     public Map<String, String> getSettings(UUID player) {
-        ShardedJedis j = api.getResource();
-        Map<String, String> r = j.hgetAll("settings:" + player);
-		j.close();
-        return r;
+        Map<String, String> data = api.getPlayerManager().getPlayerData(player).getValues();
+        HashMap<String, String> settings = new HashMap<>();
+        for (Map.Entry<String, String> line : data.entrySet()) {
+            if (line.getKey().startsWith("settings.")) {
+                String setting = line.getKey().split(".")[0];
+                settings.put(setting, line.getValue());
+            }
+        }
+
+        return settings;
     }
 
     public String getSetting(UUID player, String setting) {
-		ShardedJedis j = api.getResource();
-        String r = j.hget("settings:" + player, setting);
-		j.close();
-        return r;
+		return api.getPlayerManager().getPlayerData(player).get("settings." + setting);
     }
 
     public void setSetting(UUID player, String setting, String value) {
-		ShardedJedis j = api.getResource();
-        j.hset("settings:" + player, setting, value);
-		j.close();
+		api.getPlayerManager().getPlayerData(player).set("settings." + setting, value);
     }
 }
