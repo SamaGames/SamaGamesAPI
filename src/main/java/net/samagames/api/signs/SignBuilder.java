@@ -1,19 +1,16 @@
 package net.samagames.api.signs;
 
-import net.samagames.api.SamaGamesAPI;
-import org.bukkit.craftbukkit.libs.com.google.gson.Gson;
-
-public class SignMaker {
+public class SignBuilder {
 
     private SignData sign;
 
-    public SignMaker(String bungeeName, String gameType) {
+    public SignBuilder(String bungeeName, String gameType) {
         this.sign = new SignData();
         sign.setBungeeName(bungeeName);
         sign.setGameType(gameType);
     }
 
-    public SignMaker setMap(String mapLine) {
+    public SignBuilder setMap(String mapLine) {
         if (mapLine.length() > 16)
             throw new IllegalArgumentException("One sign line cannot have a lenght which is higher than 16.");
         else {
@@ -22,16 +19,18 @@ public class SignMaker {
         }
     }
 
-    public SignMaker setSlotsLine(String slotsLine) {
-        if (slotsLine.length() > 16)
-            throw new IllegalArgumentException("One sign line cannot have a lenght which is higher than 16.");
-        else {
-            sign.setSlotsLine(slotsLine);
-            return this;
-        }
+    public SignBuilder setAllowJoin(boolean allowJoin) {
+        sign.setCanJoin(allowJoin);
+        return this;
     }
 
-    public SignMaker setStateLine(String stateLine) {
+    public SignBuilder setSlots(int players, int max) {
+        sign.setMaxPlayers(max);
+        sign.setPlayers(max);
+        return this;
+    }
+
+    public SignBuilder setStateLine(String stateLine) {
         if (stateLine.length() > 16)
             throw new IllegalArgumentException("One sign line cannot have a lenght which is higher than 16.");
         else {
