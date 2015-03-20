@@ -85,7 +85,7 @@ public class APIPlugin extends JavaPlugin implements Listener {
 				ip = dataYML.getString("rb-ip");
 				ConnectionDetails bungee = new ConnectionDetails(ip.split(":")[0], Integer.parseInt(ip.split(":")[1]), dataYML.getString("Redis-Pass"));
 
-				Set<String> ips = ((List<String>) dataYML.getList("Redis-Ips").get(0)).stream().map(IP -> IP).collect(Collectors.toSet());
+				Set<String> ips = ((List<String>) dataYML.getList("Redis-Ips")).stream().map(IP -> IP).collect(Collectors.toSet());
 
 				databaseConnector = new DatabaseConnector(this, ips, dataYML.getString("Redis-Pass"), bungee);
 			}

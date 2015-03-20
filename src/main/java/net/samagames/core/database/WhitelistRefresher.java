@@ -4,6 +4,7 @@ import net.samagames.core.APIPlugin;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
+import redis.clients.jedis.HostAndPort;
 import redis.clients.jedis.Jedis;
 
 import java.util.List;
@@ -19,6 +20,7 @@ public class WhitelistRefresher implements Runnable {
 
 	protected APIPlugin plugin;
 	protected DatabaseConnector databaseConnector;
+	protected HostAndPort lastMaster;
 
 	protected WhitelistRefresher(APIPlugin plugin, DatabaseConnector connector) {
 		this.plugin = plugin;
@@ -27,6 +29,12 @@ public class WhitelistRefresher implements Runnable {
 
 	public void run() {
 		try {
+			HostAndPort master = databaseConnector.mainPool.getCurrentHostMaster();
+			if (!master.equals(lastMaster)) {
+				Bukkit.getLogger().info("Switched master : " + lastMaster.getHost() + ":" + lastMaster.getPort() + " -> " + master.getHost() + ":" + master.getPort());
+				this.lastMaster = master;
+			}
+
 			Jedis jedis = databaseConnector.getResource();
 			List<String> whitelist = jedis.lrange("sockets:proxys", 0, - 1);
 			jedis.close();
