@@ -5,7 +5,7 @@
 
     <groupId>net.samagames</groupId>
     <artifactId>samapi</artifactId>
-    <version>0.0.1-SNAPSHOT</version>
+    <version>1.0.0-SNAPSHOT</version>
     <packaging>jar</packaging>
     <name>SamaGamesAPI</name>
 
@@ -82,6 +82,7 @@
             <groupId>com.rabbitmq</groupId>
             <artifactId>amqp-client</artifactId>
             <version>3.5.0</version>
+            <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>redis.clients</groupId>
