@@ -26,27 +26,23 @@ public class PubSubAPIDB implements PubSubAPI {
 	@Override
 	public void subscribe(String channel, PacketsReceiver receiver) {
 		new Thread(() -> {
-			ShardedJedis sjedis = api.getResource();
-			Jedis jedis = (Jedis) sjedis.getAllShards().toArray()[0];
+			Jedis jedis = api.getResource();
 
 			subscriber.registerReceiver(channel, receiver);
 			jedis.subscribe(subscriber, channel);
 
 			jedis.close();
-			sjedis.close();
 		}).start();
 	}
 
 	@Override
 	public void send(String channel, String message) {
 		new Thread(() -> {
-			ShardedJedis sjedis = api.getResource();
-			Jedis jedis = (Jedis) sjedis.getAllShards().toArray()[0];
+			Jedis jedis = api.getResource();
 
 			jedis.publish(channel, message);
 
 			jedis.close();
-			sjedis.close();
 		}).start();
 	}
 

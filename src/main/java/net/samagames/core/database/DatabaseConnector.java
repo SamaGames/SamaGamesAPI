@@ -7,6 +7,7 @@ import redis.clients.jedis.*;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 /**
  * This file is a part of the SamaGames project
@@ -17,29 +18,31 @@ import java.util.List;
  */
 public class DatabaseConnector {
 
-	protected ShardedJedisPool mainPool;
+	protected JedisSentinelPool mainPool;
 	protected JedisPool bungeePool;
 	protected ConnexionKeeper keeper = null;
 	protected BukkitTask keepTask = null;
-	protected ConnectionDetails main;
+	protected Set<String> main;
 	protected ConnectionDetails bungee;
 	protected APIPlugin plugin;
+	protected String mainPassword;
 
 	public DatabaseConnector(APIPlugin plugin) {
-		mainPool = new FakeShardedJedisPool();
+		mainPool = null;
 		bungeePool = new FakeJedisPool();
 		this.plugin = plugin;
 	}
 
-	public DatabaseConnector(APIPlugin plugin, ConnectionDetails main, ConnectionDetails bungee) {
+	public DatabaseConnector(APIPlugin plugin, Set<String> main, String mainPassword, ConnectionDetails bungee) {
 		this.plugin = plugin;
 		setBungee(bungee);
 		setMain(main);
+		this.mainPassword = mainPassword;
 		initiateConnections();
 	}
 
-	public ShardedJedis getResource() {
-		return mainPool.getResource();
+	public Jedis getResource() {
+		return (mainPool == null) ? new FakeJedis() : mainPool.getResource();
 	}
 
 	public Jedis getBungeeResource() {
@@ -50,7 +53,7 @@ public class DatabaseConnector {
 		this.bungee = bungee;
 	}
 
-	public void setMain(ConnectionDetails main) {
+	public void setMain(Set<String> main) {
 		this.main = main;
 	}
 
@@ -61,25 +64,11 @@ public class DatabaseConnector {
 
 	public void initiateConnections() {
 		// Préparation de la connexion
-
-		JedisShardInfo shard = new JedisShardInfo(main.getHost(), main.getPort());
-		shard.setPassword(main.getPassword());
-		List<JedisShardInfo> shards = new ArrayList<>();
-		shards.add(shard);
-
-		// Initialisation de la connexion
-
 		JedisPoolConfig config = new JedisPoolConfig();
 		config.setMaxTotal(1024);
 		config.setMaxWaitMillis(5000);
-		mainPool = new ShardedJedisPool(config, shards);
 
-
-		// Connexion bungee :
-		config = new JedisPoolConfig();
-		config.setMaxTotal(256);
-		config.setMaxWaitMillis(5000);
-		bungeePool = new JedisPool(config, bungee.getHost(), bungee.getPort(), 500, bungee.getPassword());
+		JedisSentinelPool pool = new JedisSentinelPool("mymaster", main, config, 5000, mainPassword);
 
 		// Init du thread
 		if (keeper == null) {
@@ -89,7 +78,7 @@ public class DatabaseConnector {
 	}
 
 	protected String fastGet(String key) {
-		ShardedJedis jedis = getResource();
+		Jedis jedis = getResource();
 		String val = jedis.get(key);
 		jedis.close();
 		return val;

@@ -45,7 +45,7 @@ public class FriendsManagementDB implements FriendsManager {
 	public List<UUID> uuidFriendsList(UUID asking) {
 		ArrayList<UUID> playerIDs = new ArrayList<>();
 
-		ShardedJedis jedis = api.getResource();
+		Jedis jedis = api.getResource();
 		for (String data : jedis.lrange("friends:"+asking, 0, -1)) {
 			if (data == null || data.equals("")) {
 				jedis.lrem("friends:"+asking, 0, data);
@@ -81,8 +81,8 @@ public class FriendsManagementDB implements FriendsManager {
 		String dbKey = "friendrequest:*:"+asking;
 		ArrayList<String> playerNames = new ArrayList<>();
 
-		ShardedJedis jedis = api.getResource();
-		for (String data : ((Jedis) jedis.getAllShards().toArray()[0]).keys(dbKey)) {
+		Jedis jedis = api.getResource();
+		for (String data : jedis.keys(dbKey)) {
 			String[] parts = data.split(":");
 			try  {
 				UUID id = UUID.fromString(parts[1]);
@@ -100,8 +100,8 @@ public class FriendsManagementDB implements FriendsManager {
 		String dbKey = "friendrequest:"+asking+":";
 		ArrayList<String> playerNames = new ArrayList<>();
 
-		ShardedJedis jedis = api.getResource();
-		for (String data : ((Jedis) jedis.getAllShards().toArray()[0]).keys(dbKey)) {
+		Jedis jedis = api.getResource();
+		for (String data : jedis.keys(dbKey)) {
 			String[] parts = data.split(":");
 			try  {
 				UUID id = UUID.fromString(parts[1]);

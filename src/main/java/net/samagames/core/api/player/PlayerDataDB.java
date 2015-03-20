@@ -6,6 +6,7 @@ import net.samagames.api.player.FinancialCallback;
 import net.samagames.api.player.PlayerData;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
+import redis.clients.jedis.Jedis;
 import redis.clients.jedis.ShardedJedis;
 
 import java.util.Date;
@@ -33,7 +34,7 @@ public class PlayerDataDB extends PlayerData {
 	}
 
 	protected void updateData() {
-		ShardedJedis jedis = api.getResource();
+		Jedis jedis = api.getResource();
 		Map<String, String> data = jedis.hgetAll("player:" + playerID);
 		jedis.close();
 
@@ -75,7 +76,7 @@ public class PlayerDataDB extends PlayerData {
 	public void set(String key, String value) {
 		this.playerData.put(key, value);
 
-		ShardedJedis jedis = api.getResource();
+		Jedis jedis = api.getResource();
 		jedis.hset("player:" + playerID, key, value);
 		jedis.close();
 	}
@@ -84,7 +85,7 @@ public class PlayerDataDB extends PlayerData {
 	public void remove(String key) {
 		playerData.remove(key);
 
-		ShardedJedis jedis = api.getResource();
+		Jedis jedis = api.getResource();
 		jedis.hdel("player:" + playerID, key);
 		jedis.close();
 	}
@@ -111,7 +112,7 @@ public class PlayerDataDB extends PlayerData {
 
 	@Override
 	public long increaseCoins(long incrBy) {
-		ShardedJedis jedis = api.getResource();
+		Jedis jedis = api.getResource();
 		long newValue = jedis.hincrBy("player:" + playerID, "coins", incrBy);
 		jedis.close();
 
@@ -165,7 +166,7 @@ public class PlayerDataDB extends PlayerData {
 
 	@Override
 	public long increaseStars(long incrBy) {
-		ShardedJedis jedis = api.getResource();
+		Jedis jedis = api.getResource();
 		long newValue = jedis.hincrBy("player:" + playerID, "stars", incrBy);
 		jedis.close();
 

@@ -34,7 +34,7 @@ public abstract class SamaGamesAPI {
 	 * The connexion returned MUST be closed using <code>ShardedJedis.close()</code>
 	 * @return A shardedJedis database connexion
 	 */
-	public abstract ShardedJedis getResource();
+	public abstract Jedis getResource();
 
 	/**
 	 * This method returns a Jedis object, representing a connexion to the proxies database. This database mainly contains data from redisbungee.

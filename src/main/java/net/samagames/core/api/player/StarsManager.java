@@ -7,6 +7,7 @@ import net.samagames.api.SamaGamesAPI;
 import net.samagames.core.APIPlugin;
 import net.samagames.permissionsapi.permissions.PermissionUser;
 import net.samagames.permissionsbukkit.PermissionsBukkit;
+import redis.clients.jedis.Jedis;
 import redis.clients.jedis.ShardedJedis;
 
 import java.util.Date;
@@ -34,7 +35,7 @@ class StarsManager {
 		Multiplier ret = new Multiplier();
 
 		if (promoNextCheck == null || current.after(promoNextCheck)) {
-			ShardedJedis jedis = api.getResource();
+			Jedis jedis = api.getResource();
 			String prom = jedis.get("stars:currentpromo"); // On get la promo
 			jedis.close();
 

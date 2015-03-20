@@ -22,6 +22,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.*;
 import java.util.concurrent.CopyOnWriteArraySet;
 import java.util.logging.Level;
+import java.util.stream.Collectors;
 
 /**
  * This file is a part of the SamaGames project
@@ -84,7 +85,9 @@ public class APIPlugin extends JavaPlugin implements Listener {
 				ip = dataYML.getString("rb-ip");
 				ConnectionDetails bungee = new ConnectionDetails(ip.split(":")[0], Integer.parseInt(ip.split(":")[1]), dataYML.getString("Redis-Pass"));
 
-				databaseConnector = new DatabaseConnector(this, main, bungee);
+				Set<String> ips = ((List<String>) dataYML.getList("Redis-Ips").get(0)).stream().map(IP -> IP).collect(Collectors.toSet());
+
+				databaseConnector = new DatabaseConnector(this, ips, dataYML.getString("Redis-Pass"), bungee);
 			}
 		} else {
 			log(Level.WARNING, "Database is disabled for this session. API will work perfectly, but some plugins might have issues during run.");

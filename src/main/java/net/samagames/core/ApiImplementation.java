@@ -27,7 +27,6 @@ import net.samagames.core.database.DatabaseConnector;
 import net.samagames.core.listeners.GlobalChannelHandler;
 import org.bukkit.Bukkit;
 import redis.clients.jedis.Jedis;
-import redis.clients.jedis.ShardedJedis;
 
 /**
  * This file is a part of the SamaGames project
@@ -81,7 +80,7 @@ public class ApiImplementation extends SamaGamesAPI {
 		return joinManager;
 	}
 
-	public ShardedJedis getResource() {
+	public Jedis getResource() {
 		return plugin.databaseConnector.getResource();
 	}
 

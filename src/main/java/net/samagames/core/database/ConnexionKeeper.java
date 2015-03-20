@@ -1,11 +1,10 @@
 package net.samagames.core.database;
 
-import net.samagames.api.SamaGamesAPI;
 import net.samagames.core.APIPlugin;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
-import redis.clients.jedis.ShardedJedis;
+import redis.clients.jedis.Jedis;
 
 import java.util.List;
 
@@ -28,7 +27,7 @@ public class ConnexionKeeper implements Runnable {
 
 	public void run() {
 		try {
-			ShardedJedis jedis = databaseConnector.getResource();
+			Jedis jedis = databaseConnector.getResource();
 			List<String> whitelist = jedis.lrange("sockets:proxys", 0, - 1);
 			jedis.close();
 
