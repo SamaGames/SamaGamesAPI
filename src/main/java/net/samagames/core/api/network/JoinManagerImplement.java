@@ -1,5 +1,6 @@
 package net.samagames.core.api.network;
 
+import com.rabbitmq.client.QueueingConsumer;
 import net.samagames.api.channels.PacketsReceiver;
 import net.samagames.api.network.JoinHandler;
 import net.samagames.api.network.JoinManager;
@@ -72,13 +73,11 @@ public class JoinManagerImplement implements JoinManager, PacketsReceiver {
         moderatorsExpected.add(moderator);
     }
 
-    @Override
-    public void receive(String channel, String packet) {
-        if (packet.startsWith("moderator")) {
-            String id = packet.split(" ")[1];
-            UUID uuid = UUID.fromString(id);
-            if (PermissionsBukkit.hasPermission(uuid, "games.modjoin"))
-                moderatorsExpected.add(uuid);
-        }
-    }
+
+	@Override
+	public void receive(QueueingConsumer.Delivery delivery) {
+		UUID uuid = UUID.fromString(new String(delivery.getBody()));
+		if (PermissionsBukkit.hasPermission(uuid, "games.modjoin"))
+			moderatorsExpected.add(uuid);
+	}
 }

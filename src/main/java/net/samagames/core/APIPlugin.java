@@ -1,8 +1,10 @@
 package net.samagames.core;
 
+import com.rabbitmq.client.Address;
 import net.samagames.core.database.ConnectionDetails;
 import net.samagames.core.database.DatabaseConnector;
 import net.samagames.core.listeners.*;
+import net.samagames.core.rabbitmq.RabbitConnector;
 import net.samagames.permissionsbukkit.PermissionsBukkit;
 import org.apache.commons.lang.StringUtils;
 import org.bukkit.Bukkit;
@@ -36,6 +38,7 @@ public class APIPlugin extends JavaPlugin implements Listener {
 	protected static ApiImplementation api;
 	protected static APIPlugin instance;
 	protected DatabaseConnector databaseConnector;
+	protected RabbitConnector rabbitConnector;
 	protected String serverName;
 	protected FileConfiguration configuration;
 	protected CopyOnWriteArraySet<String> ipWhitelist = new CopyOnWriteArraySet<>();
@@ -88,6 +91,18 @@ public class APIPlugin extends JavaPlugin implements Listener {
 				Set<String> ips = ((List<String>) dataYML.getList("Redis-Ips")).stream().map(IP -> IP).collect(Collectors.toSet());
 
 				databaseConnector = new DatabaseConnector(this, ips, dataYML.getString("Redis-Pass"), bungee);
+
+
+				// Rabbit
+				List<String> strings = (List<String>) dataYML.getList("rmq-ips");
+				if (strings != null) {
+					List<Address> addresses = new ArrayList<>();
+					for (String str : strings)
+						addresses.add(Address.parseAddress(str));
+
+					rabbitConnector = new RabbitConnector(addresses.toArray(new Address[addresses.size()]), dataYML.getString("rmq-user"), dataYML.getString("rmq-password"));
+
+				}
 			}
 		} else {
 			log(Level.WARNING, "Database is disabled for this session. API will work perfectly, but some plugins might have issues during run.");
@@ -102,7 +117,7 @@ public class APIPlugin extends JavaPlugin implements Listener {
 
 		ModerationJoinHandler moderationJoinHandler = new ModerationJoinHandler();
 		api.getJoinManager().registerHandler(moderationJoinHandler, -1);
-		api.getPubSub().subscribe(getServerName(), moderationJoinHandler);
+		api.getPubSub().subscribe("moderationTeleport", getServerName(), moderationJoinHandler);
 
 		Bukkit.getPluginManager().registerEvents(new PlayerDataListener(this), this);
 		Bukkit.getPluginManager().registerEvents(new ChatFormatter(this), this);

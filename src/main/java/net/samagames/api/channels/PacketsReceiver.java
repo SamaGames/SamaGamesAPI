@@ -1,5 +1,7 @@
 package net.samagames.api.channels;
 
+import com.rabbitmq.client.QueueingConsumer;
+
 /**
  * This file is a part of the SamaGames project
  * This code is absolutely confidential.
@@ -9,6 +11,6 @@ package net.samagames.api.channels;
  */
 public interface PacketsReceiver {
 
-	public void receive(String channel, String packet);
+	public void receive(QueueingConsumer.Delivery delivery);
 
 }

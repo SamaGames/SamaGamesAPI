@@ -1,10 +1,15 @@
 package net.samagames.core.api.pubsub;
 
+import com.rabbitmq.client.Channel;
+import com.rabbitmq.client.Connection;
+import com.rabbitmq.client.QueueingConsumer;
 import net.samagames.api.SamaGamesAPI;
 import net.samagames.api.channels.PacketsReceiver;
 import net.samagames.api.channels.PubSubAPI;
-import redis.clients.jedis.Jedis;
-import redis.clients.jedis.ShardedJedis;
+import net.samagames.core.APIPlugin;
+import net.samagames.core.rabbitmq.RabbitConnector;
+
+import java.io.IOException;
 
 /**
  * This file is a part of the SamaGames project
@@ -15,41 +20,61 @@ import redis.clients.jedis.ShardedJedis;
  */
 public class PubSubAPIDB implements PubSubAPI {
 
-	private SamaGamesAPI api;
 	private Subscriber subscriber;
+	private Sender sender;
+	private Channel channel;
+	private Connection connection;
 
-	public PubSubAPIDB(SamaGamesAPI api) {
-		this.api = api;
-		subscriber = new Subscriber();
+	public PubSubAPIDB(RabbitConnector rabbitConnector) throws IOException {
+		connection = rabbitConnector.newConnection();
+		channel = connection.createChannel();
+		channel.queueDeclare(APIPlugin.getInstance().getServerName(), true, false, true, null);
+
+		subscriber = new Subscriber(channel, new QueueingConsumer(channel), APIPlugin.getInstance().getServerName());
+		sender = new Sender(channel);
+
+		new Thread(subscriber).start();
+		new Thread(sender).start();
 	}
 
 	@Override
 	public void subscribe(String channel, PacketsReceiver receiver) {
-		new Thread(() -> {
-			Jedis jedis = api.getResource();
-
+		try {
 			subscriber.registerReceiver(channel, receiver);
-			jedis.subscribe(subscriber, channel);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
 
-			jedis.close();
-		}).start();
+	@Override
+	public void subscribe(String channel, String routing, PacketsReceiver receiver) {
+		try {
+			subscriber.registerReceiver(channel, routing, receiver);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 	}
 
 	@Override
 	public void send(String channel, String message) {
-		new Thread(() -> {
-			Jedis jedis = api.getResource();
+		send(channel, null, message);
+	}
 
-			jedis.publish(channel, message);
-
-			jedis.close();
-		}).start();
+	@Override
+	public void send(String channel, String routing, String message) {
+		sender.sendMessage(new UnsentMessage(channel, routing, message));
 	}
 
 	public void disable() {
-		subscriber.unsubscribe();
+		subscriber.stop();
+		sender.stop();
+
 		try {
-			Thread.sleep(500);
-		} catch (Exception ignored) {}
+			channel.close();
+			connection.close();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+
 	}
 }
