@@ -41,7 +41,7 @@ public class APIPlugin extends JavaPlugin implements Listener {
 	protected CopyOnWriteArraySet<String> ipWhitelist = new CopyOnWriteArraySet<>();
 	protected boolean databaseEnabled;
 	protected boolean allowJoin;
-	protected String denyJoinReason;
+	protected String denyJoinReason = ChatColor.RED + "Serveur non initialisé.";
 	protected boolean serverRegistered;
 	protected String joinPermission = null;
 
@@ -168,6 +168,8 @@ public class APIPlugin extends JavaPlugin implements Listener {
 			this.getLogger().severe("CANNOT SCHEDULE AUTOMATIC SHUTDOWN.");
 			e.printStackTrace();
 		}
+
+		registerServer();
 	}
 
 	public static APIPlugin getInstance() {

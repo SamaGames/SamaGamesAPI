@@ -5,8 +5,6 @@ import org.bukkit.Bukkit;
 import org.bukkit.scheduler.BukkitTask;
 import redis.clients.jedis.*;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Set;
 
 /**
@@ -20,7 +18,7 @@ public class DatabaseConnector {
 
 	protected JedisSentinelPool mainPool;
 	protected JedisPool bungeePool;
-	protected ConnexionKeeper keeper = null;
+	protected WhitelistRefresher keeper = null;
 	protected BukkitTask keepTask = null;
 	protected Set<String> main;
 	protected ConnectionDetails bungee;
@@ -68,11 +66,11 @@ public class DatabaseConnector {
 		config.setMaxTotal(1024);
 		config.setMaxWaitMillis(5000);
 
-		JedisSentinelPool pool = new JedisSentinelPool("mymaster", main, config, 5000, mainPassword);
+		this.mainPool = new JedisSentinelPool("mymaster", main, config, 5000, mainPassword);
 
 		// Init du thread
 		if (keeper == null) {
-			keeper = new ConnexionKeeper(plugin, this);
+			keeper = new WhitelistRefresher(plugin, this);
 			keepTask = Bukkit.getScheduler().runTaskTimerAsynchronously(plugin, keeper, 3*20, 30*20);
 		}
 	}
