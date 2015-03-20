@@ -68,6 +68,13 @@ public class DatabaseConnector {
 
 		this.mainPool = new JedisSentinelPool("mymaster", main, config, 5000, mainPassword);
 
+		// Connexion bungee :
+		config = new JedisPoolConfig();
+		config.setMaxTotal(256);
+		config.setMaxWaitMillis(5000);
+		bungeePool = new JedisPool(config, bungee.getHost(), bungee.getPort(), 500, bungee.getPassword());
+
+
 		// Init du thread
 		if (keeper == null) {
 			keeper = new WhitelistRefresher(plugin, this);

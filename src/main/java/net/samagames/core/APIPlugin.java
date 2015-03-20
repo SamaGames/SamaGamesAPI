@@ -170,6 +170,7 @@ public class APIPlugin extends JavaPlugin implements Listener {
 		}
 
 		registerServer();
+		allowJoin();
 	}
 
 	public static APIPlugin getInstance() {
@@ -242,10 +243,11 @@ public class APIPlugin extends JavaPlugin implements Listener {
 			Jedis rb_jedis = databaseConnector.getBungeeResource();
 			rb_jedis.publish("redisbungee-allservers", "StartServer::" + bungeename + "::" + this.getServer().getIp() + ":" + this.getServer().getPort());
 			rb_jedis.close();
-
 		} catch (Exception ignore) {
+			ignore.printStackTrace();
 			return;
 		}
+
 		serverRegistered = true;
 	}
 

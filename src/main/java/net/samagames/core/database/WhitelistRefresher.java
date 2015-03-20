@@ -30,7 +30,10 @@ public class WhitelistRefresher implements Runnable {
 	public void run() {
 		try {
 			HostAndPort master = databaseConnector.mainPool.getCurrentHostMaster();
-			if (!master.equals(lastMaster)) {
+			if (lastMaster == null && master != null) {
+				Bukkit.getLogger().info("Connected to master : " + master.getHost() + ":" + master.getPort());
+				this.lastMaster = master;
+			} else if (master != null && !master.equals(lastMaster)) {
 				Bukkit.getLogger().info("Switched master : " + lastMaster.getHost() + ":" + lastMaster.getPort() + " -> " + master.getHost() + ":" + master.getPort());
 				this.lastMaster = master;
 			}
@@ -41,6 +44,7 @@ public class WhitelistRefresher implements Runnable {
 
 			plugin.refreshIps(whitelist);
 		} catch (Exception e) {
+			e.printStackTrace();
 			Bukkit.getLogger().severe("[DBCONNECT] An error occured : failed to get value.");
 		}
 	}
