@@ -4,6 +4,7 @@ import net.samagames.api.SamaGamesAPI;
 import net.samagames.api.channels.PacketsReceiver;
 import net.samagames.api.channels.PatternReceiver;
 import net.samagames.api.channels.PubSubAPI;
+import net.samagames.core.APIPlugin;
 import org.bukkit.Bukkit;
 import redis.clients.jedis.Jedis;
 import redis.clients.jedis.ShardedJedis;
@@ -24,54 +25,40 @@ public class PubSubAPIDB implements PubSubAPI {
 	public PubSubAPIDB(SamaGamesAPI api) {
 		this.api = api;
 		subscriber = new Subscriber();
+		new Thread(() -> {
+			while (continueSub) {
+				Jedis jedis = api.getResource();
+				try {
+					jedis.psubscribe(subscriber, "*");
+					subscriber.registerPattern("*", APIPlugin.getInstance().getDebugListener());
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+
+				Bukkit.getLogger().info("Disconnected from master.");
+				jedis.close();
+			}
+		}).start();
+
+		Bukkit.getLogger().info("Waiting for subscribing...");
+		while (!subscriber.isSubscribed())
+			try {
+				Thread.sleep(100);
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
+
+		Bukkit.getLogger().info("Correctly subscribed.");
 	}
 
 	@Override
 	public void subscribe(String channel, PacketsReceiver receiver) {
-		if (!subscriber.isSubscribed()) {
-			new Thread(() -> {
-				while (continueSub) {
-					Jedis jedis = api.getResource();
-
-					try {
-						jedis.subscribe(subscriber, channel);
-						subscriber.registerReceiver(channel, receiver);
-					} catch (Exception e) {
-						e.printStackTrace();
-					}
-
-					Bukkit.getLogger().info("Disconnected from master.");
-
-					jedis.close();
-				}
-			}).start();
-		} else {
-			subscriber.registerReceiver(channel, receiver);
-		}
+		subscriber.registerReceiver(channel, receiver);
 	}
 
 	@Override
 	public void subscribe(String pattern, PatternReceiver receiver) {
-		if (!subscriber.isSubscribed()) {
-			new Thread(() -> {
-				while (continueSub) {
-					Jedis jedis = api.getResource();
-
-					try {
-						jedis.psubscribe(subscriber, pattern);
-						subscriber.registerPattern(pattern, receiver);
-					} catch (Exception e) {
-						e.printStackTrace();
-					}
-
-					Bukkit.getLogger().info("Disconnected from master.");
-
-					jedis.close();
-				}
-			}).start();
-		} else {
-			subscriber.registerPattern(pattern, receiver);
-		}
+		subscriber.registerPattern(pattern, receiver);
 	}
 
 	@Override

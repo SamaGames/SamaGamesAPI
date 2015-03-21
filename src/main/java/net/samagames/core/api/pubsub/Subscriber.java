@@ -56,7 +56,7 @@ public class Subscriber extends JedisPubSub {
 	@Override
 	public void onPMessage(String pattern, String channel, String message) {
 		try {
-			HashSet<PatternReceiver> receivers = patternsReceivers.get(channel);
+			HashSet<PatternReceiver> receivers = patternsReceivers.get(pattern);
 			if (receivers != null)
 				receivers.forEach((PatternReceiver receiver) -> receiver.receive(pattern, channel, message));
 			else
