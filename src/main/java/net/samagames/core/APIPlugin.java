@@ -80,6 +80,7 @@ public class APIPlugin extends JavaPlugin implements Listener {
 				databaseConnector = new DatabaseConnector(this);
 			} else {
 				YamlConfiguration dataYML = YamlConfiguration.loadConfiguration(conf);
+
 				Set<String> ips = ((List<String>) dataYML.getList("Redis-Ips")).stream().map(IP -> IP).collect(Collectors.toSet());
 				databaseConnector = new DatabaseConnector(this, ips, dataYML.getString("mainMonitor", "mymaster"), dataYML.getString("cacheMonitor", "cache"),  dataYML.getString("Redis-Pass"));
 
@@ -168,6 +169,15 @@ public class APIPlugin extends JavaPlugin implements Listener {
 		allowJoin();
 	}
 
+	public void onDisable() {
+		String bungeename = getServerName();
+		Jedis rb_jedis = databaseConnector.getBungeeResource();
+		rb_jedis.hdel("servers", bungeename);
+		rb_jedis.hdel("heartbeets", bungeename);
+		rb_jedis.publish("servers", "stop " + bungeename);
+		rb_jedis.close();
+	}
+
 	public static APIPlugin getInstance() {
 		return instance;
 	}
@@ -236,8 +246,16 @@ public class APIPlugin extends JavaPlugin implements Listener {
 		try {
 			String bungeename = getServerName();
 			Jedis rb_jedis = databaseConnector.getBungeeResource();
-			rb_jedis.publish("redisbungee-allservers", "StartServer::" + bungeename + "::" + this.getServer().getIp() + ":" + this.getServer().getPort());
+			rb_jedis.hset("servers", bungeename, this.getServer().getIp() + ":" + this.getServer().getPort());
+			rb_jedis.publish("servers", "start " + bungeename);
 			rb_jedis.close();
+
+			Bukkit.getScheduler().runTaskTimerAsynchronously(this, () -> {
+				Jedis jedis = databaseConnector.getBungeeResource();
+				jedis.hset("servers", bungeename, this.getServer().getIp() + ":" + this.getServer().getPort());
+				jedis.publish("servers", "heartbeet " + bungeename);
+				jedis.close();
+			}, 30*20, 30*20);
 		} catch (Exception ignore) {
 			ignore.printStackTrace();
 			return;
