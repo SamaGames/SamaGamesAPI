@@ -1,7 +1,6 @@
-package net.samagames.tools;
+package net.samagames.tools.events;
 
 import net.samagames.api.SamaGamesAPI;
-import net.samagames.hub.common.Event;
 
 public class EventUtils
 {

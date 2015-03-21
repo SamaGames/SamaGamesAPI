@@ -1,6 +1,5 @@
 package net.samagames.core.api.achievements;
 
-import com.sun.istack.internal.NotNull;
 import net.samagames.api.achievements.Achievement;
 import net.samagames.api.achievements.AchievementCategory;
 import net.samagames.api.achievements.AchievementManager;
@@ -78,7 +77,7 @@ public class AchievementManagerImpl implements AchievementManager
     }
 
     @Override
-    public Achievement getAchievementByID(@NotNull UUID uuid)
+    public Achievement getAchievementByID(UUID uuid)
     {
         for(Achievement achievement : this.achievements)
             if(achievement.getUUID() == uuid)
@@ -88,7 +87,7 @@ public class AchievementManagerImpl implements AchievementManager
     }
 
     @Override
-    public AchievementCategory getAchievementCategoryByID(@NotNull UUID uuid)
+    public AchievementCategory getAchievementCategoryByID(UUID uuid)
     {
         for(AchievementCategory category : this.achievementCategories)
             if(category.getUUID() == uuid)

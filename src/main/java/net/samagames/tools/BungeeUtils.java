@@ -2,7 +2,7 @@ package net.samagames.tools;
 
 import com.google.common.io.ByteArrayDataOutput;
 import com.google.common.io.ByteStreams;
-import net.samagames.hub.Hub;
+import net.samagames.core.APIPlugin;
 import org.bukkit.entity.Player;
 
 public class BungeeUtils
@@ -14,6 +14,6 @@ public class BungeeUtils
         out.writeUTF(player.getName());
         out.writeUTF(server);
 
-        Hub.getInstance().getServer().sendPluginMessage(Hub.getInstance(), "BungeeCord", out.toByteArray());
+        APIPlugin.getInstance().getServer().sendPluginMessage(APIPlugin.getInstance(), "BungeeCord", out.toByteArray());
     }
 }
