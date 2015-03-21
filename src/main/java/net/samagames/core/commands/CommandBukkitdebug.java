@@ -11,9 +11,9 @@ import org.bukkit.command.CommandSender;
  * (C) Copyright Elydra Network 2015
  * All rights reserved.
  */
-public class CommandBukkitDebug extends AbstractCommand {
+public class CommandBukkitdebug extends AbstractCommand {
 
-	public CommandBukkitDebug(APIPlugin plugin) {
+	public CommandBukkitdebug(APIPlugin plugin) {
 		super(plugin);
 	}
 
