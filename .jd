@@ -1,3 +1,4 @@
+"LOCATION/src/main/java/net/samagames/api/achievements/AchievementManager.java"
 "LOCATION/src/main/java/net/samagames/api/channels/PubSubAPI.java"
 "LOCATION/src/main/java/net/samagames/api/channels/PacketsReceiver.java"
 "LOCATION/src/main/java/net/samagames/api/friends/FriendsManager.java"
