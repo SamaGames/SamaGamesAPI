@@ -1,7 +1,5 @@
 package net.samagames.api.achievements;
 
-import com.sun.istack.internal.NotNull;
-
 import java.util.ArrayList;
 import java.util.UUID;
 
@@ -17,14 +15,14 @@ public interface AchievementManager
      * @param uuid ID unique de l'objectif
      * @return L'objectif demandé
      */
-    public Achievement getAchievementByID(@NotNull UUID uuid);
+    public Achievement getAchievementByID(UUID uuid);
 
     /**
      * Renvoi une catégorie d'objectifs selon l'identifiant unique donné
      * @param uuid ID unique de la catégorie
      * @return La catégorie demandée
      */
-    public AchievementCategory getAchievementCategoryByID(@NotNull UUID uuid);
+    public AchievementCategory getAchievementCategoryByID(UUID uuid);
 
     /**
      * Renvoi la liste des objectifs enregistrés dans la base de donnée
