@@ -1,5 +1,6 @@
 package net.samagames.core.api.achievements;
 
+import net.samagames.api.SamaGamesAPI;
 import net.samagames.api.achievements.Achievement;
 import net.samagames.api.achievements.AchievementCategory;
 import net.samagames.api.achievements.AchievementManager;
@@ -10,6 +11,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.craftbukkit.libs.com.google.gson.JsonArray;
 import org.bukkit.craftbukkit.libs.com.google.gson.JsonObject;
 import org.bukkit.craftbukkit.libs.com.google.gson.JsonParser;
+import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
 import java.util.ArrayList;
@@ -18,11 +20,15 @@ import java.util.logging.Level;
 
 public class AchievementManagerImpl implements AchievementManager
 {
+    private final SamaGamesAPI api;
+
     private ArrayList<Achievement> achievements;
     private ArrayList<AchievementCategory> achievementCategories;
 
-    public AchievementManagerImpl()
+    public AchievementManagerImpl(SamaGamesAPI api)
     {
+        this.api = api;
+
         this.achievements = new ArrayList<>();
         this.achievementCategories = new ArrayList<>();
 
@@ -39,7 +45,7 @@ public class AchievementManagerImpl implements AchievementManager
         this.achievements.clear();
         this.achievementCategories.clear();
 
-        String json = APIPlugin.getApi().getResource().get("achievements:list");
+        String json = this.api.getResource().get("achievements:list");
         JsonObject jsonObject = (JsonObject) new JsonParser().parse(json);
 
         JsonArray jsonCategories = jsonObject.get("categories").getAsJsonArray();
@@ -77,6 +83,12 @@ public class AchievementManagerImpl implements AchievementManager
     }
 
     @Override
+    public int incrementAchievement(Player player, Achievement achievement)
+    {
+        return achievement.increment(player);
+    }
+
+    @Override
     public Achievement getAchievementByID(UUID uuid)
     {
         for(Achievement achievement : this.achievements)
@@ -106,5 +118,10 @@ public class AchievementManagerImpl implements AchievementManager
     public ArrayList<AchievementCategory> getAchievementsCategories()
     {
         return this.getAchievementsCategories();
+    }
+
+    public boolean isUnlocked(Player player, Achievement achievement)
+    {
+        return (this.api.getPlayerManager().getPlayerData(player.getUniqueId()).get("achievements:" + achievement.getUUID().toString()) != null && this.api.getPlayerManager().getPlayerData(player.getUniqueId()).get("achievements:" + achievement.getUUID().toString()).equals("unlocked"));
     }
 }
