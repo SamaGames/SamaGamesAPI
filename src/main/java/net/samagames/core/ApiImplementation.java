@@ -1,6 +1,7 @@
 package net.samagames.core;
 
 import net.samagames.api.SamaGamesAPI;
+import net.samagames.api.achievements.AchievementManager;
 import net.samagames.api.channels.PubSubAPI;
 import net.samagames.api.gameapi.GameAPI;
 import net.samagames.api.names.UUIDTranslator;
@@ -9,6 +10,7 @@ import net.samagames.api.player.PlayerDataManager;
 import net.samagames.api.settings.SettingsManager;
 import net.samagames.api.shops.ShopsManager;
 import net.samagames.api.stats.StatsManager;
+import net.samagames.core.api.achievements.AchievementManagerImpl;
 import net.samagames.core.api.gameapi.GameAPIImplement;
 import net.samagames.core.api.names.UUIDTranslatorDB;
 import net.samagames.core.api.names.UUIDTranslatorNODB;
@@ -41,6 +43,7 @@ public class ApiImplementation extends SamaGamesAPI {
 	protected boolean database;
 	protected SettingsManager settingsManager;
 	protected PlayerDataManager playerDataManager;
+    protected AchievementManager achievementManager;
 	protected PubSubAPI pubSub;
 	protected UUIDTranslator uuidTranslator;
 	protected JoinManager joinManager;
@@ -57,6 +60,7 @@ public class ApiImplementation extends SamaGamesAPI {
 		if (database) {
 			settingsManager = new SettingsManagerDB(this);
 			playerDataManager = new PlayerDataManagerWithDB(this);
+            achievementManager = new AchievementManagerImpl();
 			pubSub = new PubSubAPIDB(this);
 			pubSub.subscribe("global", new GlobalChannelHandler(plugin));
 			pubSub.subscribe(plugin.getServerName(), new GlobalChannelHandler(plugin));
@@ -108,6 +112,12 @@ public class ApiImplementation extends SamaGamesAPI {
 	public PlayerDataManager getPlayerManager() {
 		return playerDataManager;
 	}
+
+    @Override
+    public AchievementManager getAchievementManager()
+    {
+        return achievementManager;
+    }
 
 	@Override
 	public PubSubAPI getPubSub() {
