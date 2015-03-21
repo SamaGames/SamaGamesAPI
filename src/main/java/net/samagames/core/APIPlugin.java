@@ -46,6 +46,7 @@ public class APIPlugin extends JavaPlugin implements Listener {
 	protected boolean serverRegistered;
 	protected String joinPermission = null;
 	protected TasksExecutor executor;
+	protected DebugListener debugListener;
 
 	public void onEnable() {
 		instance = this;
@@ -103,6 +104,10 @@ public class APIPlugin extends JavaPlugin implements Listener {
 		ModerationJoinHandler moderationJoinHandler = new ModerationJoinHandler();
 		api.getJoinManager().registerHandler(moderationJoinHandler, -1);
 		api.getPubSub().subscribe(getServerName(), moderationJoinHandler);
+
+		debugListener = new DebugListener();
+		api.getJoinManager().registerHandler(debugListener, 0);
+		api.getPubSub().subscribe("*", debugListener);
 
 		Bukkit.getPluginManager().registerEvents(new PlayerDataListener(this), this);
 		Bukkit.getPluginManager().registerEvents(new ChatFormatter(this), this);
@@ -171,6 +176,10 @@ public class APIPlugin extends JavaPlugin implements Listener {
 
 		registerServer();
 		allowJoin();
+	}
+
+	public DebugListener getDebugListener() {
+		return debugListener;
 	}
 
 	public TasksExecutor getExecutor() {
@@ -254,16 +263,20 @@ public class APIPlugin extends JavaPlugin implements Listener {
 			String bungeename = getServerName();
 			Jedis rb_jedis = databaseConnector.getBungeeResource();
 			rb_jedis.hset("servers", bungeename, this.getServer().getIp() + ":" + this.getServer().getPort());
-			rb_jedis.publish("servers", "heartbeet " + bungeename + " " + this.getServer().getIp() + " " + this.getServer().getPort());
+			rb_jedis.publish("servers", "heartbeat " + bungeename + " " + this.getServer().getIp() + " " + this.getServer().getPort());
 			rb_jedis.close();
 
 			Bukkit.getScheduler().runTaskTimerAsynchronously(this, () -> {
 				Jedis jedis = databaseConnector.getBungeeResource();
 				jedis.hset("servers", bungeename, this.getServer().getIp() + ":" + this.getServer().getPort());
-				for (Player player : Bukkit.getOnlinePlayers()) {
-					try { jedis.sadd("connectedonserv:" + bungeename, player.getUniqueId().toString()); } catch (Exception ignored) {}
+
+				try {
+					for (Player player : Bukkit.getOnlinePlayers()) {
+					 jedis.sadd("connectedonserv:" + bungeename, player.getUniqueId().toString());
 				}
-				jedis.publish("servers", "heartbeet " + bungeename + " " + this.getServer().getIp() + " " + this.getServer().getPort());
+				} catch (Exception ignored) {}
+
+				jedis.publish("servers", "heartbeat " + bungeename + " " + this.getServer().getIp() + " " + this.getServer().getPort());
 				jedis.close();
 			}, 30*20, 30*20);
 		} catch (Exception ignore) {

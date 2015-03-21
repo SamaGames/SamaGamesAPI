@@ -17,3 +17,6 @@ commands:
    playerdata:
      description: Renvoie les playerdata d'un joueur
      usate: /playerdata <pseudo>
+   bukkitdebug:
+     description: Renvoie les playerdata d'un joueur
+     usate: /playerdata <pseudo>

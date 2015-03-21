@@ -16,6 +16,8 @@ public interface PubSubAPI {
 	 */
 	public void subscribe(String channel, PacketsReceiver receiver);
 
+	void subscribe(String pattern, PatternReceiver receiver);
+
 	/**
 	 * Envoie un message sur un channel pubsub
 	 * @param channel	Channel sur lequel envoyer le message

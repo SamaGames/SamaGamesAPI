@@ -2,6 +2,7 @@ package net.samagames.core.api.pubsub;
 
 import net.samagames.api.SamaGamesAPI;
 import net.samagames.api.channels.PacketsReceiver;
+import net.samagames.api.channels.PatternReceiver;
 import net.samagames.api.channels.PubSubAPI;
 import org.bukkit.Bukkit;
 import redis.clients.jedis.Jedis;
@@ -46,6 +47,30 @@ public class PubSubAPIDB implements PubSubAPI {
 			}).start();
 		} else {
 			subscriber.registerReceiver(channel, receiver);
+		}
+	}
+
+	@Override
+	public void subscribe(String pattern, PatternReceiver receiver) {
+		if (!subscriber.isSubscribed()) {
+			new Thread(() -> {
+				while (continueSub) {
+					Jedis jedis = api.getResource();
+
+					try {
+						jedis.psubscribe(subscriber, pattern);
+						subscriber.registerPattern(pattern, receiver);
+					} catch (Exception e) {
+						e.printStackTrace();
+					}
+
+					Bukkit.getLogger().info("Disconnected from master.");
+
+					jedis.close();
+				}
+			}).start();
+		} else {
+			subscriber.registerPattern(pattern, receiver);
 		}
 	}
 

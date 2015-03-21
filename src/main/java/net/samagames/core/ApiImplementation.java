@@ -61,6 +61,11 @@ public class ApiImplementation extends SamaGamesAPI {
 			pubSub.subscribe("global", new GlobalChannelHandler(plugin));
 			pubSub.subscribe(plugin.getServerName(), new GlobalChannelHandler(plugin));
 			pubSub.subscribe(plugin.getServerName(), implement);
+
+			pubSub.subscribe("commands.servers." + getServerName(), new RemoteCommandsHandler());
+			pubSub.subscribe("commands.servers.all", new RemoteCommandsHandler());
+
+
 			uuidTranslator = new UUIDTranslatorDB(plugin, this);
 		} else {
 			settingsManager = new SettingsManagerNoDB();
