@@ -218,7 +218,7 @@ public class APIPlugin extends JavaPlugin implements Listener {
 			return containsIp(ip);
 	}
 
-	public void refreshIps(List<String> ips) {
+	public void refreshIps(Set<String> ips) {
 		for (String ip : ipWhitelist) {
 			if (!ips.contains(ip))
 				ipWhitelist.remove(ip);

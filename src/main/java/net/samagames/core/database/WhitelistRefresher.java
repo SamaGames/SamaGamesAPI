@@ -8,6 +8,7 @@ import redis.clients.jedis.HostAndPort;
 import redis.clients.jedis.Jedis;
 
 import java.util.List;
+import java.util.Set;
 
 /**
  * This file is a part of the SamaGames project
@@ -39,7 +40,7 @@ public class WhitelistRefresher implements Runnable {
 			}
 
 			Jedis jedis = databaseConnector.getBungeeResource();
-			List<String> whitelist = jedis.lrange("proxys", 0, - 1);
+			Set<String> whitelist = jedis.smembers("proxys");
 			jedis.close();
 
 			plugin.refreshIps(whitelist);
