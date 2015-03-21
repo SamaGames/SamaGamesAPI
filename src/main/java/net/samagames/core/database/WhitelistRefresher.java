@@ -39,7 +39,7 @@ public class WhitelistRefresher implements Runnable {
 				this.lastMaster = master;
 			}
 
-			Jedis jedis = databaseConnector.getBungeeResource();
+			Jedis jedis = databaseConnector.getResource();
 			Set<String> whitelist = jedis.smembers("proxys");
 			jedis.close();
 
