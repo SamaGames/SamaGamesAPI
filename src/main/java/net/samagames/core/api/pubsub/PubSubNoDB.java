@@ -17,17 +17,7 @@ public class PubSubNoDB implements PubSubAPI {
 	}
 
 	@Override
-	public void subscribe(String channel, String routing, PacketsReceiver receiver) {
-
-	}
-
-	@Override
 	public void send(String channel, String message) {
 		// RIEN.
-	}
-
-	@Override
-	public void send(String channel, String routing, String message) {
-
 	}
 }
