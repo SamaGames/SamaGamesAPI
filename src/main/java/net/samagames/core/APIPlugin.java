@@ -1,5 +1,6 @@
 package net.samagames.core;
 
+import net.samagames.api.SamaGamesAPI;
 import net.samagames.core.database.ConnectionDetails;
 import net.samagames.core.database.DatabaseConnector;
 import net.samagames.core.listeners.*;
@@ -190,7 +191,7 @@ public class APIPlugin extends JavaPlugin implements Listener {
 		String bungeename = getServerName();
 		Jedis rb_jedis = databaseConnector.getBungeeResource();
 		rb_jedis.hdel("servers", bungeename);
-		rb_jedis.publish("servers", "stop " + bungeename);
+		SamaGamesAPI.get().getPubSub().send("servers", "stop " + bungeename);
 		rb_jedis.close();
 	}
 
@@ -263,21 +264,25 @@ public class APIPlugin extends JavaPlugin implements Listener {
 			String bungeename = getServerName();
 			Jedis rb_jedis = databaseConnector.getBungeeResource();
 			rb_jedis.hset("servers", bungeename, this.getServer().getIp() + ":" + this.getServer().getPort());
-			rb_jedis.publish("servers", "heartbeat " + bungeename + " " + this.getServer().getIp() + " " + this.getServer().getPort());
 			rb_jedis.close();
+
+
+			SamaGamesAPI.get().getPubSub().send("servers", "heartbeat " + bungeename + " " + this.getServer().getIp() + " " + this.getServer().getPort());
+
 
 			Bukkit.getScheduler().runTaskTimerAsynchronously(this, () -> {
 				Jedis jedis = databaseConnector.getBungeeResource();
 				jedis.hset("servers", bungeename, this.getServer().getIp() + ":" + this.getServer().getPort());
+				jedis.close();
 
 				try {
 					for (Player player : Bukkit.getOnlinePlayers()) {
-					 jedis.sadd("connectedonserv:" + bungeename, player.getUniqueId().toString());
+						 jedis.sadd("connectedonserv:" + bungeename, player.getUniqueId().toString());
 				}
 				} catch (Exception ignored) {}
 
-				jedis.publish("servers", "heartbeat " + bungeename + " " + this.getServer().getIp() + " " + this.getServer().getPort());
-				jedis.close();
+				SamaGamesAPI.get().getPubSub().send("servers", "heartbeat " + bungeename + " " + this.getServer().getIp() + " " + this.getServer().getPort());
+
 			}, 30*20, 30*20);
 		} catch (Exception ignore) {
 			ignore.printStackTrace();
