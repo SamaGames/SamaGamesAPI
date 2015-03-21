@@ -1,15 +1,11 @@
 package net.samagames.core.api.pubsub;
 
-import com.rabbitmq.client.Channel;
-import com.rabbitmq.client.Connection;
-import com.rabbitmq.client.QueueingConsumer;
 import net.samagames.api.SamaGamesAPI;
 import net.samagames.api.channels.PacketsReceiver;
 import net.samagames.api.channels.PubSubAPI;
-import net.samagames.core.APIPlugin;
-import net.samagames.core.rabbitmq.RabbitConnector;
-
-import java.io.IOException;
+import org.bukkit.Bukkit;
+import redis.clients.jedis.Jedis;
+import redis.clients.jedis.ShardedJedis;
 
 /**
  * This file is a part of the SamaGames project
@@ -20,61 +16,55 @@ import java.io.IOException;
  */
 public class PubSubAPIDB implements PubSubAPI {
 
+	private SamaGamesAPI api;
 	private Subscriber subscriber;
-	private Sender sender;
-	private Channel channel;
-	private Connection connection;
+	private boolean continueSub = true;
 
-	public PubSubAPIDB(RabbitConnector rabbitConnector) throws IOException {
-		connection = rabbitConnector.newConnection();
-		channel = connection.createChannel();
-		channel.queueDeclare(APIPlugin.getInstance().getServerName(), true, false, true, null);
-
-		subscriber = new Subscriber(channel, new QueueingConsumer(channel), APIPlugin.getInstance().getServerName());
-		sender = new Sender(channel);
-
-		new Thread(subscriber).start();
-		new Thread(sender).start();
+	public PubSubAPIDB(SamaGamesAPI api) {
+		this.api = api;
+		subscriber = new Subscriber();
 	}
 
 	@Override
 	public void subscribe(String channel, PacketsReceiver receiver) {
-		try {
-			subscriber.registerReceiver(channel, receiver);
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-	}
+		if (!subscriber.isSubscribed()) {
+			new Thread(() -> {
+				while (continueSub) {
+					Jedis jedis = api.getResource();
 
-	@Override
-	public void subscribe(String channel, String routing, PacketsReceiver receiver) {
-		try {
-			subscriber.registerReceiver(channel, routing, receiver);
-		} catch (IOException e) {
-			e.printStackTrace();
+					try {
+						jedis.subscribe(subscriber, channel);
+						subscriber.registerReceiver(channel, receiver);
+					} catch (Exception e) {
+						e.printStackTrace();
+					}
+
+					Bukkit.getLogger().info("Disconnected from master.");
+
+					jedis.close();
+				}
+			}).start();
+		} else {
+			subscriber.registerReceiver(channel, receiver);
 		}
 	}
 
 	@Override
 	public void send(String channel, String message) {
-		send(channel, null, message);
-	}
+		new Thread(() -> {
+			Jedis jedis = api.getResource();
 
-	@Override
-	public void send(String channel, String routing, String message) {
-		sender.sendMessage(new UnsentMessage(channel, routing, message));
+			jedis.publish(channel, message);
+
+			jedis.close();
+		}).start();
 	}
 
 	public void disable() {
-		subscriber.stop();
-		sender.stop();
-
+		continueSub = false;
+		subscriber.unsubscribe();
 		try {
-			channel.close();
-			connection.close();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-
+			Thread.sleep(500);
+		} catch (Exception ignored) {}
 	}
 }

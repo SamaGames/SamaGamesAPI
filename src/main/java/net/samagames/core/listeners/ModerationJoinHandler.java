@@ -1,6 +1,5 @@
 package net.samagames.core.listeners;
 
-import com.rabbitmq.client.QueueingConsumer;
 import net.samagames.api.channels.PacketsReceiver;
 import net.samagames.api.network.JoinHandler;
 import net.samagames.permissionsbukkit.PermissionsBukkit;
@@ -30,13 +29,18 @@ public class ModerationJoinHandler implements JoinHandler, PacketsReceiver {
         }
     }
 
-	@Override
-	public void receive(QueueingConsumer.Delivery delivery) {
-		String[] args = new String(delivery.getBody()).split(" ");
-		UUID uuid = UUID.fromString(args[1]);
-		UUID target = UUID.fromString(args[2]);
-		if (PermissionsBukkit.hasPermission(uuid, "games.modjoin")) {
-			teleportTargets.put(uuid, target);
-		}
-	}
+    @Override
+    public void receive(String channel, String packet) {
+        if (packet.startsWith("teleport")) {
+            try  {
+                String[] args = packet.split(" ");
+                UUID uuid = UUID.fromString(args[1]);
+                UUID target = UUID.fromString(args[2]);
+                if (PermissionsBukkit.hasPermission(uuid, "games.modjoin")) {
+                    teleportTargets.put(uuid, target);
+                }
+            } catch (Exception ignored) {
+            }
+        }
+    }
 }

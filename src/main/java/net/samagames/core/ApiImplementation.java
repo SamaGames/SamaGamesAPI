@@ -28,8 +28,6 @@ import net.samagames.core.listeners.GlobalChannelHandler;
 import org.bukkit.Bukkit;
 import redis.clients.jedis.Jedis;
 
-import java.io.IOException;
-
 /**
  * This file is a part of the SamaGames project
  * This code is absolutely confidential.
@@ -59,14 +57,10 @@ public class ApiImplementation extends SamaGamesAPI {
 		if (database) {
 			settingsManager = new SettingsManagerDB(this);
 			playerDataManager = new PlayerDataManagerWithDB(this);
-			try {
-				pubSub = new PubSubAPIDB(plugin.rabbitConnector);
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
-			pubSub.subscribe("servers", "all", new GlobalChannelHandler(plugin));
-			pubSub.subscribe("servers", plugin.getServerName(), new GlobalChannelHandler(plugin));
-			pubSub.subscribe("moderateJoin", plugin.getServerName(), implement);
+			pubSub = new PubSubAPIDB(this);
+			pubSub.subscribe("global", new GlobalChannelHandler(plugin));
+			pubSub.subscribe(plugin.getServerName(), new GlobalChannelHandler(plugin));
+			pubSub.subscribe(plugin.getServerName(), implement);
 			uuidTranslator = new UUIDTranslatorDB(plugin, this);
 		} else {
 			settingsManager = new SettingsManagerNoDB();

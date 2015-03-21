@@ -1,6 +1,5 @@
 package net.samagames.core.listeners;
 
-import com.rabbitmq.client.QueueingConsumer;
 import net.samagames.api.channels.PacketsReceiver;
 import net.samagames.core.APIPlugin;
 
@@ -20,8 +19,7 @@ public class GlobalChannelHandler implements PacketsReceiver {
 	}
 
 	@Override
-	public void receive(QueueingConsumer.Delivery delivery) {
-		String packet = new String(delivery.getBody());
+	public void receive(String channel, String packet) {
 		if (packet.equalsIgnoreCase("reboot")) {
 			plugin.getServer().shutdown();
 		} else if (packet.equalsIgnoreCase("rebootIfEmpty")) {
