@@ -10,6 +10,7 @@ import org.bukkit.ChatColor;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
+import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerLoginEvent;
@@ -44,6 +45,7 @@ public class APIPlugin extends JavaPlugin implements Listener {
 	protected String denyJoinReason = ChatColor.RED + "Serveur non initialisé.";
 	protected boolean serverRegistered;
 	protected String joinPermission = null;
+	protected TasksExecutor executor;
 
 	public void onEnable() {
 		instance = this;
@@ -57,6 +59,8 @@ public class APIPlugin extends JavaPlugin implements Listener {
 		this.saveDefaultConfig();
 		configuration = this.getConfig();
 		databaseEnabled = configuration.getBoolean("database", true);
+		executor = new TasksExecutor();
+		new Thread(executor, "Executor").start();
 
 		// Chargement de l'IPWhitelist le plus tot possible
 		Bukkit.getPluginManager().registerEvents(this, this);
@@ -169,11 +173,14 @@ public class APIPlugin extends JavaPlugin implements Listener {
 		allowJoin();
 	}
 
+	public TasksExecutor getExecutor() {
+		return executor;
+	}
+
 	public void onDisable() {
 		String bungeename = getServerName();
 		Jedis rb_jedis = databaseConnector.getBungeeResource();
 		rb_jedis.hdel("servers", bungeename);
-		rb_jedis.hdel("heartbeets", bungeename);
 		rb_jedis.publish("servers", "stop " + bungeename);
 		rb_jedis.close();
 	}
@@ -247,13 +254,16 @@ public class APIPlugin extends JavaPlugin implements Listener {
 			String bungeename = getServerName();
 			Jedis rb_jedis = databaseConnector.getBungeeResource();
 			rb_jedis.hset("servers", bungeename, this.getServer().getIp() + ":" + this.getServer().getPort());
-			rb_jedis.publish("servers", "start " + bungeename);
+			rb_jedis.publish("servers", "heartbeet " + bungeename + " " + this.getServer().getIp() + " " + this.getServer().getPort());
 			rb_jedis.close();
 
 			Bukkit.getScheduler().runTaskTimerAsynchronously(this, () -> {
 				Jedis jedis = databaseConnector.getBungeeResource();
 				jedis.hset("servers", bungeename, this.getServer().getIp() + ":" + this.getServer().getPort());
-				jedis.publish("servers", "heartbeet " + bungeename);
+				for (Player player : Bukkit.getOnlinePlayers()) {
+					try { jedis.sadd("connectedonserv:" + bungeename, player.getUniqueId().toString()); } catch (Exception ignored) {}
+				}
+				jedis.publish("servers", "heartbeet " + bungeename + " " + this.getServer().getIp() + " " + this.getServer().getPort());
 				jedis.close();
 			}, 30*20, 30*20);
 		} catch (Exception ignore) {
