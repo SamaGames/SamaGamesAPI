@@ -60,7 +60,7 @@ public class ApiImplementation extends SamaGamesAPI {
 		if (database) {
 			settingsManager = new SettingsManagerDB(this);
 			playerDataManager = new PlayerDataManagerWithDB(this);
-            achievementManager = new AchievementManagerImpl();
+            achievementManager = new AchievementManagerImpl(this);
 			pubSub = new PubSubAPIDB(this);
 			pubSub.subscribe("global", new GlobalChannelHandler(plugin));
 			pubSub.subscribe(plugin.getServerName(), new GlobalChannelHandler(plugin));

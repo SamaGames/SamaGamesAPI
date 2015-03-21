@@ -28,7 +28,19 @@ public class Achievement
         PlayerData playerData = SamaGamesAPI.get().getPlayerManager().getPlayerData(player.getUniqueId());
         playerData.set("achievement:" + this.uuid.toString(), "unlocked");
 
-        this.reward.give(player);
+        this.reward.give(player, this);
+    }
+
+    public int increment(Player player)
+    {
+        PlayerData playerData = SamaGamesAPI.get().getPlayerManager().getPlayerData(player.getUniqueId());
+
+        int before = playerData.getInt("achievement:" + this.uuid.toString());
+        int now = before + 1;
+
+        playerData.setInt("achievement:" + this.uuid.toString(), now);
+
+        return now;
     }
 
     public Achievement setUUID(UUID uuid)
