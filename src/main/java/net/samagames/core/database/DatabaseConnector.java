@@ -17,25 +17,28 @@ import java.util.Set;
 public class DatabaseConnector {
 
 	protected JedisSentinelPool mainPool;
-	protected JedisPool bungeePool;
-	protected WhitelistRefresher keeper = null;
-	protected BukkitTask keepTask = null;
-	protected Set<String> main;
-	protected ConnectionDetails bungee;
+	protected JedisSentinelPool cachePool;
+	protected Set<String> sentinels;
 	protected APIPlugin plugin;
-	protected String mainPassword;
+	protected String password;
+	protected String masterName;
+	protected String cacheName;
+	private WhitelistRefresher keeper;
+	private BukkitTask keepTask;
 
 	public DatabaseConnector(APIPlugin plugin) {
 		mainPool = null;
-		bungeePool = new FakeJedisPool();
+		cachePool = null;
 		this.plugin = plugin;
 	}
 
-	public DatabaseConnector(APIPlugin plugin, Set<String> main, String mainPassword, ConnectionDetails bungee) {
+	public DatabaseConnector(APIPlugin plugin, Set<String> main, String masterName, String cacheName, String mainPassword) {
 		this.plugin = plugin;
-		setBungee(bungee);
-		setMain(main);
-		this.mainPassword = mainPassword;
+		this.sentinels = main;
+		this.masterName = masterName;
+		this.cacheName = cacheName;
+		this.password = mainPassword;
+
 		initiateConnections();
 	}
 
@@ -44,19 +47,11 @@ public class DatabaseConnector {
 	}
 
 	public Jedis getBungeeResource() {
-		return bungeePool.getResource();
-	}
-
-	public void setBungee(ConnectionDetails bungee) {
-		this.bungee = bungee;
-	}
-
-	public void setMain(Set<String> main) {
-		this.main = main;
+		return (cachePool == null) ? new FakeJedis() : cachePool.getResource();
 	}
 
 	public void killConnections() {
-		bungeePool.destroy();
+		cachePool.destroy();
 		mainPool.destroy();
 	}
 
@@ -66,16 +61,11 @@ public class DatabaseConnector {
 		config.setMaxTotal(1024);
 		config.setMaxWaitMillis(5000);
 
-		this.mainPool = new JedisSentinelPool("mymaster", main, config, 5000, mainPassword);
-
-		// Connexion bungee :
-		config = new JedisPoolConfig();
-		config.setMaxTotal(256);
-		config.setMaxWaitMillis(5000);
-		bungeePool = new JedisPool(config, bungee.getHost(), bungee.getPort(), 500, bungee.getPassword());
-
+		this.mainPool = new JedisSentinelPool(masterName, sentinels, config, 5000, password);
+		this.cachePool = new JedisSentinelPool(cacheName, sentinels, config, 5000, password);
 
 		// Init du thread
+
 		if (keeper == null) {
 			keeper = new WhitelistRefresher(plugin, this);
 			keepTask = Bukkit.getScheduler().runTaskTimerAsynchronously(plugin, keeper, 3*20, 30*20);

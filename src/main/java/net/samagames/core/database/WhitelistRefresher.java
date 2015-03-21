@@ -44,8 +44,7 @@ public class WhitelistRefresher implements Runnable {
 
 			plugin.refreshIps(whitelist);
 		} catch (Exception e) {
-			e.printStackTrace();
-			Bukkit.getLogger().severe("[DBCONNECT] An error occured : failed to get value.");
+			Bukkit.getLogger().severe("[DBCONNECT] An error occured : failed to get value. (" + e.getMessage() + ")");
 		}
 	}
 

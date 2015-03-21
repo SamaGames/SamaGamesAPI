@@ -24,6 +24,7 @@ public class Subscriber extends JedisPubSub {
 		if (receivers == null)
 			receivers = new HashSet<>();
 		receivers.add(receiver);
+		this.subscribe(channel);
 		packetsReceivers.put(channel, receivers);
 	}
 

@@ -13,7 +13,7 @@ import java.util.*;
  */
 public class FakeJedis extends Jedis {
 	public FakeJedis() {
-		super(null, 0);
+		super(null, 0, 0);
 	}
 
 	@Override

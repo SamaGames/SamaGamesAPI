@@ -80,14 +80,9 @@ public class APIPlugin extends JavaPlugin implements Listener {
 				databaseConnector = new DatabaseConnector(this);
 			} else {
 				YamlConfiguration dataYML = YamlConfiguration.loadConfiguration(conf);
-				String ip = (String) dataYML.getList("Redis-Ips").get(0);
-				ConnectionDetails main = new ConnectionDetails(ip.split(":")[0], Integer.parseInt(ip.split(":")[1]), dataYML.getString("Redis-Pass"));
-				ip = dataYML.getString("rb-ip");
-				ConnectionDetails bungee = new ConnectionDetails(ip.split(":")[0], Integer.parseInt(ip.split(":")[1]), dataYML.getString("Redis-Pass"));
-
 				Set<String> ips = ((List<String>) dataYML.getList("Redis-Ips")).stream().map(IP -> IP).collect(Collectors.toSet());
+				databaseConnector = new DatabaseConnector(this, ips, dataYML.getString("mainMonitor", "mymaster"), dataYML.getString("cacheMonitor", "cache"),  dataYML.getString("Redis-Pass"));
 
-				databaseConnector = new DatabaseConnector(this, ips, dataYML.getString("Redis-Pass"), bungee);
 			}
 		} else {
 			log(Level.WARNING, "Database is disabled for this session. API will work perfectly, but some plugins might have issues during run.");
