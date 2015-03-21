@@ -38,8 +38,8 @@ public class WhitelistRefresher implements Runnable {
 				this.lastMaster = master;
 			}
 
-			Jedis jedis = databaseConnector.getResource();
-			List<String> whitelist = jedis.lrange("sockets:proxys", 0, - 1);
+			Jedis jedis = databaseConnector.getBungeeResource();
+			List<String> whitelist = jedis.lrange("proxys", 0, - 1);
 			jedis.close();
 
 			plugin.refreshIps(whitelist);
