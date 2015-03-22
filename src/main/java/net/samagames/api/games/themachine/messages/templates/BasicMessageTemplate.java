@@ -1,4 +1,4 @@
-package net.samagames.api.gameapi.themachine.messages.templates;
+package net.samagames.api.games.themachine.messages.templates;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;

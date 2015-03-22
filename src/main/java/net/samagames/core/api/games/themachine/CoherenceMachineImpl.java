@@ -1,20 +1,20 @@
-package net.samagames.core.api.gameapi.themachine;
+package net.samagames.core.api.games.themachine;
 
-import net.samagames.api.gameapi.Game;
-import net.samagames.api.gameapi.themachine.CoherenceMachine;
-import net.samagames.api.gameapi.themachine.messages.MessageManager;
-import net.samagames.api.gameapi.themachine.messages.TemplateManager;
-import net.samagames.core.api.gameapi.themachine.messages.MessageManagerImpl;
-import net.samagames.core.api.gameapi.themachine.messages.TemplateManagerImpl;
+import net.samagames.api.games.IGameInfos;
+import net.samagames.api.games.themachine.CoherenceMachine;
+import net.samagames.api.games.themachine.messages.MessageManager;
+import net.samagames.api.games.themachine.messages.TemplateManager;
+import net.samagames.core.api.games.themachine.messages.MessageManagerImpl;
+import net.samagames.core.api.games.themachine.messages.TemplateManagerImpl;
 import org.bukkit.ChatColor;
 
 public class CoherenceMachineImpl implements CoherenceMachine
 {
-    private final Game game;
+    private final IGameInfos game;
     private final MessageManager messageManager;
     private final TemplateManager templateManager;
 
-    public CoherenceMachineImpl(Game game)
+    public CoherenceMachineImpl(IGameInfos game)
     {
         this.game = game;
 
@@ -41,7 +41,7 @@ public class CoherenceMachineImpl implements CoherenceMachine
     }
 
     @Override
-    public Game getGame()
+    public IGameInfos getGameInfos()
     {
         return this.game;
     }

@@ -2,7 +2,7 @@ package net.samagames.api;
 
 import net.samagames.api.achievements.AchievementManager;
 import net.samagames.api.channels.PubSubAPI;
-import net.samagames.api.gameapi.GameAPI;
+import net.samagames.api.games.GameManager;
 import net.samagames.api.names.UUIDTranslator;
 import net.samagames.api.player.PlayerDataManager;
 import net.samagames.api.settings.SettingsManager;
@@ -52,6 +52,6 @@ public abstract class SamaGamesAPI {
     public abstract AchievementManager getAchievementManager();
 	public abstract PubSubAPI getPubSub();
 	public abstract UUIDTranslator getUUIDTranslator();
-	public abstract GameAPI getGameAPI();
+	public abstract GameManager getGameManager();
 
 }

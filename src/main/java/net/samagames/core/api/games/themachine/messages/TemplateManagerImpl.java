@@ -1,11 +1,11 @@
-package net.samagames.core.api.gameapi.themachine.messages;
+package net.samagames.core.api.games.themachine.messages;
 
-import net.samagames.api.gameapi.themachine.CoherenceMachine;
-import net.samagames.api.gameapi.themachine.messages.TemplateManager;
-import net.samagames.api.gameapi.themachine.messages.templates.BasicMessageTemplate;
-import net.samagames.api.gameapi.themachine.messages.templates.CustomWinTemplate;
-import net.samagames.api.gameapi.themachine.messages.templates.PlayerLeaderboardWinTemplate;
-import net.samagames.api.gameapi.themachine.messages.templates.PlayerWinTemplate;
+import net.samagames.api.games.themachine.CoherenceMachine;
+import net.samagames.api.games.themachine.messages.TemplateManager;
+import net.samagames.api.games.themachine.messages.templates.BasicMessageTemplate;
+import net.samagames.api.games.themachine.messages.templates.CustomWinTemplate;
+import net.samagames.api.games.themachine.messages.templates.PlayerLeaderboardWinTemplate;
+import net.samagames.api.games.themachine.messages.templates.PlayerWinTemplate;
 
 public class TemplateManagerImpl implements TemplateManager
 {

@@ -1,8 +1,8 @@
-package net.samagames.core.api.gameapi.themachine.messages;
+package net.samagames.core.api.games.themachine.messages;
 
-import net.samagames.api.gameapi.themachine.CoherenceMachine;
-import net.samagames.api.gameapi.themachine.messages.Message;
-import net.samagames.api.gameapi.themachine.messages.MessageManager;
+import net.samagames.api.games.themachine.CoherenceMachine;
+import net.samagames.api.games.themachine.messages.Message;
+import net.samagames.api.games.themachine.messages.MessageManager;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 
@@ -22,11 +22,11 @@ public class MessageManagerImpl implements MessageManager
         builder.append(ChatColor.YELLOW).append(player.getName());
         builder.append(" a rejoint la partie ! ");
         builder.append(ChatColor.GRAY).append("[");
-        builder.append(ChatColor.RED).append(this.machine.getGame().getConnectedPlayers());
+        builder.append(ChatColor.RED).append(this.machine.getGameInfos().getConnectedPlayers());
         builder.append(ChatColor.DARK_GRAY).append("/");
-        builder.append(ChatColor.RED).append(this.machine.getGame().getMaxPlayers());
+        builder.append(ChatColor.RED).append(this.machine.getGameInfos().getMaxPlayers());
 
-        if(this.machine.getGame().getConnectedPlayers() > this.machine.getGame().getMaxPlayers())
+        if(this.machine.getGameInfos().getConnectedPlayers() > this.machine.getGameInfos().getMaxPlayers())
             builder.append(ChatColor.GREEN).append(" [Slots VIP]");
 
         return new Message(builder.toString(), this.machine.getGameTag()).displayToAll();
@@ -35,7 +35,7 @@ public class MessageManagerImpl implements MessageManager
     @Override
     public Message writeWelcomeInGameToPlayer(Player player)
     {
-        return new Message(ChatColor.GOLD + "\nBienvenue en " + ChatColor.RED + this.machine.getGame().getGameName() + ChatColor.GOLD + " !").display(player);
+        return new Message(ChatColor.GOLD + "\nBienvenue en " + ChatColor.RED + this.machine.getGameInfos().getGameName() + ChatColor.GOLD + " !").display(player);
     }
 
     @Override

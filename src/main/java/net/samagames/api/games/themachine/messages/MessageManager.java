@@ -1,4 +1,4 @@
-package net.samagames.api.gameapi.themachine.messages;
+package net.samagames.api.games.themachine.messages;
 
 import org.bukkit.entity.Player;
 

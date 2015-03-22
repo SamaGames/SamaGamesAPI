@@ -1,9 +1,9 @@
-package net.samagames.api.gameapi.themachine.messages;
+package net.samagames.api.games.themachine.messages;
 
-import net.samagames.api.gameapi.themachine.messages.templates.BasicMessageTemplate;
-import net.samagames.api.gameapi.themachine.messages.templates.CustomWinTemplate;
-import net.samagames.api.gameapi.themachine.messages.templates.PlayerLeaderboardWinTemplate;
-import net.samagames.api.gameapi.themachine.messages.templates.PlayerWinTemplate;
+import net.samagames.api.games.themachine.messages.templates.BasicMessageTemplate;
+import net.samagames.api.games.themachine.messages.templates.CustomWinTemplate;
+import net.samagames.api.games.themachine.messages.templates.PlayerLeaderboardWinTemplate;
+import net.samagames.api.games.themachine.messages.templates.PlayerWinTemplate;
 
 public interface TemplateManager
 {

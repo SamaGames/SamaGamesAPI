@@ -1,8 +1,8 @@
-package net.samagames.api.gameapi.themachine;
+package net.samagames.api.games.themachine;
 
-import net.samagames.api.gameapi.Game;
-import net.samagames.api.gameapi.themachine.messages.MessageManager;
-import net.samagames.api.gameapi.themachine.messages.TemplateManager;
+import net.samagames.api.games.IGameInfos;
+import net.samagames.api.games.themachine.messages.MessageManager;
+import net.samagames.api.games.themachine.messages.TemplateManager;
 
 public interface CoherenceMachine
 {
@@ -25,8 +25,8 @@ public interface CoherenceMachine
     public TemplateManager getTemplateManager();
 
     /**
-     * Renvoi l'objet du jeu
-     * @return L'objet du jeu
+     * Renvoi l'objet d'information de jeu
+     * @return L'objet
      */
-    public Game getGame();
+    public IGameInfos getGameInfos();
 }
