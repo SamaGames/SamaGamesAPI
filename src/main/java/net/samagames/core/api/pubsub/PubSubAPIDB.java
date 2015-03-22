@@ -75,6 +75,7 @@ public class PubSubAPIDB implements PubSubAPI {
 	public void disable() {
 		continueSub = false;
 		subscriber.unsubscribe();
+		subscriber.punsubscribe();
 		try {
 			Thread.sleep(500);
 		} catch (Exception ignored) {}

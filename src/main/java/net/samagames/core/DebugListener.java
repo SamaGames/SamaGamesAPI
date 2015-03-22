@@ -48,6 +48,7 @@ public class DebugListener implements PatternReceiver, JoinHandler {
 				player.sendMessage(send);
 		}
 
-		Bukkit.getConsoleSender().sendMessage(send);
+		if (console)
+			Bukkit.getConsoleSender().sendMessage(send);
 	}
 }
