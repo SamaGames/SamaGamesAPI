@@ -10,4 +10,5 @@ public interface Game extends JoinHandler {
 	public StatusEnum getStatus();
 	public void displayMessage(String message);
 	public String getMapName();
+    public String getGameName();
 }
