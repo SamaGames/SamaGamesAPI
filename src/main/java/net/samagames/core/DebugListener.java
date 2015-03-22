@@ -41,6 +41,9 @@ public class DebugListener implements PatternReceiver, JoinHandler {
 
 	@Override
 	public void receive(String pattern, String channel, String packet) {
+		if (channel.equals("__sentinel__:hello"))
+			return;
+
 		String send = ChatColor.AQUA + "[BukkitDebug : " + channel +"] " + packet;
 		for (UUID debug : debugs) {
 			Player player = Bukkit.getPlayer(debug);
