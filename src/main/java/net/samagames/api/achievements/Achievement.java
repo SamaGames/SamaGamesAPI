@@ -4,19 +4,17 @@ import net.samagames.api.SamaGamesAPI;
 import net.samagames.api.player.PlayerData;
 import org.bukkit.entity.Player;
 
-import java.util.UUID;
-
 public class Achievement
 {
-    private UUID uuid;
-    private String displayName;
-    private UUID parentCategory;
-    private String[] description;
-    private AchievementReward reward;
+    private final String id;
+    private final String displayName;
+    private final String parentCategory;
+    private final String[] description;
+    private final AchievementReward reward;
 
-    public Achievement(UUID uuid, String displayName, UUID parentCategory, String[] description, AchievementReward reward)
+    public Achievement(String id, String displayName, String parentCategory, String[] description, AchievementReward reward)
     {
-        this.uuid = uuid;
+        this.id = id;
         this.displayName = displayName;
         this.parentCategory = parentCategory;
         this.description = description;
@@ -26,7 +24,7 @@ public class Achievement
     public void unlock(Player player)
     {
         PlayerData playerData = SamaGamesAPI.get().getPlayerManager().getPlayerData(player.getUniqueId());
-        playerData.set("achievement:" + this.uuid.toString(), "unlocked");
+        playerData.set("achievement:" + this.id, "unlocked");
 
         this.reward.give(player, this);
     }
@@ -35,47 +33,17 @@ public class Achievement
     {
         PlayerData playerData = SamaGamesAPI.get().getPlayerManager().getPlayerData(player.getUniqueId());
 
-        int before = playerData.getInt("achievement:" + this.uuid.toString());
+        int before = playerData.getInt("achievement:" + this.id);
         int now = before + 1;
 
-        playerData.setInt("achievement:" + this.uuid.toString(), now);
+        playerData.setInt("achievement:" + this.id, now);
 
         return now;
     }
 
-    public Achievement setUUID(UUID uuid)
+    public String getID()
     {
-        this.uuid = uuid;
-        return this;
-    }
-
-    public Achievement setDisplayName(String displayName)
-    {
-        this.displayName = displayName;
-        return this;
-    }
-
-    public Achievement setParentCategory(UUID parentCategory)
-    {
-        this.parentCategory = parentCategory;
-        return this;
-    }
-
-    public Achievement setDesciption(String[] description)
-    {
-        this.description = description;
-        return this;
-    }
-
-    public Achievement setReward(AchievementReward reward)
-    {
-        this.reward = reward;
-        return this;
-    }
-
-    public UUID getUUID()
-    {
-        return this.uuid;
+        return this.id;
     }
 
     public String getDisplayName()
@@ -83,7 +51,7 @@ public class Achievement
         return this.displayName;
     }
 
-    public UUID getParentCategoryID()
+    public String getParentCategoryID()
     {
         return this.parentCategory;
     }

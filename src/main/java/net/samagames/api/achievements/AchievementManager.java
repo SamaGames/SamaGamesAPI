@@ -3,7 +3,6 @@ package net.samagames.api.achievements;
 import org.bukkit.entity.Player;
 
 import java.util.ArrayList;
-import java.util.UUID;
 
 public interface AchievementManager
 {
@@ -21,18 +20,18 @@ public interface AchievementManager
     public int incrementAchievement(Player player, Achievement achievement);
 
     /**
-     * Renvoi un objectif selon l'identifiant unique donné
-     * @param uuid ID unique de l'objectif
+     * Renvoi un objectif selon son nom
+     * @param name Nom de l'objectif
      * @return L'objectif demandé
      */
-    public Achievement getAchievementByID(UUID uuid);
+    public Achievement getAchievementByName(String name);
 
     /**
      * Renvoi une catégorie d'objectifs selon l'identifiant unique donné
-     * @param uuid ID unique de la catégorie
+     * @param name Nom de la catégorie
      * @return La catégorie demandée
      */
-    public AchievementCategory getAchievementCategoryByID(UUID uuid);
+    public AchievementCategory getAchievementCategoryByName(String name);
 
     /**
      * Renvoi la liste des objectifs enregistrés dans la base de donnée
@@ -53,4 +52,12 @@ public interface AchievementManager
      * @return Si oui ou non l'objectif est débloqué
      */
     public boolean isUnlocked(Player player, Achievement achievement);
+
+    /**
+     * Renvoi si l'objectif est débloqué pour le joueur, ou non
+     * @param player Le joueur en question
+     * @param achievement L'objectif à tester
+     * @return Si oui ou non l'objectif est débloqué
+     */
+    public boolean isUnlocked(Player player, String achievement);
 }
