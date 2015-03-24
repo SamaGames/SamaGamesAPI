@@ -15,7 +15,6 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
 import java.util.ArrayList;
-import java.util.UUID;
 import java.util.logging.Level;
 
 public class AchievementManagerImpl implements AchievementManager
@@ -53,13 +52,13 @@ public class AchievementManagerImpl implements AchievementManager
         for(int i = 0; i < jsonCategories.size(); i++)
         {
             JsonObject jsonCategory = jsonCategories.get(i).getAsJsonObject();
-            UUID categoryUUID = UUID.fromString(jsonCategory.get("uuid").getAsString());
+            String categoryID = jsonCategory.get("uuid").getAsString();
             String categoryDisplayName = jsonCategory.get("display-name").getAsString();
             ItemStack categoryIcon = ItemUtils.strToStack(jsonCategory.get("icon").getAsString());
             String[] categoryDescription = jsonCategory.get("description").getAsString().split("::");
 
-            this.achievementCategories.add(new AchievementCategory(categoryUUID, categoryDisplayName, categoryIcon, categoryDescription));
-            APIPlugin.log(Level.INFO, "Registered achievement category '" + categoryUUID + "'");
+            this.achievementCategories.add(new AchievementCategory(categoryID, categoryDisplayName, categoryIcon, categoryDescription));
+            APIPlugin.log(Level.INFO, "Registered achievement category '" + categoryID + "'");
         }
 
         JsonArray jsonAchievements = jsonObject.get("achievements").getAsJsonArray();
@@ -67,9 +66,9 @@ public class AchievementManagerImpl implements AchievementManager
         for(int i = 0; i < jsonAchievements.size(); i++)
         {
             JsonObject jsonAchievement = jsonAchievements.get(i).getAsJsonObject();
-            UUID achievementUUID = UUID.fromString(jsonAchievement.get("uuid").getAsString());
+            String achievementID = jsonAchievement.get("id").getAsString();
             String achievementDisplayName = jsonAchievement.get("display-name").getAsString();
-            UUID achievementParentUUID = UUID.fromString(jsonAchievement.get("parent-uuid").getAsString());
+            String achievementParentID = jsonAchievement.get("parent-id").getAsString();
             String[] achievementDescription = jsonAchievement.get("description").getAsString().split("::");
 
             JsonObject jsonReward = jsonAchievement.get("reward").getAsJsonObject();
@@ -77,8 +76,8 @@ public class AchievementManagerImpl implements AchievementManager
             reward.setCoins(jsonReward.get("coins").getAsInt(), jsonReward.get("coins-message").getAsString());
             reward.setStars(jsonReward.get("stars").getAsInt(), jsonReward.get("stars-message").getAsString());
 
-            this.achievements.add(new Achievement(achievementUUID, achievementDisplayName, achievementParentUUID, achievementDescription, reward));
-            APIPlugin.log(Level.INFO, "Registered achievement '" + achievementUUID + "'");
+            this.achievements.add(new Achievement(achievementID, achievementDisplayName, achievementParentID, achievementDescription, reward));
+            APIPlugin.log(Level.INFO, "Registered achievement '" + achievementID + "'");
         }
     }
 
@@ -89,20 +88,20 @@ public class AchievementManagerImpl implements AchievementManager
     }
 
     @Override
-    public Achievement getAchievementByID(UUID uuid)
+    public Achievement getAchievementByName(String name)
     {
         for(Achievement achievement : this.achievements)
-            if(achievement.getUUID() == uuid)
+            if(achievement.getID().equals(name))
                 return achievement;
 
         return null;
     }
 
     @Override
-    public AchievementCategory getAchievementCategoryByID(UUID uuid)
+    public AchievementCategory getAchievementCategoryByName(String name)
     {
         for(AchievementCategory category : this.achievementCategories)
-            if(category.getUUID() == uuid)
+            if(category.getID().equals(name))
                 return category;
 
         return null;
@@ -117,11 +116,20 @@ public class AchievementManagerImpl implements AchievementManager
     @Override
     public ArrayList<AchievementCategory> getAchievementsCategories()
     {
-        return this.getAchievementsCategories();
+        return this.achievementCategories;
     }
 
     public boolean isUnlocked(Player player, Achievement achievement)
     {
-        return (this.api.getPlayerManager().getPlayerData(player.getUniqueId()).get("achievements:" + achievement.getUUID().toString()) != null && this.api.getPlayerManager().getPlayerData(player.getUniqueId()).get("achievements:" + achievement.getUUID().toString()).equals("unlocked"));
+        return (this.api.getPlayerManager().getPlayerData(player.getUniqueId()).get("achievements:" + achievement.getID()) != null && this.api.getPlayerManager().getPlayerData(player.getUniqueId()).get("achievements:" + achievement.getID()).equals("unlocked"));
+    }
+
+    @Override
+    public boolean isUnlocked(Player player, String achievement)
+    {
+        if(this.getAchievementByName(achievement) == null)
+            return false;
+
+        return this.isUnlocked(player, this.getAchievementByName(achievement));
     }
 }

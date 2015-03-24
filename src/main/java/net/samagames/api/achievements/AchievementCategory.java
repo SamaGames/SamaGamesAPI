@@ -3,55 +3,29 @@ package net.samagames.api.achievements;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 
-import java.util.UUID;
-
 public class AchievementCategory
 {
-    private UUID uuid;
-    private String displayName;
-    private ItemStack icon;
-    private String[] description;
+    private final String id;
+    private final String displayName;
+    private final ItemStack icon;
+    private final String[] description;
 
-    public AchievementCategory(UUID uuid, String displayName, ItemStack icon, String[] description)
+    public AchievementCategory(String id, String displayName, ItemStack icon, String[] description)
     {
-        this.uuid = uuid;
+        this.id = id;
         this.displayName = displayName;
         this.icon = icon;
         this.description = description;
     }
 
-    public AchievementCategory(UUID uuid, String displayName, Material material, String[] description)
+    public AchievementCategory(String id, String displayName, Material material, String[] description)
     {
-        this(uuid, displayName, new ItemStack(material, 1), description);
+        this(id, displayName, new ItemStack(material, 1), description);
     }
 
-    public AchievementCategory setUUID(UUID uuid)
+    public String getID()
     {
-        this.uuid = uuid;
-        return this;
-    }
-
-    public AchievementCategory setDisplayName(String displayName)
-    {
-        this.displayName = displayName;
-        return this;
-    }
-
-    public AchievementCategory setIcon(ItemStack icon)
-    {
-        this.icon = icon;
-        return this;
-    }
-
-    public AchievementCategory setDescription(String[] description)
-    {
-        this.description = description;
-        return this;
-    }
-
-    public UUID getUUID()
-    {
-        return this.uuid;
+        return this.id;
     }
 
     public String getDisplayName()
