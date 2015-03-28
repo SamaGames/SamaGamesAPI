@@ -3,6 +3,7 @@ package net.samagames.core.api.stats;
 import net.samagames.api.stats.StatsManager;
 import net.samagames.core.APIPlugin;
 import org.bukkit.Bukkit;
+import redis.clients.jedis.Jedis;
 import redis.clients.jedis.ShardedJedis;
 
 import java.util.UUID;
@@ -24,7 +25,7 @@ public class StatsManagerDB extends StatsManager {
 	public void increase(final UUID player, final String stat, final int amount) {
 		Bukkit.getScheduler().runTaskAsynchronously(plugin, new Runnable() {
 			public void run() {
-				ShardedJedis j = APIPlugin.getApi().getResource();
+				Jedis j = APIPlugin.getApi().getResource();
 				j.zincrby("gamestats:" + game + ":" + stat, amount, player.toString());
 				j.close();
 			}
@@ -33,7 +34,7 @@ public class StatsManagerDB extends StatsManager {
 
 	@Override
 	public double getStatValue(UUID player, String stat) {
-		ShardedJedis j = APIPlugin.getApi().getResource();
+		Jedis j = APIPlugin.getApi().getResource();
 		double value = j.zscore("gamestats:"+game+":"+stat, player.toString());
 		j.close();
 

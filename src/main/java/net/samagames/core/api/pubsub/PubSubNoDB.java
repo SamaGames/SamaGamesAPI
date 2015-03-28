@@ -1,6 +1,7 @@
 package net.samagames.core.api.pubsub;
 
 import net.samagames.api.channels.PacketsReceiver;
+import net.samagames.api.channels.PatternReceiver;
 import net.samagames.api.channels.PubSubAPI;
 
 /**
@@ -14,6 +15,11 @@ public class PubSubNoDB implements PubSubAPI {
 	@Override
 	public void subscribe(String channel, PacketsReceiver receiver) {
 		// RIEN.
+	}
+
+	@Override
+	public void subscribe(String pattern, PatternReceiver receiver) {
+
 	}
 
 	@Override

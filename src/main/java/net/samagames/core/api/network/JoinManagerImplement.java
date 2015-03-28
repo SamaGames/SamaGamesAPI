@@ -1,22 +1,27 @@
 package net.samagames.core.api.network;
 
+import net.samagames.api.SamaGamesAPI;
 import net.samagames.api.channels.PacketsReceiver;
 import net.samagames.api.network.JoinHandler;
 import net.samagames.api.network.JoinManager;
 import net.samagames.api.network.JoinResponse;
+import net.samagames.core.APIPlugin;
+import net.samagames.core.TasksExecutor;
 import net.samagames.permissionsbukkit.PermissionsBukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
+import org.bukkit.event.Listener;
 import org.bukkit.event.player.AsyncPlayerPreLoginEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
+import redis.clients.jedis.Jedis;
 
 import java.util.HashSet;
 import java.util.TreeMap;
 import java.util.UUID;
 
-public class JoinManagerImplement implements JoinManager, PacketsReceiver {
+public class JoinManagerImplement implements JoinManager, PacketsReceiver, Listener {
 
     protected TreeMap<Integer, JoinHandler> handlerTreeMap = new TreeMap<>();
     protected HashSet<UUID> moderatorsExpected = new HashSet<>();
@@ -42,8 +47,8 @@ public class JoinManagerImplement implements JoinManager, PacketsReceiver {
     }
 
     @EventHandler
-    public void onJoin(PlayerJoinEvent event) {
-        Player player = event.getPlayer();
+    public void onJoin(final PlayerJoinEvent event) {
+        final Player player = event.getPlayer();
         if (moderatorsExpected.contains(player.getUniqueId())) {
             for (JoinHandler handler : handlerTreeMap.values())
                 handler.onModerationJoin(player);
@@ -57,15 +62,28 @@ public class JoinManagerImplement implements JoinManager, PacketsReceiver {
 
         if (!response.isAllowed())
             player.kickPlayer(response.getReason());
+
+		// Enregistrement du joueur
+		APIPlugin.getInstance().getExecutor().addTask(() -> {
+			Jedis jedis = SamaGamesAPI.get().getBungeeResource();
+			jedis.sadd("connectedonserv:" + APIPlugin.getInstance().getServerName(), player.getUniqueId().toString());
+			jedis.close();
+		});
     }
 
     @EventHandler
-    public void onLogout(PlayerQuitEvent event) {
+    public void onLogout(final PlayerQuitEvent event) {
         if (moderatorsExpected.contains(event.getPlayer().getUniqueId()))
             moderatorsExpected.remove(event.getPlayer().getUniqueId());
 
         for (JoinHandler handler : handlerTreeMap.values())
             handler.onLogout(event.getPlayer());
+
+		APIPlugin.getInstance().getExecutor().addTask(() -> {
+			Jedis jedis = SamaGamesAPI.get().getBungeeResource();
+			jedis.srem("connectedonserv:" + APIPlugin.getInstance().getServerName(), event.getPlayer().getUniqueId().toString());
+			jedis.close();
+		});
     }
 
     public void addModerator(UUID moderator) {

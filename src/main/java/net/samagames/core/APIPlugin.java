@@ -1,5 +1,6 @@
 package net.samagames.core;
 
+import net.samagames.api.SamaGamesAPI;
 import net.samagames.core.database.ConnectionDetails;
 import net.samagames.core.database.DatabaseConnector;
 import net.samagames.core.listeners.*;
@@ -10,6 +11,7 @@ import org.bukkit.ChatColor;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
+import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerLoginEvent;
@@ -22,6 +24,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.*;
 import java.util.concurrent.CopyOnWriteArraySet;
 import java.util.logging.Level;
+import java.util.stream.Collectors;
 
 /**
  * This file is a part of the SamaGames project
@@ -40,9 +43,11 @@ public class APIPlugin extends JavaPlugin implements Listener {
 	protected CopyOnWriteArraySet<String> ipWhitelist = new CopyOnWriteArraySet<>();
 	protected boolean databaseEnabled;
 	protected boolean allowJoin;
-	protected String denyJoinReason;
+	protected String denyJoinReason = ChatColor.RED + "Serveur non initialisé.";
 	protected boolean serverRegistered;
 	protected String joinPermission = null;
+	protected TasksExecutor executor;
+	protected DebugListener debugListener;
 
 	public void onEnable() {
 		instance = this;
@@ -56,6 +61,8 @@ public class APIPlugin extends JavaPlugin implements Listener {
 		this.saveDefaultConfig();
 		configuration = this.getConfig();
 		databaseEnabled = configuration.getBoolean("database", true);
+		executor = new TasksExecutor();
+		new Thread(executor, "Executor").start();
 
 		// Chargement de l'IPWhitelist le plus tot possible
 		Bukkit.getPluginManager().registerEvents(this, this);
@@ -79,12 +86,10 @@ public class APIPlugin extends JavaPlugin implements Listener {
 				databaseConnector = new DatabaseConnector(this);
 			} else {
 				YamlConfiguration dataYML = YamlConfiguration.loadConfiguration(conf);
-				String ip = (String) dataYML.getList("Redis-Ips").get(0);
-				ConnectionDetails main = new ConnectionDetails(ip.split(":")[0], Integer.parseInt(ip.split(":")[1]), dataYML.getString("Redis-Pass"));
-				ip = dataYML.getString("rb-ip");
-				ConnectionDetails bungee = new ConnectionDetails(ip.split(":")[0], Integer.parseInt(ip.split(":")[1]), dataYML.getString("Redis-Pass"));
 
-				databaseConnector = new DatabaseConnector(this, main, bungee);
+				Set<String> ips = ((List<String>) dataYML.getList("Redis-Ips")).stream().map(IP -> IP).collect(Collectors.toSet());
+				databaseConnector = new DatabaseConnector(this, ips, dataYML.getString("mainMonitor", "mymaster"), dataYML.getString("cacheMonitor", "cache"),  dataYML.getString("Redis-Pass"));
+
 			}
 		} else {
 			log(Level.WARNING, "Database is disabled for this session. API will work perfectly, but some plugins might have issues during run.");
@@ -100,6 +105,10 @@ public class APIPlugin extends JavaPlugin implements Listener {
 		ModerationJoinHandler moderationJoinHandler = new ModerationJoinHandler();
 		api.getJoinManager().registerHandler(moderationJoinHandler, -1);
 		api.getPubSub().subscribe(getServerName(), moderationJoinHandler);
+
+		debugListener = new DebugListener();
+		api.getJoinManager().registerHandler(debugListener, 0);
+		api.getPubSub().subscribe("*", debugListener);
 
 		Bukkit.getPluginManager().registerEvents(new PlayerDataListener(this), this);
 		Bukkit.getPluginManager().registerEvents(new ChatFormatter(this), this);
@@ -165,6 +174,25 @@ public class APIPlugin extends JavaPlugin implements Listener {
 			this.getLogger().severe("CANNOT SCHEDULE AUTOMATIC SHUTDOWN.");
 			e.printStackTrace();
 		}
+
+		registerServer();
+		allowJoin();
+	}
+
+	public DebugListener getDebugListener() {
+		return debugListener;
+	}
+
+	public TasksExecutor getExecutor() {
+		return executor;
+	}
+
+	public void onDisable() {
+		String bungeename = getServerName();
+		Jedis rb_jedis = databaseConnector.getBungeeResource();
+		rb_jedis.hdel("servers", bungeename);
+		SamaGamesAPI.get().getPubSub().send("servers", "stop " + bungeename);
+		rb_jedis.close();
 	}
 
 	public static APIPlugin getInstance() {
@@ -190,7 +218,7 @@ public class APIPlugin extends JavaPlugin implements Listener {
 			return containsIp(ip);
 	}
 
-	public void refreshIps(List<String> ips) {
+	public void refreshIps(Set<String> ips) {
 		for (String ip : ipWhitelist) {
 			if (!ips.contains(ip))
 				ipWhitelist.remove(ip);
@@ -235,12 +263,32 @@ public class APIPlugin extends JavaPlugin implements Listener {
 		try {
 			String bungeename = getServerName();
 			Jedis rb_jedis = databaseConnector.getBungeeResource();
-			rb_jedis.publish("redisbungee-allservers", "StartServer::" + bungeename + "::" + this.getServer().getIp() + ":" + this.getServer().getPort());
+			rb_jedis.hset("servers", bungeename, this.getServer().getIp() + ":" + this.getServer().getPort());
 			rb_jedis.close();
 
+
+			SamaGamesAPI.get().getPubSub().send("servers", "heartbeat " + bungeename + " " + this.getServer().getIp() + " " + this.getServer().getPort());
+
+
+			Bukkit.getScheduler().runTaskTimerAsynchronously(this, () -> {
+				Jedis jedis = databaseConnector.getBungeeResource();
+				jedis.hset("servers", bungeename, this.getServer().getIp() + ":" + this.getServer().getPort());
+				jedis.close();
+
+				try {
+					for (Player player : Bukkit.getOnlinePlayers()) {
+						 jedis.sadd("connectedonserv:" + bungeename, player.getUniqueId().toString());
+				}
+				} catch (Exception ignored) {}
+
+				SamaGamesAPI.get().getPubSub().send("servers", "heartbeat " + bungeename + " " + this.getServer().getIp() + " " + this.getServer().getPort());
+
+			}, 30*20, 30*20);
 		} catch (Exception ignore) {
+			ignore.printStackTrace();
 			return;
 		}
+
 		serverRegistered = true;
 	}
 

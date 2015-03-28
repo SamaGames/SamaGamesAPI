@@ -1,14 +1,14 @@
 package net.samagames.api;
 
+import net.samagames.api.achievements.AchievementManager;
 import net.samagames.api.channels.PubSubAPI;
-import net.samagames.api.gameapi.GameAPI;
+import net.samagames.api.games.GameManager;
 import net.samagames.api.names.UUIDTranslator;
 import net.samagames.api.player.PlayerDataManager;
 import net.samagames.api.settings.SettingsManager;
 import net.samagames.api.shops.ShopsManager;
 import net.samagames.api.stats.StatsManager;
 import redis.clients.jedis.Jedis;
-import redis.clients.jedis.ShardedJedis;
 
 /**
  * This file is a part of the SamaGames project
@@ -34,7 +34,7 @@ public abstract class SamaGamesAPI {
 	 * The connexion returned MUST be closed using <code>ShardedJedis.close()</code>
 	 * @return A shardedJedis database connexion
 	 */
-	public abstract ShardedJedis getResource();
+	public abstract Jedis getResource();
 
 	/**
 	 * This method returns a Jedis object, representing a connexion to the proxies database. This database mainly contains data from redisbungee.
@@ -49,8 +49,9 @@ public abstract class SamaGamesAPI {
 	public abstract ShopsManager getShopsManager(String game);
 	public abstract SettingsManager getSettingsManager();
 	public abstract PlayerDataManager getPlayerManager();
+    public abstract AchievementManager getAchievementManager();
 	public abstract PubSubAPI getPubSub();
 	public abstract UUIDTranslator getUUIDTranslator();
-	public abstract GameAPI getGameAPI();
+	public abstract GameManager getGameManager();
 
 }

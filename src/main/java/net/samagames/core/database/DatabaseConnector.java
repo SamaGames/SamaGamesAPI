@@ -5,8 +5,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.scheduler.BukkitTask;
 import redis.clients.jedis.*;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.Set;
 
 /**
  * This file is a part of the SamaGames project
@@ -17,79 +16,64 @@ import java.util.List;
  */
 public class DatabaseConnector {
 
-	protected ShardedJedisPool mainPool;
-	protected JedisPool bungeePool;
-	protected ConnexionKeeper keeper = null;
-	protected BukkitTask keepTask = null;
-	protected ConnectionDetails main;
-	protected ConnectionDetails bungee;
+	protected JedisSentinelPool mainPool;
+	protected JedisSentinelPool cachePool;
+	protected Set<String> sentinels;
 	protected APIPlugin plugin;
+	protected String password;
+	protected String masterName;
+	protected String cacheName;
+	private WhitelistRefresher keeper;
+	private BukkitTask keepTask;
 
 	public DatabaseConnector(APIPlugin plugin) {
-		mainPool = new FakeShardedJedisPool();
-		bungeePool = new FakeJedisPool();
+		mainPool = null;
+		cachePool = null;
 		this.plugin = plugin;
 	}
 
-	public DatabaseConnector(APIPlugin plugin, ConnectionDetails main, ConnectionDetails bungee) {
+	public DatabaseConnector(APIPlugin plugin, Set<String> main, String masterName, String cacheName, String mainPassword) {
 		this.plugin = plugin;
-		setBungee(bungee);
-		setMain(main);
+		this.sentinels = main;
+		this.masterName = masterName;
+		this.cacheName = cacheName;
+		this.password = mainPassword;
+
 		initiateConnections();
 	}
 
-	public ShardedJedis getResource() {
-		return mainPool.getResource();
+	public Jedis getResource() {
+		return (mainPool == null) ? new FakeJedis() : mainPool.getResource();
 	}
 
 	public Jedis getBungeeResource() {
-		return bungeePool.getResource();
-	}
-
-	public void setBungee(ConnectionDetails bungee) {
-		this.bungee = bungee;
-	}
-
-	public void setMain(ConnectionDetails main) {
-		this.main = main;
+		return (cachePool == null) ? new FakeJedis() : cachePool.getResource();
 	}
 
 	public void killConnections() {
-		bungeePool.destroy();
+		cachePool.destroy();
 		mainPool.destroy();
 	}
 
 	public void initiateConnections() {
 		// Préparation de la connexion
-
-		JedisShardInfo shard = new JedisShardInfo(main.getHost(), main.getPort());
-		shard.setPassword(main.getPassword());
-		List<JedisShardInfo> shards = new ArrayList<>();
-		shards.add(shard);
-
-		// Initialisation de la connexion
-
 		JedisPoolConfig config = new JedisPoolConfig();
 		config.setMaxTotal(1024);
 		config.setMaxWaitMillis(5000);
-		mainPool = new ShardedJedisPool(config, shards);
 
-
-		// Connexion bungee :
-		config = new JedisPoolConfig();
-		config.setMaxTotal(256);
-		config.setMaxWaitMillis(5000);
-		bungeePool = new JedisPool(config, bungee.getHost(), bungee.getPort(), 500, bungee.getPassword());
+		this.mainPool = new JedisSentinelPool(masterName, sentinels, config, 5000, password);
+		this.cachePool = new JedisSentinelPool(cacheName, sentinels, config, 5000, password);
 
 		// Init du thread
+
 		if (keeper == null) {
-			keeper = new ConnexionKeeper(plugin, this);
+			keeper = new WhitelistRefresher(plugin, this);
 			keepTask = Bukkit.getScheduler().runTaskTimerAsynchronously(plugin, keeper, 3*20, 30*20);
 		}
 	}
 
 	protected String fastGet(String key) {
-		ShardedJedis jedis = getResource();
+		Jedis jedis = getResource();
 		String val = jedis.get(key);
 		jedis.close();
 		return val;

@@ -1,15 +1,17 @@
 package net.samagames.core;
 
 import net.samagames.api.SamaGamesAPI;
+import net.samagames.api.achievements.AchievementManager;
 import net.samagames.api.channels.PubSubAPI;
-import net.samagames.api.gameapi.GameAPI;
+import net.samagames.api.games.GameManager;
 import net.samagames.api.names.UUIDTranslator;
 import net.samagames.api.network.JoinManager;
 import net.samagames.api.player.PlayerDataManager;
 import net.samagames.api.settings.SettingsManager;
 import net.samagames.api.shops.ShopsManager;
 import net.samagames.api.stats.StatsManager;
-import net.samagames.core.api.gameapi.GameAPIImplement;
+import net.samagames.core.api.achievements.AchievementManagerImpl;
+import net.samagames.core.api.games.GameManagerImpl;
 import net.samagames.core.api.names.UUIDTranslatorDB;
 import net.samagames.core.api.names.UUIDTranslatorNODB;
 import net.samagames.core.api.network.JoinManagerImplement;
@@ -27,7 +29,6 @@ import net.samagames.core.database.DatabaseConnector;
 import net.samagames.core.listeners.GlobalChannelHandler;
 import org.bukkit.Bukkit;
 import redis.clients.jedis.Jedis;
-import redis.clients.jedis.ShardedJedis;
 
 /**
  * This file is a part of the SamaGames project
@@ -36,16 +37,18 @@ import redis.clients.jedis.ShardedJedis;
  * (C) Copyright Elydra Network 2015
  * All rights reserved.
  */
-public class ApiImplementation extends SamaGamesAPI {
+public class ApiImplementation extends SamaGamesAPI
+{
 
 	protected APIPlugin plugin;
 	protected boolean database;
 	protected SettingsManager settingsManager;
 	protected PlayerDataManager playerDataManager;
+    protected AchievementManager achievementManager;
 	protected PubSubAPI pubSub;
 	protected UUIDTranslator uuidTranslator;
 	protected JoinManager joinManager;
-	protected GameAPIImplement gameApi;
+	protected GameManager gameApi;
 
 	public ApiImplementation(APIPlugin plugin, boolean database) {
 		this.plugin = plugin;
@@ -58,10 +61,16 @@ public class ApiImplementation extends SamaGamesAPI {
 		if (database) {
 			settingsManager = new SettingsManagerDB(this);
 			playerDataManager = new PlayerDataManagerWithDB(this);
+            achievementManager = new AchievementManagerImpl(this);
 			pubSub = new PubSubAPIDB(this);
 			pubSub.subscribe("global", new GlobalChannelHandler(plugin));
 			pubSub.subscribe(plugin.getServerName(), new GlobalChannelHandler(plugin));
 			pubSub.subscribe(plugin.getServerName(), implement);
+
+			pubSub.subscribe("commands.servers." + getServerName(), new RemoteCommandsHandler());
+			pubSub.subscribe("commands.servers.all", new RemoteCommandsHandler());
+
+
 			uuidTranslator = new UUIDTranslatorDB(plugin, this);
 		} else {
 			settingsManager = new SettingsManagerNoDB();
@@ -72,16 +81,15 @@ public class ApiImplementation extends SamaGamesAPI {
 		}
 	}
 
-	// On ne crée l'API que sur demande, pour éviter de surcharger la mémoire.
-	public GameAPI getGameAPI() {
-		return (gameApi == null) ? (this.gameApi = new GameAPIImplement(this)) : this.gameApi;
+	public GameManager getGameManager() {
+		return (gameApi == null) ? (this.gameApi = new GameManagerImpl(this)) : this.gameApi;
 	}
 
 	public JoinManager getJoinManager() {
 		return joinManager;
 	}
 
-	public ShardedJedis getResource() {
+	public Jedis getResource() {
 		return plugin.databaseConnector.getResource();
 	}
 
@@ -109,6 +117,12 @@ public class ApiImplementation extends SamaGamesAPI {
 	public PlayerDataManager getPlayerManager() {
 		return playerDataManager;
 	}
+
+    @Override
+    public AchievementManager getAchievementManager()
+    {
+        return achievementManager;
+    }
 
 	@Override
 	public PubSubAPI getPubSub() {
