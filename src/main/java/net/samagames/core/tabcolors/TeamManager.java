@@ -38,7 +38,14 @@ public class TeamManager {
         groups.addAll(PermissionsBukkit.getApi().getManager().getGroupsCache().values().stream().collect(Collectors.toList()));
 
         for (PermissionGroup pg : groups) {
-            TeamHandler.VTeam vt = teamHandler.createNewTeam(pg.getGroupName(), "");
+            String teamName = pg.getProperty("team-name");
+            if (teamName == null)
+                teamName = pg.getGroupName();
+
+            if (teamHandler.getTeamByName(teamName) != null)
+                continue;
+
+            TeamHandler.VTeam vt = teamHandler.createNewTeam(teamName, "");
 
             if (PermissionsBukkit.getDisplay(pg) != null)
                 vt.setPrefix(PermissionsBukkit.getDisplay(pg));
@@ -48,7 +55,7 @@ public class TeamManager {
                 vt.setSuffix(PermissionsBukkit.getSuffix(pg));
 
             teamHandler.addTeam(vt);
-            APIPlugin.log("[TeamRegister] Team " + pg.getGroupName() + " ajouté.");
+            APIPlugin.log("[TeamRegister] Team " + teamName + " ajoutée.");
         }
     }
 
@@ -115,11 +122,11 @@ public class TeamManager {
             teamHandler.addReceiver(p);
 
             final PermissionUser user = PermissionsBukkit.getApi().getUser(p.getUniqueId());
-            final String prefix = PermissionsBukkit.getDisplay(user);
+            final String prefix = user.getProperty("team-name");
 
-            TeamHandler.VTeam vtt = teamHandler.getTeamByPrefix(prefix);
+            TeamHandler.VTeam vtt = teamHandler.getTeamByName(prefix);
             if (vtt == null) {
-                vtt = teamHandler.getTeamByName("Joueur");
+                vtt = teamHandler.getTeamByName("zzjoueur");
             }
 
             teamHandler.addPlayerToTeam(p, vtt);

@@ -180,14 +180,6 @@ public class TeamHandler {
         return null;
     }
 
-    public VTeam getTeamByPrefix(String prefix) {
-        for (VTeam team : teams) {
-            if (team.getDisplayName().equals(prefix))
-                return team;
-        }
-        return null;
-    }
-
     public static class RawTeam {
 
         private static Method getEntityHandle;
