@@ -44,9 +44,8 @@ public class PartiesPubSub implements PacketsReceiver {
 			response = handler.onPreJoinParty(members, response);
 
 		if (response.isAllowed()) {
-
-			// Not done yet
-
+			for (UUID player : members)
+				SamaGamesAPI.get().getProxyDataManager().getProxiedPlayer(player).connect(SamaGamesAPI.get().getServerName());
 		} else {
 			UUID player = UUID.fromString(parts[1]);
 			TextComponent component = new TextComponent("Impossible de vous connecter : " + response.getReason());

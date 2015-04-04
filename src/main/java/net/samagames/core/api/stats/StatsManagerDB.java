@@ -23,12 +23,19 @@ public class StatsManagerDB extends StatsManager {
 
 	@Override
 	public void increase(final UUID player, final String stat, final int amount) {
-		Bukkit.getScheduler().runTaskAsynchronously(plugin, new Runnable() {
-			public void run() {
-				Jedis j = APIPlugin.getApi().getResource();
-				j.zincrby("gamestats:" + game + ":" + stat, amount, player.toString());
-				j.close();
-			}
+		Bukkit.getScheduler().runTaskAsynchronously(plugin, () -> {
+			Jedis j = APIPlugin.getApi().getResource();
+			j.zincrby("gamestats:" + game + ":" + stat, amount, player.toString());
+			j.close();
+		});
+	}
+
+	@Override
+	public void setValue(UUID player, String stat, int value) {
+		Bukkit.getScheduler().runTaskAsynchronously(plugin, () -> {
+			Jedis j = APIPlugin.getApi().getResource();
+			j.zadd("gamestats:" + game + ":" + stat, value, player.toString());
+			j.close();
 		});
 	}
 

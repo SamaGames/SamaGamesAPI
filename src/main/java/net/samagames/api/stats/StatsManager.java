@@ -23,5 +23,7 @@ public abstract class StatsManager {
 
 	public abstract void increase(UUID player, String stat, int amount);
 
+	public abstract void setValue(UUID player, String stat, int value);
+
 	public abstract double getStatValue(UUID player, String stat);
 }

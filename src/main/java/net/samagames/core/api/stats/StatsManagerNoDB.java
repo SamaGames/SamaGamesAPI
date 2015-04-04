@@ -23,6 +23,11 @@ public class StatsManagerNoDB extends StatsManager {
 	}
 
 	@Override
+	public void setValue(UUID player, String stat, int value) {
+
+	}
+
+	@Override
 	public double getStatValue(UUID player, String stat) {
 		return 0D;
 	}

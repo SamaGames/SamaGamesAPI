@@ -13,6 +13,11 @@ import java.util.UUID;
  */
 public interface ProxyDataManager {
 
+	/**
+	 * Return the set of all the players on a given server
+	 * @param server The server you want to get players for
+	 * @return A set with all players UUID
+	 */
 	public Set<UUID> getPlayersOnServer(String server);
 	public Set<UUID> getPlayersOnProxy(String server);
 	public ProxiedPlayer getProxiedPlayer(UUID uuid);
