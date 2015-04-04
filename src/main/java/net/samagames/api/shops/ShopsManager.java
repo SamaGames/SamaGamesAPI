@@ -29,10 +29,6 @@ public abstract class ShopsManager {
     	this.api = api;
 	}
 
-    protected String getKey(String item, UUID id, String suffix) {
-        return "shops:"+gameType+":"+item+":"+id.toString()+":"+suffix;
-    }
-
     /**
      * Gives the item level for a specified item and a specified player
      * The level of an item is, for example "diamond" for the quake "hoe" item
@@ -79,7 +75,6 @@ public abstract class ShopsManager {
      * @param player The player you are querying
      * @param item The item you are querying ("hoe" for example)
      * @param itemLevel the level you want to add ("diamond" for example)
-     * @return All the item levels the user bought for this item
      */
     public abstract void addOwnedLevel(UUID player, String item, String itemLevel);
 
@@ -89,7 +84,6 @@ public abstract class ShopsManager {
      * @param player The player you are querying
      * @param item The item you are querying ("hoe" for example)
      * @param itemLevel the level you want to add ("diamond" for example)
-     * @return All the item levels the user bought for this item
      */
     public void addOwnedLevel(Player player, String item, String itemLevel) {
         addOwnedLevel(player.getUniqueId(), item, itemLevel);
@@ -101,7 +95,6 @@ public abstract class ShopsManager {
      * @param player The player you are querying
      * @param item The item you are querying ("hoe" for example)
      * @param level the level you want to add ("diamond" for example)
-     * @return All the item levels the user bought for this item
      */
     public abstract void setCurrentLevel(UUID player, String item, String level);
 
@@ -111,7 +104,6 @@ public abstract class ShopsManager {
      * @param player The player you are querying
      * @param item The item you are querying ("hoe" for example)
      * @param level the level you want to add ("diamond" for example)
-     * @return All the item levels the user bought for this item
      */
     public void setCurrentLevel(Player player, String item, String level) {
         setCurrentLevel(player.getUniqueId(), item, level);
