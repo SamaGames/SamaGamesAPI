@@ -8,6 +8,7 @@
 "LOCATION/src/main/java/net/samagames/api/network/JoinResponse.java"
 "LOCATION/src/main/java/net/samagames/api/network/ResponseType.java"
 "LOCATION/src/main/java/net/samagames/api/network/ProxyDataManager.java"
+"LOCATION/src/main/java/net/samagames/api/network/ProxiedPlayer.java"
 "LOCATION/src/main/java/net/samagames/api/player/InvalidTypeException.java"
 "LOCATION/src/main/java/net/samagames/api/player/FinancialCallback.java"
 "LOCATION/src/main/java/net/samagames/api/player/PlayerDataManager.java"

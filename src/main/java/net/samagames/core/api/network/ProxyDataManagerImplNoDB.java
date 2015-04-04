@@ -1,5 +1,6 @@
 package net.samagames.core.api.network;
 
+import net.samagames.api.network.ProxiedPlayer;
 import net.samagames.api.network.ProxyDataManager;
 
 import java.util.*;
@@ -20,6 +21,11 @@ public class ProxyDataManagerImplNoDB implements ProxyDataManager {
 	@Override
 	public Set<UUID> getPlayersOnProxy(String server) {
 		return new HashSet<>();
+	}
+
+	@Override
+	public ProxiedPlayer getProxiedPlayer(UUID uuid) {
+		return new ProxiedPlayerNoDB();
 	}
 
 	@Override

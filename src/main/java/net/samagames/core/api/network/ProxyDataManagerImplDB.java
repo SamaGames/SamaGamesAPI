@@ -1,6 +1,7 @@
 package net.samagames.core.api.network;
 
 import net.samagames.api.SamaGamesAPI;
+import net.samagames.api.network.ProxiedPlayer;
 import net.samagames.api.network.ProxyDataManager;
 import net.samagames.permissionsapi.database.DatabaseManager;
 import redis.clients.jedis.Jedis;
@@ -44,6 +45,11 @@ public class ProxyDataManagerImplDB implements ProxyDataManager {
 		data.stream().forEach(str -> ret.add(UUID.fromString(str)));
 
 		return ret;
+	}
+
+	@Override
+	public ProxiedPlayer getProxiedPlayer(UUID uuid) {
+		return new ProxiedPlayerDB(uuid);
 	}
 
 	@Override

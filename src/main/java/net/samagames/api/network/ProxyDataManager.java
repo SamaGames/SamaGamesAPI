@@ -15,6 +15,7 @@ public interface ProxyDataManager {
 
 	public Set<UUID> getPlayersOnServer(String server);
 	public Set<UUID> getPlayersOnProxy(String server);
+	public ProxiedPlayer getProxiedPlayer(UUID uuid);
 
 	Map<String, String> getServers();
 }
