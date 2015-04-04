@@ -33,26 +33,86 @@ public abstract class ShopsManager {
         return "shops:"+gameType+":"+item+":"+id.toString()+":"+suffix;
     }
 
+    /**
+     * Gives the item level for a specified item and a specified player
+     * The level of an item is, for example "diamond" for the quake "hoe" item
+     * @param player The player you are querying
+     * @param item The item you are querying ("hoe" for example)
+     * @return The active item level for this player and this item
+     */
 	public String getItemLevelForPlayer(Player player, String item) {
 		return getItemLevelForPlayer(player.getUniqueId(), item);
 	}
 
+    /**
+     * Gives the item level for a specified item and a specified player
+     * The level of an item is, for example "diamond" for the quake "hoe" item
+     * @param player The player you are querying
+     * @param item The item you are querying ("hoe" for example)
+     * @return The active item level for this player and this item
+     */
     public abstract String getItemLevelForPlayer(UUID player, String item);
 
+    /**
+     * Lists the owned item levels for a specified item and a specified player
+     * The level of an item is, for example "diamond" for the quake "hoe" item
+     * @param player The player you are querying
+     * @param item The item you are querying ("hoe" for example)
+     * @return All the item levels the user bought for this item
+     */
     public abstract List<String> getOwnedLevels(UUID player, String item);
 
+    /**
+     * Lists the owned item levels for a specified item and a specified player
+     * The level of an item is, for example "diamond" for the quake "hoe" item
+     * @param player The player you are querying
+     * @param item The item you are querying ("hoe" for example)
+     * @return All the item levels the user bought for this item
+     */
     public List<String> getOwnedLevels(Player player, String item) {
         return getOwnedLevels(player.getUniqueId(), item);
     }
 
+    /**
+     * Add a level to player owned levels for this item
+     * The level of an item is, for example "diamond" for the quake "hoe" item
+     * @param player The player you are querying
+     * @param item The item you are querying ("hoe" for example)
+     * @param itemLevel the level you want to add ("diamond" for example)
+     * @return All the item levels the user bought for this item
+     */
     public abstract void addOwnedLevel(UUID player, String item, String itemLevel);
 
+    /**
+     * Add a level to player owned levels for this item
+     * The level of an item is, for example "diamond" for the quake "hoe" item
+     * @param player The player you are querying
+     * @param item The item you are querying ("hoe" for example)
+     * @param itemLevel the level you want to add ("diamond" for example)
+     * @return All the item levels the user bought for this item
+     */
     public void addOwnedLevel(Player player, String item, String itemLevel) {
         addOwnedLevel(player.getUniqueId(), item, itemLevel);
     }
 
+    /**
+     * Sets the current level for this player and item
+     * The level of an item is, for example "diamond" for the quake "hoe" item
+     * @param player The player you are querying
+     * @param item The item you are querying ("hoe" for example)
+     * @param level the level you want to add ("diamond" for example)
+     * @return All the item levels the user bought for this item
+     */
     public abstract void setCurrentLevel(UUID player, String item, String level);
 
+    /**
+     * Sets the current level for this player and item
+     * The level of an item is, for example "diamond" for the quake "hoe" item
+     * @param player The player you are querying
+     * @param item The item you are querying ("hoe" for example)
+     * @param level the level you want to add ("diamond" for example)
+     * @return All the item levels the user bought for this item
+     */
     public void setCurrentLevel(Player player, String item, String level) {
         setCurrentLevel(player.getUniqueId(), item, level);
     }
