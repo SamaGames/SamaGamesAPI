@@ -33,27 +33,27 @@ public abstract class ShopsManager {
         return "shops:"+gameType+":"+item+":"+id.toString()+":"+suffix;
     }
 
-	public String getCurrentItemForPlayer(Player player, String itemCategory) {
-		return getCurrentItemForPlayer(player.getUniqueId(), itemCategory);
+	public String getItemLevelForPlayer(Player player, String item) {
+		return getItemLevelForPlayer(player.getUniqueId(), item);
 	}
 
-    public abstract String getCurrentItemForPlayer(UUID player, String itemCategory);
+    public abstract String getItemLevelForPlayer(UUID player, String item);
 
-    public abstract List<String> getOwnedItems(UUID player, String itemCategory);
+    public abstract List<String> getOwnedLevels(UUID player, String item);
 
-    public List<String> getOwnedItems(Player player, String itemCategory) {
-        return getOwnedItems(player.getUniqueId(), itemCategory);
+    public List<String> getOwnedLevels(Player player, String item) {
+        return getOwnedLevels(player.getUniqueId(), item);
     }
 
-    public abstract void addOwnedItem(UUID player, String itemCategory, String itemName);
+    public abstract void addOwnedLevel(UUID player, String item, String itemLevel);
 
-    public void addOwnedItem(Player player, String itemCategory, String itemName) {
-        addOwnedItem(player.getUniqueId(), itemCategory, itemName);
+    public void addOwnedLevel(Player player, String item, String itemLevel) {
+        addOwnedLevel(player.getUniqueId(), item, itemLevel);
     }
 
-    public abstract void setCurrentItem(UUID player, String itemCategory, String itemName);
+    public abstract void setCurrentLevel(UUID player, String item, String level);
 
-    public void setCurrentItem(Player player, String itemCategory, String itemName) {
-        setCurrentItem(player.getUniqueId(), itemCategory, itemName);
+    public void setCurrentLevel(Player player, String item, String level) {
+        setCurrentLevel(player.getUniqueId(), item, level);
     }
 }

@@ -21,20 +21,24 @@ public class ShopsManagerNoDB extends ShopsManager {
 	}
 
 	@Override
-	public String getCurrentItemForPlayer(UUID player, String itemCategory) {
+	public String getItemLevelForPlayer(UUID player, String item) {
 		return null;
 	}
 
 	@Override
-	public List<String> getOwnedItems(UUID player, String itemCategory) {
-		return new ArrayList<>();
+	public List<String> getOwnedLevels(UUID player, String item) {
+		return null;
 	}
 
 	@Override
-	public void addOwnedItem(UUID player, String itemCategory, String itemName) {
+	public void addOwnedLevel(UUID player, String item, String itemLevel) {
+
 	}
 
 	@Override
-	public void setCurrentItem(UUID player, String itemCategory, String itemName) {
+	public void setCurrentLevel(UUID player, String item, String level) {
+
 	}
+
+
 }

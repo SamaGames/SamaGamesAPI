@@ -26,12 +26,12 @@ public class ShopsManagerDB extends ShopsManager {
 	}
 
 	@Override
-	public String getCurrentItemForPlayer(UUID player, String itemCategory) {
+	public String getItemLevelForPlayer(UUID player, String itemCategory) {
 		return api.getPlayerManager().getPlayerData(player).get("shops:"+gameType+":"+itemCategory+":current");
 	}
 
 	@Override
-	public List<String> getOwnedItems(UUID player, String itemCategory) {
+	public List<String> getOwnedLevels(UUID player, String itemCategory) {
 		String value = api.getPlayerManager().getPlayerData(player).get("shops:" + gameType + ":" + itemCategory + ":owned");
 		if (value == null)
 			return null;
@@ -39,7 +39,7 @@ public class ShopsManagerDB extends ShopsManager {
 	}
 
 	@Override
-	public void addOwnedItem(UUID player, String itemCategory, String itemName) {
+	public void addOwnedLevel(UUID player, String itemCategory, String itemName) {
 		String current = api.getPlayerManager().getPlayerData(player).get("shops:" + gameType + ":" + itemCategory + ":owned");
 		if (current == null)
 			current = itemName;
@@ -53,7 +53,7 @@ public class ShopsManagerDB extends ShopsManager {
 	}
 
 	@Override
-	public void setCurrentItem(UUID player, String itemCategory, String itemName) {
+	public void setCurrentLevel(UUID player, String itemCategory, String itemName) {
 		api.getPlayerManager().getPlayerData(player).set("shops:"+gameType+":"+itemCategory+":current", itemName);
 	}
 }
