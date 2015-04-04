@@ -159,7 +159,8 @@ public class PlayerDataDB extends PlayerData {
 	public void withdrawCoins(final long famount, final FinancialCallback<Long> financialCallback) {
 		new Thread(() -> {
 			long result = decreaseCoins(famount);
-			financialCallback.done(result, -famount, null);
+			if (financialCallback != null)
+				financialCallback.done(result, -famount, null);
 
 		}, "WithdrawCoinsThread").start();
 	}
@@ -207,7 +208,9 @@ public class PlayerDataDB extends PlayerData {
 	public void withdrawStars(final long amount, FinancialCallback<Long> financialCallback) {
 		new Thread(() -> {
 			long result = decreaseStars(amount);
-			financialCallback.done(result, -amount, null);
+
+			if (financialCallback != null)
+				financialCallback.done(result, -amount, null);
 
 		}, "WithdrawStarsThread").start();
 	}
