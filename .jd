@@ -12,7 +12,6 @@
 "LOCATION/src/main/java/net/samagames/api/player/FinancialCallback.java"
 "LOCATION/src/main/java/net/samagames/api/player/PlayerDataManager.java"
 "LOCATION/src/main/java/net/samagames/api/player/PlayerData.java"
-"LOCATION/src/main/java/net/samagames/api/proxys/ProxyDataManager.java"
 "LOCATION/src/main/java/net/samagames/api/settings/SettingsManager.java"
 "LOCATION/src/main/java/net/samagames/api/shops/ShopsManager.java"
 "LOCATION/src/main/java/net/samagames/api/signs/SignData.java"
