@@ -44,6 +44,9 @@ public class AchievementManagerImpl implements AchievementManager
         this.achievements.clear();
         this.achievementCategories.clear();
 
+        if(!this.api.getResource().exists("achievements:list"))
+            this.api.getResource().set("achievements:list", "{\"categories\":[],\"achievements\":[]}");
+
         String json = this.api.getResource().get("achievements:list");
         JsonObject jsonObject = (JsonObject) new JsonParser().parse(json);
 
