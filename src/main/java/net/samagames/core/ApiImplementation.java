@@ -6,6 +6,7 @@ import net.samagames.api.channels.PubSubAPI;
 import net.samagames.api.games.GameManager;
 import net.samagames.api.names.UUIDTranslator;
 import net.samagames.api.network.JoinManager;
+import net.samagames.api.network.ProxyDataManager;
 import net.samagames.api.player.PlayerDataManager;
 import net.samagames.api.settings.SettingsManager;
 import net.samagames.api.shops.ShopsManager;
@@ -15,6 +16,7 @@ import net.samagames.core.api.games.GameManagerImpl;
 import net.samagames.core.api.names.UUIDTranslatorDB;
 import net.samagames.core.api.names.UUIDTranslatorNODB;
 import net.samagames.core.api.network.JoinManagerImplement;
+import net.samagames.core.api.network.ProxyDataManagerImplNoDB;
 import net.samagames.core.api.player.PlayerDataManagerNoDB;
 import net.samagames.core.api.player.PlayerDataManagerWithDB;
 import net.samagames.core.api.pubsub.PubSubAPIDB;
@@ -49,6 +51,7 @@ public class ApiImplementation extends SamaGamesAPI
 	protected UUIDTranslator uuidTranslator;
 	protected JoinManager joinManager;
 	protected GameManager gameApi;
+	protected ProxyDataManager proxyDataManager;
 
 	public ApiImplementation(APIPlugin plugin, boolean database) {
 		this.plugin = plugin;
@@ -78,7 +81,16 @@ public class ApiImplementation extends SamaGamesAPI
 			pubSub = new PubSubNoDB();
 			pubSub.subscribe(plugin.getServerName(), implement);
 			uuidTranslator = new UUIDTranslatorNODB();
+			proxyDataManager = new ProxyDataManagerImplNoDB();
 		}
+	}
+
+	public APIPlugin getPlugin() {
+		return plugin;
+	}
+
+	public ProxyDataManager getProxyDataManager() {
+		return proxyDataManager;
 	}
 
 	public GameManager getGameManager() {

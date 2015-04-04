@@ -4,6 +4,7 @@ import net.samagames.api.achievements.AchievementManager;
 import net.samagames.api.channels.PubSubAPI;
 import net.samagames.api.games.GameManager;
 import net.samagames.api.names.UUIDTranslator;
+import net.samagames.api.network.ProxyDataManager;
 import net.samagames.api.player.PlayerDataManager;
 import net.samagames.api.settings.SettingsManager;
 import net.samagames.api.shops.ShopsManager;
@@ -53,5 +54,6 @@ public abstract class SamaGamesAPI {
 	public abstract PubSubAPI getPubSub();
 	public abstract UUIDTranslator getUUIDTranslator();
 	public abstract GameManager getGameManager();
+	public abstract ProxyDataManager getProxyDataManager();
 
 }

@@ -55,7 +55,7 @@ public class TeamManager {
                 vt.setSuffix(PermissionsBukkit.getSuffix(pg));
 
             teamHandler.addTeam(vt);
-            APIPlugin.log("[TeamRegister] Team " + teamName + " ajoutée.");
+            APIPlugin.log("[TeamRegister] Team " + teamName + " ajoutée  --> " +  vt.getPrefix() + " / " + vt);
         }
     }
 
