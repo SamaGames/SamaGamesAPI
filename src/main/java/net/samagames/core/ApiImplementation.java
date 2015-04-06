@@ -16,10 +16,7 @@ import net.samagames.core.api.achievements.AchievementManagerImpl;
 import net.samagames.core.api.games.GameManagerImpl;
 import net.samagames.core.api.names.UUIDTranslatorDB;
 import net.samagames.core.api.names.UUIDTranslatorNODB;
-import net.samagames.core.api.network.JoinManagerImplement;
-import net.samagames.core.api.network.PartiesPubSub;
-import net.samagames.core.api.network.ProxyDataManagerImplDB;
-import net.samagames.core.api.network.ProxyDataManagerImplNoDB;
+import net.samagames.core.api.network.*;
 import net.samagames.core.api.parties.PartiesManagerNoDb;
 import net.samagames.core.api.parties.PartiesManagerWithDB;
 import net.samagames.core.api.player.PlayerDataManagerNoDB;
@@ -74,10 +71,13 @@ public class ApiImplementation extends SamaGamesAPI
 			pubSub = new PubSubAPIDB(this);
 			pubSub.subscribe("global", new GlobalChannelHandler(plugin));
 			pubSub.subscribe(plugin.getServerName(), new GlobalChannelHandler(plugin));
-			pubSub.subscribe(plugin.getServerName(), implement);
 
 			pubSub.subscribe("commands.servers." + getServerName(), new RemoteCommandsHandler());
 			pubSub.subscribe("commands.servers.all", new RemoteCommandsHandler());
+
+			ModerationJoinHandler moderationJoinHandler = new ModerationJoinHandler(implement);
+			implement.registerHandler(moderationJoinHandler, - 1);
+			SamaGamesAPI.get().getPubSub().subscribe(plugin.getServerName(), moderationJoinHandler);
 			pubSub.subscribe("partyjoin." + getServerName(), new PartiesPubSub(implement));
 
 			uuidTranslator = new UUIDTranslatorDB(plugin, this);
@@ -87,8 +87,10 @@ public class ApiImplementation extends SamaGamesAPI
 			settingsManager = new SettingsManagerNoDB();
 			playerDataManager = new PlayerDataManagerNoDB();
 			pubSub = new PubSubNoDB();
-			pubSub.subscribe(plugin.getServerName(), implement);
 			uuidTranslator = new UUIDTranslatorNODB();
+			ModerationJoinHandler moderationJoinHandler = new ModerationJoinHandler(implement);
+			implement.registerHandler(moderationJoinHandler, - 1);
+			SamaGamesAPI.get().getPubSub().subscribe(plugin.getServerName(), moderationJoinHandler);
 			proxyDataManager = new ProxyDataManagerImplNoDB();
 			partiesManager = new PartiesManagerNoDb();
 		}

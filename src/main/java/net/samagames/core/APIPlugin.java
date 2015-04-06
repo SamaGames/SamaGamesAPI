@@ -102,10 +102,6 @@ public class APIPlugin extends JavaPlugin implements Listener {
 		Loading listeners
 		 */
 
-		ModerationJoinHandler moderationJoinHandler = new ModerationJoinHandler();
-		api.getJoinManager().registerHandler(moderationJoinHandler, -1);
-		api.getPubSub().subscribe(getServerName(), moderationJoinHandler);
-
 		debugListener = new DebugListener();
 		api.getJoinManager().registerHandler(debugListener, 0);
 		api.getPubSub().subscribe("*", debugListener);

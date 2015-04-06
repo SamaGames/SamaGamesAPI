@@ -10,17 +10,20 @@ import java.util.UUID;
 public interface IMasterControlledGame extends JoinHandler
 {
     @Override
-    public JoinResponse onLogin(UUID player, JoinResponse response);
+    JoinResponse requestJoin(UUID player, JoinResponse response);
 
     @Override
-    public JoinResponse onJoin(Player player, JoinResponse response);
+    JoinResponse requestPartyJoin(UUID partyLeader, Set<UUID> partyMembers, JoinResponse response);
 
     @Override
-    public void onModerationJoin(Player player);
+    void onLogin(UUID player);
 
     @Override
-    public void onLogout(Player player);
+    void finishJoin(Player player);
 
     @Override
-    public JoinResponse onPreJoinParty(Set<UUID> players, JoinResponse response);
+    void onModerationJoin(Player player);
+
+    @Override
+    void onLogout(Player player);
 }
