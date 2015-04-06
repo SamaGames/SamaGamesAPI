@@ -1,8 +1,7 @@
 package net.samagames.core.api.pubsub;
 
-import net.samagames.api.channels.PacketsReceiver;
-import net.samagames.api.channels.PatternReceiver;
-import net.samagames.api.channels.PubSubAPI;
+import net.samagames.api.channels.*;
+import net.samagames.api.channels.Sender;
 
 /**
  * This file is a part of the SamaGames project
@@ -25,5 +24,15 @@ public class PubSubNoDB implements PubSubAPI {
 	@Override
 	public void send(String channel, String message) {
 		// RIEN.
+	}
+
+	@Override
+	public void send(PendingMessage message) {
+
+	}
+
+	@Override
+	public Sender getSender() {
+		return PendingMessage::runAfter;
 	}
 }

@@ -1,9 +1,11 @@
 package net.samagames.core.api.network;
 
+import com.google.gson.Gson;
 import net.samagames.api.SamaGamesAPI;
 import net.samagames.api.network.ProxiedPlayer;
 import net.samagames.api.network.ProxyDataManager;
 import net.samagames.permissionsapi.database.DatabaseManager;
+import org.apache.commons.lang3.StringUtils;
 import redis.clients.jedis.Jedis;
 
 import java.util.*;
@@ -50,6 +52,11 @@ public class ProxyDataManagerImplDB implements ProxyDataManager {
 	@Override
 	public ProxiedPlayer getProxiedPlayer(UUID uuid) {
 		return new ProxiedPlayerDB(uuid);
+	}
+
+	@Override
+	public void apiexec(String command, String... args) {
+		SamaGamesAPI.get().getPubSub().send("apiexec." + command, StringUtils.join(args, " "));
 	}
 
 	@Override

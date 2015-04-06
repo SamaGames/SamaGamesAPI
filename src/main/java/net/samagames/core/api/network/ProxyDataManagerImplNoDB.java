@@ -29,6 +29,11 @@ public class ProxyDataManagerImplNoDB implements ProxyDataManager {
 	}
 
 	@Override
+	public void apiexec(String command, String... args) {
+
+	}
+
+	@Override
 	public Map<String, String> getServers() {
 		return new HashMap<>();
 	}

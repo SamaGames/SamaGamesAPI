@@ -17,6 +17,7 @@ import net.samagames.core.api.names.UUIDTranslatorDB;
 import net.samagames.core.api.names.UUIDTranslatorNODB;
 import net.samagames.core.api.network.JoinManagerImplement;
 import net.samagames.core.api.network.PartiesPubSub;
+import net.samagames.core.api.network.ProxyDataManagerImplDB;
 import net.samagames.core.api.network.ProxyDataManagerImplNoDB;
 import net.samagames.core.api.player.PlayerDataManagerNoDB;
 import net.samagames.core.api.player.PlayerDataManagerWithDB;
@@ -76,6 +77,7 @@ public class ApiImplementation extends SamaGamesAPI
 			pubSub.subscribe("partyjoin." + getServerName(), new PartiesPubSub(implement));
 
 			uuidTranslator = new UUIDTranslatorDB(plugin, this);
+			proxyDataManager = new ProxyDataManagerImplDB(this);
 		} else {
 			settingsManager = new SettingsManagerNoDB();
 			playerDataManager = new PlayerDataManagerNoDB();

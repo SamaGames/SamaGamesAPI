@@ -25,4 +25,8 @@ public interface PubSubAPI {
 	 */
 	public void send(String channel, String message);
 
+	void send(PendingMessage message);
+
+	public Sender getSender();
+
 }

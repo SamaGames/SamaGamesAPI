@@ -3,6 +3,7 @@ package net.samagames.core.api.pubsub;
 import net.samagames.api.SamaGamesAPI;
 import net.samagames.api.channels.PacketsReceiver;
 import net.samagames.api.channels.PatternReceiver;
+import net.samagames.api.channels.PendingMessage;
 import net.samagames.api.channels.PubSubAPI;
 import net.samagames.core.APIPlugin;
 import org.bukkit.Bukkit;
@@ -20,6 +21,7 @@ public class PubSubAPIDB implements PubSubAPI {
 
 	private SamaGamesAPI api;
 	private Subscriber subscriber;
+	private Sender sender;
 	private boolean continueSub = true;
 
 	public PubSubAPIDB(SamaGamesAPI api) {
@@ -49,6 +51,9 @@ public class PubSubAPIDB implements PubSubAPI {
 			}
 
 		Bukkit.getLogger().info("Correctly subscribed.");
+
+		sender = new Sender(api);
+		new Thread(sender, "SenderThread").start();
 	}
 
 	@Override
@@ -63,13 +68,17 @@ public class PubSubAPIDB implements PubSubAPI {
 
 	@Override
 	public void send(String channel, String message) {
-		new Thread(() -> {
-			Jedis jedis = api.getResource();
+		sender.publish(new PendingMessage(channel, message));
+	}
 
-			jedis.publish(channel, message);
+	@Override
+	public void send(PendingMessage message) {
+		sender.publish(message);
+	}
 
-			jedis.close();
-		}).start();
+	@Override
+	public net.samagames.api.channels.Sender getSender() {
+		return sender;
 	}
 
 	public void disable() {
