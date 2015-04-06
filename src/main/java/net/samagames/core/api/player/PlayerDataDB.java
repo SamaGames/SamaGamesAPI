@@ -7,7 +7,6 @@ import net.samagames.api.player.PlayerData;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import redis.clients.jedis.Jedis;
-import redis.clients.jedis.ShardedJedis;
 
 import java.util.Date;
 import java.util.Map;
@@ -177,7 +176,7 @@ public class PlayerDataDB extends PlayerData {
 
 	@Override
 	public long decreaseStars(long decrBy) {
-		return decreaseStars(-decrBy);
+		return increaseStars(-decrBy);
 	}
 
 	@Override
