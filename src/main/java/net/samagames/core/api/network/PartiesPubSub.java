@@ -35,20 +35,6 @@ public class PartiesPubSub implements PacketsReceiver {
 	@Override
 	public void receive(String channel, String packet) {
 		UUID partyID = UUID.fromString(packet);
-		UUID leader = SamaGamesAPI.get().getPartiesManager().getLeader(partyID);
-		Set<UUID> members = SamaGamesAPI.get().getPartiesManager().getPlayersInParty(partyID).keySet();
-
-		JoinResponse response = new JoinResponse();
-		for (JoinHandler handler : implement.handlerTreeMap.values())
-			response = handler.onPreJoinParty(members, response);
-
-		if (response.isAllowed()) {
-			for (UUID player : members)
-				SamaGamesAPI.get().getProxyDataManager().getProxiedPlayer(player).connect(SamaGamesAPI.get().getServerName());
-		} else {
-			TextComponent component = new TextComponent("Impossible de vous connecter : " + response.getReason());
-			component.setColor(net.md_5.bungee.api.ChatColor.RED);
-			SamaGamesAPI.get().getProxyDataManager().getProxiedPlayer(leader).sendMessage(component);
-		}
+		implement.requestPartyJoin(partyID);
 	}
 }

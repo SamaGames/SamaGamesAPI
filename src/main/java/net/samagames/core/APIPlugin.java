@@ -1,7 +1,7 @@
 package net.samagames.core;
 
 import net.samagames.api.SamaGamesAPI;
-import net.samagames.core.database.ConnectionDetails;
+import net.samagames.core.api.network.ModerationJoinHandler;
 import net.samagames.core.database.DatabaseConnector;
 import net.samagames.core.listeners.*;
 import net.samagames.permissionsbukkit.PermissionsBukkit;

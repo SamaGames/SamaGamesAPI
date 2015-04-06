@@ -1,8 +1,9 @@
-package net.samagames.core.listeners;
+package net.samagames.core.api.network;
 
 import net.samagames.api.channels.PacketsReceiver;
 import net.samagames.api.network.JoinHandler;
 import net.samagames.permissionsbukkit.PermissionsBukkit;
+import org.apache.commons.lang.StringUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
@@ -16,6 +17,11 @@ import java.util.UUID;
 public class ModerationJoinHandler implements JoinHandler, PacketsReceiver {
 
     protected HashMap<UUID, UUID> teleportTargets = new HashMap<>();
+    protected JoinManagerImplement manager;
+
+    public ModerationJoinHandler(JoinManagerImplement manager) {
+        this.manager = manager;
+    }
 
     @Override
     public void onModerationJoin(Player player) {
@@ -31,10 +37,15 @@ public class ModerationJoinHandler implements JoinHandler, PacketsReceiver {
 
     @Override
     public void receive(String channel, String packet) {
+        String[] args = StringUtils.split(packet, " ");
+        String id = args[0];
+        UUID uuid = UUID.fromString(id);
+
+        if (PermissionsBukkit.hasPermission(uuid, "games.modjoin"))
+            manager.moderatorsExpected.add(uuid);
+
         if (packet.startsWith("teleport")) {
             try  {
-                String[] args = packet.split(" ");
-                UUID uuid = UUID.fromString(args[1]);
                 UUID target = UUID.fromString(args[2]);
                 if (PermissionsBukkit.hasPermission(uuid, "games.modjoin")) {
                     teleportTargets.put(uuid, target);
