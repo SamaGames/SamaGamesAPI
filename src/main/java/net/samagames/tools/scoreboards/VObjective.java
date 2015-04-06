@@ -1,6 +1,7 @@
 package net.samagames.tools.scoreboards;
 
-import net.minecraft.server.v1_8_R1.*;
+import net.minecraft.server.v1_8_R2.*;
+import net.minecraft.server.v1_8_R2.IScoreboardCriteria.EnumScoreboardHealthDisplay;
 import net.samagames.tools.Reflection;
 import net.samagames.tools.ReflectionUtilities;
 import org.bukkit.OfflinePlayer;
@@ -273,12 +274,12 @@ public class VObjective {
 
         public static void updateScoreObjective(Player p, VObjective objective, VScore score)
         {
-            sendPacket(makeScoreboardScorePacket(objective.getName(), EnumScoreboardAction.CHANGE, score.getPlayerName(), score.getScore()), p);
+            sendPacket(makeScoreboardScorePacket(objective.getName(), PacketPlayOutScoreboardScore.EnumScoreboardAction.CHANGE, score.getPlayerName(), score.getScore()), p);
         }
 
         public static void updateScoreObjective(Player p, VObjective objective, VScore score, int score_int)
         {
-            sendPacket(makeScoreboardScorePacket(objective.getName(), EnumScoreboardAction.CHANGE, score.getPlayerName(), score_int), p);
+            sendPacket(makeScoreboardScorePacket(objective.getName(), PacketPlayOutScoreboardScore.EnumScoreboardAction.CHANGE, score.getPlayerName(), score_int), p);
         }
 
         public static void removeScoreObjective(Player p, VObjective objective)
@@ -291,11 +292,11 @@ public class VObjective {
 
         public static void removeScoreObjective(Player p, VObjective objective, VScore score)
         {
-            sendPacket(makeScoreboardScorePacket(objective.getName(), EnumScoreboardAction.REMOVE, score.getPlayerName(), 0), p);
+            sendPacket(makeScoreboardScorePacket(objective.getName(), PacketPlayOutScoreboardScore.EnumScoreboardAction.REMOVE, score.getPlayerName(), 0), p);
         }
 
 
-        public static PacketPlayOutScoreboardScore makeScoreboardScorePacket(String objectiveName, EnumScoreboardAction action, String scoreName, int scoreValue)
+        public static PacketPlayOutScoreboardScore makeScoreboardScorePacket(String objectiveName, PacketPlayOutScoreboardScore.EnumScoreboardAction action, String scoreName, int scoreValue)
         {
             if(objectiveName == null)
                 objectiveName = "";

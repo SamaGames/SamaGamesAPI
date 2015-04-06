@@ -8,9 +8,9 @@ import net.samagames.api.achievements.AchievementReward;
 import net.samagames.core.APIPlugin;
 import net.samagames.tools.ItemUtils;
 import org.bukkit.Bukkit;
-import org.bukkit.craftbukkit.libs.com.google.gson.JsonArray;
-import org.bukkit.craftbukkit.libs.com.google.gson.JsonObject;
-import org.bukkit.craftbukkit.libs.com.google.gson.JsonParser;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 

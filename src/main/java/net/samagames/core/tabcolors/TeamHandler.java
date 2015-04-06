@@ -1,7 +1,7 @@
 package net.samagames.core.tabcolors;
 
-import net.minecraft.server.v1_8_R1.EnumNameTagVisibility;
-import net.minecraft.server.v1_8_R1.PacketPlayOutScoreboardTeam;
+import net.minecraft.server.v1_8_R2.PacketPlayOutScoreboardTeam;
+import net.minecraft.server.v1_8_R2.ScoreboardTeamBase;
 import net.samagames.tools.Reflection;
 import org.bukkit.ChatColor;
 import org.bukkit.OfflinePlayer;
@@ -248,7 +248,7 @@ public class TeamHandler {
                 ReflectionUtilities.setValue(packet, "b", team.getDisplayName());
                 ReflectionUtilities.setValue(packet, "c", team.getPrefix());
                 ReflectionUtilities.setValue(packet, "d", team.getSuffix());
-                ReflectionUtilities.setValue(packet, "e", EnumNameTagVisibility.ALWAYS.e);
+                ReflectionUtilities.setValue(packet, "e", ScoreboardTeamBase.EnumNameTagVisibility.ALWAYS.e);
                 ReflectionUtilities.setValue(packet, "f", - 1);
                 ReflectionUtilities.setValue(packet, "g", (Collection) news);
                 ReflectionUtilities.setValue(packet, "h", n);

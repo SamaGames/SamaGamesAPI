@@ -1,7 +1,7 @@
 package net.samagames.core.api.names;
 
 import com.google.common.collect.ImmutableList;
-import org.bukkit.craftbukkit.libs.com.google.gson.Gson;
+import com.google.gson.Gson;
 
 import java.io.InputStreamReader;
 import java.io.OutputStream;

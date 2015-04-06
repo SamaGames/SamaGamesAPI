@@ -2,7 +2,7 @@ package net.samagames.retrocompatibility;
 
 import net.samagames.api.SamaGamesAPI;
 import net.samagames.api.signs.SignData;
-import org.bukkit.craftbukkit.libs.com.google.gson.Gson;
+import com.google.gson.Gson;
 
 @Deprecated
 /**

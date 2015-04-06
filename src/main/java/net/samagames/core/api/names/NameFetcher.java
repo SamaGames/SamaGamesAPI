@@ -7,9 +7,9 @@
 package net.samagames.core.api.names;
 
 
-import org.bukkit.craftbukkit.libs.com.google.gson.JsonArray;
-import org.bukkit.craftbukkit.libs.com.google.gson.JsonObject;
-import org.bukkit.craftbukkit.libs.com.google.gson.JsonParser;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 
 import java.io.IOException;
 import java.net.URL;
@@ -26,7 +26,7 @@ class NameFetcher {
         URLConnection connection;
         try {
             connection = new URL("https://api.mojang.com/user/profiles/"
-                    + uuid.toString().replace("-", "").toLowerCase() + "/names"
+                    + uuid.toString().replace("-", "").toLowerCase() + "/players"
             ).openConnection();
             String text = new Scanner(connection.getInputStream()).useDelimiter("\\Z").next();
             JsonArray list = (JsonArray) parser.parse(text);

@@ -1,10 +1,10 @@
 package net.samagames.core.commands;
 
 import net.md_5.bungee.api.ChatColor;
-import net.minecraft.server.v1_8_R1.MinecraftServer;
+import net.minecraft.server.v1_8_R2.MinecraftServer;
 import net.samagames.core.APIPlugin;
 import org.bukkit.command.CommandSender;
-import org.bukkit.craftbukkit.v1_8_R1.entity.CraftPlayer;
+import org.bukkit.craftbukkit.v1_8_R2.entity.CraftPlayer;
 import org.bukkit.entity.Player;
 
 /**

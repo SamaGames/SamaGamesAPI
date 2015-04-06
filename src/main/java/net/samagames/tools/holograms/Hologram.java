@@ -1,15 +1,17 @@
 package net.samagames.tools.holograms;
 
-import net.minecraft.server.v1_8_R1.*;
+import net.minecraft.server.v1_8_R2.*;
 import net.samagames.core.APIPlugin;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.OfflinePlayer;
-import org.bukkit.craftbukkit.v1_8_R1.CraftWorld;
-import org.bukkit.craftbukkit.v1_8_R1.entity.CraftPlayer;
+import org.bukkit.craftbukkit.v1_8_R2.CraftWorld;
+import org.bukkit.craftbukkit.v1_8_R2.entity.CraftPlayer;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitTask;
 
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -43,7 +45,13 @@ public class Hologram {
     {
         WorldServer world = ((CraftWorld) loc.getWorld()).getHandle();
         EntityArmorStand armorStand = new EntityArmorStand(world);
-        armorStand.a(0.00001F, 0.00001F);
+        Class c = armorStand.getClass();
+        try {
+            Method m = c.getDeclaredMethod("a", float.class, float.class);
+            m.invoke(armorStand, 0.00001F, 0.00001F);
+        } catch (NoSuchMethodException | InvocationTargetException | IllegalAccessException e) {
+            e.printStackTrace();
+        }
         armorStand.setInvisible(true);
         armorStand.setGravity(false);
         armorStand.setCustomName(text);

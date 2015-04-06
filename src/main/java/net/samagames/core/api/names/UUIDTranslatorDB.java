@@ -12,7 +12,7 @@ import net.samagames.api.SamaGamesAPI;
 import net.samagames.api.names.UUIDTranslator;
 import net.samagames.core.APIPlugin;
 import org.bukkit.Bukkit;
-import org.bukkit.craftbukkit.libs.com.google.gson.Gson;
+import com.google.gson.Gson;
 import redis.clients.jedis.Jedis;
 import redis.clients.jedis.exceptions.JedisException;
 

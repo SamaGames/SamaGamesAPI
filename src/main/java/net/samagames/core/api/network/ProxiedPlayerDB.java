@@ -3,7 +3,7 @@ package net.samagames.core.api.network;
 import net.md_5.bungee.api.chat.TextComponent;
 import net.samagames.api.SamaGamesAPI;
 import net.samagames.api.network.ProxiedPlayer;
-import org.bukkit.craftbukkit.libs.com.google.gson.Gson;
+import com.google.gson.Gson;
 
 import java.util.UUID;
 

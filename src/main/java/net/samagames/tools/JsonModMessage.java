@@ -4,7 +4,7 @@ import net.md_5.bungee.api.ChatColor;
 import net.samagames.api.SamaGamesAPI;
 import net.samagames.permissionsbukkit.PermissionsBukkit;
 import org.bukkit.command.CommandSender;
-import org.bukkit.craftbukkit.libs.com.google.gson.Gson;
+import com.google.gson.Gson;
 import org.bukkit.entity.Player;
 
 /**

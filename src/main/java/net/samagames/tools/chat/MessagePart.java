@@ -1,7 +1,7 @@
 package net.samagames.tools.chat;
 
 import org.bukkit.ChatColor;
-import org.bukkit.craftbukkit.libs.com.google.gson.stream.JsonWriter;
+import com.google.gson.stream.JsonWriter;
 
 import java.util.ArrayList;
 
