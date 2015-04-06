@@ -9,6 +9,7 @@ import org.bukkit.ChatColor;
 
 import java.util.Arrays;
 import java.util.HashSet;
+import java.util.Set;
 import java.util.UUID;
 
 /**
@@ -28,16 +29,15 @@ public class PartiesPubSub implements PacketsReceiver {
 
 	/*
 	Protocol data :
-	partyjoin <uuid of the party> <uuid of the party leader> <uuid of the other members>
+	partyjoin <uuid of the party>
 	 */
 
 	@Override
 	public void receive(String channel, String packet) {
-		String[] parts = packet.split(" ");
-		UUID partyID = UUID.fromString(parts[0]);
-		HashSet<UUID> members = new HashSet<>();
-		for (String mem : Arrays.copyOfRange(parts, 1, parts.length))
-			members.add(UUID.fromString(mem));
+		UUID partyID = UUID.fromString(packet);
+		UUID leader = SamaGamesAPI.get().getPartiesManager().getLeader(partyID);
+		Set<UUID> members = SamaGamesAPI.get().getPartiesManager().getPlayersInParty(partyID).keySet();
+		members.remove(leader);
 
 		JoinResponse response = new JoinResponse();
 		for (JoinHandler handler : implement.handlerTreeMap.values())
@@ -47,10 +47,9 @@ public class PartiesPubSub implements PacketsReceiver {
 			for (UUID player : members)
 				SamaGamesAPI.get().getProxyDataManager().getProxiedPlayer(player).connect(SamaGamesAPI.get().getServerName());
 		} else {
-			UUID player = UUID.fromString(parts[1]);
 			TextComponent component = new TextComponent("Impossible de vous connecter : " + response.getReason());
 			component.setColor(net.md_5.bungee.api.ChatColor.RED);
-			SamaGamesAPI.get().getProxyDataManager().getProxiedPlayer(player).sendMessage(component);
+			SamaGamesAPI.get().getProxyDataManager().getProxiedPlayer(leader).sendMessage(component);
 		}
 	}
 }

@@ -3,6 +3,7 @@ package net.samagames.api.network;
 import org.bukkit.entity.Player;
 
 import java.util.HashSet;
+import java.util.Set;
 import java.util.UUID;
 
 public interface JoinHandler {
@@ -49,7 +50,7 @@ public interface JoinHandler {
      * @param response The pre-filled response
      * @return Filled response
      */
-    public default JoinResponse onPreJoinParty(HashSet<UUID> players, JoinResponse response) {
+    public default JoinResponse onPreJoinParty(Set<UUID> players, JoinResponse response) {
         return response;
     }
 

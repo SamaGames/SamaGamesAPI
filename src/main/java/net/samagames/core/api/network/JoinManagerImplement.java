@@ -1,5 +1,6 @@
 package net.samagames.core.api.network;
 
+import net.md_5.bungee.api.chat.TextComponent;
 import net.samagames.api.SamaGamesAPI;
 import net.samagames.api.channels.PacketsReceiver;
 import net.samagames.api.network.JoinHandler;
@@ -17,6 +18,7 @@ import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import redis.clients.jedis.Jedis;
 
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.TreeMap;
 import java.util.UUID;
@@ -69,6 +71,12 @@ public class JoinManagerImplement implements JoinManager, PacketsReceiver, Liste
 			jedis.sadd("connectedonserv:" + APIPlugin.getInstance().getServerName(), player.getUniqueId().toString());
 			jedis.close();
 		});
+    }
+
+    public void joinParty(UUID partyId) {
+
+
+
     }
 
     @EventHandler

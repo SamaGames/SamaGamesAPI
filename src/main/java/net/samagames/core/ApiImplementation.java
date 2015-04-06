@@ -7,6 +7,7 @@ import net.samagames.api.games.GameManager;
 import net.samagames.api.names.UUIDTranslator;
 import net.samagames.api.network.JoinManager;
 import net.samagames.api.network.ProxyDataManager;
+import net.samagames.api.parties.PartiesManager;
 import net.samagames.api.player.PlayerDataManager;
 import net.samagames.api.settings.SettingsManager;
 import net.samagames.api.shops.ShopsManager;
@@ -19,6 +20,8 @@ import net.samagames.core.api.network.JoinManagerImplement;
 import net.samagames.core.api.network.PartiesPubSub;
 import net.samagames.core.api.network.ProxyDataManagerImplDB;
 import net.samagames.core.api.network.ProxyDataManagerImplNoDB;
+import net.samagames.core.api.parties.PartiesManagerNoDb;
+import net.samagames.core.api.parties.PartiesManagerWithDB;
 import net.samagames.core.api.player.PlayerDataManagerNoDB;
 import net.samagames.core.api.player.PlayerDataManagerWithDB;
 import net.samagames.core.api.pubsub.PubSubAPIDB;
@@ -54,6 +57,7 @@ public class ApiImplementation extends SamaGamesAPI
 	protected JoinManager joinManager;
 	protected GameManager gameApi;
 	protected ProxyDataManager proxyDataManager;
+	protected PartiesManager partiesManager;
 
 	public ApiImplementation(APIPlugin plugin, boolean database) {
 		this.plugin = plugin;
@@ -78,6 +82,7 @@ public class ApiImplementation extends SamaGamesAPI
 
 			uuidTranslator = new UUIDTranslatorDB(plugin, this);
 			proxyDataManager = new ProxyDataManagerImplDB(this);
+			partiesManager = new PartiesManagerWithDB(this);
 		} else {
 			settingsManager = new SettingsManagerNoDB();
 			playerDataManager = new PlayerDataManagerNoDB();
@@ -85,6 +90,7 @@ public class ApiImplementation extends SamaGamesAPI
 			pubSub.subscribe(plugin.getServerName(), implement);
 			uuidTranslator = new UUIDTranslatorNODB();
 			proxyDataManager = new ProxyDataManagerImplNoDB();
+			partiesManager = new PartiesManagerNoDb();
 		}
 	}
 
@@ -98,6 +104,11 @@ public class ApiImplementation extends SamaGamesAPI
 
 	public GameManager getGameManager() {
 		return (gameApi == null) ? (this.gameApi = new GameManagerImpl(this)) : this.gameApi;
+	}
+
+	@Override
+	public PartiesManager getPartiesManager() {
+		return partiesManager;
 	}
 
 	public JoinManager getJoinManager() {
