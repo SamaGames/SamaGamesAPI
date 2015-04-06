@@ -37,7 +37,6 @@ public class PartiesPubSub implements PacketsReceiver {
 		UUID partyID = UUID.fromString(packet);
 		UUID leader = SamaGamesAPI.get().getPartiesManager().getLeader(partyID);
 		Set<UUID> members = SamaGamesAPI.get().getPartiesManager().getPlayersInParty(partyID).keySet();
-		members.remove(leader);
 
 		JoinResponse response = new JoinResponse();
 		for (JoinHandler handler : implement.handlerTreeMap.values())

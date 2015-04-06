@@ -10,11 +10,16 @@ import net.samagames.api.network.ResponseType;
 import net.samagames.permissionsbukkit.PermissionsBukkit;
 import org.bukkit.entity.Player;
 
+import java.util.HashSet;
+import java.util.Set;
 import java.util.UUID;
+
+// TODO : REWRITE THIS
 
 public class GameLoginHandler implements JoinHandler
 {
     private final GameManager api;
+    private HashSet<UUID> partyJoining = new HashSet<>();
 
     public GameLoginHandler(GameManager api)
     {
@@ -22,11 +27,42 @@ public class GameLoginHandler implements JoinHandler
     }
 
     @Override
+    public JoinResponse onPreJoinParty(Set<UUID> players, JoinResponse response) {
+        if (this.api.getGame() != null) {
+            if (!response.isAllowed()) {
+                if(this.api.getGame() instanceof IMasterControlledGame)
+                    response = ((IMasterControlledGame) this.api.getGame()).onPreJoinParty(players, response);
+            } else {
+
+                IManagedGame game = this.api.getGame();
+
+                if (game.getStatus() == Status.IN_GAME)
+                    response.disallow(ResponseType.DENY_IN_GAME);
+                else if (game.getStatus() == Status.STARTING)
+                    response.disallow(ResponseType.DENY_NOT_READY);
+                else if (game.getConnectedPlayers() + players.size() > game.getTotalMaxPlayers())
+                    response.disallow(ResponseType.DENY_FULL);
+                else if (game.getConnectedPlayers() + players.size() > game.getMaxPlayers() && ! PermissionsBukkit.hasPermission(players.iterator().next(), "games.joinvip"))
+                    response.disallow(ResponseType.DENY_VIPONLY);
+
+                if (this.api.getGame() instanceof IMasterControlledGame)
+                    response = ((IMasterControlledGame) this.api.getGame()).onPreJoinParty(players, response);
+            }
+
+            if (response.isAllowed()) {
+                partyJoining.addAll(players);
+            }
+        }
+
+        return response;
+    }
+
+    @Override
     public JoinResponse onLogin(UUID player, JoinResponse response)
     {
         if (this.api.getGame() != null)
         {
-            if (!response.isAllowed())
+            if (!response.isAllowed() || partyJoining.contains(player)) // On épargne les checks aux joueurs qui rejoignent en party
             {
                 if(this.api.getGame() instanceof IMasterControlledGame)
                     return ((IMasterControlledGame) this.api.getGame()).onLogin(player, response);
@@ -46,7 +82,7 @@ public class GameLoginHandler implements JoinHandler
                 response.disallow(ResponseType.DENY_VIPONLY);
 
             if(this.api.isReconnectAllowed())
-                response.allow();
+                response.allow(); // Heu t'es sûr de ça ? oO Ca annule juste tous les cheks précédents...
 
             if(!this.api.isWaited(player))
             {
@@ -78,8 +114,6 @@ public class GameLoginHandler implements JoinHandler
 				response.disallow(ResponseType.DENY_NOT_READY);
 			else if (info.getConnectedPlayers() > info.getTotalMaxPlayers() && ! PermissionsBukkit.hasPermission(player, "games.joinfull"))
 				response.disallow(ResponseType.DENY_FULL);
-			else if (info.getConnectedPlayers() > info.getMaxPlayers() && !PermissionsBukkit.hasPermission(player, "games.joinvip"))
-				response.disallow(ResponseType.DENY_VIPONLY);
 
             if(this.api.isReconnectAllowed())
                 response.allow();
