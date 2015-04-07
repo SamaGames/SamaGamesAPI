@@ -32,6 +32,11 @@ public class ProxiedPlayerNoDB implements ProxiedPlayer {
 	}
 
 	@Override
+	public void connectGame(String game) {
+
+	}
+
+	@Override
 	public void sendMessage(TextComponent component) {
 
 	}

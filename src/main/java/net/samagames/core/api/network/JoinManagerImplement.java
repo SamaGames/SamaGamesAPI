@@ -61,6 +61,16 @@ public class JoinManagerImplement implements JoinManager, Listener {
         this.handlerTreeMap.put(priority, handler);
     }
 
+    @Override
+    public int countExpectedPlayers() {
+        return getExpectedPlayers().size();
+    }
+
+    @Override
+    public HashSet<UUID> getExpectedPlayers() {
+        return playersExpected;
+    }
+
 
     JoinResponse requestSoloJoin(UUID player) {
         JoinResponse response = new JoinResponse();

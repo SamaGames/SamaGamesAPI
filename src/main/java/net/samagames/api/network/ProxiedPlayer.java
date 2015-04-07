@@ -36,6 +36,12 @@ public interface ProxiedPlayer {
 	public void connect(String server);
 
 	/**
+	 * Connects the player to a server. This method asks the server to connect the player, which means the server will check the player ability to join AND if he can join he will get moved.
+	 * @param game The server you want to connect the player to
+	 */
+	public void connectGame(String game);
+
+	/**
 	 * Send a message to the player
 	 * @param component The message you want to send
 	 */

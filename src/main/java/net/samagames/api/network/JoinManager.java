@@ -2,6 +2,9 @@ package net.samagames.api.network;
 
 import org.bukkit.event.Listener;
 
+import java.util.HashSet;
+import java.util.UUID;
+
 public interface JoinManager extends Listener {
 
     /**
@@ -10,5 +13,8 @@ public interface JoinManager extends Listener {
      * @param priority The handler priority (0 = Lowest, please do not use priorities under 10)
      */
     public void registerHandler(JoinHandler handler, int priority);
+
+    public int countExpectedPlayers();
+    public HashSet<UUID> getExpectedPlayers();
 
 }

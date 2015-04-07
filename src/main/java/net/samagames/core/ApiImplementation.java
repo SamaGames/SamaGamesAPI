@@ -79,6 +79,7 @@ public class ApiImplementation extends SamaGamesAPI
 			implement.registerHandler(moderationJoinHandler, - 1);
 			SamaGamesAPI.get().getPubSub().subscribe(plugin.getServerName(), moderationJoinHandler);
 			pubSub.subscribe("partyjoin." + getServerName(), new PartiesPubSub(implement));
+			pubSub.subscribe("join." + getServerName(), new RegularJoinHandler(implement));
 
 			uuidTranslator = new UUIDTranslatorDB(plugin, this);
 			proxyDataManager = new ProxyDataManagerImplDB(this);
