@@ -22,6 +22,21 @@ import java.util.Set;
 import java.util.TreeMap;
 import java.util.UUID;
 
+/**
+ * How does that work ?
+ *
+ * A. The proxy send a request OR the client connect without request
+ * -> requestJoin is called
+ * -> the system checks if the player is or isn't in a party
+ *    -> He's in party : call partyJoin
+ *    -> He's not in party : call soloJoin
+ * -> if the player is already connected :
+ *    -> Connexion refused : he's kicked
+ * -> if the player just sent a request
+ *    -> Connection refused : the system sends him a message
+ *    -> Connection accepted : the system request the proxy to moove him
+ */
+
 public class JoinManagerImplement implements JoinManager, Listener {
 
     protected TreeMap<Integer, JoinHandler> handlerTreeMap = new TreeMap<>();
@@ -46,47 +61,20 @@ public class JoinManagerImplement implements JoinManager, Listener {
         this.handlerTreeMap.put(priority, handler);
     }
 
-    void requestJoin(UUID player) {
-        // Check party :
-        UUID party = SamaGamesAPI.get().getPartiesManager().getPlayerParty(player);
-        if (party != null && isPartyLimited()) {
-            if (!SamaGamesAPI.get().getPartiesManager().getLeader(party).equals(player)) {
-                TextComponent refuse = new TextComponent("Seul le chef de partie peur rejoindre un jeu.");
-                refuse.setColor(ChatColor.RED);
-                SamaGamesAPI.get().getProxyDataManager().getProxiedPlayer(player).sendMessage(refuse);
-                return;
-            } else {
-                requestPartyJoin(party);
-                return;
-            }
-        }
 
-        JoinResponse response = dispatchRequestJoin(player);
-
-        if (!response.isAllowed()) {
-            TextComponent refuse = new TextComponent(response.getReason());
-            refuse.setColor(ChatColor.RED);
-            SamaGamesAPI.get().getProxyDataManager().getProxiedPlayer(player).sendMessage(refuse);
-        } else {
-            playersExpected.add(player);
-            Bukkit.getScheduler().runTaskLater(APIPlugin.getInstance(), () -> playersExpected.remove(player), 20*15L);
-            SamaGamesAPI.get().getProxyDataManager().getProxiedPlayer(player).connect(SamaGamesAPI.get().getServerName());
-        }
-    }
-
-    JoinResponse dispatchRequestJoin(UUID player) {
+    JoinResponse requestSoloJoin(UUID player) {
         JoinResponse response = new JoinResponse();
         for (JoinHandler handler : handlerTreeMap.values())
             response = handler.requestJoin(player, response);
 
+        if (response.isAllowed()) {
+            playersExpected.add(player);
+            Bukkit.getScheduler().runTaskLater(APIPlugin.getInstance(), () -> playersExpected.remove(player), 20 * 15L);
+        }
         return response;
     }
 
-    JoinResponse requestPartyJoin(UUID partyID) {
-        return requestPartyJoin(partyID, false);
-    }
-
-    JoinResponse requestPartyJoin(UUID partyID, boolean localPlayer) {
+    JoinResponse requestPartyJoin(UUID partyID, HashSet<UUID> dontMove) {
         UUID leader = SamaGamesAPI.get().getPartiesManager().getLeader(partyID);
         Set<UUID> members = SamaGamesAPI.get().getPartiesManager().getPlayersInParty(partyID).keySet();
 
@@ -95,19 +83,43 @@ public class JoinManagerImplement implements JoinManager, Listener {
             response = handler.requestPartyJoin(leader, members, response);
 
         if (response.isAllowed()) {
+            members.removeAll(dontMove);
             for (UUID player : members) {
                 playersExpected.add(player);
                 Bukkit.getScheduler().runTaskLater(APIPlugin.getInstance(), () -> playersExpected.remove(player), 20 * 15L);
                 SamaGamesAPI.get().getProxyDataManager().getProxiedPlayer(player).connect(SamaGamesAPI.get().getServerName());
             }
-        } else if (!localPlayer) {
-            TextComponent component = new TextComponent("Impossible de vous connecter : " + response.getReason());
-            component.setColor(net.md_5.bungee.api.ChatColor.RED);
-            SamaGamesAPI.get().getProxyDataManager().getProxiedPlayer(leader).sendMessage(component);
         }
 
         return response;
     }
+
+    JoinResponse requestPartyJoin(UUID partyID) {
+        return requestPartyJoin(partyID, new HashSet<>());
+    }
+
+    public JoinResponse requestJoin(UUID player) {
+        return requestJoin(player, false);
+    }
+
+    public JoinResponse requestJoin(UUID player, boolean alreadyConnected) {
+        UUID party = SamaGamesAPI.get().getPartiesManager().getPlayerParty(player);
+        if (party != null && isPartyLimited()) {
+            if (!SamaGamesAPI.get().getPartiesManager().getLeader(party).equals(player)) {
+                JoinResponse response = new JoinResponse();
+                response.disallow("Seul le chef de partie peur rejoindre un jeu.");
+                return response;
+            } else {
+                HashSet<UUID> dontMove = new HashSet<>();
+                if (alreadyConnected)
+                    dontMove.add(player);
+                return requestPartyJoin(party, dontMove);
+            }
+        }
+
+        return requestSoloJoin(player);
+    }
+
 
     @EventHandler(ignoreCancelled = true, priority = EventPriority.HIGHEST)
     public void onLogin(AsyncPlayerPreLoginEvent event) {
@@ -117,26 +129,14 @@ public class JoinManagerImplement implements JoinManager, Listener {
             return;
 
         if (!playersExpected.contains(player)) {
-            UUID party = SamaGamesAPI.get().getPartiesManager().getPlayerParty(player);
-            if (party != null && isPartyLimited()) {
-                if (!SamaGamesAPI.get().getPartiesManager().getLeader(party).equals(player)) {
-                    event.disallow(AsyncPlayerPreLoginEvent.Result.KICK_WHITELIST, ChatColor.RED + "Seul le chef de partie peur rejoindre un jeu.");
-                    return;
-                } else {
-                    JoinResponse response = requestPartyJoin(party);
-                    if (!response.isAllowed()) {
-                        event.disallow(AsyncPlayerPreLoginEvent.Result.KICK_OTHER, response.getReason());
-                        return;
-                    }
-                }
-            } else {
-                JoinResponse response = dispatchRequestJoin(player);
-                if (!response.isAllowed()) {
-                    event.disallow(AsyncPlayerPreLoginEvent.Result.KICK_OTHER, response.getReason());
-                    return;
-                }
+            JoinResponse response = requestJoin(event.getUniqueId(), true);
+            if (!response.isAllowed()) {
+                event.disallow(AsyncPlayerPreLoginEvent.Result.KICK_OTHER, ChatColor.RED + response.getReason());
+                return;
             }
         }
+
+        playersExpected.remove(player);
 
         for (JoinHandler handler : handlerTreeMap.values())
             handler.onLogin(player);

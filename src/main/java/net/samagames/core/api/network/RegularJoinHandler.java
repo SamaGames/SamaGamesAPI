@@ -1,7 +1,9 @@
 package net.samagames.core.api.network;
 
+import net.md_5.bungee.api.ChatColor;
+import net.md_5.bungee.api.chat.TextComponent;
+import net.samagames.api.SamaGamesAPI;
 import net.samagames.api.channels.PacketsReceiver;
-import net.samagames.api.network.JoinHandler;
 import net.samagames.api.network.JoinResponse;
 
 import java.util.UUID;
@@ -24,6 +26,13 @@ public class RegularJoinHandler implements PacketsReceiver {
 	@Override
 	public void receive(String channel, String packet) {
 		UUID player = UUID.fromString(packet);
-		manager.requestJoin(player);
+		JoinResponse response = manager.requestJoin(player);
+		if (!response.isAllowed()) {
+			TextComponent component = new TextComponent(response.getReason());
+			component.setColor(ChatColor.RED);
+			SamaGamesAPI.get().getProxyDataManager().getProxiedPlayer(player).sendMessage(component);
+		} else {
+			SamaGamesAPI.get().getProxyDataManager().getProxiedPlayer(player).connect(SamaGamesAPI.get().getServerName());
+		}
 	}
 }
