@@ -3,12 +3,10 @@ package net.samagames.core.api.network;
 import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.chat.TextComponent;
 import net.samagames.api.SamaGamesAPI;
-import net.samagames.api.channels.PacketsReceiver;
 import net.samagames.api.network.JoinHandler;
 import net.samagames.api.network.JoinManager;
 import net.samagames.api.network.JoinResponse;
 import net.samagames.core.APIPlugin;
-import net.samagames.permissionsbukkit.PermissionsBukkit;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -29,6 +27,19 @@ public class JoinManagerImplement implements JoinManager, Listener {
     protected TreeMap<Integer, JoinHandler> handlerTreeMap = new TreeMap<>();
     protected HashSet<UUID> moderatorsExpected = new HashSet<>();
     protected HashSet<UUID> playersExpected = new HashSet<>();
+    protected boolean isPartyLimited;
+
+    public JoinManagerImplement() {
+        isPartyLimited = !SamaGamesAPI.get().getServerName().startsWith("Lobby");
+    }
+
+    public void setPartyLimited(boolean value) {
+        this.isPartyLimited = value;
+    }
+
+    public boolean isPartyLimited() { // This method can be overrided
+        return isPartyLimited;
+    }
 
     @Override
     public void registerHandler(JoinHandler handler, int priority) {
@@ -36,6 +47,20 @@ public class JoinManagerImplement implements JoinManager, Listener {
     }
 
     void requestJoin(UUID player) {
+        // Check party :
+        UUID party = SamaGamesAPI.get().getPartiesManager().getPlayerParty(player);
+        if (party != null && isPartyLimited()) {
+            if (!SamaGamesAPI.get().getPartiesManager().getLeader(party).equals(player)) {
+                TextComponent refuse = new TextComponent("Seul le chef de partie peur rejoindre un jeu.");
+                refuse.setColor(ChatColor.RED);
+                SamaGamesAPI.get().getProxyDataManager().getProxiedPlayer(player).sendMessage(refuse);
+                return;
+            } else {
+                requestPartyJoin(party);
+                return;
+            }
+        }
+
         JoinResponse response = dispatchRequestJoin(player);
 
         if (!response.isAllowed()) {
@@ -57,7 +82,11 @@ public class JoinManagerImplement implements JoinManager, Listener {
         return response;
     }
 
-    void requestPartyJoin(UUID partyID) {
+    JoinResponse requestPartyJoin(UUID partyID) {
+        return requestPartyJoin(partyID, false);
+    }
+
+    JoinResponse requestPartyJoin(UUID partyID, boolean localPlayer) {
         UUID leader = SamaGamesAPI.get().getPartiesManager().getLeader(partyID);
         Set<UUID> members = SamaGamesAPI.get().getPartiesManager().getPlayersInParty(partyID).keySet();
 
@@ -71,11 +100,13 @@ public class JoinManagerImplement implements JoinManager, Listener {
                 Bukkit.getScheduler().runTaskLater(APIPlugin.getInstance(), () -> playersExpected.remove(player), 20 * 15L);
                 SamaGamesAPI.get().getProxyDataManager().getProxiedPlayer(player).connect(SamaGamesAPI.get().getServerName());
             }
-        } else {
+        } else if (!localPlayer) {
             TextComponent component = new TextComponent("Impossible de vous connecter : " + response.getReason());
             component.setColor(net.md_5.bungee.api.ChatColor.RED);
             SamaGamesAPI.get().getProxyDataManager().getProxiedPlayer(leader).sendMessage(component);
         }
+
+        return response;
     }
 
     @EventHandler(ignoreCancelled = true, priority = EventPriority.HIGHEST)
@@ -86,10 +117,24 @@ public class JoinManagerImplement implements JoinManager, Listener {
             return;
 
         if (!playersExpected.contains(player)) {
-            JoinResponse response = dispatchRequestJoin(player);
-            if (!response.isAllowed()) {
-                event.disallow(AsyncPlayerPreLoginEvent.Result.KICK_OTHER, response.getReason());
-                return;
+            UUID party = SamaGamesAPI.get().getPartiesManager().getPlayerParty(player);
+            if (party != null && isPartyLimited()) {
+                if (!SamaGamesAPI.get().getPartiesManager().getLeader(party).equals(player)) {
+                    event.disallow(AsyncPlayerPreLoginEvent.Result.KICK_WHITELIST, ChatColor.RED + "Seul le chef de partie peur rejoindre un jeu.");
+                    return;
+                } else {
+                    JoinResponse response = requestPartyJoin(party);
+                    if (!response.isAllowed()) {
+                        event.disallow(AsyncPlayerPreLoginEvent.Result.KICK_OTHER, response.getReason());
+                        return;
+                    }
+                }
+            } else {
+                JoinResponse response = dispatchRequestJoin(player);
+                if (!response.isAllowed()) {
+                    event.disallow(AsyncPlayerPreLoginEvent.Result.KICK_OTHER, response.getReason());
+                    return;
+                }
             }
         }
 

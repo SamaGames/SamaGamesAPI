@@ -108,6 +108,10 @@ public class ApiImplementation extends SamaGamesAPI
 		return (gameApi == null) ? (this.gameApi = new GameManagerImpl(this)) : this.gameApi;
 	}
 
+	public void replaceJoinManager(JoinManager manager) {
+		this.joinManager = manager;
+	}
+
 	@Override
 	public PartiesManager getPartiesManager() {
 		return partiesManager;
