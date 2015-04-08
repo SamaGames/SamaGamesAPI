@@ -25,7 +25,9 @@ public class PartiesManagerWithDB implements PartiesManager {
 
 	@Override
 	public UUID getPlayerParty(UUID player) {
-		String val = api.getPlayerManager().getPlayerData(player).get("currentParty");
+		Jedis jedis = api.getBungeeResource();
+		String val = jedis.get("currentparty:" + player);
+		jedis.close();
 		return (val != null) ? UUID.fromString(val) : null;
 	}
 
