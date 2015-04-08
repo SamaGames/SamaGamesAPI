@@ -99,6 +99,12 @@ public class JoinManagerImplement implements JoinManager, Listener {
                 Bukkit.getScheduler().runTaskLater(APIPlugin.getInstance(), () -> playersExpected.remove(player), 20 * 15L);
                 SamaGamesAPI.get().getProxyDataManager().getProxiedPlayer(player).connect(SamaGamesAPI.get().getServerName());
             }
+
+            new Thread(() -> {
+                Jedis jedis = SamaGamesAPI.get().getBungeeResource();
+                jedis.set("party:" + partyID + ":server", SamaGamesAPI.get().getServerName());
+                jedis.close();
+            }, "PartyUpdater").start();
         }
 
         return response;

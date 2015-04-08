@@ -21,30 +21,29 @@ public class GameLoginHandler implements JoinHandler
     }
 
     @Override
-    public void finishJoin(Player player)
-    {
-        if (this.api.getGame() != null)
-        {
-            if(!this.api.isWaited(player.getUniqueId()))
-            {
-                if (this.api.getGame() instanceof IMasterControlledGame)
-                    this.api.getGame().playerJoin(player);
-            }
-            else
-            {
-                if(this.api.getGame() instanceof IReconnectGame)
-                    ((IReconnectGame) this.api.getGame()).playerReconnect(player);
+    public void finishJoin(Player player) {
+        if (this.api.getGame() != null) {
+
+            if (api.getReconnectHandler() != null && api.getReconnectHandler().canReconnect(player.getUniqueId())) {
+                api.getReconnectHandler().reconnect(player);
+            } else {
+                this.api.getGame().playerJoin(player);
+                if (api.getGame() instanceof IMasterControlledGame)
+                    ((IMasterControlledGame) api.getGame()).finishJoin(player);
             }
         }
     }
 
     @Override
-    public JoinResponse requestJoin(UUID player, JoinResponse response)
-    {
-        if (this.api.getGame() != null)
-        {
-            if (!response.isAllowed())
-            {
+    public void onLogin(UUID player) {
+        if (api.getGame() != null && api.getGame() instanceof IMasterControlledGame)
+            ((IMasterControlledGame) api.getGame()).onLogin(player);
+    }
+
+    @Override
+    public JoinResponse requestJoin(UUID player, JoinResponse response) {
+        if (this.api.getGame() != null) {
+            if (!response.isAllowed()) {
                 if(this.api.getGame() instanceof IMasterControlledGame)
                     return ((IMasterControlledGame) this.api.getGame()).requestJoin(player, response);
                 else
@@ -53,30 +52,30 @@ public class GameLoginHandler implements JoinHandler
 
             IManagedGame game = this.api.getGame();
 
-            if (game.getStatus() == Status.IN_GAME)
+            if (game.getStatus() == Status.IN_GAME) {
                 response.disallow(ResponseType.DENY_IN_GAME);
-            else if (game.getStatus() == Status.STARTING)
+                // On check le rejoin
+                if (api.getReconnectHandler() != null) {
+                    if (api.getReconnectHandler().canReconnect(player))
+                        response.allow();
+                    else
+                        response.disallow("Il est trop tard pour se reconnecter.");
+                }
+            } else if (game.getStatus() == Status.STARTING)
                 response.disallow(ResponseType.DENY_NOT_READY);
             else if (game.getConnectedPlayers() > game.getTotalMaxPlayers() && ! PermissionsBukkit.hasPermission(player, "games.joinfull"))
                 response.disallow(ResponseType.DENY_FULL);
             else if (game.getConnectedPlayers() > game.getMaxPlayers() && !PermissionsBukkit.hasPermission(player, "games.joinvip"))
                 response.disallow(ResponseType.DENY_VIPONLY);
 
-            if(this.api.isReconnectAllowed())
-                response.allow();
-
-            if(!this.api.isWaited(player))
-            {
-                if (this.api.getGame() instanceof IMasterControlledGame)
-                    return ((IMasterControlledGame) this.api.getGame()).requestJoin(player, response);
-            }
+            if (this.api.getGame() instanceof IMasterControlledGame)
+                return ((IMasterControlledGame) this.api.getGame()).requestJoin(player, response);
         }
         return response;
     }
 
     @Override
-    public JoinResponse requestPartyJoin(UUID partyLeader, Set<UUID> partyMembers, JoinResponse response)
-    {
+    public JoinResponse requestPartyJoin(UUID partyLeader, Set<UUID> partyMembers, JoinResponse response) {
         if (this.api.getGame() != null)
         {
             if (!response.isAllowed())
@@ -106,15 +105,14 @@ public class GameLoginHandler implements JoinHandler
     }
 
     @Override
-    public void onModerationJoin(Player player)
-    {
+    public void onModerationJoin(Player player) {
         if(this.api.getGame() instanceof IMasterControlledGame)
             ((IMasterControlledGame) this.api.getGame()).onModerationJoin(player);
     }
 
     @Override
-    public void onLogout(Player player)
-    {
-        this.api.onPlayerDisconnect(player);
+    public void onLogout(Player player) {
+        if (api.getReconnectHandler() != null)
+            api.getReconnectHandler().disconnect(player);
     }
 }
