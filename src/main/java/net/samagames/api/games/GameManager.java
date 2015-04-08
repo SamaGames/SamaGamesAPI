@@ -9,16 +9,16 @@ public interface GameManager
 {
     public void registerGame(IManagedGame game);
 
-    public void onPlayerDisconnect(Player player);
-    public void onPlayerReconnect(Player player);
-    public void onPlayerReconnectTimeOut(Player player);
+    void onPlayerDisconnect(Player player);
+    void onPlayerReconnect(Player player);
+    void onPlayerReconnectTimeOut(Player player);
 
-    public void allowReconnect(boolean flag);
-    public void setMaxReconnectTime(int minutes);
+    void allowReconnect(boolean flag);
+    void setMaxReconnectTime(int minutes);
 
-    public IManagedGame getGame();
-    public CoherenceMachine getCoherenceMachine();
+    IManagedGame getGame();
+    CoherenceMachine getCoherenceMachine();
 
-    public boolean isWaited(UUID uuid);
-    public boolean isReconnectAllowed();
+    boolean isWaited(UUID uuid);
+    boolean isReconnectAllowed();
 }

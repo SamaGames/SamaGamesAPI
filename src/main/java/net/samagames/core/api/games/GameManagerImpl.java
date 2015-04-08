@@ -3,6 +3,7 @@ package net.samagames.core.api.games;
 import net.samagames.api.SamaGamesAPI;
 import net.samagames.api.games.GameManager;
 import net.samagames.api.games.IManagedGame;
+import net.samagames.api.games.IReconnectGame;
 import net.samagames.api.games.themachine.CoherenceMachine;
 import net.samagames.core.APIPlugin;
 import net.samagames.core.api.games.themachine.CoherenceMachineImpl;
@@ -51,9 +52,17 @@ public class GameManagerImpl implements GameManager
     @Override
     public void onPlayerDisconnect(Player player)
     {
+        this.game.playerDisconnect(player);
+
+        if(this.game instanceof IReconnectGame)
+            return;
+
         if(this.allowReconnect)
         {
             this.playersDisconnected.add(player.getUniqueId());
+
+            this.api.getResource().set("rejoin:" + player.getUniqueId().toString(), this.api.getServerName());
+            this.api.getResource().expire("rejoin:" + player.getUniqueId().toString(), this.maxReconnectTime * 60);
 
             this.playerReconnectedTimers.put(player.getUniqueId(), Bukkit.getScheduler().scheduleAsyncRepeatingTask(APIPlugin.getInstance(), new Runnable() {
                 int before = 0;
@@ -87,25 +96,31 @@ public class GameManagerImpl implements GameManager
     @Override
     public void onPlayerReconnect(Player player)
     {
+        if(!(this.game instanceof IReconnectGame))
+            return;
+
         if(this.playerReconnectedTimers.containsKey(player.getUniqueId()))
         {
             Bukkit.getScheduler().cancelTask(this.playerReconnectedTimers.get(player.getUniqueId()));
             this.playerReconnectedTimers.remove(player.getUniqueId());
         }
 
-        this.game.playerReconnect(player);
+        ((IReconnectGame) this.game).playerReconnect(player);
     }
 
     @Override
     public void onPlayerReconnectTimeOut(Player player)
     {
+        if(!(this.game instanceof IReconnectGame))
+            return;
+
         if(this.playerReconnectedTimers.containsKey(player.getUniqueId()))
         {
             Bukkit.getScheduler().cancelTask(this.playerReconnectedTimers.get(player.getUniqueId()));
             this.playerReconnectedTimers.remove(player.getUniqueId());
         }
 
-        this.game.playerReconnectTimeOut(player);
+        ((IReconnectGame) this.game).playerReconnectTimeOut(player);
     }
 
     @Override

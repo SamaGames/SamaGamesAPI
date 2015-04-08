@@ -2,12 +2,12 @@ package net.samagames.api.games;
 
 public interface IGameInfos
 {
-    public int getMaxPlayers();
-    public int getTotalMaxPlayers();
-    public int getConnectedPlayers();
+    int getMaxPlayers();
+    int getTotalMaxPlayers();
+    int getConnectedPlayers();
 
-    public StatusEnum getStatus();
+    StatusEnum getStatus();
 
-    public String getMapName();
-    public String getGameName();
+    String getMapName();
+    String getGameName();
 }
