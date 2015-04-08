@@ -11,5 +11,4 @@ public interface GameManager {
     void setReconnectHandler(ReconnectHandler reconnectHandler);
     IManagedGame getGame();
     CoherenceMachine getCoherenceMachine();
-
 }

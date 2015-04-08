@@ -10,6 +10,7 @@ import redis.clients.jedis.Jedis;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.UUID;
+import java.util.concurrent.TimeUnit;
 
 /**
  * This file is a part of the SamaGames project
@@ -18,7 +19,7 @@ import java.util.UUID;
  * (C) Copyright Elydra Network 2015
  * All rights reserved.
  */
-public class TimedReconnectHandler implements ReconnectHandler {
+public class TimedReconnectHandler extends DatabaseReconnectSaver implements ReconnectHandler {
 
 	private final HashMap<UUID, Integer> playerDisconnectTime = new HashMap<>();
 	private final HashMap<UUID, BukkitTask> playerReconnectedTimers = new HashMap<>();
@@ -26,16 +27,18 @@ public class TimedReconnectHandler implements ReconnectHandler {
 	private int maxReconnectTime;
 	private IReconnectGame game;
 
-	public TimedReconnectHandler(int maxReconnectTime) {
-		this.maxReconnectTime = maxReconnectTime;
+	/**
+	 *
+	 * @param maxReconnectTime Maximum offline time allowed
+	 */
+	public TimedReconnectHandler(int maxReconnectTime, TimeUnit unit) {
+		this.maxReconnectTime = (int) unit.toSeconds(maxReconnectTime);
 	}
 
 	@Override
 	public void disconnect(Player player) {
 		this.playersDisconnected.add(player.getUniqueId());
-		Jedis jedis = SamaGamesAPI.get().getBungeeResource();
-		jedis.set("rejoin:" + player.getUniqueId().toString(), SamaGamesAPI.get().getServerName());
-		jedis.expire("rejoin:" + player.getUniqueId().toString(), this.maxReconnectTime * 60);
+		addReconnectInDatabase(player.getUniqueId(), maxReconnectTime);
 
 		this.playerReconnectedTimers.put(player.getUniqueId(), Bukkit.getScheduler().runTaskTimerAsynchronously(APIPlugin.getInstance(), new Runnable() {
 			int before = 0;
@@ -66,7 +69,7 @@ public class TimedReconnectHandler implements ReconnectHandler {
 	@Override
 	public void reconnect(Player player) {
 		if(this.playerReconnectedTimers.containsKey(player.getUniqueId())) {
-			Integer value = playerDisconnectTime.remove(player.getUniqueId());
+			Integer value = playerDisconnectTime.get(player.getUniqueId());
 			BukkitTask task = playerReconnectedTimers.remove(player.getUniqueId());
 			if (task != null)
 				task.cancel();
@@ -93,6 +96,7 @@ public class TimedReconnectHandler implements ReconnectHandler {
 			task.cancel();
 
 		game.playerReconnectTimeOut(player);
+		removeReconnectInDatabase(player.getUniqueId());
 	}
 
 	@Override
