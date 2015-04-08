@@ -10,7 +10,6 @@ import net.samagames.api.network.ResponseType;
 import net.samagames.permissionsbukkit.PermissionsBukkit;
 import org.bukkit.entity.Player;
 
-import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
 
@@ -25,24 +24,28 @@ public class GameLoginHandler implements JoinHandler
     }
 
     @Override
-    public void finishJoin(Player player) {
-        // TODO : CHECK
-
-        if (this.api.getGame() != null) {
-            if(!this.api.isWaited(player.getUniqueId())) {
+    public void finishJoin(Player player)
+    {
+        if (this.api.getGame() != null)
+        {
+            if(!this.api.isWaited(player.getUniqueId()))
+            {
                 if (this.api.getGame() instanceof IMasterControlledGame)
                     api.getGame().playerJoin(player);
-            } else {
+            }
+            else
+            {
                 this.api.getGame().playerReconnect(player);
             }
         }
     }
 
     @Override
-    public JoinResponse requestJoin(UUID player, JoinResponse response) {
+    public JoinResponse requestJoin(UUID player, JoinResponse response)
+    {
         if (this.api.getGame() != null)
         {
-            if (!response.isAllowed()) // On épargne les checks aux joueurs qui rejoignent en party
+            if (!response.isAllowed())
             {
                 if(this.api.getGame() instanceof IMasterControlledGame)
                     return ((IMasterControlledGame) this.api.getGame()).requestJoin(player, response);
@@ -62,7 +65,7 @@ public class GameLoginHandler implements JoinHandler
                 response.disallow(ResponseType.DENY_VIPONLY);
 
             if(this.api.isReconnectAllowed())
-                response.allow(); // Heu t'es sûr de ça ? oO Ca annule juste tous les cheks précédents...
+                response.allow();
 
             if(!this.api.isWaited(player))
             {
@@ -74,13 +77,17 @@ public class GameLoginHandler implements JoinHandler
     }
 
     @Override
-    public JoinResponse requestPartyJoin(UUID partyLeader, Set<UUID> partyMembers, JoinResponse response) {
-        if (this.api.getGame() != null) {
-            if (!response.isAllowed()) {
+    public JoinResponse requestPartyJoin(UUID partyLeader, Set<UUID> partyMembers, JoinResponse response)
+    {
+        if (this.api.getGame() != null)
+        {
+            if (!response.isAllowed())
+            {
                 if(this.api.getGame() instanceof IMasterControlledGame)
                     response = ((IMasterControlledGame) this.api.getGame()).requestPartyJoin(partyLeader, partyMembers, response);
-            } else {
-
+            }
+            else
+            {
                 IManagedGame game = this.api.getGame();
 
                 if (game.getStatus() == Status.IN_GAME)
@@ -98,11 +105,6 @@ public class GameLoginHandler implements JoinHandler
         }
 
         return response;
-    }
-
-    @Override
-    public void onLogin(UUID player) {
-        // TODO : WRITE THIS
     }
 
     @Override

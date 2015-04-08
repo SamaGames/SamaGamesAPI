@@ -16,14 +16,5 @@ public interface IMasterControlledGame extends JoinHandler
     JoinResponse requestPartyJoin(UUID partyLeader, Set<UUID> partyMembers, JoinResponse response);
 
     @Override
-    void onLogin(UUID player);
-
-    @Override
-    void finishJoin(Player player);
-
-    @Override
     void onModerationJoin(Player player);
-
-    @Override
-    void onLogout(Player player);
 }
