@@ -1,9 +1,6 @@
 package net.samagames.core.api.games;
 
-import net.samagames.api.games.GameManager;
-import net.samagames.api.games.IManagedGame;
-import net.samagames.api.games.IMasterControlledGame;
-import net.samagames.api.games.Status;
+import net.samagames.api.games.*;
 import net.samagames.api.network.JoinHandler;
 import net.samagames.api.network.JoinResponse;
 import net.samagames.api.network.ResponseType;
@@ -31,11 +28,12 @@ public class GameLoginHandler implements JoinHandler
             if(!this.api.isWaited(player.getUniqueId()))
             {
                 if (this.api.getGame() instanceof IMasterControlledGame)
-                    api.getGame().playerJoin(player);
+                    this.api.getGame().playerJoin(player);
             }
             else
             {
-                this.api.getGame().playerReconnect(player);
+                if(this.api.getGame() instanceof IReconnectGame)
+                    ((IReconnectGame) this.api.getGame()).playerReconnect(player);
             }
         }
     }
