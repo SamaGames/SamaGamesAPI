@@ -14,12 +14,39 @@ import org.bukkit.ChatColor;
  */
 public enum Status implements StatusEnum {
 
+	/**
+	 * The server is booting and is not ready to host players
+	 */
 	STARTING("starting", ChatColor.DARK_RED + "≈ Reboot ≈", false),
+
+	/**
+	 * The server is just waiting for players to start
+	 */
 	WAITING_FOR_PLAYERS("waitingForPlayers", ChatColor.GREEN + "» Jouer «", true),
+
+	/**
+	 * The server has enough players to start
+	 */
 	READY_TO_START("readyToStart", ChatColor.GOLD + "" + ChatColor.BOLD + "» Jouer «", true),
+
+	/**
+	 * The game is started, players cannot join anymore
+	 */
 	IN_GAME("inGame", ChatColor.DARK_RED + "- En cours -", false),
+
+	/**
+	 * The game is finished, it will reboot soon
+	 */
 	FINISHED("finished", ChatColor.DARK_RED + "≈ Reboot ≈", false),
+
+	/**
+	 * The server is rebooting
+	 */
 	REBOOTING("rebooting", ChatColor.DARK_RED + "≈ Reboot ≈", false),
+
+	/**
+	 * The server isn't responding
+	 */
 	NOT_RESPONDING("idle", ChatColor.DARK_RED + "Hors Service", false);
 
 	private final String display;

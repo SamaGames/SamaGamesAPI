@@ -47,6 +47,7 @@ public class GameManagerImpl implements GameManager
     @Override
     public void setReconnectHandler(ReconnectHandler reconnectHandler) {
         this.reconnectHandler = reconnectHandler;
+        reconnectHandler.asign((IReconnectGame) game);
     }
 
     @Override

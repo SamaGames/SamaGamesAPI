@@ -1,13 +1,14 @@
 package net.samagames.api.games;
 
+import net.samagames.api.SamaGamesAPI;
 import net.samagames.api.signs.SignBuilder;
 import org.bukkit.ChatColor;
 
 public class GameSignBuilder extends SignBuilder
 {
-	public GameSignBuilder(String bungeeName, String gameType, IGameInfos game)
+	public GameSignBuilder(String gameType, IGameInfos game)
 	{
-		super(bungeeName, gameType);
+		super(SamaGamesAPI.get().getServerName(), gameType);
 
 		this.setSlots(game.getConnectedPlayers(), game.getTotalMaxPlayers());
 		StatusEnum status = game.getStatus();

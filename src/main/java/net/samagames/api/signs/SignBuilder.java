@@ -39,6 +39,10 @@ public class SignBuilder {
         }
     }
 
+    public SignData build() {
+        return sign;
+    }
+
     public void send() {
         sign.send();
     }
