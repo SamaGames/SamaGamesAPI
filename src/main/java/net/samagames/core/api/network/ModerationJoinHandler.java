@@ -1,5 +1,6 @@
 package net.samagames.core.api.network;
 
+import net.samagames.api.SamaGamesAPI;
 import net.samagames.api.channels.PacketsReceiver;
 import net.samagames.api.network.JoinHandler;
 import net.samagames.permissionsbukkit.PermissionsBukkit;
@@ -53,5 +54,7 @@ public class ModerationJoinHandler implements JoinHandler, PacketsReceiver {
             } catch (Exception ignored) {
             }
         }
+
+        SamaGamesAPI.get().getProxyDataManager().getProxiedPlayer(uuid).connect(SamaGamesAPI.get().getServerName());
     }
 }
