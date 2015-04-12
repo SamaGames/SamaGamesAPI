@@ -1,11 +1,14 @@
 package net.samagames.core.api.stats;
 
+import net.samagames.api.SamaGamesAPI;
+import net.samagames.api.stats.PlayerStat;
 import net.samagames.api.stats.StatsManager;
 import net.samagames.core.APIPlugin;
 import org.bukkit.Bukkit;
 import redis.clients.jedis.Jedis;
-import redis.clients.jedis.ShardedJedis;
 
+import java.util.ArrayList;
+import java.util.Set;
 import java.util.UUID;
 
 /**
@@ -46,5 +49,24 @@ public class StatsManagerDB extends StatsManager {
 		j.close();
 
 		return value;
+	}
+
+	@Override
+	public ArrayList<PlayerStat> getLeaderboard(String stat)
+	{
+		ArrayList<PlayerStat> leaderboard = new ArrayList<>();
+		Jedis jedis = SamaGamesAPI.get().getResource();
+		Set<String> ids = jedis.zrange("gamestats:" + game + ":" + stat, 0, 2);
+		jedis.close();
+
+		for (String id : ids)
+		{
+			PlayerStat playerStat = new PlayerStat(UUID.fromString(id), this.game, stat);
+			playerStat.fill();
+
+			leaderboard.add(playerStat);
+		}
+
+		return leaderboard;
 	}
 }

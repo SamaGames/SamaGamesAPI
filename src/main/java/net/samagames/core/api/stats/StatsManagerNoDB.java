@@ -1,8 +1,10 @@
 package net.samagames.core.api.stats;
 
+import net.samagames.api.stats.PlayerStat;
 import net.samagames.api.stats.StatsManager;
 import net.samagames.core.APIPlugin;
 
+import java.util.ArrayList;
 import java.util.UUID;
 
 /**
@@ -30,5 +32,11 @@ public class StatsManagerNoDB extends StatsManager {
 	@Override
 	public double getStatValue(UUID player, String stat) {
 		return 0D;
+	}
+
+	@Override
+	public ArrayList<PlayerStat> getLeaderboard(String stat)
+	{
+		return new ArrayList<>();
 	}
 }
