@@ -2,6 +2,7 @@ package net.samagames.api.stats;
 
 import net.samagames.core.APIPlugin;
 
+import java.util.ArrayList;
 import java.util.UUID;
 
 /**
@@ -26,4 +27,6 @@ public abstract class StatsManager {
 	public abstract void setValue(UUID player, String stat, int value);
 
 	public abstract double getStatValue(UUID player, String stat);
+
+	public abstract ArrayList<PlayerStat> getLeaderboard(String stat);
 }
