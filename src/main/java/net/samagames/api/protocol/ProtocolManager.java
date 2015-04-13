@@ -13,15 +13,29 @@ public class ProtocolManager {
 
 	private HashMap<String, TinyProtocol> handlers = new HashMap<>();
 
-	public void registerProtocol(TinyProtocol protocol) {
+	/**
+	 * Register a protocol handler. The protocol handler *MUST* have been already created.
+	 * @param protocol Your protocol handler, extends TinyProtocol
+	 */
+	public void registerHandler(TinyProtocol protocol) {
 		this.handlers.put(protocol.getClass().getName(), protocol);
 	}
 
-	public TinyProtocol getProtocol(Class<? extends TinyProtocol> clazz) {
-		return getProtocol(clazz.getName());
+	/**
+	 * Get a protocol handler
+	 * @param clazz the protocol handler class
+	 * @return the protocol handler instance
+	 */
+	public TinyProtocol getHandler(Class<? extends TinyProtocol> clazz) {
+		return getHandler(clazz.getName());
 	}
 
-	public TinyProtocol getProtocol(String handlerClassName) {
+	/**
+	 * Get a protocol handler
+	 * @param handlerClassName the protocol handler class path
+	 * @return the protocol handler instance
+	 */
+	public TinyProtocol getHandler(String handlerClassName) {
 		return handlers.get(handlerClassName);
 	}
 
