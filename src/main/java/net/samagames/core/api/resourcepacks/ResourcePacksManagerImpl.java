@@ -112,7 +112,7 @@ public class ResourcePacksManagerImpl implements ResourcePacksManager, Listener 
 					event.getPlayer().kickPlayer(ChatColor.RED + "Il est nécessaire d'accepter le pack pour jouer à ce jeu.");
 				}
 				forcePackSent.remove(event.getPlayer().getUniqueId());
-			}, 200);
+			}, 400);
 		}
 	}
 }
