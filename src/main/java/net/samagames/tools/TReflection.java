@@ -1,4 +1,4 @@
-package net.samagames.api.protocol;
+package net.samagames.tools;
 
 import org.bukkit.Bukkit;
 
@@ -14,14 +14,14 @@ import java.util.regex.Pattern;
  *
  * @author Kristian
  */
-public final class Reflection {
+public final class TReflection {
     // Deduce the net.minecraft.server.v* package
     private static String OBC_PREFIX = Bukkit.getServer().getClass().getPackage().getName();
     private static String NMS_PREFIX = OBC_PREFIX.replace("org.bukkit.craftbukkit", "net.minecraft.server");
     private static String VERSION = OBC_PREFIX.replace("org.bukkit.craftbukkit", "").replace(".", "");
     // Variable replacement
     private static Pattern MATCH_VARIABLE = Pattern.compile("\\{([^\\}]+)\\}");
-    private Reflection() {
+    private TReflection() {
         // Seal class
     }
 

@@ -1,5 +1,7 @@
 package net.samagames.api.protocol;
 
+import net.samagames.tools.TinyProtocol;
+
 import java.util.HashMap;
 
 /**

@@ -11,7 +11,6 @@ import net.samagames.api.protocol.ProtocolManager;
 import net.samagames.api.settings.SettingsManager;
 import net.samagames.api.shops.ShopsManager;
 import net.samagames.api.stats.StatsManager;
-import net.samagames.api.protocol.TinyProtocol;
 import redis.clients.jedis.Jedis;
 
 /**

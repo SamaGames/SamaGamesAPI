@@ -32,7 +32,6 @@ import net.samagames.core.api.stats.StatsManagerDB;
 import net.samagames.core.api.stats.StatsManagerNoDB;
 import net.samagames.core.database.DatabaseConnector;
 import net.samagames.core.listeners.GlobalChannelHandler;
-import net.samagames.api.protocol.TinyProtocol;
 import org.bukkit.Bukkit;
 import redis.clients.jedis.Jedis;
 

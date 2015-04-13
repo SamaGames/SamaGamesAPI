@@ -1,10 +1,11 @@
-package net.samagames.api.protocol;
+package net.samagames.tools;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.MapMaker;
 import com.mojang.authlib.GameProfile;
 import io.netty.channel.*;
-import net.samagames.api.protocol.Reflection.*;
+import net.samagames.tools.TReflection.FieldAccessor;
+import net.samagames.tools.TReflection.MethodInvoker;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -30,21 +31,21 @@ public abstract class TinyProtocol {
     private static final AtomicInteger ID = new AtomicInteger(0);
 
     // Used in order to lookup a channel
-    private static final MethodInvoker getPlayerHandle = Reflection.getMethod("{obc}.entity.CraftPlayer", "getHandle");
-    private static final FieldAccessor<Object> getConnection = Reflection.getField("{nms}.EntityPlayer", "playerConnection", Object.class);
-    private static final FieldAccessor<Object> getManager = Reflection.getField("{nms}.PlayerConnection", "networkManager", Object.class);
-    private static final FieldAccessor<Channel> getChannel = Reflection.getField("{nms}.NetworkManager", Channel.class, 0);
+    private static final MethodInvoker getPlayerHandle = TReflection.getMethod("{obc}.entity.CraftPlayer", "getHandle");
+    private static final FieldAccessor<Object> getConnection = TReflection.getField("{nms}.EntityPlayer", "playerConnection", Object.class);
+    private static final FieldAccessor<Object> getManager = TReflection.getField("{nms}.PlayerConnection", "networkManager", Object.class);
+    private static final FieldAccessor<Channel> getChannel = TReflection.getField("{nms}.NetworkManager", Channel.class, 0);
 
     // Looking up ServerConnection
-    private static final Class<Object> minecraftServerClass = Reflection.getUntypedClass("{nms}.MinecraftServer");
-    private static final Class<Object> serverConnectionClass = Reflection.getUntypedClass("{nms}.ServerConnection");
-    private static final FieldAccessor<Object> getMinecraftServer = Reflection.getField("{obc}.CraftServer", minecraftServerClass, 0);
-    private static final FieldAccessor<Object> getServerConnection = Reflection.getField(minecraftServerClass, serverConnectionClass, 0);
-    private static final MethodInvoker getNetworkMarkers = Reflection.getTypedMethod(serverConnectionClass, null, List.class, serverConnectionClass);
+    private static final Class<Object> minecraftServerClass = TReflection.getUntypedClass("{nms}.MinecraftServer");
+    private static final Class<Object> serverConnectionClass = TReflection.getUntypedClass("{nms}.ServerConnection");
+    private static final FieldAccessor<Object> getMinecraftServer = TReflection.getField("{obc}.CraftServer", minecraftServerClass, 0);
+    private static final FieldAccessor<Object> getServerConnection = TReflection.getField(minecraftServerClass, serverConnectionClass, 0);
+    private static final MethodInvoker getNetworkMarkers = TReflection.getTypedMethod(serverConnectionClass, null, List.class, serverConnectionClass);
 
     // Packets we have to intercept
-    private static final Class<?> PACKET_LOGIN_IN_START = Reflection.getMinecraftClass("PacketLoginInStart");
-    private static final FieldAccessor<GameProfile> getGameProfile = Reflection.getField(PACKET_LOGIN_IN_START, GameProfile.class, 0);
+    private static final Class<?> PACKET_LOGIN_IN_START = TReflection.getMinecraftClass("PacketLoginInStart");
+    private static final FieldAccessor<GameProfile> getGameProfile = TReflection.getField(PACKET_LOGIN_IN_START, GameProfile.class, 0);
     protected volatile boolean closed;
     protected Plugin plugin;
     // Speedup channel lookup
@@ -169,7 +170,7 @@ public abstract class TinyProtocol {
 
         // Find the correct list, or implicitly throw an exception
         for (int i = 0; looking; i++) {
-            List<Object> list = Reflection.getField(serverConnection.getClass(), List.class, i).get(serverConnection);
+            List<Object> list = TReflection.getField(serverConnection.getClass(), List.class, i).get(serverConnection);
 
             for (Object item : list) {
                 if (!ChannelFuture.class.isInstance(item))
