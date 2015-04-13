@@ -70,7 +70,7 @@ public class ResourcePacksManagerImpl implements ResourcePacksManager, Listener 
 		if (callback != null)
 			callbackHashMap.put(player.getUniqueId(), callback);
 
-		((CraftPlayer) player).getHandle().playerConnection.sendPacket(new PacketPlayOutResourcePackSend(url, hash));
+		((CraftPlayer) player).getHandle().playerConnection.sendPacket(new PacketPlayOutResourcePackSend(hash, url));
 	}
 
 	void handle(Player player, String hash, PacketPlayInResourcePackStatus.EnumResourcePackStatus state) {
@@ -106,7 +106,7 @@ public class ResourcePacksManagerImpl implements ResourcePacksManager, Listener 
 	public void onJoin(PlayerJoinEvent event) {
 		if (forceHash != null && forceUrl != null) {
 			forcePackSent.add(event.getPlayer().getUniqueId());
-			sendPack(event.getPlayer(), forceHash, forceUrl, new ForcePackHandler(this));
+			sendPack(event.getPlayer(), forceUrl, forceHash, new ForcePackHandler(this));
 			Bukkit.getScheduler().runTaskLater(APIPlugin.getInstance(), () -> {
 				if (forcePackSent.contains(event.getPlayer().getUniqueId())) {
 					event.getPlayer().kickPlayer(ChatColor.RED + "Il est nécessaire d'accepter le pack pour jouer à ce jeu.");
