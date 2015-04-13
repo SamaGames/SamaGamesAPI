@@ -15,8 +15,8 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
 import redis.clients.jedis.Jedis;
 
+import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Set;
 import java.util.UUID;
 
 /**
@@ -31,7 +31,8 @@ public class ResourcePacksManagerImpl implements ResourcePacksManager, Listener 
 	private final String resetUrl;
 	private ProtocolHandler handler = null;
 
-	protected HashSet<UUID> forcePackSent = new HashSet<>();
+	protected HashSet<UUID> currentlyDownloading = new HashSet<>();
+	protected HashMap<UUID, KillerTask> killers = new HashMap<>();
 	private String forceUrl;
 	private String forceHash;
 	private ResourceCallback callback;
@@ -75,20 +76,23 @@ public class ResourcePacksManagerImpl implements ResourcePacksManager, Listener 
 	}
 
 	void handle(Player player, PacketPlayInResourcePackStatus.EnumResourcePackStatus state) {
+		if (forceUrl == null || forceHash == null)
+			return;
+
 		if (callback != null)
 			callback.callback(player, state);
 
 		if (state == PacketPlayInResourcePackStatus.EnumResourcePackStatus.SUCCESSFULLY_LOADED) {
-			forcePackSent.remove(player.getUniqueId());
+			currentlyDownloading.remove(player.getUniqueId());
 			Bukkit.getScheduler().runTaskAsynchronously(APIPlugin.getInstance(), () -> {
 				Jedis jedis = SamaGamesAPI.get().getResource();
 				jedis.sadd("playersWithPack", player.getUniqueId().toString());
 				jedis.close();
 			});
-		} else if (state == PacketPlayInResourcePackStatus.EnumResourcePackStatus.DECLINED || state == PacketPlayInResourcePackStatus.EnumResourcePackStatus.FAILED_DOWNLOAD) {
-			forcePackSent.remove(player.getUniqueId());
-			if (callback == null || callback.automaticKick(player))
-				player.kickPlayer(ChatColor.RED + "Il est nécessaire d'accepter le ressource pack pour jouer.");
+		}
+
+		if (killers.get(player.getUniqueId()) != null) {
+			killers.get(player.getUniqueId()).changeState(state);
 		}
 	}
 	@EventHandler
@@ -97,27 +101,39 @@ public class ResourcePacksManagerImpl implements ResourcePacksManager, Listener 
 
 		if (forceHash != null && forceUrl != null) {
 			Bukkit.getScheduler().runTaskLater(APIPlugin.getInstance(), () -> {
-				forcePackSent.add(player.getUniqueId());
+				currentlyDownloading.add(player.getUniqueId());
 				sendPack(player, forceUrl, forceHash);
 
-				Bukkit.getScheduler().runTaskLater(APIPlugin.getInstance(), () -> {
-					if (forcePackSent.contains(player.getUniqueId())) {
-						forcePackSent.remove(player.getUniqueId());
-						if (callback == null || callback.automaticKick(player))
-							player.kickPlayer(ChatColor.RED + "Il est nécessaire d'accepter le ressource pack pour jouer.");
-					}
-					forcePackSent.remove(player.getUniqueId());
-				}, 400);
+				KillerTask task = new KillerTask(player, callback, this);
+				task.runTaskTimer(APIPlugin.getInstance(), 20L, 20L);
+				killers.put(event.getPlayer().getUniqueId(), task);
 			}, 100);
 		} else {
 			Bukkit.getScheduler().runTaskLater(APIPlugin.getInstance(), () -> {
 				Jedis jedis = SamaGamesAPI.get().getResource();
-				Long l = jedis.srem("playersWithPack");
+				Long l = jedis.srem("playersWithPack", player.getUniqueId().toString());
 				jedis.close();
 
 				if (l > 0)
 					((CraftPlayer) player).getHandle().playerConnection.sendPacket(new PacketPlayOutResourcePackSend(resetUrl, "samareset.zip"));
 			}, 100);
 		}
+	}
+
+	@Override
+	public void kickAllUndownloaded() {
+		for (UUID id : currentlyDownloading) {
+			Player player = Bukkit.getPlayer(id);
+			if (player != null)
+				player.kickPlayer(ChatColor.RED + "Il est nécessaire d'accepter le ressource pack pour jouer.");
+		}
+
+		currentlyDownloading.clear();
+		killers.values().forEach(net.samagames.core.api.resourcepacks.KillerTask::cancel);
+		killers.clear();
+	}
+
+	void removeKillerFor(UUID player) {
+		killers.remove(player);
 	}
 }

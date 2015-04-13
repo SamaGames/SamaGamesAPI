@@ -23,4 +23,9 @@ public interface ResourcePacksManager {
 	 * @param callback a callback called when the download status changes
 	 */
 	public void forcePack(String name, ResourceCallback callback);
+
+	/**
+	 * Kicks all the player who didn't totally downloaded the resource pack
+	 */
+	public void kickAllUndownloaded();
 }
