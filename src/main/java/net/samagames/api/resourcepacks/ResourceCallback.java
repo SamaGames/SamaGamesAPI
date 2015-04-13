@@ -15,8 +15,14 @@ public interface ResourceCallback {
 	/***
 	 * Called when the download status is changed
 	 * @param player THe player downloading the pack
-	 * @param hash The resource pack hash
 	 * @param status The download status
 	 */
-	public void callback(Player player, String hash, PacketPlayInResourcePackStatus.EnumResourcePackStatus status);
+	public void callback(Player player, PacketPlayInResourcePackStatus.EnumResourcePackStatus status);
+
+	/**
+	 * Called when a player is about to be automatically kicked because he doesn't have the pack
+	 * @param player The player to be kicked
+	 * @return true to kick the player, false to cancel
+	 */
+	public boolean automaticKick(Player player);
 }

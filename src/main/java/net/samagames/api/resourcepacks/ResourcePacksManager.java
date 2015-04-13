@@ -11,17 +11,16 @@ import org.bukkit.entity.Player;
  */
 public interface ResourcePacksManager {
 
-	void forcePack(String name);
+	/**
+	 * Forces the use of the pack given in argument
+	 * @param name The name of the pack you want to force the users to use
+	 */
+	public void forcePack(String name);
 
 	/**
-	 * Request the user to download a pack
-	 * @param player player receiving the pack
-	 * @param packName the resource pack name (without extension)
-	 * @param callback callback
+	 * Forces the use of the pack given in argument
+	 * @param name The name of the pack you want to force the users to use
+	 * @param callback a callback called when the download status changes
 	 */
-	public void sendResourcePack(Player player, String packName, ResourceCallback callback);
-
-	public void sendResourcePack(Player player, String packName);
-
-	public void resetResourcePack(Player player);
+	public void forcePack(String name, ResourceCallback callback);
 }

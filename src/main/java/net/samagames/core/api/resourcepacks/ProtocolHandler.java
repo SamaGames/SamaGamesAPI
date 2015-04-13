@@ -39,7 +39,9 @@ public class ProtocolHandler extends TinyProtocol {
 			PacketPlayInResourcePackStatus status = (PacketPlayInResourcePackStatus) packet;
 			try {
 				Field hashField = status.getClass().getDeclaredField("a");
+				hashField.setAccessible(true);
 				Field stateField = status.getClass().getDeclaredField("b");
+				stateField.setAccessible(true);
 
 				String hash = (String) hashField.get(status);
 				PacketPlayInResourcePackStatus.EnumResourcePackStatus state = (PacketPlayInResourcePackStatus.EnumResourcePackStatus) stateField.get(status);

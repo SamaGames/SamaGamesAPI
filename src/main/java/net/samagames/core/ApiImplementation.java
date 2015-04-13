@@ -69,6 +69,7 @@ public class ApiImplementation extends SamaGamesAPI
 		JoinManagerImplement implement = new JoinManagerImplement();
 		Bukkit.getServer().getPluginManager().registerEvents(implement, plugin);
 		this.joinManager = implement;
+		resourcePacksManager = new ResourcePacksManagerImpl();
 
 		if (database) {
 			settingsManager = new SettingsManagerDB(this);
@@ -105,9 +106,6 @@ public class ApiImplementation extends SamaGamesAPI
 
 	@Override
 	public ResourcePacksManager getResourcePacksManager() {
-		if (resourcePacksManager == null)
-			resourcePacksManager = new ResourcePacksManagerImpl();
-
 		return resourcePacksManager;
 	}
 
