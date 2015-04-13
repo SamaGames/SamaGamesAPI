@@ -46,7 +46,7 @@ public class ProtocolHandler extends TinyProtocol {
 				String hash = (String) hashField.get(status);
 				PacketPlayInResourcePackStatus.EnumResourcePackStatus state = (PacketPlayInResourcePackStatus.EnumResourcePackStatus) stateField.get(status);
 
-				manager.handle(sender, hash, state);
+				manager.handle(sender, state);
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
