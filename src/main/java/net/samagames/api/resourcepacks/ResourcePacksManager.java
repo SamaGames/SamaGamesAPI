@@ -11,6 +11,8 @@ import org.bukkit.entity.Player;
  */
 public interface ResourcePacksManager {
 
+	void forcePack(String name);
+
 	/**
 	 * Request the user to download a pack
 	 * @param player player receiving the pack
