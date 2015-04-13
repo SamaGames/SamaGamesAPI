@@ -10,6 +10,7 @@ import net.samagames.api.network.ProxyDataManager;
 import net.samagames.api.parties.PartiesManager;
 import net.samagames.api.player.PlayerDataManager;
 import net.samagames.api.protocol.ProtocolManager;
+import net.samagames.api.resourcepacks.ResourcePacksManager;
 import net.samagames.api.settings.SettingsManager;
 import net.samagames.api.shops.ShopsManager;
 import net.samagames.api.stats.StatsManager;
@@ -24,6 +25,7 @@ import net.samagames.core.api.player.PlayerDataManagerNoDB;
 import net.samagames.core.api.player.PlayerDataManagerWithDB;
 import net.samagames.core.api.pubsub.PubSubAPIDB;
 import net.samagames.core.api.pubsub.PubSubNoDB;
+import net.samagames.core.api.resourcepacks.ResourcePacksManagerImpl;
 import net.samagames.core.api.settings.SettingsManagerDB;
 import net.samagames.core.api.settings.SettingsManagerNoDB;
 import net.samagames.core.api.shops.ShopsManagerDB;
@@ -58,6 +60,7 @@ public class ApiImplementation extends SamaGamesAPI
 	protected ProxyDataManager proxyDataManager;
 	protected PartiesManager partiesManager;
 	protected ProtocolManager protocolManager = new ProtocolManager();
+	protected ResourcePacksManager resourcePacksManager;
 
 	public ApiImplementation(APIPlugin plugin, boolean database) {
 		this.plugin = plugin;
@@ -98,6 +101,14 @@ public class ApiImplementation extends SamaGamesAPI
 			proxyDataManager = new ProxyDataManagerImplNoDB();
 			partiesManager = new PartiesManagerNoDb();
 		}
+	}
+
+	@Override
+	public ResourcePacksManager getResourcePacksManager() {
+		if (resourcePacksManager == null)
+			resourcePacksManager = new ResourcePacksManagerImpl();
+
+		return resourcePacksManager;
 	}
 
 	@Override
