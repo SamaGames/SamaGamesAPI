@@ -8,6 +8,7 @@ import net.samagames.api.network.ProxyDataManager;
 import net.samagames.api.parties.PartiesManager;
 import net.samagames.api.player.PlayerDataManager;
 import net.samagames.api.protocol.ProtocolManager;
+import net.samagames.api.resourcepacks.ResourcePacksManager;
 import net.samagames.api.settings.SettingsManager;
 import net.samagames.api.shops.ShopsManager;
 import net.samagames.api.stats.StatsManager;
@@ -56,6 +57,8 @@ public abstract class SamaGamesAPI {
 	public abstract PubSubAPI getPubSub();
 	public abstract UUIDTranslator getUUIDTranslator();
 	public abstract GameManager getGameManager();
+
+	public abstract ResourcePacksManager getResourcePacksManager();
 
 	public abstract ProtocolManager getProtocolManager();
 
