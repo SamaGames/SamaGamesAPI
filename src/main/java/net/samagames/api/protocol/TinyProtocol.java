@@ -304,7 +304,6 @@ public abstract class TinyProtocol {
     /**
      * Add a custom channel handler to the given channel.
      *
-     * @return The intercepted channel, or NULL if it has already been injected.
      */
     public void injectChannel(Channel channel) {
         injectChannelInternal(channel);
