@@ -14,13 +14,12 @@ public interface ResourcePacksManager {
 	/**
 	 * Request the user to download a pack
 	 * @param player player receiving the pack
-	 * @param url pack download url
-	 * @param hash pack sha1 hash
+	 * @param packName the resource pack name (without extension)
 	 * @param callback callback
 	 */
-	public void sendResourcePack(Player player, String url, String hash, ResourceCallback callback);
+	public void sendResourcePack(Player player, String packName, ResourceCallback callback);
 
-	public void sendResourcePack(Player player, String url, String hash);
+	public void sendResourcePack(Player player, String packName);
 
 	public void resetResourcePack(Player player);
 }

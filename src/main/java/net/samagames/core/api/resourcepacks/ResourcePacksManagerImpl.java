@@ -27,15 +27,22 @@ public class ResourcePacksManagerImpl implements ResourcePacksManager {
 	private HashMap<UUID, ResourceCallback> callbackHashMap = new HashMap<>();
 
 	@Override
-	public void sendResourcePack(Player player, String url, String hash, ResourceCallback callback) {
-		if (handler == null) {
-			handler = new ProtocolHandler(APIPlugin.getInstance(), this);
-		}
+	public void sendResourcePack(Player player, String name, ResourceCallback callback) {
+		Bukkit.getScheduler().runTaskAsynchronously(APIPlugin.getInstance(), () -> {
+			Jedis jedis = SamaGamesAPI.get().getResource();
+			String url = jedis.hget("resourcepack:" + name, "url");
+			String hash = jedis.hget("resourcepack:" + name, "hash");
+			jedis.close();
 
-		if (callback != null)
-			callbackHashMap.put(player.getUniqueId(), callback);
+			if (handler == null) {
+				handler = new ProtocolHandler(APIPlugin.getInstance(), this);
+			}
 
-		((CraftPlayer) player).getHandle().playerConnection.sendPacket(new PacketPlayOutResourcePackSend(url, hash));
+			if (callback != null)
+				callbackHashMap.put(player.getUniqueId(), callback);
+
+			((CraftPlayer) player).getHandle().playerConnection.sendPacket(new PacketPlayOutResourcePackSend(url, hash));
+		});
 	}
 
 	void handle(Player player, String hash, PacketPlayInResourcePackStatus.EnumResourcePackStatus state) {
@@ -48,8 +55,8 @@ public class ResourcePacksManagerImpl implements ResourcePacksManager {
 	}
 
 	@Override
-	public void sendResourcePack(Player player, String url, String hash) {
-		sendResourcePack(player, url, hash, null);
+	public void sendResourcePack(Player player, String name) {
+		sendResourcePack(player, name, null);
 	}
 
 	@Override
