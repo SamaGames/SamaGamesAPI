@@ -22,4 +22,5 @@ public interface ResourcePacksManager {
 
 	public void sendResourcePack(Player player, String url, String hash);
 
+	public void resetResourcePack(Player player);
 }

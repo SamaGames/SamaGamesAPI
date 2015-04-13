@@ -2,11 +2,14 @@ package net.samagames.core.api.resourcepacks;
 
 import net.minecraft.server.v1_8_R2.PacketPlayInResourcePackStatus;
 import net.minecraft.server.v1_8_R2.PacketPlayOutResourcePackSend;
+import net.samagames.api.SamaGamesAPI;
 import net.samagames.api.resourcepacks.ResourceCallback;
 import net.samagames.api.resourcepacks.ResourcePacksManager;
 import net.samagames.core.APIPlugin;
+import org.bukkit.Bukkit;
 import org.bukkit.craftbukkit.v1_8_R2.entity.CraftPlayer;
 import org.bukkit.entity.Player;
+import redis.clients.jedis.Jedis;
 
 import java.util.HashMap;
 import java.util.UUID;
@@ -47,5 +50,15 @@ public class ResourcePacksManagerImpl implements ResourcePacksManager {
 	@Override
 	public void sendResourcePack(Player player, String url, String hash) {
 		sendResourcePack(player, url, hash, null);
+	}
+
+	@Override
+	public void resetResourcePack(Player player) {
+		Bukkit.getScheduler().runTaskAsynchronously(APIPlugin.getInstance(), () -> {
+			Jedis jedis = SamaGamesAPI.get().getResource();
+			String url = jedis.get("resourcepacks:reseturl");
+			jedis.close();
+			player.setResourcePack(url);
+		});
 	}
 }
