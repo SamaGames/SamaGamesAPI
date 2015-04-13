@@ -9,6 +9,7 @@ import net.samagames.api.network.JoinManager;
 import net.samagames.api.network.ProxyDataManager;
 import net.samagames.api.parties.PartiesManager;
 import net.samagames.api.player.PlayerDataManager;
+import net.samagames.api.protocol.ProtocolManager;
 import net.samagames.api.settings.SettingsManager;
 import net.samagames.api.shops.ShopsManager;
 import net.samagames.api.stats.StatsManager;
@@ -31,6 +32,7 @@ import net.samagames.core.api.stats.StatsManagerDB;
 import net.samagames.core.api.stats.StatsManagerNoDB;
 import net.samagames.core.database.DatabaseConnector;
 import net.samagames.core.listeners.GlobalChannelHandler;
+import net.samagames.api.protocol.TinyProtocol;
 import org.bukkit.Bukkit;
 import redis.clients.jedis.Jedis;
 
@@ -55,6 +57,7 @@ public class ApiImplementation extends SamaGamesAPI
 	protected GameManager gameApi;
 	protected ProxyDataManager proxyDataManager;
 	protected PartiesManager partiesManager;
+	protected ProtocolManager protocolManager = new ProtocolManager();
 
 	public ApiImplementation(APIPlugin plugin, boolean database) {
 		this.plugin = plugin;
@@ -95,6 +98,11 @@ public class ApiImplementation extends SamaGamesAPI
 			proxyDataManager = new ProxyDataManagerImplNoDB();
 			partiesManager = new PartiesManagerNoDb();
 		}
+	}
+
+	@Override
+	public ProtocolManager getProtocolManager() {
+		return protocolManager;
 	}
 
 	public APIPlugin getPlugin() {

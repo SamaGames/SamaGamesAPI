@@ -7,9 +7,11 @@ import net.samagames.api.names.UUIDTranslator;
 import net.samagames.api.network.ProxyDataManager;
 import net.samagames.api.parties.PartiesManager;
 import net.samagames.api.player.PlayerDataManager;
+import net.samagames.api.protocol.ProtocolManager;
 import net.samagames.api.settings.SettingsManager;
 import net.samagames.api.shops.ShopsManager;
 import net.samagames.api.stats.StatsManager;
+import net.samagames.api.protocol.TinyProtocol;
 import redis.clients.jedis.Jedis;
 
 /**
@@ -55,6 +57,9 @@ public abstract class SamaGamesAPI {
 	public abstract PubSubAPI getPubSub();
 	public abstract UUIDTranslator getUUIDTranslator();
 	public abstract GameManager getGameManager();
+
+	public abstract ProtocolManager getProtocolManager();
+
 	public abstract ProxyDataManager getProxyDataManager();
 	public abstract PartiesManager getPartiesManager();
 
