@@ -2,7 +2,7 @@ package net.samagames.core.api.resourcepacks;
 
 import io.netty.channel.Channel;
 import net.minecraft.server.v1_8_R2.PacketPlayInResourcePackStatus;
-import net.samagames.api.protocol.TinyProtocol;
+import net.samagames.tools.TinyProtocol;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
 
