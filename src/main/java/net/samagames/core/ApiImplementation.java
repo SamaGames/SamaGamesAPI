@@ -9,7 +9,6 @@ import net.samagames.api.network.JoinManager;
 import net.samagames.api.network.ProxyDataManager;
 import net.samagames.api.parties.PartiesManager;
 import net.samagames.api.player.PlayerDataManager;
-import net.samagames.api.protocol.ProtocolManager;
 import net.samagames.api.resourcepacks.ResourcePacksManager;
 import net.samagames.api.settings.SettingsManager;
 import net.samagames.api.shops.ShopsManager;
@@ -58,7 +57,6 @@ public class ApiImplementation extends SamaGamesAPI
 	protected GameManager gameApi;
 	protected ProxyDataManager proxyDataManager;
 	protected PartiesManager partiesManager;
-	protected ProtocolManager protocolManager = new ProtocolManager();
 	protected ResourcePacksManager resourcePacksManager;
 
 	public ApiImplementation(APIPlugin plugin, boolean database) {
@@ -108,10 +106,6 @@ public class ApiImplementation extends SamaGamesAPI
 		return resourcePacksManager;
 	}
 
-	@Override
-	public ProtocolManager getProtocolManager() {
-		return protocolManager;
-	}
 
 	public APIPlugin getPlugin() {
 		return plugin;

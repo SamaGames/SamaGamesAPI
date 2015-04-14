@@ -1,13 +1,16 @@
 package net.samagames.core.api.network;
 
+import com.mojang.authlib.GameProfile;
 import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.chat.TextComponent;
+import net.minecraft.server.v1_8_R2.EntityPlayer;
 import net.samagames.api.SamaGamesAPI;
 import net.samagames.api.network.JoinHandler;
 import net.samagames.api.network.JoinManager;
 import net.samagames.api.network.JoinResponse;
 import net.samagames.core.APIPlugin;
 import org.bukkit.Bukkit;
+import org.bukkit.craftbukkit.v1_8_R2.entity.CraftPlayer;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -17,10 +20,8 @@ import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import redis.clients.jedis.Jedis;
 
-import java.util.HashSet;
-import java.util.Set;
-import java.util.TreeMap;
-import java.util.UUID;
+import java.lang.reflect.Field;
+import java.util.*;
 
 /**
  * How does that work ?
