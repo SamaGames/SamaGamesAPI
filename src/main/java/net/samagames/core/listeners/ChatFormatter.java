@@ -1,8 +1,8 @@
 package net.samagames.core.listeners;
 
+import net.samagames.api.SamaGamesAPI;
 import net.samagames.core.APIPlugin;
 import net.samagames.permissionsapi.permissions.PermissionUser;
-import net.samagames.permissionsbukkit.PermissionsBukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -31,12 +31,12 @@ public class ChatFormatter extends APIListener {
 	@EventHandler
 	public void onChat(AsyncPlayerChatEvent event) {
 		Player p = event.getPlayer();
-		PermissionUser user = PermissionsBukkit.getApi().getUser(p.getUniqueId());
+		PermissionUser user = SamaGamesAPI.get().getPermissionsManager().getApi().getUser(p.getUniqueId());
 		String format = "<display><prefix><name><suffix>: ";
 
-		String display = replaceColors(PermissionsBukkit.getDisplay(user));
-		String prefix = replaceColors(PermissionsBukkit.getPrefix(user));
-		String suffix = replaceColors(PermissionsBukkit.getSuffix(user));
+		String display = replaceColors(SamaGamesAPI.get().getPermissionsManager().getDisplay(user));
+		String prefix = replaceColors(SamaGamesAPI.get().getPermissionsManager().getPrefix(user));
+		String suffix = replaceColors(SamaGamesAPI.get().getPermissionsManager().getSuffix(user));
 
 		String tmp = format;
 		tmp = tmp.replaceAll("<display>", "" + display + ChatColor.WHITE);

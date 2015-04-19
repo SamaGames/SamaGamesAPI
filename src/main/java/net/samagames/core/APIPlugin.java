@@ -1,11 +1,9 @@
 package net.samagames.core;
 
 import net.samagames.api.SamaGamesAPI;
-import net.samagames.core.api.network.ModerationJoinHandler;
+import net.samagames.core.commands.CommandRefresh;
 import net.samagames.core.database.DatabaseConnector;
 import net.samagames.core.listeners.*;
-import net.samagames.permissionsbukkit.CommandRefresh;
-import net.samagames.permissionsbukkit.PermissionsBukkit;
 import org.apache.commons.lang.StringUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -312,7 +310,7 @@ public class APIPlugin extends JavaPlugin implements Listener {
 			return;
 		}
 
-		if (joinPermission != null && ! PermissionsBukkit.hasPermission(event.getPlayer(), joinPermission)) {
+		if (joinPermission != null && ! api.getPermissionsManager().hasPermission(event.getPlayer(), joinPermission)) {
 			event.disallow(PlayerLoginEvent.Result.KICK_WHITELIST, "Vous n'avez pas la permission de rejoindre ce serveur.");
 		}
 

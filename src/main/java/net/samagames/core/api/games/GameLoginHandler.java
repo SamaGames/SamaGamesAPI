@@ -1,10 +1,10 @@
 package net.samagames.core.api.games;
 
+import net.samagames.api.SamaGamesAPI;
 import net.samagames.api.games.*;
 import net.samagames.api.network.JoinHandler;
 import net.samagames.api.network.JoinResponse;
 import net.samagames.api.network.ResponseType;
-import net.samagames.permissionsbukkit.PermissionsBukkit;
 import org.bukkit.entity.Player;
 
 import java.util.Set;
@@ -63,9 +63,9 @@ public class GameLoginHandler implements JoinHandler
                 }
             } else if (game.getStatus() == Status.STARTING)
                 response.disallow(ResponseType.DENY_NOT_READY);
-            else if (game.getConnectedPlayers() > game.getTotalMaxPlayers() && ! PermissionsBukkit.hasPermission(player, "games.joinfull"))
+            else if (game.getConnectedPlayers() > game.getTotalMaxPlayers() && ! SamaGamesAPI.get().getPermissionsManager().hasPermission(player, "games.joinfull"))
                 response.disallow(ResponseType.DENY_FULL);
-            else if (game.getConnectedPlayers() > game.getMaxPlayers() && !PermissionsBukkit.hasPermission(player, "games.joinvip"))
+            else if (game.getConnectedPlayers() > game.getMaxPlayers() && !SamaGamesAPI.get().getPermissionsManager().hasPermission(player, "games.joinvip"))
                 response.disallow(ResponseType.DENY_VIPONLY);
 
             if (this.api.getGame() instanceof IMasterControlledGame)
@@ -93,7 +93,7 @@ public class GameLoginHandler implements JoinHandler
                     response.disallow(ResponseType.DENY_NOT_READY);
                 else if (game.getConnectedPlayers() + partyMembers.size() > game.getTotalMaxPlayers())
                     response.disallow(ResponseType.DENY_FULL);
-                else if (game.getConnectedPlayers() + partyMembers.size() > game.getMaxPlayers() && ! PermissionsBukkit.hasPermission(partyLeader, "games.joinvip"))
+                else if (game.getConnectedPlayers() + partyMembers.size() > game.getMaxPlayers() && ! SamaGamesAPI.get().getPermissionsManager().hasPermission(partyLeader, "games.joinvip"))
                     response.disallow(ResponseType.DENY_VIPONLY);
 
                 if (this.api.getGame() instanceof IMasterControlledGame)

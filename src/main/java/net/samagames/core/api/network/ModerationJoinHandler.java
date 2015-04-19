@@ -3,7 +3,6 @@ package net.samagames.core.api.network;
 import net.samagames.api.SamaGamesAPI;
 import net.samagames.api.channels.PacketsReceiver;
 import net.samagames.api.network.JoinHandler;
-import net.samagames.permissionsbukkit.PermissionsBukkit;
 import org.apache.commons.lang.StringUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -42,13 +41,13 @@ public class ModerationJoinHandler implements JoinHandler, PacketsReceiver {
         String id = args[0];
         UUID uuid = UUID.fromString(id);
 
-        if (PermissionsBukkit.hasPermission(uuid, "games.modjoin"))
+        if (SamaGamesAPI.get().getPermissionsManager().hasPermission(uuid, "games.modjoin"))
             manager.moderatorsExpected.add(uuid);
 
         if (packet.startsWith("teleport")) {
             try  {
                 UUID target = UUID.fromString(args[2]);
-                if (PermissionsBukkit.hasPermission(uuid, "games.modjoin")) {
+                if (SamaGamesAPI.get().getPermissionsManager().hasPermission(uuid, "games.modjoin")) {
                     teleportTargets.put(uuid, target);
                 }
             } catch (Exception ignored) {

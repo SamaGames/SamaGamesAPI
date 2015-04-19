@@ -1,8 +1,6 @@
 package net.samagames.core.commands;
 
 import net.samagames.core.APIPlugin;
-import net.samagames.permissionsapi.PermissionsAPI;
-import net.samagames.permissionsbukkit.PermissionsBukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -40,7 +38,7 @@ public abstract class AbstractCommand implements CommandExecutor {
 
 		boolean val = false;
 		if (sender instanceof Player) {
-			val = PermissionsBukkit.hasPermission(sender, permission);
+			val = APIPlugin.getApi().getPermissionsManager().hasPermission(sender, permission);
 		}
 
 		if (!val)

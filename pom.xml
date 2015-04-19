@@ -64,9 +64,9 @@
         </dependency>
         <dependency>
             <groupId>net.samagames</groupId>
-            <artifactId>PermissionsBukkit</artifactId>
+            <artifactId>PermissionsAPI</artifactId>
             <version>0.0.1-SNAPSHOT</version>
-            <scope>provided</scope>
+            <scope>compile</scope>
         </dependency>
         <dependency>
             <groupId>com.google.guava</groupId>

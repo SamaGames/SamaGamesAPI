@@ -6,9 +6,7 @@ import net.md_5.bungee.api.chat.TextComponent;
 import net.samagames.api.SamaGamesAPI;
 import net.samagames.core.APIPlugin;
 import net.samagames.permissionsapi.permissions.PermissionUser;
-import net.samagames.permissionsbukkit.PermissionsBukkit;
 import redis.clients.jedis.Jedis;
-import redis.clients.jedis.ShardedJedis;
 
 import java.util.Date;
 import java.util.UUID;
@@ -54,7 +52,7 @@ class CoinsManager {
 			ret.infos.put(currentPromo.message, currentPromo.multiply);
 		}
 
-		PermissionUser user = PermissionsBukkit.getApi().getUser(joueur);
+		PermissionUser user = SamaGamesAPI.get().getPermissionsManager().getApi().getUser(joueur);
 		int multiply = (user != null && user.getProperty("multiplier") != null) ? Integer.decode(user.getProperty("multiplier")) : 0;
 
 		multiply = (multiply < 1) ? 1 : multiply;

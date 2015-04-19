@@ -1,9 +1,9 @@
 package net.samagames.core.listeners;
 
+import net.samagames.api.SamaGamesAPI;
 import net.samagames.core.APIPlugin;
 import net.samagames.core.tabcolors.TeamManager;
 import net.samagames.permissionsapi.permissions.PermissionUser;
-import net.samagames.permissionsbukkit.PermissionsBukkit;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
@@ -44,9 +44,9 @@ public class TabsColorsListener extends APIListener {
 		manager.playerJoin(p); // Passer ça en sync si crash //
 		Bukkit.getScheduler().runTaskAsynchronously(plugin, () -> {
 			if (plugin.isDatabaseEnabled()) {
-				PermissionUser user = PermissionsBukkit.getApi().getUser(p.getUniqueId());
-				final String display = PermissionsBukkit.getDisplay(user);
-				String prefix = PermissionsBukkit.getPrefix(user);
+				PermissionUser user = SamaGamesAPI.get().getPermissionsManager().getApi().getUser(p.getUniqueId());
+				final String display = SamaGamesAPI.get().getPermissionsManager().getDisplay(user);
+				String prefix = SamaGamesAPI.get().getPermissionsManager().getPrefix(user);
 
 				final String displayn = replaceColors(display + "" + prefix) + p.getName();
 				p.setDisplayName(displayn);

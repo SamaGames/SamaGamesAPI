@@ -2,7 +2,6 @@ package net.samagames.tools;
 
 import net.md_5.bungee.api.ChatColor;
 import net.samagames.api.SamaGamesAPI;
-import net.samagames.permissionsbukkit.PermissionsBukkit;
 import org.bukkit.command.CommandSender;
 import com.google.gson.Gson;
 import org.bukkit.entity.Player;
@@ -31,7 +30,7 @@ public class JsonModMessage {
 
 	public static JsonModMessage build(CommandSender sender, String message) {
 		if (sender instanceof Player) {
-			String prefix = PermissionsBukkit.getPrefix(PermissionsBukkit.getApi().getUser(((Player)sender).getUniqueId()));
+			String prefix = SamaGamesAPI.get().getPermissionsManager().getPrefix(SamaGamesAPI.get().getPermissionsManager().getApi().getUser(((Player) sender).getUniqueId()));
 			ChatColor pr = (prefix == null) ? ChatColor.AQUA : ChatColor.getByChar(prefix.charAt(prefix.length() - 1));
 
 			return new JsonModMessage(sender.getName(), pr, message);

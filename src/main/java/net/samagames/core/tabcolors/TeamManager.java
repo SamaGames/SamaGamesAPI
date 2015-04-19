@@ -1,9 +1,10 @@
 package net.samagames.core.tabcolors;
 
+import net.samagames.api.SamaGamesAPI;
+import net.samagames.api.permissions.PermissionsManager;
 import net.samagames.core.APIPlugin;
 import net.samagames.permissionsapi.permissions.PermissionGroup;
 import net.samagames.permissionsapi.permissions.PermissionUser;
-import net.samagames.permissionsbukkit.PermissionsBukkit;
 import org.bukkit.Bukkit;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
@@ -24,18 +25,20 @@ public class TeamManager {
 	private final APIPlugin plugin;
     public List<PermissionGroup> groups = new ArrayList<>();
     public TeamHandler teamHandler;
+    public final PermissionsManager manager;
 
     public Executor executor = Executors.newSingleThreadExecutor();
 
     public TeamManager(APIPlugin pl) {
         plugin = pl;
+        manager = SamaGamesAPI.get().getPermissionsManager();
 
         teamHandler = new TeamHandler();
 
         if (!pl.isDatabaseEnabled())
             return;
 
-        groups.addAll(PermissionsBukkit.getApi().getManager().getGroupsCache().values().stream().collect(Collectors.toList()));
+        groups.addAll(manager.getApi().getManager().getGroupsCache().values().stream().collect(Collectors.toList()));
 
         for (PermissionGroup pg : groups) {
             String teamName = pg.getProperty("team-name");
@@ -47,12 +50,12 @@ public class TeamManager {
 
             TeamHandler.VTeam vt = teamHandler.createNewTeam(teamName, "");
 
-            if (PermissionsBukkit.getDisplay(pg) != null)
-                vt.setPrefix(PermissionsBukkit.getDisplay(pg));
-            if (PermissionsBukkit.getDisplay(pg) != null)
-                vt.setDisplayName(PermissionsBukkit.getDisplay(pg));
-            if (PermissionsBukkit.getSuffix(pg) != null)
-                vt.setSuffix(PermissionsBukkit.getSuffix(pg));
+            if (manager.getDisplay(pg) != null)
+                vt.setPrefix(manager.getDisplay(pg));
+            if (manager.getDisplay(pg) != null)
+                vt.setDisplayName(manager.getDisplay(pg));
+            if (manager.getSuffix(pg) != null)
+                vt.setSuffix(manager.getSuffix(pg));
 
             teamHandler.addTeam(vt);
             APIPlugin.log("[TeamRegister] Team " + teamName + " ajoutée  --> " +  vt.getPrefix() + " / " + vt);
@@ -121,7 +124,7 @@ public class TeamManager {
         executor.execute(() -> {
             teamHandler.addReceiver(p);
 
-            final PermissionUser user = PermissionsBukkit.getApi().getUser(p.getUniqueId());
+            final PermissionUser user = manager.getApi().getUser(p.getUniqueId());
             final String prefix = user.getProperty("team-name");
 
             TeamHandler.VTeam vtt = teamHandler.getTeamByName(prefix);
