@@ -62,6 +62,6 @@ public abstract class SamaGamesAPI {
 	public abstract ProxyDataManager getProxyDataManager();
 	public abstract PartiesManager getPartiesManager();
 
-	public PermissionsManager getPermissionsManager();
+	public abstract PermissionsManager getPermissionsManager();
 
 }
