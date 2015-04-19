@@ -8,6 +8,7 @@ import net.samagames.api.names.UUIDTranslator;
 import net.samagames.api.network.JoinManager;
 import net.samagames.api.network.ProxyDataManager;
 import net.samagames.api.parties.PartiesManager;
+import net.samagames.api.permissions.PermissionsManager;
 import net.samagames.api.player.PlayerDataManager;
 import net.samagames.api.resourcepacks.ResourcePacksManager;
 import net.samagames.api.settings.SettingsManager;
@@ -20,6 +21,9 @@ import net.samagames.core.api.names.UUIDTranslatorNODB;
 import net.samagames.core.api.network.*;
 import net.samagames.core.api.parties.PartiesManagerNoDb;
 import net.samagames.core.api.parties.PartiesManagerWithDB;
+import net.samagames.core.api.permissions.BasicPermissionManager;
+import net.samagames.core.api.permissions.PermissionsManagerDB;
+import net.samagames.core.api.permissions.PermissionsManagerNoDB;
 import net.samagames.core.api.player.PlayerDataManagerNoDB;
 import net.samagames.core.api.player.PlayerDataManagerWithDB;
 import net.samagames.core.api.pubsub.PubSubAPIDB;
@@ -58,6 +62,7 @@ public class ApiImplementation extends SamaGamesAPI
 	protected ProxyDataManager proxyDataManager;
 	protected PartiesManager partiesManager;
 	protected ResourcePacksManager resourcePacksManager;
+	protected BasicPermissionManager permissionsManager;
 
 	public ApiImplementation(APIPlugin plugin, boolean database) {
 		this.plugin = plugin;
@@ -88,6 +93,7 @@ public class ApiImplementation extends SamaGamesAPI
 			uuidTranslator = new UUIDTranslatorDB(plugin, this);
 			proxyDataManager = new ProxyDataManagerImplDB(this);
 			partiesManager = new PartiesManagerWithDB(this);
+			permissionsManager = new PermissionsManagerDB();
 		} else {
 			settingsManager = new SettingsManagerNoDB();
 			playerDataManager = new PlayerDataManagerNoDB();
@@ -98,7 +104,13 @@ public class ApiImplementation extends SamaGamesAPI
 			SamaGamesAPI.get().getPubSub().subscribe(plugin.getServerName(), moderationJoinHandler);
 			proxyDataManager = new ProxyDataManagerImplNoDB();
 			partiesManager = new PartiesManagerNoDb();
+			permissionsManager = new PermissionsManagerNoDB();
 		}
+	}
+
+	@Override
+	public PermissionsManager getPermissionsManager() {
+		return permissionsManager;
 	}
 
 	@Override

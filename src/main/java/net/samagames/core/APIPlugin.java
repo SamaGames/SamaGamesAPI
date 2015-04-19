@@ -4,6 +4,7 @@ import net.samagames.api.SamaGamesAPI;
 import net.samagames.core.api.network.ModerationJoinHandler;
 import net.samagames.core.database.DatabaseConnector;
 import net.samagames.core.listeners.*;
+import net.samagames.permissionsbukkit.CommandRefresh;
 import net.samagames.permissionsbukkit.PermissionsBukkit;
 import org.apache.commons.lang.StringUtils;
 import org.bukkit.Bukkit;
@@ -127,6 +128,8 @@ public class APIPlugin extends JavaPlugin implements Listener {
 				e.printStackTrace();
 			}
 		}
+
+		APIPlugin.getInstance().getCommand("localrefresh").setExecutor(new CommandRefresh(api.getPermissionsManager().getApi()));
 
 		try {
 			Calendar calendar = new GregorianCalendar();
