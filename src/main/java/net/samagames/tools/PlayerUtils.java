@@ -11,7 +11,7 @@ public class PlayerUtils
 {
     public static String getFullyFormattedPlayerName(UUID uuid)
     {
-        return PermissionsBukkit.getPrefix(PermissionsBukkit.getApi().getUser(uuid)) + PermissionsBukkit.getDisplay(PermissionsBukkit.getApi().getUser(uuid)) + SamaGamesAPI.get().getUUIDTranslator().getName(uuid) + ChatColor.RESET;
+        return PermissionsBukkit.getPrefix(PermissionsBukkit.getApi().getUser(uuid)) + PermissionsBukkit.getDisplay(PermissionsBukkit.getApi().getUser(uuid)) + SamaGamesAPI.get().getUUIDTranslator().getName(uuid, true) + ChatColor.RESET;
     }
 
     public static String getFullyFormattedPlayerName(Player player)
@@ -21,7 +21,7 @@ public class PlayerUtils
     
     public static String getColoredFormattedPlayerName(UUID uuid)
     {
-        return PermissionsBukkit.getPrefix(PermissionsBukkit.getApi().getUser(uuid)) + SamaGamesAPI.get().getUUIDTranslator().getName(uuid) + ChatColor.RESET;
+        return PermissionsBukkit.getPrefix(PermissionsBukkit.getApi().getUser(uuid)) + SamaGamesAPI.get().getUUIDTranslator().getName(uuid, true) + ChatColor.RESET;
     }
 
     public static String getColoredFormattedPlayerName(Player player)
