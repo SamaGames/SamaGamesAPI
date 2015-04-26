@@ -5,9 +5,9 @@ import org.bukkit.ChatColor;
 
 public class GameSignBuilder extends SignBuilder
 {
-	public GameSignBuilder(String bungeeName, String gameType, IGameInfos game)
+	public GameSignBuilder(IGameInfos game)
 	{
-		super(bungeeName, gameType);
+		super(game.getGameName());
 
 		this.setSlots(game.getConnectedPlayers(), game.getTotalMaxPlayers());
 		StatusEnum status = game.getStatus();

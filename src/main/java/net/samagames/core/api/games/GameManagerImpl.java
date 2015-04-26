@@ -1,10 +1,9 @@
 package net.samagames.core.api.games;
 
 import net.samagames.api.SamaGamesAPI;
-import net.samagames.api.games.GameManager;
-import net.samagames.api.games.IManagedGame;
-import net.samagames.api.games.IReconnectGame;
+import net.samagames.api.games.*;
 import net.samagames.api.games.themachine.CoherenceMachine;
+import net.samagames.api.signs.SignBuilder;
 import net.samagames.core.APIPlugin;
 import net.samagames.core.api.games.themachine.CoherenceMachineImpl;
 import org.bukkit.Bukkit;
@@ -23,6 +22,7 @@ public class GameManagerImpl implements GameManager
     private HashMap<UUID, Integer> playerDisconnectTime;
     private HashMap<UUID, Integer> playerReconnectedTimers;
     private IManagedGame game;
+    private Status gameStatus;
 
     private boolean allowReconnect;
     private int maxReconnectTime;
@@ -121,6 +121,31 @@ public class GameManagerImpl implements GameManager
         }
 
         ((IReconnectGame) this.game).playerReconnectTimeOut(player);
+    }
+
+    public void refreshArena()
+    {
+        if(this.game == null)
+            throw new IllegalStateException("Can't refresh arena because the arena is null!");
+
+        this.refreshArena(new GameSignBuilder(this.game));
+    }
+
+    public void refreshArena(SignBuilder signData)
+    {
+        if(this.game == null)
+            throw new IllegalStateException("Can't refresh arena because the arena is null!");
+
+        signData.send();
+    }
+
+    public void setStatus(Status gameStatus)
+    {
+        if(this.game == null)
+            throw new IllegalStateException("Can't set status of the game because the arena is null!");
+
+        this.gameStatus = gameStatus;
+        this.refreshArena();
     }
 
     @Override

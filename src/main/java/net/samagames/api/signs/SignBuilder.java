@@ -1,12 +1,14 @@
 package net.samagames.api.signs;
 
+import net.samagames.api.SamaGamesAPI;
+
 public class SignBuilder {
 
     private SignData sign;
 
-    public SignBuilder(String bungeeName, String gameType) {
+    public SignBuilder(String gameType) {
         this.sign = new SignData();
-        sign.setBungeeName(bungeeName);
+        sign.setBungeeName(SamaGamesAPI.get().getServerName());
         sign.setGameType(gameType);
     }
 
