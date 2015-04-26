@@ -7,7 +7,7 @@ import java.util.UUID;
 
 public interface GameManager
 {
-    public void registerGame(IManagedGame game);
+    void registerGame(IManagedGame game);
 
     void onPlayerDisconnect(Player player);
     void onPlayerReconnect(Player player);
