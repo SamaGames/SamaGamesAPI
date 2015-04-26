@@ -3,7 +3,6 @@ package net.samagames.core.api.games;
 import net.samagames.api.SamaGamesAPI;
 import net.samagames.api.games.*;
 import net.samagames.api.games.themachine.CoherenceMachine;
-import net.samagames.api.signs.SignBuilder;
 import net.samagames.core.APIPlugin;
 import net.samagames.core.api.games.themachine.CoherenceMachineImpl;
 import org.bukkit.Bukkit;
@@ -70,18 +69,15 @@ public class GameManagerImpl implements GameManager
                 boolean bool = false;
 
                 @Override
-                public void run()
-                {
-                    if (!this.bool)
-                    {
-                        if(playerDisconnectTime.containsKey(player.getUniqueId()))
+                public void run() {
+                    if (!this.bool) {
+                        if (playerDisconnectTime.containsKey(player.getUniqueId()))
                             this.before = playerDisconnectTime.get(player.getUniqueId());
 
                         this.bool = true;
                     }
 
-                    if (this.before == maxReconnectTime * 2 || this.now == maxReconnectTime)
-                    {
+                    if (this.before == maxReconnectTime * 2 || this.now == maxReconnectTime) {
                         onPlayerReconnectTimeOut(player);
                     }
 
@@ -128,15 +124,7 @@ public class GameManagerImpl implements GameManager
         if(this.game == null)
             throw new IllegalStateException("Can't refresh arena because the arena is null!");
 
-        this.refreshArena(new GameSignBuilder(this.game));
-    }
-
-    public void refreshArena(SignBuilder signData)
-    {
-        if(this.game == null)
-            throw new IllegalStateException("Can't refresh arena because the arena is null!");
-
-        signData.send();
+        new ServerStatus(this.game.getGameName(), this.game.getMapName(), this.game.getConnectedPlayers(), this.game.getMaxPlayers()).sendToHubs();
     }
 
     public void setStatus(Status gameStatus)

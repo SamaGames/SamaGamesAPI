@@ -1,7 +1,6 @@
 package net.samagames.api.games;
 
 import net.samagames.api.games.themachine.CoherenceMachine;
-import net.samagames.api.signs.SignBuilder;
 import org.bukkit.entity.Player;
 
 import java.util.UUID;
@@ -40,13 +39,6 @@ public interface GameManager
      * Refresh the arena to the hubs
      */
     void refreshArena();
-
-    /**
-     * Refresh the arena to the hubs with a custom SignBuilder
-     *
-     * @param builder Custom SignBuilder
-     */
-    void refreshArena(SignBuilder builder);
 
     /**
      * Set the status of the game (we'll refresh automatically the arena)
