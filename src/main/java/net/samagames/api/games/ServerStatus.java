@@ -5,23 +5,32 @@ import net.samagames.api.SamaGamesAPI;
 
 public class ServerStatus
 {
+    private String bungeeName;
     private String game;
     private String map;
+    private Status status;
     private int players;
     private int maxPlayers;
 
-    public ServerStatus(String game, String map, int players, int maxPlayers)
+    public ServerStatus(String bungeeName, String game, String map, Status status, int players, int maxPlayers)
     {
-        this.setGame(game);
-        this.setMap(map);
-        this.setPlayers(players);
-        this.setMaxPlayers(maxPlayers);
+        this.bungeeName = bungeeName;
+        this.game = game;
+        this.map = map;
+        this.status = status;
+        this.players = players;
+        this.maxPlayers = maxPlayers;
     }
 
     public void sendToHubs()
     {
         String json = new Gson().toJson(this);
         SamaGamesAPI.get().getPubSub().send("hubsChannel", json);
+    }
+
+    public void setBungeeName(String bungeeName)
+    {
+        this.bungeeName = bungeeName;
     }
 
     public void setGame(String game)
@@ -34,6 +43,11 @@ public class ServerStatus
         this.map = map;
     }
 
+    public void setStatus(Status status)
+    {
+        this.status = status;
+    }
+
     public void setPlayers(int players)
     {
         this.players = players;
@@ -44,23 +58,33 @@ public class ServerStatus
         this.maxPlayers = maxPlayers;
     }
 
+    public String getBungeeName()
+    {
+        return this.bungeeName;
+    }
+
     public String getGame()
     {
-        return game;
+        return this.game;
     }
 
     public String getMap()
     {
-        return map;
+        return this.map;
+    }
+
+    public Status getStatus()
+    {
+        return this.status;
     }
 
     public int getPlayers()
     {
-        return players;
+        return this.players;
     }
 
     public int getMaxPlayers()
     {
-        return maxPlayers;
+        return this.maxPlayers;
     }
 }
