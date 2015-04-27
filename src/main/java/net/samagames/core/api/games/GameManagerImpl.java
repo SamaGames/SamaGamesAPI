@@ -161,6 +161,11 @@ public class GameManagerImpl implements GameManager
         return this.game;
     }
 
+    public Status getGameStatus()
+    {
+        return this.gameStatus;
+    }
+
     @Override
     public CoherenceMachine getCoherenceMachine()
     {
