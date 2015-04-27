@@ -12,7 +12,7 @@ public class GameUtils
      *
      * @param sound The sound
      */
-    public void broadcastSound(Sound sound)
+    public static void broadcastSound(Sound sound)
     {
         for(Player player : Bukkit.getOnlinePlayers())
         {
@@ -26,7 +26,7 @@ public class GameUtils
      * @param sound The sound
      * @param volume The volume
      */
-    public void broadcastSound(Sound sound, int volume)
+    public static void broadcastSound(Sound sound, int volume)
     {
         for(Player player : Bukkit.getOnlinePlayers())
         {
@@ -40,7 +40,7 @@ public class GameUtils
      * @param sound The sound
      * @param location The location
      */
-    public void broadcastSound(Sound sound, Location location)
+    public static void broadcastSound(Sound sound, Location location)
     {
         for(Player player : Bukkit.getOnlinePlayers())
         {
