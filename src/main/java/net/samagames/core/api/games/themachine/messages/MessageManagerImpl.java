@@ -26,9 +26,6 @@ public class MessageManagerImpl implements MessageManager
         builder.append(ChatColor.DARK_GRAY).append("/");
         builder.append(ChatColor.RED).append(this.machine.getGameInfos().getMaxPlayers());
 
-        if(this.machine.getGameInfos().getConnectedPlayers() > this.machine.getGameInfos().getMaxPlayers())
-            builder.append(ChatColor.GREEN).append(" [Slots VIP]");
-
         return new Message(builder.toString(), this.machine.getGameTag()).displayToAll();
     }
 
