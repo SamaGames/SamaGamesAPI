@@ -1,9 +1,11 @@
 package net.samagames.core;
 
 import net.samagames.api.SamaGamesAPI;
-import net.samagames.core.api.network.ModerationJoinHandler;
 import net.samagames.core.database.DatabaseConnector;
-import net.samagames.core.listeners.*;
+import net.samagames.core.listeners.ChatFormatter;
+import net.samagames.core.listeners.NaturalListener;
+import net.samagames.core.listeners.PlayerDataListener;
+import net.samagames.core.listeners.TabsColorsListener;
 import net.samagames.permissionsbukkit.PermissionsBukkit;
 import org.apache.commons.lang.StringUtils;
 import org.bukkit.Bukkit;
@@ -56,6 +58,8 @@ public class APIPlugin extends JavaPlugin implements Listener {
 		log("# SamaGamesAPI is now loading. Please read     #");
 		log("# carefully all outputs coming from it.        #");
 		log("#==============================================#");
+
+		this.getServer().getMessenger().registerOutgoingPluginChannel(this, "BungeeCord");
 
 		log("Loading main configuration...");
 		this.saveDefaultConfig();
