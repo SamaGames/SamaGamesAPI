@@ -49,6 +49,13 @@ public class GameManagerImpl implements GameManager
     }
 
     @Override
+    public void kickPlayer(Player player, String reason)
+    {
+        player.sendMessage(reason);
+        Bukkit.getScheduler().runTaskLater(APIPlugin.getInstance(), () -> player.kickPlayer(null), 10L);
+    }
+
+    @Override
     public void onPlayerDisconnect(Player player)
     {
         this.game.playerDisconnect(player);

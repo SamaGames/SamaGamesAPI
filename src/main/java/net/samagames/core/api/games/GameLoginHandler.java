@@ -10,7 +10,6 @@ import org.bukkit.entity.Player;
 import java.util.Set;
 import java.util.UUID;
 
-
 public class GameLoginHandler implements JoinHandler
 {
     private final GameManager api;
@@ -82,7 +81,7 @@ public class GameLoginHandler implements JoinHandler
             if (!response.isAllowed())
             {
                 if(this.api.getGame() instanceof IMasterControlledGame)
-                    response = ((IMasterControlledGame) this.api.getGame()).requestPartyJoin(partyLeader, partyMembers, response);
+                   return ((IMasterControlledGame) this.api.getGame()).requestPartyJoin(partyLeader, partyMembers, response);
             }
             else
             {
@@ -98,7 +97,7 @@ public class GameLoginHandler implements JoinHandler
                     response.disallow(ResponseType.DENY_VIPONLY);
 
                 if (this.api.getGame() instanceof IMasterControlledGame)
-                    response = ((IMasterControlledGame) this.api.getGame()).requestPartyJoin(partyLeader, partyMembers, response);
+                    return ((IMasterControlledGame) this.api.getGame()).requestPartyJoin(partyLeader, partyMembers, response);
             }
         }
 

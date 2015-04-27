@@ -15,6 +15,14 @@ public interface GameManager
     void registerGame(IManagedGame game);
 
     /**
+     * Kick a player from the game
+     *
+     * @param player The player
+     * @param reason Reason of the kick
+     */
+    void kickPlayer(Player player, String reason);
+
+    /**
      * Event fired when a player disconnect from the game
      *
      * @param player The Player
