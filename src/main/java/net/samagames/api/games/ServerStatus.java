@@ -2,6 +2,9 @@ package net.samagames.api.games;
 
 import com.google.gson.Gson;
 import net.samagames.api.SamaGamesAPI;
+import net.samagames.core.APIPlugin;
+
+import java.util.logging.Level;
 
 public class ServerStatus
 {
@@ -26,6 +29,8 @@ public class ServerStatus
     {
         String json = new Gson().toJson(this);
         SamaGamesAPI.get().getPubSub().send("hubsChannel", json);
+
+        APIPlugin.log(Level.INFO, "Sended server status to hubs. (" + json + ")");
     }
 
     public void setBungeeName(String bungeeName)

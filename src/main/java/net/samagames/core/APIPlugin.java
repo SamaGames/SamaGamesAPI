@@ -2,6 +2,7 @@ package net.samagames.core;
 
 import net.samagames.api.SamaGamesAPI;
 import net.samagames.core.database.DatabaseConnector;
+import net.samagames.core.database.RedisServer;
 import net.samagames.core.listeners.ChatFormatter;
 import net.samagames.core.listeners.NaturalListener;
 import net.samagames.core.listeners.PlayerDataListener;
@@ -26,7 +27,6 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.*;
 import java.util.concurrent.CopyOnWriteArraySet;
 import java.util.logging.Level;
-import java.util.stream.Collectors;
 
 /**
  * This file is a part of the SamaGames project
@@ -91,8 +91,17 @@ public class APIPlugin extends JavaPlugin implements Listener {
 			} else {
 				YamlConfiguration dataYML = YamlConfiguration.loadConfiguration(conf);
 
-				Set<String> ips = ((List<String>) dataYML.getList("Redis-Ips")).stream().map(IP -> IP).collect(Collectors.toSet());
-				databaseConnector = new DatabaseConnector(this, ips, dataYML.getString("mainMonitor", "mymaster"), dataYML.getString("cacheMonitor", "cache"),  dataYML.getString("Redis-Pass"));
+				String mainIp = dataYML.getString("redis-ip", "127.0.0.1");
+				int mainPort = dataYML.getInt("redis-port", 6379);
+				String mainPassword = dataYML.getString("redis-password", "passw0rd");
+				RedisServer main = new RedisServer(mainIp, mainPort, mainPassword);
+
+				String bungeeIp = dataYML.getString("redis-bungee-ip", "127.0.0.1");
+				int bungeePort = dataYML.getInt("redis-bungee-port", 4242);
+				String bungeePassword = dataYML.getString("redis-bungee-password", "passw0rd");
+				RedisServer bungee = new RedisServer(bungeeIp, bungeePort, bungeePassword);
+
+				databaseConnector = new DatabaseConnector(this, main, bungee);
 
 			}
 		} else {

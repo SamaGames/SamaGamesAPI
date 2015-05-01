@@ -34,6 +34,8 @@ public class GameManagerImpl implements GameManager
         this.playersDisconnected = new ArrayList<>();
         this.playerDisconnectTime = new HashMap<>();
         this.playerReconnectedTimers = new HashMap<>();
+
+        this.gameStatus = Status.NOT_RESPONDING;
     }
 
     @Override
