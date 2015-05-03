@@ -3,6 +3,7 @@ main: net.samagames.core.APIPlugin
 version: gitcommit
 authors: [zyuiop, geekpower14, BlueSlime]
 website: http://samagames.net/
+load: STARTUP
 softdepend: [SamaPermissionsBukkit]
 commands:
    coins:

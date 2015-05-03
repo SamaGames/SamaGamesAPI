@@ -7,7 +7,7 @@ import org.bukkit.entity.Player;
 import java.util.Set;
 import java.util.UUID;
 
-public interface IMasterControlledGame extends JoinHandler
+public interface IMasterControlledGame extends JoinHandler, IManagedGame
 {
     @Override
     JoinResponse requestJoin(UUID player, JoinResponse response);

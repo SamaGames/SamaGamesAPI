@@ -1,9 +1,13 @@
 package net.samagames.core;
 
 import net.samagames.api.SamaGamesAPI;
-import net.samagames.core.commands.CommandRefresh;
 import net.samagames.core.database.DatabaseConnector;
-import net.samagames.core.listeners.*;
+import net.samagames.core.database.RedisServer;
+import net.samagames.core.listeners.ChatFormatter;
+import net.samagames.core.listeners.NaturalListener;
+import net.samagames.core.listeners.PlayerDataListener;
+import net.samagames.core.listeners.TabsColorsListener;
+import net.samagames.permissionsbukkit.PermissionsBukkit;
 import org.apache.commons.lang.StringUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -23,7 +27,6 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.*;
 import java.util.concurrent.CopyOnWriteArraySet;
 import java.util.logging.Level;
-import java.util.stream.Collectors;
 
 /**
  * This file is a part of the SamaGames project
@@ -56,6 +59,8 @@ public class APIPlugin extends JavaPlugin implements Listener {
 		log("# carefully all outputs coming from it.        #");
 		log("#==============================================#");
 
+		this.getServer().getMessenger().registerOutgoingPluginChannel(this, "BungeeCord");
+
 		log("Loading main configuration...");
 		this.saveDefaultConfig();
 		configuration = this.getConfig();
@@ -86,8 +91,17 @@ public class APIPlugin extends JavaPlugin implements Listener {
 			} else {
 				YamlConfiguration dataYML = YamlConfiguration.loadConfiguration(conf);
 
-				Set<String> ips = ((List<String>) dataYML.getList("Redis-Ips")).stream().map(IP -> IP).collect(Collectors.toSet());
-				databaseConnector = new DatabaseConnector(this, ips, dataYML.getString("mainMonitor", "mymaster"), dataYML.getString("cacheMonitor", "cache"),  dataYML.getString("Redis-Pass"));
+				String mainIp = dataYML.getString("redis-ip", "127.0.0.1");
+				int mainPort = dataYML.getInt("redis-port", 6379);
+				String mainPassword = dataYML.getString("redis-password", "passw0rd");
+				RedisServer main = new RedisServer(mainIp, mainPort, mainPassword);
+
+				String bungeeIp = dataYML.getString("redis-bungee-ip", "127.0.0.1");
+				int bungeePort = dataYML.getInt("redis-bungee-port", 4242);
+				String bungeePassword = dataYML.getString("redis-bungee-password", "passw0rd");
+				RedisServer bungee = new RedisServer(bungeeIp, bungeePort, bungeePassword);
+
+				databaseConnector = new DatabaseConnector(this, main, bungee);
 
 			}
 		} else {
@@ -126,8 +140,6 @@ public class APIPlugin extends JavaPlugin implements Listener {
 				e.printStackTrace();
 			}
 		}
-
-		APIPlugin.getInstance().getCommand("localrefresh").setExecutor(new CommandRefresh(api.getPermissionsManager().getApi()));
 
 		try {
 			Calendar calendar = new GregorianCalendar();
@@ -310,7 +322,7 @@ public class APIPlugin extends JavaPlugin implements Listener {
 			return;
 		}
 
-		if (joinPermission != null && ! api.getPermissionsManager().hasPermission(event.getPlayer(), joinPermission)) {
+		if (joinPermission != null && ! PermissionsBukkit.hasPermission(event.getPlayer(), joinPermission)) {
 			event.disallow(PlayerLoginEvent.Result.KICK_WHITELIST, "Vous n'avez pas la permission de rejoindre ce serveur.");
 		}
 

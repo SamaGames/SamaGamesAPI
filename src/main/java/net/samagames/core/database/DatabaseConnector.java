@@ -3,9 +3,9 @@ package net.samagames.core.database;
 import net.samagames.core.APIPlugin;
 import org.bukkit.Bukkit;
 import org.bukkit.scheduler.BukkitTask;
-import redis.clients.jedis.*;
-
-import java.util.Set;
+import redis.clients.jedis.Jedis;
+import redis.clients.jedis.JedisPool;
+import redis.clients.jedis.JedisPoolConfig;
 
 /**
  * This file is a part of the SamaGames project
@@ -16,28 +16,24 @@ import java.util.Set;
  */
 public class DatabaseConnector {
 
-	protected JedisSentinelPool mainPool;
-	protected JedisSentinelPool cachePool;
-	protected Set<String> sentinels;
+	protected JedisPool mainPool;
+	protected JedisPool cachePool;
 	protected APIPlugin plugin;
-	protected String password;
-	protected String masterName;
-	protected String cacheName;
+	private RedisServer main;
+	private RedisServer bungee;
 	private WhitelistRefresher keeper;
 	private BukkitTask keepTask;
 
 	public DatabaseConnector(APIPlugin plugin) {
 		mainPool = null;
-		cachePool = null;
 		this.plugin = plugin;
 	}
 
-	public DatabaseConnector(APIPlugin plugin, Set<String> main, String masterName, String cacheName, String mainPassword) {
+	public DatabaseConnector(APIPlugin plugin, RedisServer main, RedisServer bungee)
+	{
 		this.plugin = plugin;
-		this.sentinels = main;
-		this.masterName = masterName;
-		this.cacheName = cacheName;
-		this.password = mainPassword;
+		this.main = main;
+		this.bungee = bungee;
 
 		initiateConnections();
 	}
@@ -61,8 +57,8 @@ public class DatabaseConnector {
 		config.setMaxTotal(1024);
 		config.setMaxWaitMillis(5000);
 
-		this.mainPool = new JedisSentinelPool(masterName, sentinels, config, 5000, password);
-		this.cachePool = new JedisSentinelPool(cacheName, sentinels, config, 5000, password);
+		this.mainPool = new JedisPool(config, this.main.getIp(), this.main.getPort(), 5000, this.main.getPassword());
+		this.cachePool = new JedisPool(config, this.bungee.getIp(), this.bungee.getPort(), 5000, this.bungee.getPassword());
 
 		// Init du thread
 
