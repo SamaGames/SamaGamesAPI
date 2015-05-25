@@ -1,8 +1,6 @@
 package net.samagames.core.api.permissions;
 
-import net.samagames.permissionsapi.PermissionsAPI;
 import net.samagames.permissionsapi.permissions.PermissionEntity;
-import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 
 import java.util.UUID;
@@ -10,7 +8,6 @@ import java.util.UUID;
 /**
  * This file is a part of the SamaGames project
  * This code is absolutely confidential.
- * Created by zyuiop
  * (C) Copyright Elydra Network 2015
  * All rights reserved.
  */

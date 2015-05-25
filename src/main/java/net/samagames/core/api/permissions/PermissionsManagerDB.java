@@ -1,21 +1,14 @@
 package net.samagames.core.api.permissions;
 
-import net.samagames.api.SamaGamesAPI;
-import net.samagames.permissionsapi.PermissionsAPI;
 import net.samagames.permissionsapi.permissions.PermissionEntity;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
-import org.bukkit.command.CommandSender;
-import org.bukkit.command.ConsoleCommandSender;
-import org.bukkit.entity.Player;
-import redis.clients.jedis.Jedis;
 
 import java.util.UUID;
 
 /**
  * This file is a part of the SamaGames project
  * This code is absolutely confidential.
- * Created by zyuiop
  * (C) Copyright Elydra Network 2015
  * All rights reserved.
  */

@@ -248,8 +248,9 @@ public class TeamHandler {
                 ReflectionUtilities.setValue(packet, "b", team.getDisplayName());
                 ReflectionUtilities.setValue(packet, "c", team.getPrefix());
                 ReflectionUtilities.setValue(packet, "d", team.getSuffix());
-                ReflectionUtilities.setValue(packet, "e", ScoreboardTeamBase.EnumNameTagVisibility.NEVER.e);
-                ReflectionUtilities.setValue(packet, "f", - 1);
+                ReflectionUtilities.setValue(packet, "e", ScoreboardTeamBase.EnumNameTagVisibility.ALWAYS.e);
+                ReflectionUtilities.setValue(packet, "i", 0);
+                ReflectionUtilities.setValue(packet, "f", -1);
                 ReflectionUtilities.setValue(packet, "g", (Collection) news);
                 ReflectionUtilities.setValue(packet, "h", n);
 

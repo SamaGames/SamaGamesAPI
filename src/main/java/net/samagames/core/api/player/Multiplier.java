@@ -3,7 +3,7 @@ package net.samagames.core.api.player;
 import java.util.HashMap;
 
 /**
- * Created by zyuiop on 18/10/14.
+ * Created by LeadDev on 18/10/14.
  */
 class Multiplier {
 

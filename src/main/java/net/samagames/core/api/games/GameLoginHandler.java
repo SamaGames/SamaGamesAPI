@@ -25,7 +25,7 @@ public class GameLoginHandler implements JoinHandler
         {
             if(!this.api.isWaited(player.getUniqueId()))
             {
-                if (this.api.getGame() instanceof IMasterControlledGame)
+                if (this.api.getGame() instanceof IManagedGame)
                     this.api.getGame().playerJoin(player);
             }
             else
@@ -78,7 +78,7 @@ public class GameLoginHandler implements JoinHandler
             if (!response.isAllowed())
             {
                 if(this.api.getGame() instanceof IMasterControlledGame)
-                   return ((IMasterControlledGame) this.api.getGame()).requestPartyJoin(partyLeader, partyMembers, response);
+                    return ((IMasterControlledGame) this.api.getGame()).requestPartyJoin(partyLeader, partyMembers, response);
             }
             else
             {

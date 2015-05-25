@@ -7,10 +7,13 @@ import net.samagames.core.APIPlugin;
 import net.samagames.core.api.games.themachine.CoherenceMachineImpl;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
+import org.bukkit.scheduler.BukkitTask;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.UUID;
+import java.util.concurrent.ScheduledFuture;
+import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 
 public class GameManagerImpl implements GameManager
@@ -19,11 +22,11 @@ public class GameManagerImpl implements GameManager
 
     private ArrayList<UUID> playersDisconnected;
     private HashMap<UUID, Integer> playerDisconnectTime;
-    private HashMap<UUID, Integer> playerReconnectedTimers;
+    private HashMap<UUID, BukkitTask> playerReconnectedTimers;
     private IManagedGame game;
-    private Status gameStatus;
 
-    private boolean allowReconnect;
+    private ScheduledFuture<?> statusUpdater;
+
     private int maxReconnectTime;
 
     public GameManagerImpl(SamaGamesAPI api)
@@ -34,8 +37,6 @@ public class GameManagerImpl implements GameManager
         this.playersDisconnected = new ArrayList<>();
         this.playerDisconnectTime = new HashMap<>();
         this.playerReconnectedTimers = new HashMap<>();
-
-        this.gameStatus = Status.NOT_RESPONDING;
     }
 
     @Override
@@ -46,6 +47,10 @@ public class GameManagerImpl implements GameManager
 
         this.game = game;
         APIPlugin.getApi().getJoinManager().registerHandler(new GameLoginHandler(this), 100);
+
+        statusUpdater = APIPlugin.getInstance().getExecutor().scheduleAtFixedRate(() -> {
+            if(game != null) refreshArena();
+        }, 5L, 3 * 30L, TimeUnit.SECONDS);
 
         APIPlugin.log(Level.INFO, "Registered game '" + game.getGameName() + "' successfuly!");
     }
@@ -62,40 +67,38 @@ public class GameManagerImpl implements GameManager
     {
         this.game.playerDisconnect(player);
 
-        if(this.game instanceof IReconnectGame)
+        if(!(this.game instanceof IReconnectGame))
             return;
 
-        if(this.allowReconnect)
-        {
-            this.playersDisconnected.add(player.getUniqueId());
+        this.playersDisconnected.add(player.getUniqueId());
 
-            this.api.getResource().set("rejoin:" + player.getUniqueId().toString(), this.api.getServerName());
-            this.api.getResource().expire("rejoin:" + player.getUniqueId().toString(), this.maxReconnectTime * 60);
+        this.api.getResource().set("rejoin:" + player.getUniqueId().toString(), this.api.getServerName());
+        this.api.getResource().expire("rejoin:" + player.getUniqueId().toString(), this.maxReconnectTime * 60);
 
-            this.playerReconnectedTimers.put(player.getUniqueId(), Bukkit.getScheduler().scheduleAsyncRepeatingTask(APIPlugin.getInstance(), new Runnable() {
-                int before = 0;
-                int now = 0;
-                boolean bool = false;
+        this.playerReconnectedTimers.put(player.getUniqueId(), Bukkit.getScheduler().runTaskTimerAsynchronously(APIPlugin.getInstance(), new Runnable() {
+            int before = 0;
+            int now = 0;
+            boolean bool = false;
 
-                @Override
-                public void run() {
-                    if (!this.bool) {
-                        if (playerDisconnectTime.containsKey(player.getUniqueId()))
-                            this.before = playerDisconnectTime.get(player.getUniqueId());
+            @Override
+            public void run() {
+                if (!this.bool) {
+                    if (playerDisconnectTime.containsKey(player.getUniqueId()))
+                        this.before = playerDisconnectTime.get(player.getUniqueId());
 
-                        this.bool = true;
-                    }
-
-                    if (this.before == maxReconnectTime * 2 || this.now == maxReconnectTime) {
-                        onPlayerReconnectTimeOut(player);
-                    }
-
-                    this.before++;
-                    this.now++;
-                    playerDisconnectTime.put(player.getUniqueId(), before);
+                    this.bool = true;
                 }
-            }, 20L, 20L));
-        }
+
+                if (this.before == maxReconnectTime * 2 || this.now == maxReconnectTime) {
+                    onPlayerReconnectTimeOut(player);
+                }
+
+                this.before++;
+                this.now++;
+                playerDisconnectTime.put(player.getUniqueId(), before);
+            }
+        }, 20L, 20L));
+
     }
 
     @Override
@@ -106,7 +109,11 @@ public class GameManagerImpl implements GameManager
 
         if(this.playerReconnectedTimers.containsKey(player.getUniqueId()))
         {
-            Bukkit.getScheduler().cancelTask(this.playerReconnectedTimers.get(player.getUniqueId()));
+            BukkitTask task = this.playerReconnectedTimers.get(player.getUniqueId());
+            if(task != null)
+            {
+                task.cancel();
+            }
             this.playerReconnectedTimers.remove(player.getUniqueId());
         }
 
@@ -121,7 +128,11 @@ public class GameManagerImpl implements GameManager
 
         if(this.playerReconnectedTimers.containsKey(player.getUniqueId()))
         {
-            Bukkit.getScheduler().cancelTask(this.playerReconnectedTimers.get(player.getUniqueId()));
+            BukkitTask task = this.playerReconnectedTimers.get(player.getUniqueId());
+            if(task != null)
+            {
+                task.cancel();
+            }
             this.playerReconnectedTimers.remove(player.getUniqueId());
         }
 
@@ -133,7 +144,7 @@ public class GameManagerImpl implements GameManager
         if(this.game == null)
             throw new IllegalStateException("Can't refresh arena because the arena is null!");
 
-        new ServerStatus(SamaGamesAPI.get().getServerName(), this.game.getGameName(), this.game.getMapName(), this.gameStatus, this.game.getConnectedPlayers(), this.game.getMaxPlayers()).sendToHubs();
+        new ServerStatus(SamaGamesAPI.get().getServerName(), this.game.getGameName(), this.game.getMapName(), this.game.getStatus(), this.game.getConnectedPlayers(), this.game.getMaxPlayers()).sendToHubs();
     }
 
     public void setStatus(Status gameStatus)
@@ -141,14 +152,9 @@ public class GameManagerImpl implements GameManager
         if(this.game == null)
             throw new IllegalStateException("Can't set status of the game because the arena is null!");
 
-        this.gameStatus = gameStatus;
-        this.refreshArena();
-    }
+        this.game.setStatus(gameStatus);
 
-    @Override
-    public void allowReconnect(boolean flag)
-    {
-        this.allowReconnect = flag;
+        this.refreshArena();
     }
 
     @Override
@@ -163,9 +169,13 @@ public class GameManagerImpl implements GameManager
         return this.game;
     }
 
+    @Override
     public Status getGameStatus()
     {
-        return this.gameStatus;
+        if(game == null)
+            return null;
+
+        return this.getGame().getStatus();
     }
 
     @Override
@@ -186,6 +196,6 @@ public class GameManagerImpl implements GameManager
     @Override
     public boolean isReconnectAllowed()
     {
-        return this.allowReconnect;
+        return game instanceof IReconnectGame;
     }
 }

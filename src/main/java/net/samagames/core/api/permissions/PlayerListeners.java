@@ -1,18 +1,17 @@
 package net.samagames.core.api.permissions;
 
-import net.samagames.permissionsapi.rawtypes.RawPlayer;
-import org.bukkit.Bukkit;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
-import org.bukkit.event.player.*;
-import org.bukkit.plugin.RegisteredListener;
+import org.bukkit.event.player.AsyncPlayerPreLoginEvent;
+import org.bukkit.event.player.PlayerJoinEvent;
+import org.bukkit.event.player.PlayerKickEvent;
+import org.bukkit.event.player.PlayerQuitEvent;
 
-import java.util.ArrayList;
 import java.util.UUID;
 
 /**
- * Created by zyuiop on 27/08/14.
+ * Created by LeadDev on 27/08/14.
  */
 public class PlayerListeners implements Listener {
 

@@ -5,21 +5,19 @@ import net.samagames.api.resourcepacks.ResourceCallback;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
-import org.fusesource.hawtjni.runtime.Callback;
 
 /**
  * This file is a part of the SamaGames project
  * This code is absolutely confidential.
- * Created by zyuiop
  * (C) Copyright Elydra Network 2015
  * All rights reserved.
  */
 class KillerTask extends BukkitRunnable {
 
-	private int remaining;
 	private final Player player;
 	private final ResourceCallback callback;
 	private final ResourcePacksManagerImpl impl;
+	private int remaining;
 
 	public KillerTask(Player player, ResourceCallback callback, ResourcePacksManagerImpl impl) {
 		this.player = player;

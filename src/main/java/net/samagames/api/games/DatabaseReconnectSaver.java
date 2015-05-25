@@ -1,6 +1,7 @@
 package net.samagames.api.games;
 
 import net.samagames.api.SamaGamesAPI;
+import net.samagames.core.APIPlugin;
 import redis.clients.jedis.Jedis;
 
 import java.util.UUID;
@@ -40,7 +41,7 @@ public abstract class DatabaseReconnectSaver {
 	}
 
 	private void exec(Runnable runnable) {
-		new Thread(runnable, "DBReconSaver").start();
+		APIPlugin.getInstance().getExecutor().execute(runnable);
 	}
 
 }

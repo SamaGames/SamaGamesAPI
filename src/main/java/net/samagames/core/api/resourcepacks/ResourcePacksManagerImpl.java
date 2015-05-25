@@ -22,17 +22,15 @@ import java.util.UUID;
 /**
  * This file is a part of the SamaGames project
  * This code is absolutely confidential.
- * Created by zyuiop
  * (C) Copyright Elydra Network 2015
  * All rights reserved.
  */
 public class ResourcePacksManagerImpl implements ResourcePacksManager, Listener {
 
 	private final String resetUrl;
-	private ProtocolHandler handler = null;
-
 	protected HashSet<UUID> currentlyDownloading = new HashSet<>();
 	protected HashMap<UUID, KillerTask> killers = new HashMap<>();
+	private ProtocolHandler handler = null;
 	private String forceUrl;
 	private String forceHash;
 	private ResourceCallback callback;

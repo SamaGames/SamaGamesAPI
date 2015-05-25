@@ -33,39 +33,14 @@ public class ServerStatus
         APIPlugin.log(Level.INFO, "Sended server status to hubs. (" + json + ")");
     }
 
-    public void setBungeeName(String bungeeName)
-    {
-        this.bungeeName = bungeeName;
-    }
-
-    public void setGame(String game)
-    {
-        this.game = game;
-    }
-
-    public void setMap(String map)
-    {
-        this.map = map;
-    }
-
-    public void setStatus(Status status)
-    {
-        this.status = status;
-    }
-
-    public void setPlayers(int players)
-    {
-        this.players = players;
-    }
-
-    public void setMaxPlayers(int maxPlayers)
-    {
-        this.maxPlayers = maxPlayers;
-    }
-
     public String getBungeeName()
     {
         return this.bungeeName;
+    }
+
+    public void setBungeeName(String bungeeName)
+    {
+        this.bungeeName = bungeeName;
     }
 
     public String getGame()
@@ -73,9 +48,19 @@ public class ServerStatus
         return this.game;
     }
 
+    public void setGame(String game)
+    {
+        this.game = game;
+    }
+
     public String getMap()
     {
         return this.map;
+    }
+
+    public void setMap(String map)
+    {
+        this.map = map;
     }
 
     public Status getStatus()
@@ -83,13 +68,28 @@ public class ServerStatus
         return this.status;
     }
 
+    public void setStatus(Status status)
+    {
+        this.status = status;
+    }
+
     public int getPlayers()
     {
         return this.players;
     }
 
+    public void setPlayers(int players)
+    {
+        this.players = players;
+    }
+
     public int getMaxPlayers()
     {
         return this.maxPlayers;
+    }
+
+    public void setMaxPlayers(int maxPlayers)
+    {
+        this.maxPlayers = maxPlayers;
     }
 }

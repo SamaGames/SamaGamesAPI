@@ -18,11 +18,11 @@ public enum ResponseType {
 	DENY_NOT_READY(ChatColor.RED + "Cette arène n'est pas prête. Merci de patienter."),
 	DENY_IN_GAME(ChatColor.RED + "La partie est déjà en cours.");
 
+	private String message = null;
+
 	ResponseType() {
 
 	}
-
-	private String message = null;
 
 	ResponseType(String message) {
 		this.message = message;

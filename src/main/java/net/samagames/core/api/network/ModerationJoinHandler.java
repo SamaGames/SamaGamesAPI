@@ -6,13 +6,14 @@ import net.samagames.api.network.JoinHandler;
 import org.apache.commons.lang.StringUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.GameMode;
 import org.bukkit.entity.Player;
 
 import java.util.HashMap;
 import java.util.UUID;
 
 /**
- * Created by vialarl on 09/03/2015.
+ * Created by LeadDev on 09/03/2015.
  */
 public class ModerationJoinHandler implements JoinHandler, PacketsReceiver {
 
@@ -26,6 +27,7 @@ public class ModerationJoinHandler implements JoinHandler, PacketsReceiver {
     @Override
     public void onModerationJoin(Player player) {
         player.sendMessage(ChatColor.GOLD + "Vous avez rejoint cette arène en mode modération.");
+        player.setGameMode(GameMode.SPECTATOR);
         if (teleportTargets.containsKey(player.getUniqueId())) {
             UUID target = teleportTargets.get(player.getUniqueId());
             Player tar = Bukkit.getPlayer(target);

@@ -5,7 +5,9 @@ public interface IGameInfos
     int getMaxPlayers();
     int getConnectedPlayers();
 
-    StatusEnum getStatus();
+    Status getStatus();
+
+    void setStatus(Status status);
 
     String getMapName();
     String getGameName();

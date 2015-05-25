@@ -4,6 +4,7 @@ import net.md_5.bungee.api.chat.TextComponent;
 import net.samagames.api.SamaGamesAPI;
 import net.samagames.api.player.FinancialCallback;
 import net.samagames.api.player.PlayerData;
+import net.samagames.core.APIPlugin;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import redis.clients.jedis.Jedis;
@@ -132,7 +133,7 @@ public class PlayerDataDB extends PlayerData {
 
 	@Override
 	public void creditCoins(final long famount, final String reason, final boolean applyMultiplier, final FinancialCallback<Long> financialCallback) {
-		new Thread(() -> {
+		APIPlugin.getInstance().getExecutor().execute(() -> {
 			long amount = famount;
 			TextComponent message = null;
 			if (applyMultiplier) {
@@ -151,17 +152,17 @@ public class PlayerDataDB extends PlayerData {
 			if (financialCallback != null)
 				financialCallback.done(result, amount, null);
 
-		}, "CreditCoinsThread").start();
+		});
 	}
 
 	@Override
 	public void withdrawCoins(final long famount, final FinancialCallback<Long> financialCallback) {
-		new Thread(() -> {
+		APIPlugin.getInstance().getExecutor().execute(() -> {
 			long result = decreaseCoins(famount);
 			if (financialCallback != null)
 				financialCallback.done(result, -famount, null);
 
-		}, "WithdrawCoinsThread").start();
+		});
 	}
 
 	@Override
@@ -181,7 +182,7 @@ public class PlayerDataDB extends PlayerData {
 
 	@Override
 	public void creditStars(final long famount, final String reason, final boolean applyMultiplier, FinancialCallback<Long> financialCallback) {
-		new Thread(() -> {
+		APIPlugin.getInstance().getExecutor().execute(() -> {
 			long amount = famount;
 			TextComponent message = null;
 			if (applyMultiplier) {
@@ -200,18 +201,18 @@ public class PlayerDataDB extends PlayerData {
 			if (financialCallback != null)
 				financialCallback.done(result, amount, null);
 
-		}, "CreditStarsThread").start();
+		});
 	}
 
 	@Override
 	public void withdrawStars(final long amount, FinancialCallback<Long> financialCallback) {
-		new Thread(() -> {
+		APIPlugin.getInstance().getExecutor().execute(() -> {
 			long result = decreaseStars(amount);
 
 			if (financialCallback != null)
 				financialCallback.done(result, -amount, null);
 
-		}, "WithdrawStarsThread").start();
+		});
 	}
 
 }

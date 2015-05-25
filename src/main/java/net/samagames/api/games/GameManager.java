@@ -52,15 +52,8 @@ public interface GameManager
      * Set the status of the game (we'll refresh automatically the arena)
      *
      * @param status The status of the game
-     */
-    void setStatus(Status status);
-
-    /**
-     * Set if the game allow reconnect
-     *
-     * @param flag True or False
-     */
-    void allowReconnect(boolean flag);
+     */ /*
+    void setStatus(Status status);*/
 
     /**
      * Set the reconnect time for a player if reconnect supported
@@ -75,6 +68,13 @@ public interface GameManager
      * @return The registered game (null if none)
      */
     IManagedGame getGame();
+
+    /**
+     * Get the status of the game
+     *
+     * @return The status (null if arena is null)
+     */
+    Status getGameStatus();
 
     /**
      * Get the CoherenceMachine for the registered game

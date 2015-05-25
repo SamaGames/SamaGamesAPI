@@ -1,7 +1,6 @@
 package net.samagames.core.commands;
 
 import net.samagames.api.SamaGamesAPI;
-import net.samagames.api.player.FinancialCallback;
 import net.samagames.api.player.PlayerData;
 import net.samagames.core.APIPlugin;
 import org.bukkit.ChatColor;
@@ -31,7 +30,7 @@ public class CommandCoins extends AbstractCommand {
 					Player player = (Player) sender;
 					PlayerData data = SamaGamesAPI.get().getPlayerManager().getPlayerData(player.getUniqueId());
 					if (data != null) {
-						player.sendMessage(ChatColor.GOLD + "Vous avez actuellement " + ChatColor.GREEN + data.getCoins() + " Coins");
+						player.sendMessage(ChatColor.GOLD + "Vous avez actuellement " + ChatColor.GREEN + data.getCoins() + ChatColor.GOLD + " Coins");
 					} else {
 						player.sendMessage(ChatColor.RED + "Une erreur inconnue s'est produite.");
 					}
@@ -57,7 +56,7 @@ public class CommandCoins extends AbstractCommand {
 				PlayerData data = SamaGamesAPI.get().getPlayerManager().getPlayerData(playerId);
 
 				if (data != null) {
-					sender.sendMessage(ChatColor.GOLD + "Le joueur a " + ChatColor.GREEN + data.getCoins() + " Coins");
+					sender.sendMessage(ChatColor.GOLD + "Le joueur a " + ChatColor.GREEN + data.getCoins() + ChatColor.GOLD + " Coins");
 				} else {
 					sender.sendMessage(ChatColor.RED + "Une erreur inconnue s'est produite.");
 				}

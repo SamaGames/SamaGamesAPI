@@ -7,7 +7,6 @@ import net.samagames.core.listeners.ChatFormatter;
 import net.samagames.core.listeners.NaturalListener;
 import net.samagames.core.listeners.PlayerDataListener;
 import net.samagames.core.listeners.TabsColorsListener;
-import net.samagames.permissionsbukkit.PermissionsBukkit;
 import org.apache.commons.lang.StringUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -26,12 +25,13 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.util.*;
 import java.util.concurrent.CopyOnWriteArraySet;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
 import java.util.logging.Level;
 
 /**
  * This file is a part of the SamaGames project
  * This code is absolutely confidential.
- * Created by zyuiop
  * (C) Copyright Elydra Network 2015
  * All rights reserved.
  */
@@ -48,8 +48,24 @@ public class APIPlugin extends JavaPlugin implements Listener {
 	protected String denyJoinReason = ChatColor.RED + "Serveur non initialisé.";
 	protected boolean serverRegistered;
 	protected String joinPermission = null;
-	protected TasksExecutor executor;
+	protected ScheduledExecutorService executor;
 	protected DebugListener debugListener;
+
+	public static APIPlugin getInstance() {
+		return instance;
+	}
+
+	public static ApiImplementation getApi() {
+		return api;
+	}
+
+	public static void log(String message) {
+		instance.getLogger().info(message);
+	}
+
+	public static void log(Level level, String message) {
+		instance.getLogger().log(level, message);
+	}
 
 	public void onEnable() {
 		instance = this;
@@ -59,21 +75,21 @@ public class APIPlugin extends JavaPlugin implements Listener {
 		log("# carefully all outputs coming from it.        #");
 		log("#==============================================#");
 
+		executor = Executors.newScheduledThreadPool(16);
+
 		this.getServer().getMessenger().registerOutgoingPluginChannel(this, "BungeeCord");
 
 		log("Loading main configuration...");
 		this.saveDefaultConfig();
 		configuration = this.getConfig();
 		databaseEnabled = configuration.getBoolean("database", true);
-		executor = new TasksExecutor();
-		new Thread(executor, "Executor").start();
 
 		// Chargement de l'IPWhitelist le plus tot possible
 		Bukkit.getPluginManager().registerEvents(this, this);
 
 		serverName = configuration.getString("bungeename");
 		if (serverName == null) {
-			log(Level.SEVERE, "Plugin cannot load : bungeename is empty.");
+			log(Level.SEVERE, "Plugin cannot load : ServerName is empty.");
 			Bukkit.getServer().shutdown();
 			return;
 		}
@@ -192,7 +208,7 @@ public class APIPlugin extends JavaPlugin implements Listener {
 		return debugListener;
 	}
 
-	public TasksExecutor getExecutor() {
+	public ScheduledExecutorService getExecutor() {
 		return executor;
 	}
 
@@ -202,22 +218,6 @@ public class APIPlugin extends JavaPlugin implements Listener {
 		rb_jedis.hdel("servers", bungeename);
 		SamaGamesAPI.get().getPubSub().send("servers", "stop " + bungeename);
 		rb_jedis.close();
-	}
-
-	public static APIPlugin getInstance() {
-		return instance;
-	}
-
-	public static ApiImplementation getApi() {
-		return api;
-	}
-
-	public static void log(String message) {
-		instance.getLogger().info(message);
-	}
-
-	public static void log(Level level, String message) {
-		instance.getLogger().log(level, message);
 	}
 
 	public boolean canConnect(String ip) {
@@ -322,7 +322,7 @@ public class APIPlugin extends JavaPlugin implements Listener {
 			return;
 		}
 
-		if (joinPermission != null && ! PermissionsBukkit.hasPermission(event.getPlayer(), joinPermission)) {
+		if (joinPermission != null && ! api.getPermissionsManager().hasPermission(event.getPlayer(), joinPermission)) {
 			event.disallow(PlayerLoginEvent.Result.KICK_WHITELIST, "Vous n'avez pas la permission de rejoindre ce serveur.");
 		}
 

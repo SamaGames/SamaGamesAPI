@@ -1,16 +1,12 @@
 package net.samagames.core.api.network;
 
-import com.mojang.authlib.GameProfile;
 import net.md_5.bungee.api.ChatColor;
-import net.md_5.bungee.api.chat.TextComponent;
-import net.minecraft.server.v1_8_R2.EntityPlayer;
 import net.samagames.api.SamaGamesAPI;
 import net.samagames.api.network.JoinHandler;
 import net.samagames.api.network.JoinManager;
 import net.samagames.api.network.JoinResponse;
 import net.samagames.core.APIPlugin;
 import org.bukkit.Bukkit;
-import org.bukkit.craftbukkit.v1_8_R2.entity.CraftPlayer;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -20,8 +16,10 @@ import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import redis.clients.jedis.Jedis;
 
-import java.lang.reflect.Field;
-import java.util.*;
+import java.util.HashSet;
+import java.util.Set;
+import java.util.TreeMap;
+import java.util.UUID;
 
 /**
  * How does that work ?
@@ -46,15 +44,15 @@ public class JoinManagerImplement implements JoinManager, Listener {
     protected boolean isPartyLimited;
 
     public JoinManagerImplement() {
-        isPartyLimited = !SamaGamesAPI.get().getServerName().startsWith("Lobby");
-    }
-
-    public void setPartyLimited(boolean value) {
-        this.isPartyLimited = value;
+        isPartyLimited = !SamaGamesAPI.get().getServerName().startsWith("Hub");
     }
 
     public boolean isPartyLimited() { // This method can be overrided
         return isPartyLimited;
+    }
+
+    public void setPartyLimited(boolean value) {
+        this.isPartyLimited = value;
     }
 
     @Override
@@ -73,7 +71,7 @@ public class JoinManagerImplement implements JoinManager, Listener {
     }
 
 
-    JoinResponse requestSoloJoin(UUID player) {
+    public JoinResponse requestSoloJoin(UUID player) {
         JoinResponse response = new JoinResponse();
         for (JoinHandler handler : handlerTreeMap.values())
             response = handler.requestJoin(player, response);
@@ -85,7 +83,7 @@ public class JoinManagerImplement implements JoinManager, Listener {
         return response;
     }
 
-    JoinResponse requestPartyJoin(UUID partyID, HashSet<UUID> dontMove) {
+    public JoinResponse requestPartyJoin(UUID partyID, HashSet<UUID> dontMove) {
         UUID leader = SamaGamesAPI.get().getPartiesManager().getLeader(partyID);
         Set<UUID> members = SamaGamesAPI.get().getPartiesManager().getPlayersInParty(partyID).keySet();
 
@@ -111,7 +109,7 @@ public class JoinManagerImplement implements JoinManager, Listener {
         return response;
     }
 
-    JoinResponse requestPartyJoin(UUID partyID) {
+    public JoinResponse requestPartyJoin(UUID partyID) {
         return requestPartyJoin(partyID, new HashSet<>());
     }
 
@@ -173,7 +171,7 @@ public class JoinManagerImplement implements JoinManager, Listener {
             handler.finishJoin(player);
 
 		// Enregistrement du joueur
-		APIPlugin.getInstance().getExecutor().addTask(() -> {
+		APIPlugin.getInstance().getExecutor().execute(() -> {
             Jedis jedis = SamaGamesAPI.get().getBungeeResource();
             jedis.sadd("connectedonserv:" + APIPlugin.getInstance().getServerName(), player.getUniqueId().toString());
             jedis.close();
@@ -188,7 +186,7 @@ public class JoinManagerImplement implements JoinManager, Listener {
         for (JoinHandler handler : handlerTreeMap.values())
             handler.onLogout(event.getPlayer());
 
-		APIPlugin.getInstance().getExecutor().addTask(() -> {
+		APIPlugin.getInstance().getExecutor().execute(() -> {
             Jedis jedis = SamaGamesAPI.get().getBungeeResource();
             jedis.srem("connectedonserv:" + APIPlugin.getInstance().getServerName(), event.getPlayer().getUniqueId().toString());
             jedis.close();

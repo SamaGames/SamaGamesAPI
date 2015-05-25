@@ -1,5 +1,8 @@
 package net.samagames.core.api.achievements;
 
+import com.google.gson.JsonArray;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 import net.samagames.api.SamaGamesAPI;
 import net.samagames.api.achievements.Achievement;
 import net.samagames.api.achievements.AchievementCategory;
@@ -8,9 +11,6 @@ import net.samagames.api.achievements.AchievementReward;
 import net.samagames.core.APIPlugin;
 import net.samagames.tools.ItemUtils;
 import org.bukkit.Bukkit;
-import com.google.gson.JsonArray;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
@@ -33,7 +33,7 @@ public class AchievementManagerImpl implements AchievementManager
 
         this.reloadList();
 
-        Bukkit.getScheduler().scheduleAsyncRepeatingTask(APIPlugin.getInstance(), this::reloadList, 20L * 60 * 5, 20L * 60 * 5);
+        Bukkit.getScheduler().runTaskTimerAsynchronously(APIPlugin.getInstance(), this::reloadList, 20L * 60 * 5, 20L * 60 * 5);
     }
 
     @Override

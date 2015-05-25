@@ -21,16 +21,18 @@ import java.util.logging.Level;
 /**
  * This file is a part of the SamaGames project
  * This code is absolutely confidential.
- * Created by zyuiop
  * (C) Copyright Elydra Network 2015
  * All rights reserved.
  */
 public abstract class BasicPermissionManager implements RawPlugin, PermissionsManager {
 
 	private final boolean isLobby;
+	protected PermissionsAPI api = null;
+	protected HashMap<UUID, VirtualPlayer> players = new HashMap<>();
+	protected ArrayList<BukkitTask> tasks = new ArrayList<>();
 
 	public BasicPermissionManager() {
-		isLobby = SamaGamesAPI.get().getServerName().startsWith("Lobby");
+		isLobby = SamaGamesAPI.get().getServerName().startsWith("Hub");
 		Bukkit.getLogger().info("Lobby mode was set to : " + isLobby);
 
 		logInfo(">> LOADING PERMISSIONS API !");
@@ -49,10 +51,6 @@ public abstract class BasicPermissionManager implements RawPlugin, PermissionsMa
 	public boolean isLobby() {
 		return isLobby;
 	}
-
-	protected PermissionsAPI api = null;
-	protected HashMap<UUID, VirtualPlayer> players = new HashMap<>();
-	protected ArrayList<BukkitTask> tasks = new ArrayList<>();
 
 	public PermissionsAPI getApi() {
 		return api;

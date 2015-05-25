@@ -6,25 +6,25 @@ import net.samagames.api.games.themachine.messages.MessageManager;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 
-public class         MessageManagerImpl implements MessageManager
-        {
-            private final CoherenceMachine machine;
+public class MessageManagerImpl implements MessageManager
+{
+    private final CoherenceMachine machine;
 
-            public MessageManagerImpl(CoherenceMachine machine)
-            {
-                this.machine = machine;
-            }
+    public MessageManagerImpl(CoherenceMachine machine)
+    {
+        this.machine = machine;
+    }
 
-            @Override
-            public Message writePlayerJoinToAll(Player player)
-            {
-                StringBuilder builder = new StringBuilder();
-                builder.append(ChatColor.YELLOW).append(player.getName());
-                builder.append(" a rejoint la partie ! ");
-                builder.append(ChatColor.GRAY).append("[");
-                builder.append(ChatColor.RED).append(this.machine.getGameInfos().getConnectedPlayers());
-                builder.append(ChatColor.DARK_GRAY).append("/");
-                builder.append(ChatColor.RED).append(this.machine.getGameInfos().getMaxPlayers());
+    @Override
+    public Message writePlayerJoinToAll(Player player)
+    {
+        StringBuilder builder = new StringBuilder();
+        builder.append(ChatColor.YELLOW).append(player.getName());
+        builder.append(" a rejoint la partie ! ");
+        builder.append(ChatColor.GRAY).append("[");
+        builder.append(ChatColor.RED).append(this.machine.getGameInfos().getConnectedPlayers());
+        builder.append(ChatColor.DARK_GRAY).append("/");
+        builder.append(ChatColor.RED).append(this.machine.getGameInfos().getMaxPlayers());
 
         return new Message(builder.toString(), this.machine.getGameTag()).displayToAll();
     }

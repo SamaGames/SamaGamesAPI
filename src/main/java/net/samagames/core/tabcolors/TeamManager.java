@@ -12,7 +12,7 @@ import org.bukkit.entity.Player;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.concurrent.Executor;
+import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.stream.Collectors;
 
@@ -22,12 +22,11 @@ public class TeamManager {
      * The escape sequence for minecraft special chat codes
      */
     public static final char ESCAPE = '\u00A7';
+    public final PermissionsManager manager;
 	private final APIPlugin plugin;
     public List<PermissionGroup> groups = new ArrayList<>();
     public TeamHandler teamHandler;
-    public final PermissionsManager manager;
-
-    public Executor executor = Executors.newSingleThreadExecutor();
+    public ExecutorService executor = Executors.newSingleThreadExecutor();
 
     public TeamManager(APIPlugin pl) {
         plugin = pl;
@@ -110,14 +109,10 @@ public class TeamManager {
 
     /**
      * Takes a string and replaces &# color codes with ChatColors
-     *
-     *
-     * @return
      */
 
     public void playerLeave(final Player p) {
         executor.execute(() -> teamHandler.removeReceiver(p));
-
     }
 
     public void playerJoin(final Player p) {
