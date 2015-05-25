@@ -12,6 +12,7 @@ import net.samagames.api.resourcepacks.ResourcePacksManager;
 import net.samagames.api.settings.SettingsManager;
 import net.samagames.api.shops.ShopsManager;
 import net.samagames.api.stats.StatsManager;
+import net.samagames.tools.BarAPI.BarAPI;
 import redis.clients.jedis.Jedis;
 
 /**
@@ -61,6 +62,8 @@ public abstract class SamaGamesAPI {
 
 	public abstract ProxyDataManager getProxyDataManager();
 	public abstract PartiesManager getPartiesManager();
+
+	public abstract BarAPI getBarAPI();
 
 	public abstract PermissionsManager getPermissionsManager();
 

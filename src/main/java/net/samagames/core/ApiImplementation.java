@@ -37,6 +37,7 @@ import net.samagames.core.api.stats.StatsManagerDB;
 import net.samagames.core.api.stats.StatsManagerNoDB;
 import net.samagames.core.database.DatabaseConnector;
 import net.samagames.core.listeners.GlobalChannelHandler;
+import net.samagames.tools.BarAPI.BarAPI;
 import org.bukkit.Bukkit;
 import redis.clients.jedis.Jedis;
 
@@ -64,6 +65,8 @@ public class ApiImplementation extends SamaGamesAPI
 	protected ResourcePacksManager resourcePacksManager;
 	protected BasicPermissionManager permissionsManager;
 
+	protected BarAPI barAPI;
+
 	public ApiImplementation(APIPlugin plugin, boolean database) {
 		this.plugin = plugin;
 		this.database = database;
@@ -72,6 +75,8 @@ public class ApiImplementation extends SamaGamesAPI
 		Bukkit.getServer().getPluginManager().registerEvents(implement, plugin);
 		this.joinManager = implement;
 		resourcePacksManager = new ResourcePacksManagerImpl();
+
+		barAPI = new BarAPI(plugin);
 
 		if (database) {
 			settingsManager = new SettingsManagerDB(this);
@@ -138,6 +143,11 @@ public class ApiImplementation extends SamaGamesAPI
 	@Override
 	public PartiesManager getPartiesManager() {
 		return partiesManager;
+	}
+
+	@Override
+	public BarAPI getBarAPI() {
+		return barAPI;
 	}
 
 	public JoinManager getJoinManager() {
@@ -207,5 +217,6 @@ public class ApiImplementation extends SamaGamesAPI
 			((PubSubAPIDB) pubSub).disable();
 			plugin.databaseConnector.killConnections();
 		}
+		barAPI.disable();
 	}
 }
