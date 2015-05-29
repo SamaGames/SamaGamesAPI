@@ -4,7 +4,7 @@ import java.util.Date;
 
 public class Promo {
     public Date end;
-    public int multiply;
+    public int multiply = 1;
     public String message = null;
 
     public Promo(String promoData) {

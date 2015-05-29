@@ -3,10 +3,7 @@ package net.samagames.core;
 import net.samagames.api.SamaGamesAPI;
 import net.samagames.core.database.DatabaseConnector;
 import net.samagames.core.database.RedisServer;
-import net.samagames.core.listeners.ChatFormatter;
-import net.samagames.core.listeners.NaturalListener;
-import net.samagames.core.listeners.PlayerDataListener;
-import net.samagames.core.listeners.TabsColorsListener;
+import net.samagames.core.listeners.*;
 import org.apache.commons.lang.StringUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -50,6 +47,8 @@ public class APIPlugin extends JavaPlugin implements Listener {
 	protected String joinPermission = null;
 	protected ScheduledExecutorService executor;
 	protected DebugListener debugListener;
+
+	protected NicknamePacketListener nicknamePacketListener;
 
 
 
@@ -137,6 +136,10 @@ public class APIPlugin extends JavaPlugin implements Listener {
 		api.getJoinManager().registerHandler(debugListener, 0);
 		api.getPubSub().subscribe("*", debugListener);
 
+		//Nickname
+
+		nicknamePacketListener = new NicknamePacketListener(this);
+
 		Bukkit.getPluginManager().registerEvents(new PlayerDataListener(this), this);
 		Bukkit.getPluginManager().registerEvents(new ChatFormatter(this), this);
 		if (configuration.getBoolean("disable-nature", false))
@@ -220,6 +223,7 @@ public class APIPlugin extends JavaPlugin implements Listener {
 		rb_jedis.hdel("servers", bungeename);
 		SamaGamesAPI.get().getPubSub().send("servers", "stop " + bungeename);
 		rb_jedis.close();
+		nicknamePacketListener.close();
 	}
 
 	public boolean canConnect(String ip) {

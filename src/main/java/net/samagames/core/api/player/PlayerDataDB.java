@@ -127,30 +127,35 @@ public class PlayerDataDB extends PlayerData {
 
 	void displayMessage(TextComponent message) {
 		Player player = Bukkit.getPlayer(playerID);
-		if (player != null)
+		if (player != null && message != null)
 			player.sendMessage(message.toLegacyText());
 	}
 
 	@Override
 	public void creditCoins(final long famount, final String reason, final boolean applyMultiplier, final FinancialCallback<Long> financialCallback) {
 		APIPlugin.getInstance().getExecutor().execute(() -> {
-			long amount = famount;
-			TextComponent message = null;
-			if (applyMultiplier) {
-				Multiplier multiplier = manager.getCoinsManager().getCurrentMultiplier(playerID);
-				amount *= multiplier.globalAmount;
+			try {
+				long amount = famount;
+				TextComponent message = null;
+				if (applyMultiplier) {
+					Multiplier multiplier = manager.getCoinsManager().getCurrentMultiplier(playerID);
+					amount *= multiplier.getGlobalAmount();
 
-				message = ((reason != null) ? manager.getCoinsManager().getCreditMessage(amount, reason, multiplier) : manager.getCoinsManager().getCreditMessage(amount));
-			} else {
-				message = ((reason != null) ? manager.getCoinsManager().getCreditMessage(amount, reason) : manager.getCoinsManager().getCreditMessage(amount));
+					message = ((reason != null) ? manager.getCoinsManager().getCreditMessage(amount, reason, multiplier) : manager.getCoinsManager().getCreditMessage(amount));
+				} else {
+					message = ((reason != null) ? manager.getCoinsManager().getCreditMessage(amount, reason) : manager.getCoinsManager().getCreditMessage(amount));
+				}
+
+				displayMessage(message);
+
+				long result = increaseCoins(amount);
+
+				if (financialCallback != null)
+					financialCallback.done(result, amount, null);
+			} catch (Exception e) {
+				e.printStackTrace();
 			}
 
-			displayMessage(message);
-
-			long result = increaseCoins(amount);
-
-			if (financialCallback != null)
-				financialCallback.done(result, amount, null);
 
 		});
 	}
@@ -166,7 +171,7 @@ public class PlayerDataDB extends PlayerData {
 	}
 
 	@Override
-	public long increaseStars(long incrBy) {
+	public long increaseStars(long incrBy){
 		Jedis jedis = api.getResource();
 		long newValue = jedis.hincrBy("player:" + playerID, "stars", incrBy);
 		jedis.close();
@@ -183,24 +188,29 @@ public class PlayerDataDB extends PlayerData {
 	@Override
 	public void creditStars(final long famount, final String reason, final boolean applyMultiplier, FinancialCallback<Long> financialCallback) {
 		APIPlugin.getInstance().getExecutor().execute(() -> {
-			long amount = famount;
-			TextComponent message = null;
-			if (applyMultiplier) {
-				Multiplier multiplier = manager.getStarsManager().getCurrentMultiplier(playerID);
-				amount *= multiplier.globalAmount;
+			try {
+				long amount = famount;
+				TextComponent message = null;
+				if (applyMultiplier) {
+					Multiplier multiplier = manager.getStarsManager().getCurrentMultiplier(playerID);
+					amount *= multiplier.getGlobalAmount();
 
-				message = ((reason != null) ? manager.getStarsManager().getCreditMessage(amount, reason, multiplier) : manager.getStarsManager().getCreditMessage(amount));
-			} else {
-				message = ((reason != null) ? manager.getStarsManager().getCreditMessage(amount, reason) : manager.getStarsManager().getCreditMessage(amount));
+					message = ((reason != null) ? manager.getStarsManager().getCreditMessage(amount, reason, multiplier) : manager.getStarsManager().getCreditMessage(amount));
+				} else {
+					message = ((reason != null) ? manager.getStarsManager().getCreditMessage(amount, reason) : manager.getStarsManager().getCreditMessage(amount));
+				}
+
+				displayMessage(message);
+
+				long result = increaseStars(amount);
+
+				if (financialCallback != null)
+					financialCallback.done(result, amount, null);
+
+			}catch (Exception e)
+			{
+				e.printStackTrace();
 			}
-
-			displayMessage(message);
-
-			long result = increaseStars(amount);
-
-			if (financialCallback != null)
-				financialCallback.done(result, amount, null);
-
 		});
 	}
 

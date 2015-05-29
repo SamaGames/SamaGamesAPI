@@ -8,6 +8,8 @@ public abstract class FakeWither {
 	public static final float MAX_HEALTH = 300;
 	public float health = 0;
 	public String name;
+	public float width = 0;
+	public float length = 0;
 	private int x;
 	private int y;
 	private int z;

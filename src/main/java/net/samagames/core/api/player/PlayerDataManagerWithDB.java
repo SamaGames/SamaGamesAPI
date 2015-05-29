@@ -3,10 +3,7 @@ package net.samagames.core.api.player;
 import net.samagames.api.SamaGamesAPI;
 import net.samagames.api.player.PlayerData;
 import net.samagames.api.player.PlayerDataManager;
-import redis.clients.jedis.ShardedJedis;
 
-import java.util.Date;
-import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -19,16 +16,15 @@ import java.util.concurrent.ConcurrentHashMap;
  */
 public class PlayerDataManagerWithDB implements PlayerDataManager {
 
-	public PlayerDataManagerWithDB(SamaGamesAPI api) {
-		this.api = api;
-		coinsManager = new CoinsManager();
-		starsManager = new StarsManager();
-	}
-
 	protected SamaGamesAPI api;
 	protected ConcurrentHashMap<UUID, PlayerDataDB> cachedData = new ConcurrentHashMap<>();
 	protected CoinsManager coinsManager;
 	protected StarsManager starsManager;
+	public PlayerDataManagerWithDB(SamaGamesAPI api) {
+		this.api = api;
+		coinsManager = new CoinsManager(api);
+		starsManager = new StarsManager(api);
+	}
 
 	CoinsManager getCoinsManager() {
 		return coinsManager;

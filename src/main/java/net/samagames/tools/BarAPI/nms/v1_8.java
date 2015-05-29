@@ -46,6 +46,9 @@ public class v1_8 extends FakeWither {
 			Method setHealth = Util.getMethod(EntityEnderDragon, "setHealth", new Class<?>[] { float.class });
 			setHealth.invoke(dragon, health);
 
+			Method setSize = Util.getMethod(EntityEnderDragon, "setSize", new Class<?>[] { float.class, float.class });
+			setSize.invoke(dragon, width, length);
+
 			Field motX = Util.getField(Entity, "motX");
 			motX.set(dragon, getXvel());
 

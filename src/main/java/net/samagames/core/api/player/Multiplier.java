@@ -7,7 +7,12 @@ import java.util.HashMap;
  */
 class Multiplier {
 
-    public int globalAmount = 0;
+    public int globalAmount = 1;
     public HashMap<String, Integer> infos = new HashMap<>();
+
+    public int getGlobalAmount()
+    {
+        return (globalAmount >= 1)? globalAmount : 1;
+    }
 
 }

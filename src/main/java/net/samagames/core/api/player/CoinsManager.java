@@ -4,7 +4,6 @@ import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.chat.ComponentBuilder;
 import net.md_5.bungee.api.chat.TextComponent;
 import net.samagames.api.SamaGamesAPI;
-import net.samagames.core.APIPlugin;
 import net.samagames.permissionsapi.permissions.PermissionUser;
 import redis.clients.jedis.Jedis;
 
@@ -23,8 +22,8 @@ class CoinsManager {
 	protected Date promoNextCheck = null;
 	protected SamaGamesAPI api;
 
-	public CoinsManager() {
-		api = APIPlugin.getApi();
+	public CoinsManager(SamaGamesAPI api) {
+		this.api = api;
 	}
 
 	public Multiplier getCurrentMultiplier(UUID joueur) {
@@ -47,16 +46,18 @@ class CoinsManager {
 		}
 
 		if (currentPromo != null && current.before(currentPromo.end)) {
-			ret.globalAmount = currentPromo.multiply;
+			ret.globalAmount *= currentPromo.multiply;
 			ret.infos.put(currentPromo.message, currentPromo.multiply);
 		}
 
 		PermissionUser user = SamaGamesAPI.get().getPermissionsManager().getApi().getUser(joueur);
-		int multiply = (user != null && user.getProperty("multiplier") != null) ? Integer.decode(user.getProperty("multiplier")) : 0;
+		int multiply = (user != null && user.getProperty("multiplier") != null) ? Integer.decode(user.getProperty("multiplier")) : 1;
 
 		multiply = (multiply < 1) ? 1 : multiply;
 
 		ret.globalAmount *= multiply;
+		if(ret.globalAmount <= 0)
+			ret.globalAmount = 1;
 		return ret;
 	}
 
@@ -69,9 +70,12 @@ class CoinsManager {
 			for (String multCause : multiplier.infos.keySet()) {
 				TextComponent line = new TextComponent(multCause);
 				line.setColor(ChatColor.GREEN);
-				TextComponent details = new TextComponent(" *" + multiplier.infos.get(multCause));
-				details.setColor(ChatColor.AQUA);
-				line.addExtra(details);
+				if(multiplier.infos.containsKey(multCause))
+				{
+					TextComponent details = new TextComponent(" *" + multiplier.infos.get(multCause));
+					details.setColor(ChatColor.AQUA);
+					line.addExtra(details);
+				}
 
 				TextComponent toAdd = new TextComponent(" [");
 				toAdd.setColor(ChatColor.GOLD);
