@@ -33,6 +33,7 @@ public class GameLoginHandler implements JoinHandler
                 if(this.api.getGame() instanceof IReconnectGame)
                     ((IReconnectGame) this.api.getGame()).playerReconnect(player);
             }
+            this.api.getGame().refreshArena();
         }
     }
 

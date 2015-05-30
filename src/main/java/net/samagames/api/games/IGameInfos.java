@@ -1,14 +1,26 @@
 package net.samagames.api.games;
 
-public interface IGameInfos
+import net.samagames.api.SamaGamesAPI;
+
+public abstract class IGameInfos
 {
-    int getMaxPlayers();
-    int getConnectedPlayers();
+    Status status = Status.STARTING;
 
-    Status getStatus();
+    abstract public int getMaxPlayers();
+    abstract public int getConnectedPlayers();
 
-    void setStatus(Status status);
+    abstract public Status getStatus();
 
-    String getMapName();
-    String getGameName();
+    public void setStatus(Status status){
+         this.status = status;
+        refreshArena();
+    }
+
+    public void refreshArena()
+    {
+        SamaGamesAPI.get().getGameManager().refreshArena();
+    }
+
+    abstract public String getMapName();
+    abstract public String getGameName();
 }

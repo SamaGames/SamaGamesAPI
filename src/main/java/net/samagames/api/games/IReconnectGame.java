@@ -2,8 +2,8 @@ package net.samagames.api.games;
 
 import org.bukkit.entity.Player;
 
-public interface IReconnectGame extends IManagedGame
+public abstract class IReconnectGame extends IManagedGame
 {
-    void playerReconnect(Player player);
-    void playerReconnectTimeOut(Player player);
+    abstract public void playerReconnect(Player player);
+    abstract public void playerReconnectTimeOut(Player player);
 }

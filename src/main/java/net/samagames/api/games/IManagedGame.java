@@ -2,10 +2,10 @@ package net.samagames.api.games;
 
 import org.bukkit.entity.Player;
 
-public interface IManagedGame extends IGameInfos
+public abstract class IManagedGame extends IGameInfos
 {
-    void startGame();
+    abstract public void startGame();
 
-    void playerJoin(Player player);
-    void playerDisconnect(Player player);
+    abstract public void playerJoin(Player player);
+    abstract public void playerDisconnect(Player player);
 }

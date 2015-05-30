@@ -1,7 +1,7 @@
 package net.samagames.api.network;
 
 /**
- * Created by vialarl on 09/03/2015.
+ * Created by Someone on 09/03/2015.
  */
 public class JoinResponse {
 

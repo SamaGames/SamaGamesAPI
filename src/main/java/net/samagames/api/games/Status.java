@@ -5,7 +5,6 @@ import org.bukkit.ChatColor;
 /**
  * This file is a part of the SamaGames project
  * This code is absolutely confidential.
- * Created by zyuiop
  * (C) Copyright Elydra Network 2015
  * All rights reserved.
  *
@@ -59,6 +58,14 @@ public enum Status implements StatusEnum {
 		this.allowJoin = allowJoin;
 	}
 
+	public static Status fromString(String str) {
+		for (Status status : Status.values())
+			if (status.getId().equals(str))
+				return status;
+
+		return null;
+	}
+
 	public boolean isAllowJoin() {
 		return allowJoin;
 	}
@@ -69,14 +76,6 @@ public enum Status implements StatusEnum {
 
 	public String getId() {
 		return id;
-	}
-
-	public static Status fromString(String str) {
-		for (Status status : Status.values())
-			if (status.getId().equals(str))
-				return status;
-
-		return null;
 	}
 
 	@Override
