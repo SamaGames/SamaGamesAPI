@@ -73,7 +73,7 @@ public class ResourcePacksManagerImpl implements ResourcePacksManager, Listener 
 		((CraftPlayer) player).getHandle().playerConnection.sendPacket(new PacketPlayOutResourcePackSend(url, hash));
 	}
 
-	void handle(Player player, PacketPlayInResourcePackStatus.EnumResourcePackStatus state) {
+	void handle(Player player,String hash,  PacketPlayInResourcePackStatus.EnumResourcePackStatus state) {
 		if (forceUrl == null || forceHash == null)
 			return;
 

@@ -47,7 +47,7 @@ public class BarAPI implements Listener {
 					handleTeleport(p, p.getLocation());
 				});
 			}
-		}.runTaskTimer(plugin, 0, 10);
+		}.runTaskTimerAsynchronously(plugin, 0, 5);
 
 
 		// TestMode
@@ -340,7 +340,7 @@ public class BarAPI implements Listener {
 	private static void sendWither(FakeWither wither, Player player) {
 		Util.sendPacket(player, wither.getMetaPacket(wither.getWatcher()));
 
-		Util.sendPacket(player, wither.getTeleportPacket(player.getLocation().add(player.getEyeLocation().getDirection().normalize().multiply(40))));
+		Util.sendPacket(player, wither.getTeleportPacket(player.getLocation().add(player.getEyeLocation().getDirection().normalize().multiply(30))));
 	}
 
 	private static FakeWither getWither(Player player, String message) {
@@ -353,7 +353,7 @@ public class BarAPI implements Listener {
 
 	private static FakeWither addWither(Player player, String message) {
 		FakeWither wither = null;
-		wither = Util.newWither(message,player.getLocation().add(player.getEyeLocation().getDirection().normalize().multiply(40)));
+		wither = Util.newWither(message,player.getLocation().add(player.getEyeLocation().getDirection().normalize().multiply(30)));
 		Util.sendPacket(player, wither.getSpawnPacket());
 		wither_players.put(player.getUniqueId(), wither);
 		return wither;
@@ -362,7 +362,7 @@ public class BarAPI implements Listener {
 	private static FakeWither addWither(Player player, Location loc, String message) {
 		FakeWither wither = null;
 		// loc.add ?
-		wither = Util.newWither(message,player.getLocation().add(player.getEyeLocation().getDirection().normalize().multiply(40)));
+		wither = Util.newWither(message,player.getLocation().add(player.getEyeLocation().getDirection().normalize().multiply(30)));
 		Util.sendPacket(player, wither.getSpawnPacket());
 		wither_players.put(player.getUniqueId(), wither);
 		return wither;
@@ -413,17 +413,7 @@ public class BarAPI implements Listener {
 			if (wither_players.containsKey(player.getUniqueId())) {
 				FakeWither oldWither = getWither(player, "");
 
-				float health = oldWither.health;
-				String message = oldWither.name;
-
-				Util.sendPacket(player, getWither(player, "").getDestroyPacket());
-
-				wither_players.remove(player.getUniqueId());
-
-				FakeWither wither = addWither(player, loc, message);
-				wither.health = health;
-
-				sendWither(wither, player);
+				Util.sendPacket(player, oldWither.getTeleportPacket(loc.add(player.getEyeLocation().getDirection().normalize().multiply(30))));
 			}
 		}, 2L);
 	}

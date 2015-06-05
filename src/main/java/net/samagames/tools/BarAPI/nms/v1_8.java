@@ -1,5 +1,7 @@
 package net.samagames.tools.BarAPI.nms;
 
+import net.minecraft.server.v1_8_R2.EntityWither;
+import net.minecraft.server.v1_8_R2.World;
 import net.samagames.tools.BarAPI.Util;
 import org.bukkit.Location;
 
@@ -29,25 +31,19 @@ public class v1_8 extends FakeWither {
 		Class<?> Entity = Util.getCraftClass("Entity");
 		Class<?> EntityLiving = Util.getCraftClass("EntityLiving");
 		// Class<?> EntityEnderDragon = Util.getCraftClass("EntityEnderDragon");
-		Class<?> EntityEnderDragon = Util.getCraftClass("EntityWither");
 		Object packet = null;
 		try {
-			dragon = EntityEnderDragon.getConstructor(Util.getCraftClass("World")).newInstance(getWorld());
+			EntityWither entityWither = new EntityWither((World) getWorld());
+			entityWither.setSize(3.5F, 0.9F);
+			entityWither.setLocation(getX(), getY(), getZ(), getPitch(), getYaw());
+			entityWither.setInvisible(true);
+			entityWither.setSneaking(true);
+			entityWither.setCustomNameVisible(true);
+			entityWither.setCustomName(name);
+			entityWither.setHealth(health);
 
-			Method setLocation = Util.getMethod(EntityEnderDragon, "setLocation", new Class<?>[] { double.class, double.class, double.class, float.class, float.class });
-			setLocation.invoke(dragon, getX(), getY(), getZ(), getPitch(), getYaw());
-
-			Method setInvisible = Util.getMethod(EntityEnderDragon, "setInvisible", new Class<?>[] { boolean.class });
-			setInvisible.invoke(dragon, isVisible());
-
-			Method setCustomName = Util.getMethod(EntityEnderDragon, "setCustomName", new Class<?>[] { String.class });
-			setCustomName.invoke(dragon, name);
-
-			Method setHealth = Util.getMethod(EntityEnderDragon, "setHealth", new Class<?>[] { float.class });
-			setHealth.invoke(dragon, health);
-
-			Method setSize = Util.getMethod(EntityEnderDragon, "setSize", new Class<?>[] { float.class, float.class });
-			setSize.invoke(dragon, width, length);
+			dragon = entityWither;
+			this.id = entityWither.getId();
 
 			Field motX = Util.getField(Entity, "motX");
 			motX.set(dragon, getXvel());
@@ -57,9 +53,6 @@ public class v1_8 extends FakeWither {
 
 			Field motZ = Util.getField(Entity, "motZ");
 			motZ.set(dragon, getZvel());
-
-			Method getId = Util.getMethod(EntityEnderDragon, "getId", new Class<?>[] {});
-			this.id = (Integer) getId.invoke(dragon);
 
 			Class<?> PacketPlayOutSpawnEntityLiving = Util.getCraftClass("PacketPlayOutSpawnEntityLiving");
 
@@ -175,13 +168,17 @@ public class v1_8 extends FakeWither {
 		try {
 			watcher = DataWatcher.getConstructor(new Class<?>[] { Entity }).newInstance(dragon);
 			Method a = Util.getMethod(DataWatcher, "a", new Class<?>[] { int.class, Object.class });
+			Method watch = Util.getMethod(DataWatcher, "watch", new Class<?>[] { int.class, Object.class });
 
 			a.invoke(watcher, 0, isVisible() ? (byte) 0 : (byte) 0x20);
 			a.invoke(watcher, 6, (Float) health);
 			a.invoke(watcher, 7, (Integer) 0);
 			a.invoke(watcher, 8, (Byte) (byte) 0);
+			a.invoke(watcher, 9, (Byte) (byte) 0);
 			a.invoke(watcher, 10, name);
 			a.invoke(watcher, 11, (Byte) (byte) 1);
+			a.invoke(watcher, 15, (Byte) (byte) 1);
+
 		} catch (IllegalArgumentException e) {
 
 			e.printStackTrace();

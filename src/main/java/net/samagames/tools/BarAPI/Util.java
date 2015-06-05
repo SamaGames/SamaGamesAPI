@@ -93,6 +93,17 @@ public class Util {
         return c;
     }
 
+    public static Class<?> getClass(String ClassName) {
+        String className = ClassName;
+        Class<?> c = null;
+        try {
+            c = Class.forName(className);
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+        return c;
+    }
+
     public static Object getHandle(World world) {
         Object nms_entity = null;
         Method entity_getHandle = getMethod(world.getClass(), "getHandle");

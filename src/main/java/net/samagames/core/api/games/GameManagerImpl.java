@@ -99,6 +99,8 @@ public class GameManagerImpl implements GameManager
             }
         }, 20L, 20L));
 
+        this.game.refreshArena();
+
     }
 
     @Override
@@ -118,6 +120,7 @@ public class GameManagerImpl implements GameManager
         }
 
         ((IReconnectGame) this.game).playerReconnect(player);
+        this.game.refreshArena();
     }
 
     @Override

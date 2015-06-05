@@ -40,7 +40,7 @@ public class ModerationJoinHandler implements JoinHandler, PacketsReceiver {
     @Override
     public void receive(String channel, String packet) {
         String[] args = StringUtils.split(packet, " ");
-        String id = args[0];
+        String id = args[1];
         UUID uuid = UUID.fromString(id);
 
         if (SamaGamesAPI.get().getPermissionsManager().hasPermission(uuid, "games.modjoin"))
