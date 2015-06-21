@@ -244,15 +244,15 @@ public class TeamHandler {
 
             PacketPlayOutScoreboardTeam packet = new PacketPlayOutScoreboardTeam();
             try {
-                ReflectionUtilities.setValue(packet, "a", team.getName());
-                ReflectionUtilities.setValue(packet, "b", team.getDisplayName());
-                ReflectionUtilities.setValue(packet, "c", team.getPrefix());
-                ReflectionUtilities.setValue(packet, "d", team.getSuffix());
-                ReflectionUtilities.setValue(packet, "e", ScoreboardTeamBase.EnumNameTagVisibility.ALWAYS.e);
-                ReflectionUtilities.setValue(packet, "i", 0);
-                ReflectionUtilities.setValue(packet, "f", -1);
-                ReflectionUtilities.setValue(packet, "g", (Collection) news);
-                ReflectionUtilities.setValue(packet, "h", n);
+                Reflection.setValue(packet, "a", team.getName());
+                Reflection.setValue(packet, "b", team.getDisplayName());
+                Reflection.setValue(packet, "c", team.getPrefix());
+                Reflection.setValue(packet, "d", team.getSuffix());
+                Reflection.setValue(packet, "e", ScoreboardTeamBase.EnumNameTagVisibility.ALWAYS.e);
+                Reflection.setValue(packet, "i", 0);
+                Reflection.setValue(packet, "f", -1);
+                Reflection.setValue(packet, "g", (Collection) news);
+                Reflection.setValue(packet, "h", n);
 
             } catch (Exception e) {
                 e.printStackTrace();
@@ -274,39 +274,6 @@ public class TeamHandler {
             } catch (Exception e) {
                 e.printStackTrace();
             }
-        }
-
-        public static class ReflectionUtilities {
-
-            /**
-             * sets a value of an {@link Object} via reflection
-             *
-             * @param instance  instance the class to use
-             * @param fieldName the name of the {@link java.lang.reflect.Field} to modify
-             * @param value     the value to set
-             * @throws Exception
-             */
-            public static void setValue(Object instance, String fieldName, Object value) throws Exception {
-                Field field = instance.getClass().getDeclaredField(fieldName);
-                field.setAccessible(true);
-                field.set(instance, value);
-            }
-
-            /**
-             * get a value of an {@link Object}'s {@link java.lang.reflect.Field}
-             *
-             * @param instance  the target {@link Object}
-             * @param fieldName name of the {@link java.lang.reflect.Field}
-             * @return the value of {@link Object} instance's {@link java.lang.reflect.Field} with the
-             * name of fieldName
-             * @throws Exception
-             */
-            public static Object getValue(Object instance, String fieldName) throws Exception {
-                Field field = instance.getClass().getDeclaredField(fieldName);
-                field.setAccessible(true);
-                return field.get(instance);
-            }
-
         }
     }
 
