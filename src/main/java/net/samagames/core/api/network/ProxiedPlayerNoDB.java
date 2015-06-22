@@ -21,6 +21,9 @@ public class ProxiedPlayerNoDB implements ProxiedPlayer {
 		return "";
 	}
 
+    @Override
+    public String getIp() { return ""; }
+
 	@Override
 	public void disconnect(TextComponent reason) {
 

@@ -23,6 +23,12 @@ public interface ProxiedPlayer {
 	 */
 	public String getProxy();
 
+    /**
+     * Gives the ip of the player
+     * @return the ip
+     */
+    public String getIp();
+
 	/**
 	 * Disconnects the player from the proxy with the given reason
 	 * @param reason The reason component
