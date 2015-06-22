@@ -26,7 +26,7 @@ class NameFetcher {
         URLConnection connection;
         try {
             connection = new URL("https://api.mojang.com/user/profiles/"
-                    + uuid.toString().replace("-", "").toLowerCase() + "/players"
+                    + uuid.toString().replace("-", "").toLowerCase() + "/names"
             ).openConnection();
             String text = new Scanner(connection.getInputStream()).useDelimiter("\\Z").next();
             JsonArray list = (JsonArray) parser.parse(text);
