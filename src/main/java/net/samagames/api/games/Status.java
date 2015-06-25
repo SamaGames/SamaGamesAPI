@@ -1,7 +1,5 @@
 package net.samagames.api.games;
 
-import org.bukkit.ChatColor;
-
 /**
  * This file is a part of the SamaGames project
  * This code is absolutely confidential.
@@ -11,50 +9,21 @@ import org.bukkit.ChatColor;
  * This enum is provided as it. You can create your own status enum, if you think this one doesn't fit to your needs.
  *
  */
-public enum Status implements StatusEnum {
+public enum Status {
 
-	/**
-	 * The server is booting and is not ready to host players
-	 */
-	STARTING("starting", ChatColor.DARK_RED + "≈ Reboot ≈", false),
+	STARTING("starting", false),
+	WAITING_FOR_PLAYERS("waitingForPlayers", true),
+	READY_TO_START("readyToStart", true),
+	IN_GAME("inGame", false),
+	FINISHED("finished", false),
+	REBOOTING("rebooting", false),
+	NOT_RESPONDING("idle", false);
 
-	/**
-	 * The server is just waiting for players to start
-	 */
-	WAITING_FOR_PLAYERS("waitingForPlayers", ChatColor.GREEN + "» Jouer «", true),
-
-	/**
-	 * The server has enough players to start
-	 */
-	READY_TO_START("readyToStart", ChatColor.GOLD + "" + ChatColor.BOLD + "» Jouer «", true),
-
-	/**
-	 * The game is started, players cannot join anymore
-	 */
-	IN_GAME("inGame", ChatColor.DARK_RED + "- En cours -", false),
-
-	/**
-	 * The game is finished, it will reboot soon
-	 */
-	FINISHED("finished", ChatColor.DARK_RED + "≈ Reboot ≈", false),
-
-	/**
-	 * The server is rebooting
-	 */
-	REBOOTING("rebooting", ChatColor.DARK_RED + "≈ Reboot ≈", false),
-
-	/**
-	 * The server isn't responding
-	 */
-	NOT_RESPONDING("idle", ChatColor.DARK_RED + "Hors Service", false);
-
-	private final String display;
 	private final String id;
 	private final boolean allowJoin;
 
-	private Status(String id, String display, boolean allowJoin) {
+	private Status(String id, boolean allowJoin) {
 		this.id = id;
-		this.display = display;
 		this.allowJoin = allowJoin;
 	}
 
@@ -68,10 +37,6 @@ public enum Status implements StatusEnum {
 
 	public boolean isAllowJoin() {
 		return allowJoin;
-	}
-
-	public String getDisplay() {
-		return display;
 	}
 
 	public String getId() {
