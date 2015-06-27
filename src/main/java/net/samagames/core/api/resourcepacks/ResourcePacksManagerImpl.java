@@ -38,6 +38,8 @@ public class ResourcePacksManagerImpl implements ResourcePacksManager, Listener 
 	public ResourcePacksManagerImpl() {
 		Bukkit.getPluginManager().registerEvents(this, APIPlugin.getInstance());
 
+		handler = new ProtocolHandler(APIPlugin.getInstance(), this);
+
 		Jedis jedis = SamaGamesAPI.get().getResource();
 		this.resetUrl = jedis.get("resourcepacks:reseturl");
 		APIPlugin.getInstance().getLogger().info("Resource packs reset URL defined to " + resetUrl);
@@ -65,10 +67,6 @@ public class ResourcePacksManagerImpl implements ResourcePacksManager, Listener 
 
 	void sendPack(Player player, String url, String hash) {
 		APIPlugin.getInstance().getLogger().info("Sending pack to " + player.getName() + " : " + url + " with hash " + hash);
-
-		if (handler == null) {
-			handler = new ProtocolHandler(APIPlugin.getInstance(), this);
-		}
 
 		((CraftPlayer) player).getHandle().playerConnection.sendPacket(new PacketPlayOutResourcePackSend(url, hash));
 	}
