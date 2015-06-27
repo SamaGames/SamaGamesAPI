@@ -8,11 +8,11 @@ import java.util.UUID;
 
 public class GamePlayer implements IGamePlayer
 {
-    private final UUID uuid;
+    protected final UUID uuid;
 
-    private int coins;
-    private int stars;
-    private boolean spectator;
+    protected int coins;
+    protected int stars;
+    protected boolean spectator;
 
     public GamePlayer(Player player)
     {
