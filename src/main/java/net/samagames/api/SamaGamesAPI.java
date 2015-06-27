@@ -2,7 +2,7 @@ package net.samagames.api;
 
 import net.samagames.api.achievements.AchievementManager;
 import net.samagames.api.channels.PubSubAPI;
-import net.samagames.api.games.GameManager;
+import net.samagames.api.games.IGameManager;
 import net.samagames.api.names.UUIDTranslator;
 import net.samagames.api.network.ProxyDataManager;
 import net.samagames.api.parties.PartiesManager;
@@ -57,7 +57,7 @@ public abstract class SamaGamesAPI {
     public abstract AchievementManager getAchievementManager();
 	public abstract PubSubAPI getPubSub();
 	public abstract UUIDTranslator getUUIDTranslator();
-	public abstract GameManager getGameManager();
+	public abstract IGameManager getGameManager();
 	public abstract ResourcePacksManager getResourcePacksManager();
 
 	public abstract ProxyDataManager getProxyDataManager();

@@ -1,6 +1,6 @@
 package net.samagames.core.api.games.themachine.messages;
 
-import net.samagames.api.games.themachine.CoherenceMachine;
+import net.samagames.api.games.themachine.ICoherenceMachine;
 import net.samagames.api.games.themachine.messages.TemplateManager;
 import net.samagames.api.games.themachine.messages.templates.BasicMessageTemplate;
 import net.samagames.api.games.themachine.messages.templates.CustomWinTemplate;
@@ -9,9 +9,9 @@ import net.samagames.api.games.themachine.messages.templates.PlayerWinTemplate;
 
 public class TemplateManagerImpl implements TemplateManager
 {
-    private final CoherenceMachine machine;
+    private final ICoherenceMachine machine;
 
-    public TemplateManagerImpl(CoherenceMachine machine)
+    public TemplateManagerImpl(ICoherenceMachine machine)
     {
         this.machine = machine;
     }

@@ -1,10 +1,11 @@
 package net.samagames.api.games.themachine;
 
-import net.samagames.api.games.IGameInfos;
+import net.samagames.api.games.IGameProperties;
 import net.samagames.api.games.themachine.messages.MessageManager;
 import net.samagames.api.games.themachine.messages.TemplateManager;
+import net.samagames.core.api.games.AbstractGame;
 
-public interface CoherenceMachine
+public interface ICoherenceMachine
 {
     /**
      * Renvoi le tag du jeu pour les messages dans le chat
@@ -28,5 +29,11 @@ public interface CoherenceMachine
      * Renvoi l'objet d'information de jeu
      * @return L'objet
      */
-    IGameInfos getGameInfos();
+    AbstractGame getGame();
+
+    /**
+     * Renvoi les propriétés du jeu
+     * @return L'objet
+     */
+    IGameProperties getGameProperties();
 }

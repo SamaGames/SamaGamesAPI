@@ -3,7 +3,7 @@ package net.samagames.core;
 import net.samagames.api.SamaGamesAPI;
 import net.samagames.api.achievements.AchievementManager;
 import net.samagames.api.channels.PubSubAPI;
-import net.samagames.api.games.GameManager;
+import net.samagames.api.games.IGameManager;
 import net.samagames.api.names.UUIDTranslator;
 import net.samagames.api.network.JoinManager;
 import net.samagames.api.network.ProxyDataManager;
@@ -59,7 +59,7 @@ public class ApiImplementation extends SamaGamesAPI
 	protected PubSubAPI pubSub;
 	protected UUIDTranslator uuidTranslator;
 	protected JoinManager joinManager;
-	protected GameManager gameApi;
+	protected IGameManager gameApi;
 	protected ProxyDataManager proxyDataManager;
 	protected PartiesManager partiesManager;
 	protected ResourcePacksManager resourcePacksManager;
@@ -132,7 +132,7 @@ public class ApiImplementation extends SamaGamesAPI
 		return proxyDataManager;
 	}
 
-	public GameManager getGameManager() {
+	public IGameManager getGameManager() {
 		return (gameApi == null) ? (this.gameApi = new GameManagerImpl(this)) : this.gameApi;
 	}
 

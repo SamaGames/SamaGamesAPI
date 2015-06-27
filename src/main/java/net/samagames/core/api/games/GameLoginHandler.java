@@ -1,9 +1,11 @@
 package net.samagames.core.api.games;
 
-import net.samagames.api.games.*;
+import net.samagames.api.games.IGameManager;
+import net.samagames.api.games.Status;
 import net.samagames.api.network.JoinHandler;
 import net.samagames.api.network.JoinResponse;
 import net.samagames.api.network.ResponseType;
+import org.apache.commons.lang3.tuple.Pair;
 import org.bukkit.entity.Player;
 
 import java.util.Set;
@@ -11,9 +13,9 @@ import java.util.UUID;
 
 public class GameLoginHandler implements JoinHandler
 {
-    private final GameManager api;
+    private final IGameManager api;
 
-    public GameLoginHandler(GameManager api)
+    public GameLoginHandler(IGameManager api)
     {
         this.api = api;
     }
@@ -25,14 +27,13 @@ public class GameLoginHandler implements JoinHandler
         {
             if(!this.api.isWaited(player.getUniqueId()))
             {
-                if (this.api.getGame() instanceof IManagedGame)
-                    this.api.getGame().playerJoin(player);
+                this.api.getGame().handleLogin(player);
             }
             else
             {
-                if(this.api.getGame() instanceof IReconnectGame)
-                    ((IReconnectGame) this.api.getGame()).playerReconnect(player);
+                this.api.getGame().handleReconnect(player);
             }
+
             this.api.getGame().refreshArena();
         }
     }
@@ -42,32 +43,33 @@ public class GameLoginHandler implements JoinHandler
     {
         if (this.api.getGame() != null)
         {
-            if (!response.isAllowed())
-            {
-                if(this.api.getGame() instanceof IMasterControlledGame)
-                    return ((IMasterControlledGame) this.api.getGame()).requestJoin(player, response);
-                else
-                    return response;
-            }
-
-            IManagedGame game = this.api.getGame();
+            AbstractGame game = this.api.getGame();
 
             if (game.getStatus() == Status.IN_GAME)
                 response.disallow(ResponseType.DENY_IN_GAME);
             else if (game.getStatus() == Status.STARTING)
                 response.disallow(ResponseType.DENY_NOT_READY);
-            else if (game.getConnectedPlayers() >= game.getMaxPlayers())
+            else if (game.getConnectedPlayers() >= this.api.getGameProperties().getMaxSlots())
                 response.disallow(ResponseType.DENY_FULL);
 
-            if(this.api.isReconnectAllowed())
-                response.allow();
-
-            if(!this.api.isWaited(player))
+            if(this.api.isReconnectAllowed() && this.api.isWaited(player))
             {
-                if (this.api.getGame() instanceof IMasterControlledGame)
-                    return ((IMasterControlledGame) this.api.getGame()).requestJoin(player, response);
+                response.allow();
+                return response;
+            }
+
+            Pair<Boolean, String> gameResponse = game.canJoinGame(false);
+
+            if(gameResponse.getKey())
+            {
+                response.allow();
+            }
+            else
+            {
+                response.disallow(gameResponse.getValue());
             }
         }
+
         return response;
     }
 
@@ -76,24 +78,24 @@ public class GameLoginHandler implements JoinHandler
     {
         if (this.api.getGame() != null)
         {
-            if (!response.isAllowed())
+            AbstractGame game = this.api.getGame();
+
+            if (game.getStatus() == Status.IN_GAME)
+                response.disallow(ResponseType.DENY_IN_GAME);
+            else if (game.getStatus() == Status.STARTING)
+                response.disallow(ResponseType.DENY_NOT_READY);
+            else if (game.getConnectedPlayers() >= this.api.getGameProperties().getMaxSlots())
+                response.disallow(ResponseType.DENY_FULL);
+
+            Pair<Boolean, String> gameResponse = game.canJoinGame(true);
+
+            if(gameResponse.getKey())
             {
-                if(this.api.getGame() instanceof IMasterControlledGame)
-                    return ((IMasterControlledGame) this.api.getGame()).requestPartyJoin(partyLeader, partyMembers, response);
+                response.allow();
             }
             else
             {
-                IManagedGame game = this.api.getGame();
-
-                if (game.getStatus() == Status.IN_GAME)
-                    response.disallow(ResponseType.DENY_IN_GAME);
-                else if (game.getStatus() == Status.STARTING)
-                    response.disallow(ResponseType.DENY_NOT_READY);
-                else if ((game.getConnectedPlayers() + partyMembers.size()) > game.getMaxPlayers())
-                    response.disallow(ResponseType.DENY_FULL);
-
-                if (this.api.getGame() instanceof IMasterControlledGame)
-                    return ((IMasterControlledGame) this.api.getGame()).requestPartyJoin(partyLeader, partyMembers, response);
+                response.disallow(gameResponse.getValue());
             }
         }
 
@@ -103,8 +105,7 @@ public class GameLoginHandler implements JoinHandler
     @Override
     public void onModerationJoin(Player player)
     {
-        if(this.api.getGame() instanceof IMasterControlledGame)
-            ((IMasterControlledGame) this.api.getGame()).onModerationJoin(player);
+        this.api.getGame().handleModeratorLogin(player);
     }
 
     @Override

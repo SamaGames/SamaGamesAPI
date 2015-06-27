@@ -1,18 +1,19 @@
 package net.samagames.api.games;
 
-import net.samagames.api.games.themachine.CoherenceMachine;
+import net.samagames.api.games.themachine.ICoherenceMachine;
+import net.samagames.core.api.games.AbstractGame;
 import org.bukkit.entity.Player;
 
 import java.util.UUID;
 
-public interface GameManager
+public interface IGameManager
 {
     /**
      * Register the arena
      *
      * @param game Arena object
      */
-    void registerGame(IManagedGame game);
+    void registerGame(AbstractGame game);
 
     /**
      * Kick a player from the game
@@ -67,7 +68,7 @@ public interface GameManager
      *
      * @return The registered game (null if none)
      */
-    IManagedGame getGame();
+    AbstractGame getGame();
 
     /**
      * Get the status of the game
@@ -81,7 +82,21 @@ public interface GameManager
      *
      * @return The CoherenceMachine (null if no game)
      */
-    CoherenceMachine getCoherenceMachine();
+    ICoherenceMachine getCoherenceMachine();
+
+    /**
+     * Get the properties of the game (if is a game server)
+     *
+     * @return The properties
+     */
+    IGameProperties getGameProperties();
+
+    /**
+     * Get the max reconnect time in minutes
+     *
+     * @return The time
+     */
+    int getMaxReconnectTime();
 
     /**
      * Return if a player is waited for a reconnect

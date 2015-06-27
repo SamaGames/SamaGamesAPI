@@ -44,6 +44,7 @@ public class APIPlugin extends JavaPlugin implements Listener {
 	protected boolean allowJoin;
 	protected String denyJoinReason = ChatColor.RED + "Serveur non initialisé.";
 	protected boolean serverRegistered;
+    protected boolean gameServer;
 	protected String joinPermission = null;
 	protected ScheduledExecutorService executor;
 	protected DebugListener debugListener;
@@ -84,6 +85,7 @@ public class APIPlugin extends JavaPlugin implements Listener {
 		this.saveDefaultConfig();
 		configuration = this.getConfig();
 		databaseEnabled = configuration.getBoolean("database", true);
+        gameServer = configuration.getBoolean("game-server", true);
 
 		// Chargement de l'IPWhitelist le plus tot possible
 		Bukkit.getPluginManager().registerEvents(this, this);
@@ -252,6 +254,10 @@ public class APIPlugin extends JavaPlugin implements Listener {
 	public boolean isDatabaseEnabled() {
 		return databaseEnabled;
 	}
+
+    public boolean isGameServer() {
+        return gameServer;
+    }
 
 	public void denyJoin(String reason) {
 		allowJoin = false;

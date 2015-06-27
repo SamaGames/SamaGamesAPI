@@ -1,6 +1,6 @@
 package net.samagames.core.api.games.themachine.messages;
 
-import net.samagames.api.games.themachine.CoherenceMachine;
+import net.samagames.api.games.themachine.ICoherenceMachine;
 import net.samagames.api.games.themachine.messages.Message;
 import net.samagames.api.games.themachine.messages.MessageManager;
 import org.bukkit.ChatColor;
@@ -8,9 +8,9 @@ import org.bukkit.entity.Player;
 
 public class MessageManagerImpl implements MessageManager
 {
-    private final CoherenceMachine machine;
+    private final ICoherenceMachine machine;
 
-    public MessageManagerImpl(CoherenceMachine machine)
+    public MessageManagerImpl(ICoherenceMachine machine)
     {
         this.machine = machine;
     }
@@ -22,9 +22,9 @@ public class MessageManagerImpl implements MessageManager
         builder.append(ChatColor.YELLOW).append(player.getName());
         builder.append(" a rejoint la partie ! ");
         builder.append(ChatColor.GRAY).append("[");
-        builder.append(ChatColor.RED).append(this.machine.getGameInfos().getConnectedPlayers());
+        builder.append(ChatColor.RED).append(this.machine.getGame().getConnectedPlayers());
         builder.append(ChatColor.DARK_GRAY).append("/");
-        builder.append(ChatColor.RED).append(this.machine.getGameInfos().getMaxPlayers());
+        builder.append(ChatColor.RED).append(this.machine.getGameProperties().getMaxSlots());
         builder.append(ChatColor.GRAY).append("]");
 
         return new Message(builder.toString(), this.machine.getGameTag()).displayToAll();
@@ -33,7 +33,7 @@ public class MessageManagerImpl implements MessageManager
     @Override
     public Message writeWelcomeInGameToPlayer(Player player)
     {
-        return new Message(ChatColor.GOLD + "\nBienvenue en " + ChatColor.RED + this.machine.getGameInfos().getGameName() + ChatColor.GOLD + " !").display(player);
+        return new Message(ChatColor.GOLD + "\nBienvenue en " + ChatColor.RED + this.machine.getGame().getGameName() + ChatColor.GOLD + " !").display(player);
     }
 
     @Override
@@ -55,7 +55,7 @@ public class MessageManagerImpl implements MessageManager
     }
 
     @Override
-    public Message writePlayerQuitted(Player player)
+    public Message writePlayerQuited(Player player)
     {
         return new Message(ChatColor.WHITE + player.getName() + " s'est déconnecté du jeu.", this.machine.getGameTag()).displayToAll();
     }
@@ -67,9 +67,15 @@ public class MessageManagerImpl implements MessageManager
     }
 
     @Override
-    public Message writePlayerReconnedted(Player player)
+    public Message writePlayerReconnected(Player player)
     {
         return new Message(ChatColor.GREEN + player.getName() + " s'est reconnecté !", this.machine.getGameTag()).displayToAll();
+    }
+
+    @Override
+    public Message writePlayerReconnectTimeOut(Player player)
+    {
+        return new Message(ChatColor.RED + player.getName() + " ne s'est pas reconnecté à temps !");
     }
 
     @Override

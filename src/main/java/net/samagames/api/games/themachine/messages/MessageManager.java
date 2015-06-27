@@ -42,7 +42,7 @@ public interface MessageManager
      * @param player Le joueur déconnecté
      * @return L'objet du message
      */
-    Message writePlayerQuitted(Player player);
+    Message writePlayerQuited(Player player);
 
     /**
      * Envoi aux joueurs le message de déconnexion temporaire ou non d'un joueur si cela est possible
@@ -57,7 +57,14 @@ public interface MessageManager
      * @param player Le joueur reconnecté
      * @return L'objet du message
      */
-    Message writePlayerReconnedted(Player player);
+    Message writePlayerReconnected(Player player);
+
+    /**
+     * Envoi aux joueurs le message d'expiration de reconnexion d'un joueur
+     * @param player Le joueur concerné
+     * @return L'objet du message
+     */
+    Message writePlayerReconnectTimeOut(Player player);
 
     /**
      * Renvoi le message comme quoi l'arène de jeu est pleine
