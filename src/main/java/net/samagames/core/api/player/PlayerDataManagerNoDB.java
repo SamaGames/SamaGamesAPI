@@ -14,7 +14,7 @@ import java.util.UUID;
  */
 public class PlayerDataManagerNoDB implements PlayerDataManager {
 
-	protected HashMap<UUID, PlayerDataNoDB> dataHashMap;
+	protected HashMap<UUID, PlayerDataNoDB> dataHashMap = new HashMap<>();
 
 	@Override
 	public PlayerData getPlayerData(UUID player) {
