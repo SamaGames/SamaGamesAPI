@@ -40,6 +40,7 @@ public class GameManagerImpl implements IGameManager
         this.playerReconnectedTimers = new HashMap<>();
 
         this.maxReconnectTime = -1;
+        this.gameProperties = new GameProperties();
     }
 
     @Override
@@ -48,7 +49,6 @@ public class GameManagerImpl implements IGameManager
         if(this.game != null)
             throw new IllegalStateException("A game is already registered!");
 
-        this.gameProperties = new GameProperties();
         this.game = game;
 
         APIPlugin.getApi().getJoinManager().registerHandler(new GameLoginHandler(this), 100);

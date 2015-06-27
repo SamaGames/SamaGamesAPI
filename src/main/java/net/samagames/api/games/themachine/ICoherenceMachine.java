@@ -4,6 +4,7 @@ import net.samagames.api.games.IGameProperties;
 import net.samagames.api.games.themachine.messages.MessageManager;
 import net.samagames.api.games.themachine.messages.TemplateManager;
 import net.samagames.core.api.games.Game;
+import org.bukkit.inventory.ItemStack;
 
 public interface ICoherenceMachine
 {
@@ -36,4 +37,10 @@ public interface ICoherenceMachine
      * @return L'objet
      */
     IGameProperties getGameProperties();
+
+    /**
+     * Renvoi l'objet servant à quitter le jeu
+     * @return L'objet
+     */
+    ItemStack getLeaveItem();
 }

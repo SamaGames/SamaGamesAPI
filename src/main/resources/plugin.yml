@@ -26,3 +26,6 @@ commands:
    bukkitdebug:
      description: Renvoie les playerdata d'un joueur
      usage: /playerdata <pseudo>
+   inv:
+     description: Voir l'inventaire d'un joueur
+     usage: /inv <pseudo>

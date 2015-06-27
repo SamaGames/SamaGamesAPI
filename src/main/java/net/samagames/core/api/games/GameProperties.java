@@ -34,6 +34,10 @@ public class GameProperties implements IGameProperties
         try
         {
             File file = new File(APIPlugin.getInstance().getDataFolder().getAbsoluteFile().getParentFile().getParentFile(), "game.json");
+
+            if(!file.exists())
+                return;
+
             JsonObject rootJson = new JsonParser().parse(new FileReader(file)).getAsJsonObject();
 
             this.mapName = rootJson.get("map-name").getAsString();

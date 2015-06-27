@@ -2,6 +2,8 @@ package net.samagames.core.api.games;
 
 import net.samagames.api.SamaGamesAPI;
 import net.samagames.api.games.IGamePlayer;
+import net.samagames.api.player.PlayerData;
+import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
 import java.util.UUID;
@@ -25,7 +27,7 @@ public class GamePlayer implements IGamePlayer
 
     public void handleLogin(boolean reconnect)
     {
-
+        SamaGamesAPI.get().getGameManager().getCoherenceMachine().getMessageManager().writeWelcomeInGameToPlayer(this.getPlayerIfOnline());
     }
 
     public void handleLogout() {}
@@ -45,6 +47,21 @@ public class GamePlayer implements IGamePlayer
     public void setSpectator()
     {
         this.spectator = true;
+    }
+
+    public UUID getUUID()
+    {
+        return this.uuid;
+    }
+
+    public Player getPlayerIfOnline()
+    {
+        return Bukkit.getPlayer(this.uuid);
+    }
+
+    public PlayerData getPlayerData()
+    {
+        return SamaGamesAPI.get().getPlayerManager().getPlayerData(this.uuid);
     }
 
     public int getCoins()

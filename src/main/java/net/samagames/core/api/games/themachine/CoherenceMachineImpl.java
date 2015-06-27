@@ -8,6 +8,9 @@ import net.samagames.core.api.games.Game;
 import net.samagames.core.api.games.themachine.messages.MessageManagerImpl;
 import net.samagames.core.api.games.themachine.messages.TemplateManagerImpl;
 import org.bukkit.ChatColor;
+import org.bukkit.Material;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
 
 public class CoherenceMachineImpl implements ICoherenceMachine
 {
@@ -53,5 +56,16 @@ public class CoherenceMachineImpl implements ICoherenceMachine
     public IGameProperties getGameProperties()
     {
         return this.gameProperties;
+    }
+
+    @Override
+    public ItemStack getLeaveItem()
+    {
+        ItemStack door = new ItemStack(Material.WOOD_DOOR, 1);
+        ItemMeta meta = door.getItemMeta();
+        meta.setDisplayName(ChatColor.GREEN + "" + ChatColor.BOLD + "Quitter le jeu");
+        door.setItemMeta(meta);
+
+        return door;
     }
 }

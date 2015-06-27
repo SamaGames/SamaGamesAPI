@@ -22,6 +22,7 @@ public class Game<GAMEPLAYER extends GamePlayer>
 {
     protected final IGameManager gameManager;
 
+    protected final String gameCodeName;
     protected final String gameName;
     protected final Class<GAMEPLAYER> gamePlayerClass;
     protected final HashMap<UUID, GAMEPLAYER> gamePlayers;
@@ -30,16 +31,17 @@ public class Game<GAMEPLAYER extends GamePlayer>
     protected ICoherenceMachine coherenceMachine;
     protected Status status;
 
-    public Game(String gameName, Class<GAMEPLAYER> gamePlayerClass)
+    public Game(String gameCodeName, String gameName, Class<GAMEPLAYER> gamePlayerClass)
     {
         this.gameManager = SamaGamesAPI.get().getGameManager();
 
+        this.gameCodeName = gameCodeName;
         this.gameName = gameName;
         this.gamePlayerClass = gamePlayerClass;
         this.gamePlayers = new HashMap<>();
         this.beginTimer = Bukkit.getScheduler().runTaskTimerAsynchronously(APIPlugin.getInstance(), new BeginTimer(this), 20L, 20L);
 
-        this.status = Status.WAITING_FOR_PLAYERS;
+        this.setStatus(Status.WAITING_FOR_PLAYERS);
     }
 
     /**
@@ -51,6 +53,9 @@ public class Game<GAMEPLAYER extends GamePlayer>
     public void startGame()
     {
         this.beginTimer.cancel();
+        this.setStatus(Status.IN_GAME);
+
+        this.coherenceMachine.getMessageManager().writeGameStart();
     }
 
     public void handlePostRegistration()
@@ -78,6 +83,8 @@ public class Game<GAMEPLAYER extends GamePlayer>
         {
             e.printStackTrace();
         }
+
+        this.coherenceMachine.getMessageManager().writePlayerJoinToAll(player);
     }
 
     /**
@@ -212,6 +219,18 @@ public class Game<GAMEPLAYER extends GamePlayer>
     }
 
     /**
+     * Incrémenter une statistique d'un joueur
+     *
+     * @param uuid Le joueur en question
+     * @param statName Le nom de la statistique
+     * @param count Le nombre à incrémenter
+     */
+    public void increaseStat(UUID uuid, String statName, int count)
+    {
+        SamaGamesAPI.get().getStatsManager(this.gameCodeName).increase(uuid, statName, count);
+    }
+
+    /**
      * Définir un joueur comme spectateur
      *
      * @param player Le joueur en question
@@ -273,6 +292,17 @@ public class Game<GAMEPLAYER extends GamePlayer>
     }
 
     /**
+     * Savoir si un joueur est en jeu ou non
+     *
+     * @param player Le joueur en question
+     * @return Oui ou non
+     */
+    public boolean hasPlayer(Player player)
+    {
+        return this.getInGamePlayers().containsKey(player.getUniqueId());
+    }
+
+    /**
      * Savoir si un joueur peut-entrer en jeu
      *
      * @param player Le joueur en question
@@ -293,5 +323,16 @@ public class Game<GAMEPLAYER extends GamePlayer>
     public Pair<Boolean, String> canPartyJoinGame(Set<UUID> partyMembers)
     {
         return Pair.of(true, "");
+    }
+
+    /**
+     * Savoir si un joueur est un spectateur
+     *
+     * @param player Le joueur en question
+     * @return Oui ou non
+     */
+    public boolean isSpectator(Player player)
+    {
+        return this.getSpectatorPlayers().containsKey(player.getUniqueId());
     }
 }
