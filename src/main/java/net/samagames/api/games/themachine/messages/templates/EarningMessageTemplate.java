@@ -2,6 +2,7 @@ package net.samagames.api.games.themachine.messages.templates;
 
 import net.samagames.tools.chat.ChatUtils;
 import org.bukkit.ChatColor;
+import org.bukkit.entity.Player;
 
 import java.util.ArrayList;
 
@@ -19,8 +20,8 @@ public class EarningMessageTemplate
         return finalLines;
     }
 
-    public void execute(int coins, int stars)
+    public void execute(Player player, int coins, int stars)
     {
-        new BasicMessageTemplate().execute(this.prepare(coins, stars));
+        new BasicMessageTemplate().prepare(this.prepare(coins, stars)).forEach(player::sendMessage);
     }
 }

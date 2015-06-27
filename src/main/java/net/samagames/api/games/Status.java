@@ -9,42 +9,40 @@ package net.samagames.api.games;
  * This enum is provided as it. You can create your own status enum, if you think this one doesn't fit to your needs.
  *
  */
-public enum Status {
+public enum Status
+{
+	STARTING("starting"),
+	WAITING_FOR_PLAYERS("waitingForPlayers"),
+	READY_TO_START("readyToStart"),
+	IN_GAME("inGame"),
+	FINISHED("finished"),
+	REBOOTING("rebooting"),
+	NOT_RESPONDING("idle");
 
-	STARTING("starting", false),
-	WAITING_FOR_PLAYERS("waitingForPlayers", true),
-	READY_TO_START("readyToStart", true),
-	IN_GAME("inGame", false),
-	FINISHED("finished", false),
-	REBOOTING("rebooting", false),
-	NOT_RESPONDING("idle", false);
+	private final String identifier;
 
-	private final String id;
-	private final boolean allowJoin;
-
-	private Status(String id, boolean allowJoin) {
-		this.id = id;
-		this.allowJoin = allowJoin;
+    Status(String identifier)
+    {
+		this.identifier = identifier;
 	}
 
-	public static Status fromString(String str) {
+	public static Status fromString(String str)
+    {
 		for (Status status : Status.values())
-			if (status.getId().equals(str))
+			if (status.getIdentifier().equals(str))
 				return status;
 
 		return null;
 	}
 
-	public boolean isAllowJoin() {
-		return allowJoin;
-	}
-
-	public String getId() {
-		return id;
+	public String getIdentifier()
+    {
+		return this.identifier;
 	}
 
 	@Override
-	public String toString() {
-		return getId();
+	public String toString()
+    {
+		return this.getIdentifier();
 	}
 }

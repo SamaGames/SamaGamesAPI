@@ -66,7 +66,9 @@ public class GameManagerImpl implements IGameManager
     @Override
     public void kickPlayer(Player player, String reason)
     {
-        player.sendMessage(reason);
+        if(reason != null)
+            player.sendMessage(reason);
+
         Bukkit.getScheduler().runTaskLater(APIPlugin.getInstance(), () -> player.kickPlayer(null), 10L);
     }
 

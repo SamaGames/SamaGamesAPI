@@ -2,9 +2,10 @@ package net.samagames.core.api.games;
 
 import net.samagames.api.SamaGamesAPI;
 import net.samagames.api.games.IGameManager;
-import net.samagames.api.games.IGamePlayer;
 import net.samagames.api.games.Status;
 import net.samagames.api.games.themachine.ICoherenceMachine;
+import net.samagames.api.games.themachine.messages.templates.EarningMessageTemplate;
+import net.samagames.core.APIPlugin;
 import org.apache.commons.lang3.tuple.Pair;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -15,7 +16,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.HashMap;
 import java.util.UUID;
 
-public abstract class AbstractGame<GAMEPLAYER extends IGamePlayer>
+public abstract class AbstractGame<GAMEPLAYER extends GamePlayer>
 {
     protected final IGameManager gameManager;
 
@@ -44,12 +45,12 @@ public abstract class AbstractGame<GAMEPLAYER extends IGamePlayer>
         this.coherenceMachine = this.gameManager.getCoherenceMachine();
     }
 
-    public void handleLogin(Player player)
+    public void handleLogin(Player player, boolean reconnect)
     {
         try
         {
             GAMEPLAYER gamePlayerObject = this.gamePlayerClass.getConstructor(Player.class).newInstance(player);
-            gamePlayerObject.handleLogin(false);
+            gamePlayerObject.handleLogin(reconnect);
 
             this.gamePlayers.put(player.getUniqueId(), gamePlayerObject);
         }
@@ -98,13 +99,44 @@ public abstract class AbstractGame<GAMEPLAYER extends IGamePlayer>
 
     public void handleGameEnd()
     {
+        Bukkit.getScheduler().runTaskLater(APIPlugin.getInstance(), () ->
+        {
+            for (UUID playerUUID : this.gamePlayers.keySet()) {
+                if (Bukkit.getPlayer(playerUUID) != null) {
+                    EarningMessageTemplate earningMessageTemplate = new EarningMessageTemplate();
+                    earningMessageTemplate.execute(Bukkit.getPlayer(playerUUID), this.getPlayer(playerUUID).getCoins(), this.getPlayer(playerUUID).getStars());
+                }
+            }
+        }, 20L * 3);
 
+        Bukkit.getScheduler().runTaskLater(APIPlugin.getInstance(), () ->
+        {
+            for (Player player : Bukkit.getOnlinePlayers())
+                this.gameManager.kickPlayer(player, null);
+        }, 20L * 10);
+
+        Bukkit.getScheduler().runTaskLater(APIPlugin.getInstance(), Bukkit::shutdown, 20L * 11);
+    }
+
+    public void addCoins(Player player, int coins, String reason)
+    {
+        if(this.gamePlayers.containsKey(player.getUniqueId()))
+            this.gamePlayers.get(player.getUniqueId()).addCoins(coins, reason);
+        else
+            SamaGamesAPI.get().getPlayerManager().getPlayerData(player.getUniqueId()).creditCoins(coins, reason, true);
+    }
+
+    public void addStars(Player player, int stars, String reason)
+    {
+        if(this.gamePlayers.containsKey(player.getUniqueId()))
+            this.gamePlayers.get(player.getUniqueId()).addStars(stars, reason);
+        else
+            SamaGamesAPI.get().getPlayerManager().getPlayerData(player.getUniqueId()).creditStars(stars, reason, true);
     }
 
     public void setSpectator(Player player)
     {
         this.gamePlayers.get(player.getUniqueId()).setSpectator();
-        player.setGameMode(GameMode.SPECTATOR);
     }
 
     public void setStatus(Status status)
@@ -120,6 +152,14 @@ public abstract class AbstractGame<GAMEPLAYER extends IGamePlayer>
     public Status getStatus()
     {
         return this.status;
+    }
+
+    public GAMEPLAYER getPlayer(UUID player)
+    {
+        if(this.gamePlayers.containsKey(player))
+            return this.gamePlayers.get(player);
+        else
+            return null;
     }
 
     public HashMap<UUID, GAMEPLAYER> getInGamePlayers()

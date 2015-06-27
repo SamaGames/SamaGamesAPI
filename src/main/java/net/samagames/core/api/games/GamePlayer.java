@@ -1,5 +1,6 @@
 package net.samagames.core.api.games;
 
+import net.samagames.api.SamaGamesAPI;
 import net.samagames.api.games.IGamePlayer;
 import org.bukkit.entity.Player;
 
@@ -29,14 +30,16 @@ public class GamePlayer implements IGamePlayer
 
     public void handleLogout() {}
 
-    public void addCoins(int coins)
+    public void addCoins(int coins, String reason)
     {
         this.coins += coins;
+        SamaGamesAPI.get().getPlayerManager().getPlayerData(this.uuid).creditCoins(coins, reason, true);
     }
 
-    public void addStars(int stars)
+    public void addStars(int stars, String reason)
     {
         this.stars += stars;
+        SamaGamesAPI.get().getPlayerManager().getPlayerData(this.uuid).creditStars(stars, reason, false);
     }
 
     public void setSpectator()
