@@ -25,6 +25,7 @@ public class MessageManagerImpl implements MessageManager
         builder.append(ChatColor.RED).append(this.machine.getGameInfos().getConnectedPlayers());
         builder.append(ChatColor.DARK_GRAY).append("/");
         builder.append(ChatColor.RED).append(this.machine.getGameInfos().getMaxPlayers());
+        builder.append(ChatColor.GRAY).append("]");
 
         return new Message(builder.toString(), this.machine.getGameTag()).displayToAll();
     }
@@ -38,7 +39,7 @@ public class MessageManagerImpl implements MessageManager
     @Override
     public Message writeGameStartIn(int remainingTime)
     {
-        return new Message(ChatColor.YELLOW + "Début du jeu dans " + ChatColor.RED + remainingTime, this.machine.getGameTag()).displayToAll();
+        return new Message(ChatColor.YELLOW + "Début du jeu dans " + ChatColor.RED + remainingTime + " secondes.", this.machine.getGameTag()).displayToAll();
     }
 
     @Override
@@ -62,7 +63,7 @@ public class MessageManagerImpl implements MessageManager
     @Override
     public Message writePlayerDisconnected(Player player, int remainingTime)
     {
-        return new Message(ChatColor.RED + player.getName() + " s'est déconnté ! Il a " + remainingTime + " minutes pour revenir.", this.machine.getGameTag()).displayToAll();
+        return new Message(ChatColor.RED + player.getName() + " s'est déconnecté ! Il a " + remainingTime + " minutes pour revenir.", this.machine.getGameTag()).displayToAll();
     }
 
     @Override

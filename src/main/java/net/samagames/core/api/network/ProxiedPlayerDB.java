@@ -1,9 +1,9 @@
 package net.samagames.core.api.network;
 
+import com.google.gson.Gson;
 import net.md_5.bungee.api.chat.TextComponent;
 import net.samagames.api.SamaGamesAPI;
 import net.samagames.api.network.ProxiedPlayer;
-import com.google.gson.Gson;
 
 import java.util.UUID;
 
@@ -31,6 +31,11 @@ public class ProxiedPlayerDB implements ProxiedPlayer {
 	public String getProxy() {
 		return SamaGamesAPI.get().getPlayerManager().getPlayerData(playerId).get("currentproxy", "Inconnu");
 	}
+
+    @Override
+    public String getIp() {
+        return SamaGamesAPI.get().getPlayerManager().getPlayerData(playerId).get("currentip", "0.0.0.0");
+    }
 
 	@Override
 	public void disconnect(TextComponent reason) {

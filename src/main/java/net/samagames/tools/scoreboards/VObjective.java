@@ -3,7 +3,7 @@ package net.samagames.tools.scoreboards;
 import net.minecraft.server.v1_8_R2.*;
 import net.minecraft.server.v1_8_R2.IScoreboardCriteria.EnumScoreboardHealthDisplay;
 import net.samagames.tools.Reflection;
-import net.samagames.tools.ReflectionUtilities;
+import net.samagames.tools.Reflection;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 
@@ -303,10 +303,10 @@ public class VObjective {
 
             PacketPlayOutScoreboardScore packet = new PacketPlayOutScoreboardScore();
             try {
-                ReflectionUtilities.setValue(packet, "a", scoreName); //Nom du joueur
-                ReflectionUtilities.setValue(packet, "b", objectiveName); //Nom de l'objective
-                ReflectionUtilities.setValue(packet, "c", scoreValue); //Valeur du score
-                ReflectionUtilities.setValue(packet, "d", action); //Action du packet
+                Reflection.setValue(packet, "a", scoreName); //Nom du joueur
+                Reflection.setValue(packet, "b", objectiveName); //Nom de l'objective
+                Reflection.setValue(packet, "c", scoreValue); //Valeur du score
+                Reflection.setValue(packet, "d", action); //Action du packet
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -318,10 +318,10 @@ public class VObjective {
         {
             PacketPlayOutScoreboardObjective packet = new PacketPlayOutScoreboardObjective();
             try {
-                ReflectionUtilities.setValue(packet, "a", objectiveName); //Nom de l'objective
-                ReflectionUtilities.setValue(packet, "b", objectiveDispleyName); //Nom affiché de l'objective
-                ReflectionUtilities.setValue(packet, "c", format); //Affichage des données Nombre/Coeurs
-                ReflectionUtilities.setValue(packet, "d", action); //Action à effectuer - 0: Create 1: Remove 2: Update
+                Reflection.setValue(packet, "a", objectiveName); //Nom de l'objective
+                Reflection.setValue(packet, "b", objectiveDispleyName); //Nom affiché de l'objective
+                Reflection.setValue(packet, "c", format); //Affichage des données Nombre/Coeurs
+                Reflection.setValue(packet, "d", action); //Action à effectuer - 0: Create 1: Remove 2: Update
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -333,8 +333,8 @@ public class VObjective {
 
             PacketPlayOutScoreboardDisplayObjective packet = new PacketPlayOutScoreboardDisplayObjective();
             try {
-                ReflectionUtilities.setValue(packet, "a", 1); //Emplacement de l'objective - 0 = list, 1 = sidebar, 2 = belowName
-                ReflectionUtilities.setValue(packet, "b", objectiveName); //Nom de l'objective
+                Reflection.setValue(packet, "a", 1); //Emplacement de l'objective - 0 = list, 1 = sidebar, 2 = belowName
+                Reflection.setValue(packet, "b", objectiveName); //Nom de l'objective
             } catch (Exception e) {
                 e.printStackTrace();
             }

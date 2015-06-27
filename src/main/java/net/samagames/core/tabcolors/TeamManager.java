@@ -40,6 +40,9 @@ public class TeamManager {
         groups.addAll(manager.getApi().getManager().getGroupsCache().values().stream().collect(Collectors.toList()));
 
         for (PermissionGroup pg : groups) {
+            if(pg == null)
+                continue;
+
             String teamName = pg.getProperty("team-name");
             if (teamName == null)
                 teamName = pg.getGroupName();

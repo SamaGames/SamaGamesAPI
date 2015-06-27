@@ -4,7 +4,6 @@ import net.samagames.core.APIPlugin;
 import net.samagames.tools.BarAPI.nms.FakeWither;
 import org.apache.commons.lang.Validate;
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -48,15 +47,6 @@ public class BarAPI implements Listener {
 				});
 			}
 		}.runTaskTimerAsynchronously(plugin, 0, 5);
-
-
-		// TestMode
-
-		plugin.getServer().getScheduler().runTaskTimer(plugin, () -> {
-			for (Player player : plugin.getServer().getOnlinePlayers()) {
-				BarAPI.setMessage(player, ChatColor.AQUA + "Aperture global messaging: TEST TEST TEST TEST", 20);
-			}
-		}, 30L, 300L);
 	}
 
 	/**

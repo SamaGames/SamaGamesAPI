@@ -62,12 +62,14 @@ public class PlayerDataNoDB extends PlayerData {
 
 	@Override
 	public void creditCoins(long amount, String reason, boolean applyMultiplier, FinancialCallback<Long> financialCallback) {
-		financialCallback.done(increaseCoins(amount), amount, null);
+		if (financialCallback != null)
+			financialCallback.done(increaseCoins(amount), amount, null);
 	}
 
 	@Override
 	public void withdrawCoins(long amount, FinancialCallback<Long> financialCallback) {
-		financialCallback.done(decreaseCoins(amount), -amount, null);
+		if (financialCallback != null)
+			financialCallback.done(decreaseCoins(amount), -amount, null);
 	}
 
 	@Override

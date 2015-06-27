@@ -4,7 +4,6 @@ import net.samagames.api.SamaGamesAPI;
 import net.samagames.api.stats.PlayerStat;
 import net.samagames.api.stats.StatsManager;
 import net.samagames.core.APIPlugin;
-import net.samagames.tools.PlayerUtils;
 import org.bukkit.Bukkit;
 import redis.clients.jedis.Jedis;
 
@@ -52,7 +51,7 @@ public class StatsManagerDB extends StatsManager {
 	}
 
 	@Override
-	public ArrayList<PlayerStat> getLeaderboard(String stat)
+	public Leaderboard getLeaderboard(String stat)
 	{
 		ArrayList<PlayerStat> leaderboard = new ArrayList<>();
 		Jedis jedis = SamaGamesAPI.get().getResource();
@@ -65,10 +64,8 @@ public class StatsManagerDB extends StatsManager {
 			playerStat.fill();
 
 			leaderboard.add(playerStat);
-
-			Bukkit.broadcastMessage("LEADERBOARD[" + game + ";" + stat + "] " + leaderboard.size() + " - " + PlayerUtils.getFullyFormattedPlayerName(UUID.fromString(id)) + " - " + playerStat.getRank() + " - " + playerStat.getValue());
 		}
 
-		return leaderboard;
+		return new Leaderboard(leaderboard.get(0), leaderboard.get(1), leaderboard.get(2));
 	}
 }
