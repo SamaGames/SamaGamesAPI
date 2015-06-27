@@ -37,7 +37,7 @@ public class Game<GAMEPLAYER extends GamePlayer>
         this.gameName = gameName;
         this.gamePlayerClass = gamePlayerClass;
         this.gamePlayers = new HashMap<>();
-        this.beginTimer = Bukkit.getScheduler().runTaskAsynchronously(APIPlugin.getInstance(), new BeginTimer(this));
+        this.beginTimer = Bukkit.getScheduler().runTaskTimerAsynchronously(APIPlugin.getInstance(), new BeginTimer(this), 20L, 20L);
 
         this.status = Status.WAITING_FOR_PLAYERS;
     }
