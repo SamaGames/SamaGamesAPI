@@ -1,7 +1,7 @@
 package net.samagames.api.games;
 
 import net.samagames.api.games.themachine.ICoherenceMachine;
-import net.samagames.core.api.games.AbstractGame;
+import net.samagames.core.api.games.Game;
 import org.bukkit.entity.Player;
 
 import java.util.UUID;
@@ -13,7 +13,7 @@ public interface IGameManager
      *
      * @param game Arena object
      */
-    void registerGame(AbstractGame game);
+    void registerGame(Game game);
 
     /**
      * Kick a player from the game
@@ -50,14 +50,11 @@ public interface IGameManager
     void refreshArena();
 
     /**
-     * Set the status of the game (we'll refresh automatically the arena)
+     * Set the reconnect time for a player.
      *
-     * @param status The status of the game
-     */ /*
-    void setStatus(Status status);*/
-
-    /**
-     * Set the reconnect time for a player if reconnect supported
+     * ==>
+     * DISCLAIMER - TO ENABLE RECONNECT PLEASE USE THIS FUNCTION AND SET A TIME
+     * ==>
      *
      * @param minutes Time in minute
      */
@@ -68,7 +65,7 @@ public interface IGameManager
      *
      * @return The registered game (null if none)
      */
-    AbstractGame getGame();
+    Game getGame();
 
     /**
      * Get the status of the game

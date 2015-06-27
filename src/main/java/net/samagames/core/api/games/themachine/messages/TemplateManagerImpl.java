@@ -2,10 +2,7 @@ package net.samagames.core.api.games.themachine.messages;
 
 import net.samagames.api.games.themachine.ICoherenceMachine;
 import net.samagames.api.games.themachine.messages.TemplateManager;
-import net.samagames.api.games.themachine.messages.templates.BasicMessageTemplate;
-import net.samagames.api.games.themachine.messages.templates.CustomWinTemplate;
-import net.samagames.api.games.themachine.messages.templates.PlayerLeaderboardWinTemplate;
-import net.samagames.api.games.themachine.messages.templates.PlayerWinTemplate;
+import net.samagames.api.games.themachine.messages.templates.*;
 
 public class TemplateManagerImpl implements TemplateManager
 {
@@ -38,5 +35,11 @@ public class TemplateManagerImpl implements TemplateManager
     public PlayerLeaderboardWinTemplate getPlayerLeaderboardWinTemplate()
     {
         return new PlayerLeaderboardWinTemplate();
+    }
+
+    @Override
+    public EarningMessageTemplate getEarningMessageTemplate()
+    {
+        return new EarningMessageTemplate();
     }
 }

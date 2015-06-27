@@ -26,7 +26,7 @@ public class GameManagerImpl implements IGameManager
     private HashMap<UUID, Integer> playerDisconnectTime;
     private HashMap<UUID, BukkitTask> playerReconnectedTimers;
     private IGameProperties gameProperties;
-    private AbstractGame game;
+    private Game game;
 
     private int maxReconnectTime;
 
@@ -43,7 +43,7 @@ public class GameManagerImpl implements IGameManager
     }
 
     @Override
-    public void registerGame(AbstractGame game)
+    public void registerGame(Game game)
     {
         if(this.game != null)
             throw new IllegalStateException("A game is already registered!");
@@ -169,7 +169,7 @@ public class GameManagerImpl implements IGameManager
     }
 
     @Override
-    public AbstractGame getGame()
+    public Game getGame()
     {
         return this.game;
     }

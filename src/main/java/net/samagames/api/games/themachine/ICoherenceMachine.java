@@ -3,7 +3,7 @@ package net.samagames.api.games.themachine;
 import net.samagames.api.games.IGameProperties;
 import net.samagames.api.games.themachine.messages.MessageManager;
 import net.samagames.api.games.themachine.messages.TemplateManager;
-import net.samagames.core.api.games.AbstractGame;
+import net.samagames.core.api.games.Game;
 
 public interface ICoherenceMachine
 {
@@ -29,7 +29,7 @@ public interface ICoherenceMachine
      * Renvoi l'objet d'information de jeu
      * @return L'objet
      */
-    AbstractGame getGame();
+    Game getGame();
 
     /**
      * Renvoi les propriétés du jeu

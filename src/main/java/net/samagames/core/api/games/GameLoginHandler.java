@@ -43,7 +43,18 @@ public class GameLoginHandler implements JoinHandler
     {
         if (this.api.getGame() != null)
         {
-            AbstractGame game = this.api.getGame();
+            Game game = this.api.getGame();
+
+            Pair<Boolean, String> gameResponse = game.canJoinGame(player, false);
+
+            if(gameResponse.getKey())
+            {
+                response.allow();
+            }
+            else
+            {
+                response.disallow(gameResponse.getValue());
+            }
 
             if (game.getStatus() == Status.IN_GAME)
                 response.disallow(ResponseType.DENY_IN_GAME);
@@ -57,17 +68,6 @@ public class GameLoginHandler implements JoinHandler
                 response.allow();
                 return response;
             }
-
-            Pair<Boolean, String> gameResponse = game.canJoinGame(false);
-
-            if(gameResponse.getKey())
-            {
-                response.allow();
-            }
-            else
-            {
-                response.disallow(gameResponse.getValue());
-            }
         }
 
         return response;
@@ -78,16 +78,9 @@ public class GameLoginHandler implements JoinHandler
     {
         if (this.api.getGame() != null)
         {
-            AbstractGame game = this.api.getGame();
+            Game game = this.api.getGame();
 
-            if (game.getStatus() == Status.IN_GAME)
-                response.disallow(ResponseType.DENY_IN_GAME);
-            else if (game.getStatus() == Status.STARTING)
-                response.disallow(ResponseType.DENY_NOT_READY);
-            else if (game.getConnectedPlayers() >= this.api.getGameProperties().getMaxSlots())
-                response.disallow(ResponseType.DENY_FULL);
-
-            Pair<Boolean, String> gameResponse = game.canJoinGame(true);
+            Pair<Boolean, String> gameResponse = game.canPartyJoinGame(partyMembers);
 
             if(gameResponse.getKey())
             {
@@ -97,6 +90,13 @@ public class GameLoginHandler implements JoinHandler
             {
                 response.disallow(gameResponse.getValue());
             }
+
+            if (game.getStatus() == Status.IN_GAME)
+                response.disallow(ResponseType.DENY_IN_GAME);
+            else if (game.getStatus() == Status.STARTING)
+                response.disallow(ResponseType.DENY_NOT_READY);
+            else if (game.getConnectedPlayers() >= this.api.getGameProperties().getMaxSlots())
+                response.disallow(ResponseType.DENY_FULL);
         }
 
         return response;

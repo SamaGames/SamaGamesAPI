@@ -1,9 +1,6 @@
 package net.samagames.api.games.themachine.messages;
 
-import net.samagames.api.games.themachine.messages.templates.BasicMessageTemplate;
-import net.samagames.api.games.themachine.messages.templates.CustomWinTemplate;
-import net.samagames.api.games.themachine.messages.templates.PlayerLeaderboardWinTemplate;
-import net.samagames.api.games.themachine.messages.templates.PlayerWinTemplate;
+import net.samagames.api.games.themachine.messages.templates.*;
 
 public interface TemplateManager
 {
@@ -11,23 +8,29 @@ public interface TemplateManager
      * Renvoi l'instance du modèle vide avec les bordures
      * @return L'instance du modèle
      */
-    public BasicMessageTemplate getBasicMessageTemplate();
+    BasicMessageTemplate getBasicMessageTemplate();
 
     /**
      * Renvoi l'instance du modèle de message de fin de jeu vide
      * @return L'instance du modèle
      */
-    public CustomWinTemplate getCustomWinTemplate();
+    CustomWinTemplate getCustomWinTemplate();
 
     /**
      * Renvoi l'instance du modèle de message de fin de jeu pour un joueur unique
      * @return L'instance du modèle
      */
-    public PlayerWinTemplate getPlayerWinTemplate();
+    PlayerWinTemplate getPlayerWinTemplate();
 
     /**
-     * Renvoi l'instance ud modèle de message de fin de jeu pour 3 joueurs (classement)
+     * Renvoi l'instance du modèle de message de fin de jeu pour 3 joueurs (classement)
      * @return L'instance du modèle
      */
-    public PlayerLeaderboardWinTemplate getPlayerLeaderboardWinTemplate();
+    PlayerLeaderboardWinTemplate getPlayerLeaderboardWinTemplate();
+
+    /**
+     * Renvoi l'instance du modèle de message d'annonce des gains
+     * @return L'instance du modèle
+     */
+    EarningMessageTemplate getEarningMessageTemplate();
 }
