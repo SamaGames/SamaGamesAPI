@@ -27,7 +27,7 @@ public class GameLoginHandler implements JoinHandler
         {
             if(!this.api.isWaited(player.getUniqueId()))
             {
-                this.api.getGame().handleLogin(player);
+                this.api.getGame().handleLogin(player, false);
             }
             else
             {
