@@ -11,11 +11,11 @@ import org.bukkit.command.CommandSender;
 /**
  * Created by zyuiop on 27/08/14.
  */
-public class CommandRefresh implements CommandExecutor {
+public class CommandBukkitrefresh implements CommandExecutor {
 
     protected PermissionsAPI api;
 
-    public CommandRefresh(PermissionsAPI api) {
+    public CommandBukkitrefresh(PermissionsAPI api) {
         this.api = api;
     }
 
