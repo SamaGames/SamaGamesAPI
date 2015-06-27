@@ -34,7 +34,7 @@ public class GameLoginHandler implements JoinHandler
                 this.api.getGame().handleReconnect(player);
             }
 
-            this.api.getGame().refreshArena();
+            this.api.refreshArena();
         }
     }
 
