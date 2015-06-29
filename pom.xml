@@ -4,7 +4,7 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>net.samagames</groupId>
-    <artifactId>samapi</artifactId>
+    <artifactId>SamaGamesAPI</artifactId>
     <version>1.0.0-SNAPSHOT-DEV</version>
     <packaging>jar</packaging>
     <name>SamaGamesAPI</name>
