@@ -37,6 +37,16 @@ public class ProxiedPlayerDB implements ProxiedPlayer {
         return SamaGamesAPI.get().getPlayerManager().getPlayerData(playerId).get("currentip", "0.0.0.0");
     }
 
+    @Override
+    public UUID getUUID() {
+        return playerId;
+    }
+
+    @Override
+    public String getName() {
+        return SamaGamesAPI.get().getUUIDTranslator().getName(playerId);
+    }
+
 	@Override
 	public void disconnect(TextComponent reason) {
 		SamaGamesAPI.get().getPubSub().send("apiexec.kick", playerId + " " + new Gson().toJson(reason));

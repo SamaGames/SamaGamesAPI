@@ -2,6 +2,8 @@ package net.samagames.api.network;
 
 import net.md_5.bungee.api.chat.TextComponent;
 
+import java.util.UUID;
+
 /**
  * This file is a part of the SamaGames project
  * This code is absolutely confidential.
@@ -28,6 +30,18 @@ public interface ProxiedPlayer {
      * @return the ip
      */
     public String getIp();
+
+    /**
+     * Gives the UUID of the player
+     * @return the uuid
+     */
+    public UUID getUUID();
+
+    /**
+     * Gives the name of the player
+     * @return the name
+     */
+    public String getName();
 
 	/**
 	 * Disconnects the player from the proxy with the given reason
