@@ -3,6 +3,7 @@ package net.samagames.core;
 import net.samagames.api.SamaGamesAPI;
 import net.samagames.api.achievements.AchievementManager;
 import net.samagames.api.channels.PubSubAPI;
+import net.samagames.api.friends.FriendsManager;
 import net.samagames.api.games.IGameManager;
 import net.samagames.api.names.UUIDTranslator;
 import net.samagames.api.network.JoinManager;
@@ -15,6 +16,8 @@ import net.samagames.api.settings.SettingsManager;
 import net.samagames.api.shops.ShopsManager;
 import net.samagames.api.stats.StatsManager;
 import net.samagames.core.api.achievements.AchievementManagerImpl;
+import net.samagames.core.api.friends.FriendsManagementDB;
+import net.samagames.core.api.friends.FriendsManagerNoDB;
 import net.samagames.core.api.games.GameManagerImpl;
 import net.samagames.core.api.names.UUIDTranslatorDB;
 import net.samagames.core.api.names.UUIDTranslatorNODB;
@@ -64,6 +67,7 @@ public class ApiImplementation extends SamaGamesAPI
 	protected PartiesManager partiesManager;
 	protected ResourcePacksManager resourcePacksManager;
 	protected BasicPermissionManager permissionsManager;
+    protected FriendsManager friendsManager;
 
 	protected BarAPI barAPI;
 
@@ -99,6 +103,7 @@ public class ApiImplementation extends SamaGamesAPI
 			proxyDataManager = new ProxyDataManagerImplDB(this);
 			partiesManager = new PartiesManagerWithDB(this);
 			permissionsManager = new PermissionsManagerDB();
+            friendsManager = new FriendsManagementDB(this);
 		} else {
 			settingsManager = new SettingsManagerNoDB();
 			playerDataManager = new PlayerDataManagerNoDB();
@@ -110,6 +115,7 @@ public class ApiImplementation extends SamaGamesAPI
 			proxyDataManager = new ProxyDataManagerImplNoDB();
 			partiesManager = new PartiesManagerNoDb();
 			permissionsManager = new PermissionsManagerNoDB();
+            friendsManager = new FriendsManagerNoDB();
 		}
 	}
 
@@ -123,6 +129,10 @@ public class ApiImplementation extends SamaGamesAPI
 		return resourcePacksManager;
 	}
 
+    @Override
+    public FriendsManager getFriendsManager() {
+        return friendsManager;
+    }
 
 	public APIPlugin getPlugin() {
 		return plugin;
