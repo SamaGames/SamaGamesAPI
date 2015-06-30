@@ -27,7 +27,7 @@ public class AchievementReward
             SamaGamesAPI.get().getPlayerManager().getPlayerData(player.getUniqueId()).creditStars(this.stars, this.starsMessage, false);
 
         player.playSound(player.getLocation(), Sound.LEVEL_UP, 1.0F, 1.0F);
-        player.sendMessage(ChatColor.DARK_AQUA + "" + ChatColor.BOLD + ChatColor.MAGIC + "$$$ " + ChatColor.RESET + ChatColor.AQUA + ChatColor.BOLD + "Objectif débloqué : " + ChatColor.RESET + ChatColor.GOLD + achievement.getDisplayName() + ChatColor.RESET + ChatColor.DARK_AQUA + ChatColor.BOLD + ChatColor.MAGIC + " $$$");
+        player.sendMessage(ChatColor.DARK_AQUA + "♦ " + ChatColor.RESET + ChatColor.AQUA + "Objectif débloqué : " + ChatColor.RESET + ChatColor.GOLD + ChatColor.BOLD + achievement.getDisplayName() + ChatColor.RESET + ChatColor.DARK_AQUA + " ♦");
     }
 
     public AchievementReward setCoins(int coins, String coinsMessage)

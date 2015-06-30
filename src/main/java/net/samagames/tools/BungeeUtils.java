@@ -1,11 +1,10 @@
 package net.samagames.tools;
 
+import net.samagames.api.SamaGamesAPI;
+import net.samagames.api.network.ProxiedPlayer;
 import net.samagames.core.APIPlugin;
 import org.bukkit.entity.Player;
 
-import java.io.ByteArrayOutputStream;
-import java.io.DataOutputStream;
-import java.io.IOException;
 import java.util.logging.Level;
 
 public class BungeeUtils
@@ -14,19 +13,7 @@ public class BungeeUtils
     {
         APIPlugin.log(Level.INFO, "Sending player '" + player.getName() + "' to '" + server + "'...");
 
-        ByteArrayOutputStream b = new ByteArrayOutputStream();
-        DataOutputStream out = new DataOutputStream(b);
-
-        try
-        {
-            out.writeUTF("Connect");
-            out.writeUTF(server);
-        }
-        catch (IOException e)
-        {
-            e.printStackTrace();
-        }
-
-        player.sendPluginMessage(APIPlugin.getInstance(), "BungeeCord", b.toByteArray());
+        ProxiedPlayer proxiedPlayer = SamaGamesAPI.get().getProxyDataManager().getProxiedPlayer(player.getUniqueId());
+        proxiedPlayer.connect(server);
     }
 }

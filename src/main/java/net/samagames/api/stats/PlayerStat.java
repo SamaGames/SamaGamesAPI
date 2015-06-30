@@ -10,7 +10,7 @@ public class PlayerStat
     private final UUID playerUUID;
     private final String game;
     private final String stat;
-    private double value;
+    private Double value;
     private Long rank;
 
     public PlayerStat(UUID playerUUID, String game, String stat)
@@ -20,23 +20,26 @@ public class PlayerStat
         this.stat = stat;
     }
 
-    public void fill()
+    public boolean fill()
     {
         Jedis jedis = SamaGamesAPI.get().getResource();
 
-        try
-        {
-            this.value = jedis.zscore("gamestats:" + this.game + ":" + this.stat, this.playerUUID.toString());
-            this.rank = jedis.zrank("gamestats:" + this.game + ":" + this.stat, this.playerUUID.toString());
+        this.value = jedis.zscore("gamestats:" + this.game + ":" + this.stat, this.playerUUID.toString());
 
-            if (this.rank != null)
-                this.rank++;
-
-        }
-        finally
+        if(this.value == null)
         {
             jedis.close();
+            return false;
         }
+
+        this.rank = jedis.zrank("gamestats:" + this.game + ":" + this.stat, this.playerUUID.toString());
+
+        if (this.rank != null)
+            this.rank++;
+
+        jedis.close();
+
+        return true;
     }
 
     public UUID getPlayerUUID()

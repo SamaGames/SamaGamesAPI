@@ -6,11 +6,11 @@ import org.bukkit.entity.Player;
 
 public class Achievement
 {
-    private final String id;
-    private final String displayName;
-    private final String parentCategory;
-    private final String[] description;
-    private final AchievementReward reward;
+    protected final String id;
+    protected final String displayName;
+    protected final String parentCategory;
+    protected final String[] description;
+    protected final AchievementReward reward;
 
     public Achievement(String id, String displayName, String parentCategory, String[] description, AchievementReward reward)
     {
@@ -27,18 +27,6 @@ public class Achievement
         playerData.set("achievement:" + this.id, "unlocked");
 
         this.reward.give(player, this);
-    }
-
-    public int increment(Player player)
-    {
-        PlayerData playerData = SamaGamesAPI.get().getPlayerManager().getPlayerData(player.getUniqueId());
-
-        int before = playerData.getInt("achievement:" + this.id);
-        int now = before + 1;
-
-        playerData.setInt("achievement:" + this.id, now);
-
-        return now;
     }
 
     public String getID()

@@ -4,10 +4,7 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import net.samagames.api.SamaGamesAPI;
-import net.samagames.api.achievements.Achievement;
-import net.samagames.api.achievements.AchievementCategory;
-import net.samagames.api.achievements.AchievementManager;
-import net.samagames.api.achievements.AchievementReward;
+import net.samagames.api.achievements.*;
 import net.samagames.core.APIPlugin;
 import net.samagames.tools.ItemUtils;
 import org.bukkit.Bukkit;
@@ -85,9 +82,9 @@ public class AchievementManagerImpl implements AchievementManager
     }
 
     @Override
-    public int incrementAchievement(Player player, Achievement achievement)
+    public void incrementAchievement(Player player, IncrementationAchievement achievement)
     {
-        return achievement.increment(player);
+        achievement.increment(player);
     }
 
     @Override
