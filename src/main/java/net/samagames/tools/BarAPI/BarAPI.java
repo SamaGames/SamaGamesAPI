@@ -1,6 +1,5 @@
 package net.samagames.tools.BarAPI;
 
-import net.samagames.core.APIPlugin;
 import net.samagames.tools.BarAPI.nms.FakeWither;
 import org.apache.commons.lang.Validate;
 import org.bukkit.Bukkit;
@@ -13,6 +12,7 @@ import org.bukkit.event.player.PlayerKickEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.event.player.PlayerRespawnEvent;
 import org.bukkit.event.player.PlayerTeleportEvent;
+import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import java.util.HashMap;
@@ -30,9 +30,9 @@ public class BarAPI implements Listener {
 
 	private static BarAPI api;
 
-	private static APIPlugin plugin;
+	private static JavaPlugin plugin;
 
-	public BarAPI(APIPlugin plugin)
+	public BarAPI(JavaPlugin plugin)
 	{
 		this.plugin = plugin;
 
@@ -42,7 +42,7 @@ public class BarAPI implements Listener {
 		new BukkitRunnable() {
 			@Override
 			public void run() {
-				plugin.getServer().getOnlinePlayers().stream().forEach(p -> {
+				Bukkit.getOnlinePlayers().stream().forEach(p -> {
 					handleTeleport(p, p.getLocation());
 				});
 			}
