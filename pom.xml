@@ -18,6 +18,11 @@
             <id>samagames-public</id>
             <url>http://maven.samagames.net/public/</url>
         </repository>
+
+        <repository>
+            <id>samagames-network</id>
+            <url>http://maven.samagames.net/network/</url>
+        </repository>
     </repositories>
 
     <build>
