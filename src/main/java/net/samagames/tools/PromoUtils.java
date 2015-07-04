@@ -1,7 +1,6 @@
 package net.samagames.tools;
 
 import net.samagames.api.SamaGamesAPI;
-import net.samagames.core.api.player.Promo;
 import redis.clients.jedis.Jedis;
 
 public class PromoUtils

@@ -15,7 +15,7 @@ public interface IPlayerDataManager {
 	 * @param player UUID du joueur
 	 * @return les données du joueur
 	 */
-	public PlayerData getPlayerData(UUID player);
+	public AbstractPlayerData getPlayerData(UUID player);
 
 	/**
 	 * Retourne les données d'un joueur
@@ -23,7 +23,7 @@ public interface IPlayerDataManager {
 	 * @param forceRefresh	Forcer le rafraichissement depuis la base de données
 	 * @return les données du joueur
 	 */
-	public PlayerData getPlayerData(UUID player, boolean forceRefresh);
+	public AbstractPlayerData getPlayerData(UUID player, boolean forceRefresh);
 
 	/**
 	 * Décharge les données du joueur du cache local
