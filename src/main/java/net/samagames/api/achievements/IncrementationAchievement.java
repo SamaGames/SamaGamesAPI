@@ -1,7 +1,7 @@
 package net.samagames.api.achievements;
 
 import net.samagames.api.SamaGamesAPI;
-import net.samagames.api.player.PlayerData;
+import net.samagames.api.player.AbstractPlayerData;
 import org.bukkit.entity.Player;
 
 public class IncrementationAchievement extends Achievement
@@ -16,7 +16,7 @@ public class IncrementationAchievement extends Achievement
 
     public void increment(Player player)
     {
-        PlayerData playerData = SamaGamesAPI.get().getPlayerManager().getPlayerData(player.getUniqueId());
+        AbstractPlayerData playerData = SamaGamesAPI.get().getPlayerManager().getPlayerData(player.getUniqueId());
 
         Integer before = playerData.getInt("achievement:" + this.id);
 
@@ -39,7 +39,7 @@ public class IncrementationAchievement extends Achievement
 
     public int getActualState(Player player)
     {
-        PlayerData playerData = SamaGamesAPI.get().getPlayerManager().getPlayerData(player.getUniqueId());
+        AbstractPlayerData playerData = SamaGamesAPI.get().getPlayerManager().getPlayerData(player.getUniqueId());
         Integer actual = playerData.getInt("achievement:" + this.id);
 
         return (actual == null ? 0 : actual);

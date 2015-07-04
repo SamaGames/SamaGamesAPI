@@ -1,7 +1,7 @@
 package net.samagames.api.achievements;
 
 import net.samagames.api.SamaGamesAPI;
-import net.samagames.api.player.PlayerData;
+import net.samagames.api.player.AbstractPlayerData;
 import org.bukkit.entity.Player;
 
 public class Achievement
@@ -23,7 +23,7 @@ public class Achievement
 
     public void unlock(Player player)
     {
-        PlayerData playerData = SamaGamesAPI.get().getPlayerManager().getPlayerData(player.getUniqueId());
+        AbstractPlayerData playerData = SamaGamesAPI.get().getPlayerManager().getPlayerData(player.getUniqueId());
         playerData.set("achievement:" + this.id, "unlocked");
 
         this.reward.give(player, this);
