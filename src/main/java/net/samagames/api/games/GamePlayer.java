@@ -7,7 +7,7 @@ import org.bukkit.entity.Player;
 
 import java.util.UUID;
 
-public class GamePlayer implements IGamePlayer
+public class GamePlayer
 {
     protected final UUID uuid;
 
