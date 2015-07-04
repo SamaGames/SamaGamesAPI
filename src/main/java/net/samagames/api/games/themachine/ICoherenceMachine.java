@@ -1,6 +1,6 @@
 package net.samagames.api.games.themachine;
 
-import net.samagames.api.games.IGame;
+import net.samagames.api.games.Game;
 import net.samagames.api.games.IGameProperties;
 import net.samagames.api.games.themachine.messages.IMessageManager;
 import net.samagames.api.games.themachine.messages.ITemplateManager;
@@ -30,7 +30,7 @@ public interface ICoherenceMachine
      * Renvoi l'objet d'information de jeu
      * @return L'objet
      */
-    IGame getGame();
+    Game getGame();
 
     /**
      * Renvoi les propriétés du jeu

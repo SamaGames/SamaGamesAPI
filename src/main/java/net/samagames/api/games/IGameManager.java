@@ -12,7 +12,7 @@ public interface IGameManager
      *
      * @param game Arena object
      */
-    void registerGame(IGame game);
+    void registerGame(Game game);
 
     /**
      * Kick a player from the game
@@ -64,7 +64,7 @@ public interface IGameManager
      *
      * @return The registered game (null if none)
      */
-    IGame getGame();
+    Game getGame();
 
     /**
      * Get the status of the game
