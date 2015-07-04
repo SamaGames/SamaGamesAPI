@@ -14,7 +14,7 @@ import java.util.UUID;
  * All rights reserved.
  */
 
-public abstract class ShopsManager {
+public abstract class AbstractShopsManager {
 
     protected String gameType;
 	protected SamaGamesAPI api;
@@ -24,7 +24,7 @@ public abstract class ShopsManager {
 	 * @param gameType Type du jeu
 	 * @param api	   SamaGamesAPI
 	 */
-    public ShopsManager(String gameType, SamaGamesAPI api) {
+    public AbstractShopsManager(String gameType, SamaGamesAPI api) {
         this.gameType = gameType;
     	this.api = api;
 	}

@@ -9,7 +9,7 @@ import java.util.UUID;
  * (C) Copyright Elydra Network 2015
  * All rights reserved.
  */
-public interface UUIDTranslator {
+public interface IUUIDTranslator {
 
 	/**
 	 * Renvoie l'UUID d'un joueur en fonction du pseudo

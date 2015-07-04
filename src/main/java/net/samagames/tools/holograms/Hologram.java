@@ -1,7 +1,7 @@
 package net.samagames.tools.holograms;
 
 import net.minecraft.server.v1_8_R2.*;
-import net.samagames.core.APIPlugin;
+import net.samagames.api.SamaGamesAPI;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.OfflinePlayer;
@@ -36,7 +36,7 @@ public class Hologram {
     public Hologram(String... lines) {
         this.lines.addAll(Arrays.asList(lines));
 
-        TaskID = Bukkit.getScheduler().runTaskTimerAsynchronously(APIPlugin.getInstance(), () -> sendLinesForPlayers(), 10L, 10L);
+        TaskID = Bukkit.getScheduler().runTaskTimerAsynchronously(SamaGamesAPI.get().getPlugin(), () -> sendLinesForPlayers(), 10L, 10L);
     }
 
     private static Entity generateEntitiesForLine(Location loc, String text)

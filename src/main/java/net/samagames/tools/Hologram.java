@@ -1,7 +1,7 @@
 package net.samagames.tools;
 
 import net.minecraft.server.v1_8_R2.*;
-import net.samagames.core.APIPlugin;
+import net.samagames.api.SamaGamesAPI;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.craftbukkit.v1_8_R2.CraftWorld;
@@ -84,7 +84,7 @@ public class Hologram {
             public void run() {
                 destroy();
             }
-        }.runTaskLater(APIPlugin.getInstance(), ticks);
+        }.runTaskLater(SamaGamesAPI.get().getPlugin(), ticks);
     }
 
     public void destroy() {

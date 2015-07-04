@@ -1,8 +1,5 @@
 package net.samagames.api.stats;
 
-import net.samagames.core.APIPlugin;
-import net.samagames.core.api.stats.Leaderboard;
-
 import java.util.UUID;
 
 /**
@@ -11,14 +8,12 @@ import java.util.UUID;
  * (C) Copyright Elydra Network 2015
  * All rights reserved.
  */
-public abstract class StatsManager {
+public abstract class AbstractStatsManager {
 
 	protected String game;
-	protected APIPlugin plugin;
 
-	protected StatsManager(String game, APIPlugin plugin) {
+	protected AbstractStatsManager(String game) {
 		this.game = game;
-		this.plugin = plugin;
 	}
 
 	public abstract void increase(UUID player, String stat, int amount);

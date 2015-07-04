@@ -7,16 +7,16 @@ package net.samagames.api.channels;
  * (C) Copyright Elydra Network 2015
  * All rights reserved.
  */
-public interface PubSubAPI {
+public interface IPubSubAPI {
 
 	/**
 	 * Enregistre un listener sur le channel pubsub passé en argument
 	 * @param channel 	Nom du channel à écouter
 	 * @param receiver 	Objet recevant les packets
 	 */
-	public void subscribe(String channel, PacketsReceiver receiver);
+	public void subscribe(String channel, IPacketsReceiver receiver);
 
-	void subscribe(String pattern, PatternReceiver receiver);
+	void subscribe(String pattern, IPatternReceiver receiver);
 
 	/**
 	 * Envoie un message sur un channel pubsub
@@ -27,6 +27,6 @@ public interface PubSubAPI {
 
 	void send(PendingMessage message);
 
-	public Sender getSender();
+	public ISender getSender();
 
 }

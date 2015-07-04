@@ -8,7 +8,7 @@ import java.util.UUID;
  * (C) Copyright Elydra Network 2015
  * All rights reserved.
  */
-public interface PlayerDataManager {
+public interface IPlayerDataManager {
 
 	/**
 	 * Retourne les données d'un joueur

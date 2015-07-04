@@ -2,7 +2,7 @@ package net.samagames.api.games.themachine.messages;
 
 import org.bukkit.entity.Player;
 
-public interface MessageManager
+public interface IMessageManager
 {
     /**
      * Envoi un message à tout le monde montrant la connexion d'un joueur

@@ -14,7 +14,7 @@ import java.util.UUID;
  * (C) Copyright Elydra Network 2015
  * All rights reserved.
  */
-public interface PermissionsManager {
+public interface IPermissionsManager {
 
 	/**
 	 * Returns PermissionsAPI for low level permissions operations

@@ -331,7 +331,7 @@ public abstract class PlayerData {
 	 * @param reason Raison du crédit
 	 * @param financialCallback Callback appellé après l'opération
 	 */
-	public void creditCoins(long amount, String reason, FinancialCallback<Long> financialCallback) {
+	public void creditCoins(long amount, String reason, IFinancialCallback<Long> financialCallback) {
 		creditCoins(amount, reason, true, financialCallback);
 	}
 
@@ -342,7 +342,7 @@ public abstract class PlayerData {
 	 * @param applyMultiplier Appliquer les multiplicateurs du joueurs
 	 * @param financialCallback Callback appellé après l'opération
 	 */
-	public abstract void creditCoins(long amount, String reason, boolean applyMultiplier, FinancialCallback<Long> financialCallback);
+	public abstract void creditCoins(long amount, String reason, boolean applyMultiplier, IFinancialCallback<Long> financialCallback);
 
 	/**
 	 * Effectue un débit de coins
@@ -357,7 +357,7 @@ public abstract class PlayerData {
 	 * @param amount Montant à débiter
 	 * @param financialCallback Callback appellé après l'opération
 	 */
-	public abstract void withdrawCoins(long amount, FinancialCallback<Long> financialCallback);
+	public abstract void withdrawCoins(long amount, IFinancialCallback<Long> financialCallback);
 
 	/**
 	 * Permet de savoir si un joueur a assez de coins pour acheter un produit
@@ -388,17 +388,17 @@ public abstract class PlayerData {
 		creditStars(amount, reason, applyMultiplier, null);
 	}
 
-	public void creditStars(long amount, String reason, FinancialCallback<Long> financialCallback) {
+	public void creditStars(long amount, String reason, IFinancialCallback<Long> financialCallback) {
 		creditStars(amount, reason, true, financialCallback);
 	}
 
-	public abstract void creditStars(long amount, String reason, boolean applyMultiplier, FinancialCallback<Long> financialCallback);
+	public abstract void creditStars(long amount, String reason, boolean applyMultiplier, IFinancialCallback<Long> financialCallback);
 
 	public void withdrawStars(long amount) {
 		withdrawStars(amount, null);
 	}
 
-	public abstract void withdrawStars(long amount, FinancialCallback<Long> financialCallback);
+	public abstract void withdrawStars(long amount, IFinancialCallback<Long> financialCallback);
 
 	public boolean hasEnoughStars(long amount) {
 		return getStars() >= amount;

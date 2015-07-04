@@ -7,8 +7,8 @@ package net.samagames.api.channels;
  * (C) Copyright Elydra Network 2015
  * All rights reserved.
  */
-public interface Sender {
+public interface IPacketsReceiver {
 
-	public void publish(PendingMessage message);
+	public void receive(String channel, String packet);
 
 }

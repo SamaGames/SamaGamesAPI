@@ -4,7 +4,7 @@ import java.util.Map;
 import java.util.UUID;
 
 
-public interface SettingsManager {
+public interface ISettingsManager {
 
 	/**
 	 * Renvoie l'ensemble des paramètres du joueur

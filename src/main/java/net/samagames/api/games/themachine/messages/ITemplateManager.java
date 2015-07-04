@@ -2,7 +2,7 @@ package net.samagames.api.games.themachine.messages;
 
 import net.samagames.api.games.themachine.messages.templates.*;
 
-public interface TemplateManager
+public interface ITemplateManager
 {
     /**
      * Renvoi l'instance du modèle vide avec les bordures

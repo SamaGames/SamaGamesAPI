@@ -11,7 +11,7 @@ import java.util.UUID;
  * (C) Copyright Elydra Network 2015
  * All rights reserved.
  */
-public interface ProxyDataManager {
+public interface IProxyDataManager {
 
 	/**
 	 * Return the set of all the players on a given server
@@ -20,7 +20,7 @@ public interface ProxyDataManager {
 	 */
 	public Set<UUID> getPlayersOnServer(String server);
 	public Set<UUID> getPlayersOnProxy(String server);
-	public ProxiedPlayer getProxiedPlayer(UUID uuid);
+	public IProxiedPlayer getProxiedPlayer(UUID uuid);
 	public void apiexec(String command, String... args);
 
 	Map<String, String> getServers();

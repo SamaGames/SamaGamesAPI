@@ -10,7 +10,7 @@ import java.util.UUID;
  * (C) Copyright Elydra Network 2015
  * All rights reserved.
  */
-public interface PartiesManager {
+public interface IPartiesManager {
 	UUID getPlayerParty(UUID player);
 
 	HashMap<UUID, String> getPlayersInParty(UUID party);

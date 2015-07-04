@@ -10,7 +10,7 @@ import java.util.UUID;
  * (C) Copyright Elydra Network 2015
  * All rights reserved.
  */
-public interface FriendsManager {
+public interface IFriendsManager {
 
 	/**
 	 * Permet de déterminer si deux joueurs sont amis

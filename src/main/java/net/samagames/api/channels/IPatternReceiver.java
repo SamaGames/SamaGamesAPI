@@ -7,7 +7,7 @@ package net.samagames.api.channels;
  * (C) Copyright Elydra Network 2015
  * All rights reserved.
  */
-public interface PatternReceiver {
+public interface IPatternReceiver {
 
 	public void receive(String pattern, String channel, String packet);
 

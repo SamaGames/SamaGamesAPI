@@ -1,7 +1,6 @@
 package net.samagames.api.games;
 
 import net.samagames.api.games.themachine.ICoherenceMachine;
-import net.samagames.core.api.games.Game;
 import org.bukkit.entity.Player;
 
 import java.util.UUID;
@@ -13,7 +12,7 @@ public interface IGameManager
      *
      * @param game Arena object
      */
-    void registerGame(Game game);
+    void registerGame(IGame game);
 
     /**
      * Kick a player from the game
@@ -65,7 +64,7 @@ public interface IGameManager
      *
      * @return The registered game (null if none)
      */
-    Game getGame();
+    IGame getGame();
 
     /**
      * Get the status of the game

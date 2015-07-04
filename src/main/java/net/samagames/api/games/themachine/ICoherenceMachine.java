@@ -1,9 +1,9 @@
 package net.samagames.api.games.themachine;
 
+import net.samagames.api.games.IGame;
 import net.samagames.api.games.IGameProperties;
-import net.samagames.api.games.themachine.messages.MessageManager;
-import net.samagames.api.games.themachine.messages.TemplateManager;
-import net.samagames.core.api.games.Game;
+import net.samagames.api.games.themachine.messages.IMessageManager;
+import net.samagames.api.games.themachine.messages.ITemplateManager;
 import org.bukkit.inventory.ItemStack;
 
 public interface ICoherenceMachine
@@ -18,19 +18,19 @@ public interface ICoherenceMachine
      * Renvoi l'instance du manager de messages basics
      * @return Manager
      */
-    MessageManager getMessageManager();
+    IMessageManager getMessageManager();
 
     /**
      * Renvoi l'instance du manager de modèles de messages
      * @return Manager
      */
-    TemplateManager getTemplateManager();
+    ITemplateManager getTemplateManager();
 
     /**
      * Renvoi l'objet d'information de jeu
      * @return L'objet
      */
-    Game getGame();
+    IGame getGame();
 
     /**
      * Renvoi les propriétés du jeu

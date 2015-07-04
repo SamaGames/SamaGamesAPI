@@ -7,7 +7,7 @@ package net.samagames.api.player;
  * (C) Copyright Elydra Network 2015
  * All rights reserved.
  */
-public interface FinancialCallback<V> {
+public interface IFinancialCallback<V> {
 
 	/**
 	 * Fonction appelée une fois une transaction financière terminée

@@ -2,11 +2,10 @@ package net.samagames.api.network;
 
 import org.bukkit.entity.Player;
 
-import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
 
-public interface JoinHandler {
+public interface IJoinHandler {
 
     /**
      * Called when an user requires to connect, by rightclicking a game sign for example.

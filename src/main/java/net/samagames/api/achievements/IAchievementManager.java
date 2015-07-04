@@ -4,7 +4,7 @@ import org.bukkit.entity.Player;
 
 import java.util.ArrayList;
 
-public interface AchievementManager
+public interface IAchievementManager
 {
     /**
      * Recharge la liste locale des objectifs

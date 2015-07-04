@@ -10,7 +10,7 @@ import org.bukkit.entity.Player;
  * (C) Copyright Elydra Network 2015
  * All rights reserved.
  */
-public interface ResourceCallback {
+public interface IResourceCallback {
 
 	/***
 	 * Called when the download status is changed
