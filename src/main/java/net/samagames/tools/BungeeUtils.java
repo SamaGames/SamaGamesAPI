@@ -12,7 +12,7 @@ public class BungeeUtils
     {
         SamaGamesAPI.get().log(Level.INFO, "Sending player '" + player.getName() + "' to '" + server + "'...");
 
-        IProxiedPlayer IProxiedPlayer = SamaGamesAPI.get().getIProxyDataManager().getProxiedPlayer(player.getUniqueId());
-        IProxiedPlayer.connect(server);
+        IProxiedPlayer proxiedPlayer = SamaGamesAPI.get().getProxyDataManager().getProxiedPlayer(player.getUniqueId());
+        proxiedPlayer.connect(server);
     }
 }
