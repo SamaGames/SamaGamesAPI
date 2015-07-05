@@ -38,7 +38,7 @@ public class Game<GAMEPLAYER extends GamePlayer>
         this.gamePlayers = new HashMap<>();
         this.beginTimer = Bukkit.getScheduler().runTaskTimerAsynchronously(SamaGamesAPI.get().getPlugin(), new BeginTimer(this), 20L, 20L);
 
-        this.setStatus(Status.WAITING_FOR_PLAYERS);
+        this.status = Status.WAITING_FOR_PLAYERS;
     }
 
     public void startGame()
