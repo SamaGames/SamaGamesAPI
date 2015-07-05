@@ -21,13 +21,13 @@ public class Message
 
     public Message displayToAll()
     {
-        Bukkit.broadcastMessage((this.gameTag != null ? this.gameTag : "") + " " + this.text);
+        Bukkit.broadcastMessage((this.gameTag != null ? this.gameTag  + " " : "") + this.text);
         return this;
     }
 
     public Message display(Player player)
     {
-        player.sendMessage((this.gameTag != null ? this.gameTag : "") + " " + this.text);
+        player.sendMessage((this.gameTag != null ? this.gameTag + " " : "") + this.text);
         return this;
     }
 

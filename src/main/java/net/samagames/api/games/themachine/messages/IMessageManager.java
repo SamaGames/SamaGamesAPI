@@ -5,6 +5,14 @@ import org.bukkit.entity.Player;
 public interface IMessageManager
 {
     /**
+     * Envoi un message personnalisé à tout le monde
+     * @param text Le texte
+     * @param gameTag Mettre le tag du jeu devant le message
+     * @return L'objet du message
+     */
+    Message writeCustomMessage(String text, boolean gameTag);
+
+    /**
      * Envoi un message à tout le monde montrant la connexion d'un joueur
      * @param player Le joueur venant de se connecter
      * @return L'objet du message
