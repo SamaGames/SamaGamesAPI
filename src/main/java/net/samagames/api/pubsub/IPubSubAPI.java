@@ -1,4 +1,4 @@
-package net.samagames.api.channels;
+package net.samagames.api.pubsub;
 
 /**
  * This file is a part of the SamaGames project

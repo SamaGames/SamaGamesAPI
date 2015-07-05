@@ -1,7 +1,6 @@
 package net.samagames.api;
 
 import net.samagames.api.achievements.IAchievementManager;
-import net.samagames.api.channels.IPubSubAPI;
 import net.samagames.api.friends.IFriendsManager;
 import net.samagames.api.games.IGameManager;
 import net.samagames.api.names.IUUIDTranslator;
@@ -9,6 +8,7 @@ import net.samagames.api.network.IProxyDataManager;
 import net.samagames.api.parties.IPartiesManager;
 import net.samagames.api.permissions.IPermissionsManager;
 import net.samagames.api.player.IPlayerDataManager;
+import net.samagames.api.pubsub.IPubSubAPI;
 import net.samagames.api.resourcepacks.IResourcePacksManager;
 import net.samagames.api.settings.ISettingsManager;
 import net.samagames.api.shops.AbstractShopsManager;
@@ -65,7 +65,7 @@ public abstract class SamaGamesAPI {
 	public abstract IResourcePacksManager getResourcePacksManager();
     public abstract IFriendsManager getFriendsManager();
 
-	public abstract IProxyDataManager getIProxyDataManager();
+	public abstract IProxyDataManager getProxyDataManager();
 	public abstract IPartiesManager getPartiesManager();
 
 	public abstract BarAPI getBarAPI();

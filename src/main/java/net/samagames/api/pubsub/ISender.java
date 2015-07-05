@@ -1,4 +1,4 @@
-package net.samagames.api.channels;
+package net.samagames.api.pubsub;
 
 /**
  * This file is a part of the SamaGames project
@@ -7,8 +7,8 @@ package net.samagames.api.channels;
  * (C) Copyright Elydra Network 2015
  * All rights reserved.
  */
-public interface IPatternReceiver {
+public interface ISender {
 
-	public void receive(String pattern, String channel, String packet);
+	public void publish(PendingMessage message);
 
 }

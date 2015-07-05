@@ -1,4 +1,4 @@
-package net.samagames.api.channels;
+package net.samagames.api.pubsub;
 
 public class PendingMessage {
 	private final String channel;
