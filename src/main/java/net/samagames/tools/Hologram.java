@@ -1,11 +1,11 @@
 package net.samagames.tools;
 
-import net.minecraft.server.v1_8_R2.*;
+import net.minecraft.server.v1_8_R3.*;
 import net.samagames.api.SamaGamesAPI;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
-import org.bukkit.craftbukkit.v1_8_R2.CraftWorld;
-import org.bukkit.craftbukkit.v1_8_R2.entity.CraftPlayer;
+import org.bukkit.craftbukkit.v1_8_R3.CraftWorld;
+import org.bukkit.craftbukkit.v1_8_R3.entity.CraftPlayer;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
 

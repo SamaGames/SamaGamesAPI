@@ -1,6 +1,6 @@
 package net.samagames.api.resourcepacks;
 
-import net.minecraft.server.v1_8_R2.PacketPlayInResourcePackStatus;
+import net.minecraft.server.v1_8_R3.PacketPlayInResourcePackStatus;
 import org.bukkit.entity.Player;
 
 /**
