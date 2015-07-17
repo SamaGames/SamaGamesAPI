@@ -1,6 +1,6 @@
 package net.samagames.api.games;
 
-import java.util.HashMap;
+import com.google.gson.JsonObject;
 
 public interface IGameProperties
 {
@@ -31,17 +31,9 @@ public interface IGameProperties
     int getMaxSlots();
 
     /**
-     * Get a game option
-     *
-     * @param key Option name
-     * @return Option value
-     */
-    String getOption(String key);
-
-    /**
      * Get the game options
      *
      * @return The options
      */
-    HashMap<String, String> getOptions();
+    JsonObject getOptions();
 }
