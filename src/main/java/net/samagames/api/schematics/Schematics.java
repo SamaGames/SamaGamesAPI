@@ -1,9 +1,9 @@
 package net.samagames.api.schematics;
 
-import net.minecraft.server.v1_8_R2.NBTCompressedStreamTools;
-import net.minecraft.server.v1_8_R2.NBTTagCompound;
-import net.minecraft.server.v1_8_R2.NBTTagList;
-import net.minecraft.server.v1_8_R2.TileEntity;
+import net.minecraft.server.v1_8_R3.NBTCompressedStreamTools;
+import net.minecraft.server.v1_8_R3.NBTTagCompound;
+import net.minecraft.server.v1_8_R3.NBTTagList;
+import net.minecraft.server.v1_8_R3.TileEntity;
 import net.samagames.api.schematics.internal.SchematicImpl;
 import org.bukkit.Material;
 

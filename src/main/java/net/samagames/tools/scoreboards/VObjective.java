@@ -1,8 +1,9 @@
 package net.samagames.tools.scoreboards;
 
-import net.minecraft.server.v1_8_R2.*;
-import net.minecraft.server.v1_8_R2.IScoreboardCriteria.EnumScoreboardHealthDisplay;
-import net.samagames.tools.Reflection;
+import net.minecraft.server.v1_8_R3.IScoreboardCriteria.EnumScoreboardHealthDisplay;
+import net.minecraft.server.v1_8_R3.PacketPlayOutScoreboardDisplayObjective;
+import net.minecraft.server.v1_8_R3.PacketPlayOutScoreboardObjective;
+import net.minecraft.server.v1_8_R3.PacketPlayOutScoreboardScore;
 import net.samagames.tools.Reflection;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;

@@ -1,10 +1,10 @@
 package net.samagames.api.schematics.internal;
 
-import net.minecraft.server.v1_8_R2.*;
+import net.minecraft.server.v1_8_R3.*;
 import net.samagames.api.schematics.ISchematic;
 import org.bukkit.Location;
 import org.bukkit.Material;
-import org.bukkit.craftbukkit.v1_8_R2.CraftWorld;
+import org.bukkit.craftbukkit.v1_8_R3.CraftWorld;
 
 import java.util.HashMap;
 import java.util.List;
@@ -84,7 +84,7 @@ public final class SchematicImpl implements ISchematic
 	public void paste(Location location)
 	{
 		this.fill(location);
-		net.minecraft.server.v1_8_R2.World world = ((CraftWorld) location.getWorld()).getHandle();
+		net.minecraft.server.v1_8_R3.World world = ((CraftWorld) location.getWorld()).getHandle();
 
 		int worldX = location.getBlockX();
 		int worldY = location.getBlockY();
@@ -110,7 +110,7 @@ public final class SchematicImpl implements ISchematic
 	@Override
 	public void fill(Location location)
 	{
-		net.minecraft.server.v1_8_R2.World world = ((CraftWorld) location.getWorld()).getHandle();
+		net.minecraft.server.v1_8_R3.World world = ((CraftWorld) location.getWorld()).getHandle();
 
 		int worldX = location.getBlockX();
 		int worldY = location.getBlockY();

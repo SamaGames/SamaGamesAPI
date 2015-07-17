@@ -1,7 +1,7 @@
 package net.samagames.tools.BarAPI.nms;
 
-import net.minecraft.server.v1_8_R2.EntityWither;
-import net.minecraft.server.v1_8_R2.World;
+import net.minecraft.server.v1_8_R3.EntityWither;
+import net.minecraft.server.v1_8_R3.World;
 import net.samagames.tools.BarAPI.Util;
 import org.bukkit.Location;
 
