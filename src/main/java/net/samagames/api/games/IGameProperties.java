@@ -1,6 +1,7 @@
 package net.samagames.api.games;
 
 import com.google.gson.JsonObject;
+import com.google.gson.JsonPrimitive;
 
 public interface IGameProperties
 {
@@ -29,6 +30,14 @@ public interface IGameProperties
      * @return The number
      */
     int getMaxSlots();
+
+    /**
+     * Get a game option
+     *
+     * @param key Option key
+     * @return The value
+     */
+    JsonPrimitive getOption(String key, JsonPrimitive defaultValue);
 
     /**
      * Get the game options
