@@ -10,7 +10,7 @@ public class WinMessageTemplate
     public ArrayList<String> prepare(ArrayList<String> lines)
     {
         ArrayList<String> finalLines = new ArrayList<>();
-        finalLines.add(ChatUtils.getCenteredText(ChatColor.WHITE + "" + ChatColor.BOLD + "• Résultats du jeu •"));
+        finalLines.add(ChatUtils.getCenteredText(ChatColor.WHITE + "•" + ChatColor.BOLD + " Résultats du jeu " + ChatColor.RESET + ChatColor.WHITE + "•"));
         finalLines.add("");
         finalLines.addAll(lines);
         finalLines.add("");
