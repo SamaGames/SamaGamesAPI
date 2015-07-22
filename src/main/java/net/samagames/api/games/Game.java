@@ -54,12 +54,12 @@ public class Game<GAMEPLAYER extends GamePlayer>
         this.coherenceMachine = this.gameManager.getCoherenceMachine();
     }
 
-    public void handleLogin(Player player, boolean reconnect)
+    public void handleLogin(Player player)
     {
         try
         {
             GAMEPLAYER gamePlayerObject = this.gamePlayerClass.getConstructor(Player.class).newInstance(player);
-            gamePlayerObject.handleLogin(reconnect);
+            gamePlayerObject.handleLogin(false);
 
             this.gamePlayers.put(player.getUniqueId(), gamePlayerObject);
         }
@@ -93,7 +93,6 @@ public class Game<GAMEPLAYER extends GamePlayer>
                 else
                 {
                     this.gameManager.getCoherenceMachine().getMessageManager().writePlayerQuited(player);
-                    this.getPlayer(player.getUniqueId()).setSpectator();
                 }
             }
 
