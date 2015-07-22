@@ -82,6 +82,9 @@ public class Game<GAMEPLAYER extends GamePlayer>
 
     public void handleLogout(Player player)
     {
+        if(this.status == Status.FINISHED)
+            return;
+
         if(this.gamePlayers.containsKey(player.getUniqueId()))
         {
             if(!this.gamePlayers.get(player.getUniqueId()).isSpectator())
@@ -117,6 +120,7 @@ public class Game<GAMEPLAYER extends GamePlayer>
 
     public void handleGameEnd()
     {
+        this.setStatus(Status.FINISHED);
         Bukkit.getScheduler().runTaskLater(SamaGamesAPI.get().getPlugin(), () ->
         {
             for (UUID playerUUID : this.gamePlayers.keySet())
