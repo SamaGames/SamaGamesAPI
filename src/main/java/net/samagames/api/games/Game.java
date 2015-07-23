@@ -174,6 +174,11 @@ public class Game<GAMEPLAYER extends GamePlayer>
         this.gameManager.refreshArena();
     }
 
+    public String getGameCodeName()
+    {
+        return this.gameCodeName;
+    }
+
     public String getGameName()
     {
         return this.gameName;
