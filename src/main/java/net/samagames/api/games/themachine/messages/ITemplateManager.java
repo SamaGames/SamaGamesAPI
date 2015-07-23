@@ -11,10 +11,10 @@ public interface ITemplateManager
     BasicMessageTemplate getBasicMessageTemplate();
 
     /**
-     * Renvoi l'instance du modèle de message de fin de jeu vide
+     * Renvoi l'instance du modèle de fin de jeu avec les bordures
      * @return L'instance du modèle
      */
-    CustomWinTemplate getCustomWinTemplate();
+    WinMessageTemplate getWinMessageTemplate();
 
     /**
      * Renvoi l'instance du modèle de message de fin de jeu pour un joueur unique

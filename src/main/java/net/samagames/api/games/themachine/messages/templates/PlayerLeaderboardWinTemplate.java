@@ -37,7 +37,10 @@ public class PlayerLeaderboardWinTemplate
     {
         ArrayList<String> lines = new ArrayList<>();
         lines.add(ChatUtils.getCenteredText(ChatColor.GREEN + "Gagnant" + ChatColor.GRAY + " - " + ChatColor.RESET + PlayerUtils.getFullyFormattedPlayerName(winner)));
-        lines.add(ChatUtils.getCenteredText(commentary));
+
+        if(commentary != null)
+            lines.add(ChatUtils.getCenteredText(commentary));
+
         lines.add("");
         lines.add(ChatUtils.getCenteredText(ChatColor.GREEN + "1er" + ChatColor.GRAY + " - " + ChatColor.RESET + PlayerUtils.getFullyFormattedPlayerName(winner)));
         lines.add(ChatUtils.getCenteredText(ChatColor.YELLOW + "2nd" + ChatColor.GRAY + " - " + ChatColor.RESET + PlayerUtils.getFullyFormattedPlayerName(second)));
@@ -50,7 +53,10 @@ public class PlayerLeaderboardWinTemplate
     {
         ArrayList<String> lines = new ArrayList<>();
         lines.add(ChatUtils.getCenteredText(ChatColor.GREEN + "Gagnant" + ChatColor.GRAY + " - " + ChatColor.RESET + PlayerUtils.getFullyFormattedPlayerName(winner) + ChatColor.GRAY + " (" + winnerScore + ")"));
-        lines.add(ChatUtils.getCenteredText(commentary));
+
+        if(commentary != null)
+            lines.add(ChatUtils.getCenteredText(commentary));
+
         lines.add("");
         lines.add(ChatUtils.getCenteredText(ChatColor.GREEN + "1er" + ChatColor.GRAY + " - " + ChatColor.RESET + PlayerUtils.getFullyFormattedPlayerName(winner) + ChatColor.GRAY + " (" + winnerScore + ")"));
         lines.add(ChatUtils.getCenteredText(ChatColor.YELLOW + "2nd" + ChatColor.GRAY + " - " + ChatColor.RESET + PlayerUtils.getFullyFormattedPlayerName(second) + ChatColor.GRAY + " (" + secondScore + ")"));

@@ -219,48 +219,28 @@ public class Game<GAMEPLAYER extends GamePlayer>
         return this.getInGamePlayers().size();
     }
 
-    /**
-     * Savoir si un joueur est en jeu ou non
-     *
-     * @param player Le joueur en question
-     * @return Oui ou non
-     */
     public boolean hasPlayer(Player player)
     {
         return this.getInGamePlayers().containsKey(player.getUniqueId());
     }
 
-    /**
-     * Savoir si un joueur peut-entrer en jeu
-     *
-     * @param player Le joueur en question
-     * @param reconnect Si le joueur se reconnecte pendant le jeu ou non
-     * @return Un objet Pair de la forme <Autorisé ? (Oui/Non), Raison du refus (Si refus)>
-     */
     public Pair<Boolean, String> canJoinGame(UUID player, boolean reconnect)
     {
         return Pair.of(true, "");
     }
 
-    /**
-     * Savoir si une partie peut entrer entière en jeu
-     *
-     * @param partyMembers Les joueurs de la partie
-     * @return Un objet Pair de la forme <Autorisé ? (Oui/Non), Raison du refus (Si refus)>
-     */
     public Pair<Boolean, String> canPartyJoinGame(Set<UUID> partyMembers)
     {
         return Pair.of(true, "");
     }
 
-    /**
-     * Savoir si un joueur est un spectateur
-     *
-     * @param player Le joueur en question
-     * @return Oui ou non
-     */
     public boolean isSpectator(Player player)
     {
         return this.getSpectatorPlayers().containsKey(player.getUniqueId());
+    }
+
+    public boolean isGameStarted()
+    {
+        return this.status == Status.IN_GAME;
     }
 }
