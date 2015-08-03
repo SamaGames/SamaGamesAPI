@@ -23,6 +23,8 @@ public class VObjective {
     protected String displayName;
     protected EnumScoreboardHealthDisplay format;
 
+    protected ObjectiveLocation location = ObjectiveLocation.SIDEBAR;
+
     protected List<OfflinePlayer> receivers = new ArrayList<>();
 
     protected ConcurrentLinkedQueue<VScore> scores = new ConcurrentLinkedQueue<>();
@@ -32,6 +34,16 @@ public class VObjective {
         format = EnumScoreboardHealthDisplay.INTEGER;
         this.name = name;
         this.displayName = displayName;
+    }
+
+    public ObjectiveLocation getLocation()
+    {
+        return location;
+    }
+
+    public void setLocation(ObjectiveLocation location)
+    {
+        this.location = location;
     }
 
     protected String toggleName()
@@ -69,7 +81,7 @@ public class VObjective {
     protected void init(Player receiver)
     {
         create(receiver);
-        displayToSidebar(receiver);
+        displayTo(receiver, location.getLocation());
     }
 
     protected void create(Player receiver)
@@ -77,9 +89,10 @@ public class VObjective {
         RawObjective.createObjective(receiver, this);
     }
 
-    protected void displayToSidebar(Player receiver)
+    //Emplacement de l'objective - 0 = list, 1 = sidebar, 2 = belowName
+    protected void displayTo(Player receiver, int location)
     {
-        RawObjective.displayObjective(receiver, getName());
+        RawObjective.displayObjective(receiver, getName(), location);
     }
 
     protected void remove(Player receiver)
@@ -198,6 +211,23 @@ public class VObjective {
         return format;
     }
 
+    public enum ObjectiveLocation{
+        LIST(0),
+        SIDEBAR(1),
+        BELOWNAME(2);
+
+        private int location;
+
+        ObjectiveLocation(int location)
+        {
+            this.location = location;
+        }
+
+        public int getLocation() {
+            return location;
+        }
+    }
+
     public static class RawObjective
     {
         private static Method getEntityHandle;
@@ -238,9 +268,9 @@ public class VObjective {
         }
 
         /** Objective Display **/
-        public static void displayObjective(Player p, String name)
+        public static void displayObjective(Player p, String name, int location)
         {
-            sendPacket(makeScoreboardDiplayPacket(name), p);
+            sendPacket(makeScoreboardDiplayPacket(name, location), p);
         }
 
         /** Objective Score Management **/
@@ -329,7 +359,7 @@ public class VObjective {
             return packet;
         }
 
-        public static PacketPlayOutScoreboardDisplayObjective makeScoreboardDiplayPacket(String objectiveName)
+        public static PacketPlayOutScoreboardDisplayObjective makeScoreboardDiplayPacket(String objectiveName, int location)
         {
 
             PacketPlayOutScoreboardDisplayObjective packet = new PacketPlayOutScoreboardDisplayObjective();
