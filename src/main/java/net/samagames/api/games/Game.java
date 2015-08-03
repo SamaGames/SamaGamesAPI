@@ -76,6 +76,7 @@ public class Game<GAMEPLAYER extends GamePlayer>
         for(UUID gamePlayerUUID : this.gamePlayers.keySet())
             Bukkit.getPlayer(gamePlayerUUID).hidePlayer(player);
 
+        setSpectator(player);
         player.setGameMode(GameMode.SPECTATOR);
         player.sendMessage(ChatColor.GREEN + "Vous êtes invisibles aux yeux de tous, attention à vos actions !");
     }
@@ -103,6 +104,8 @@ public class Game<GAMEPLAYER extends GamePlayer>
 
             if(this.status != Status.IN_GAME)
                 this.gamePlayers.remove(player.getUniqueId());
+
+            gameManager.refreshArena();
         }
     }
 
@@ -139,7 +142,7 @@ public class Game<GAMEPLAYER extends GamePlayer>
                 this.gameManager.kickPlayer(player, null);
         }, 20L * 10);
 
-        Bukkit.getScheduler().runTaskLater(SamaGamesAPI.get().getPlugin(), Bukkit::shutdown, 20L * 11);
+        Bukkit.getScheduler().runTaskLater(SamaGamesAPI.get().getPlugin(), Bukkit::shutdown, 20L * 15);
     }
 
     public void addCoins(Player player, int coins, String reason)
@@ -168,12 +171,6 @@ public class Game<GAMEPLAYER extends GamePlayer>
         this.gamePlayers.get(player.getUniqueId()).setSpectator();
     }
 
-    public void setStatus(Status status)
-    {
-        this.status = status;
-        this.gameManager.refreshArena();
-    }
-
     public String getGameCodeName()
     {
         return this.gameCodeName;
@@ -187,6 +184,12 @@ public class Game<GAMEPLAYER extends GamePlayer>
     public Status getStatus()
     {
         return this.status;
+    }
+
+    public void setStatus(Status status)
+    {
+        this.status = status;
+        this.gameManager.refreshArena();
     }
 
     public GAMEPLAYER getPlayer(UUID player)
@@ -241,11 +244,11 @@ public class Game<GAMEPLAYER extends GamePlayer>
 
     public boolean isSpectator(Player player)
     {
-        return this.getSpectatorPlayers().containsKey(player.getUniqueId());
+        return gamePlayers.get(player.getUniqueId()).isSpectator();
     }
 
     public boolean isGameStarted()
     {
-        return this.status == Status.IN_GAME;
+        return this.status == Status.IN_GAME || this.status == Status.FINISHED || this.status == Status.REBOOTING;
     }
 }

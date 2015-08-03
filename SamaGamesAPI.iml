@@ -11,14 +11,10 @@
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="library" scope="PROVIDED" name="Maven: org.spigotmc:spigot-api:1.8.7-R0.1-SNAPSHOT" level="project" />
     <orderEntry type="library" scope="PROVIDED" name="Maven: org.spigotmc:minecraft-server:1.8.7-SNAPSHOT" level="project" />
-    <orderEntry type="library" scope="PROVIDED" name="Maven: net.sf.jopt-simple:jopt-simple:3.2" level="project" />
-    <orderEntry type="library" scope="PROVIDED" name="Maven: jline:jline:2.12" level="project" />
-    <orderEntry type="library" scope="PROVIDED" name="Maven: org.xerial:sqlite-jdbc:3.7.2" level="project" />
-    <orderEntry type="library" scope="PROVIDED" name="Maven: mysql:mysql-connector-java:5.1.14" level="project" />
-    <orderEntry type="library" scope="PROVIDED" name="Maven: org.spigotmc:spigot:1.8.7-R0.1-SNAPSHOT" level="project" />
-    <orderEntry type="module" module-name="PermissionsAPI" scope="PROVIDED" />
-    <orderEntry type="library" scope="PROVIDED" name="Maven: com.google.guava:guava:18.0" level="project" />
-    <orderEntry type="library" scope="PROVIDED" name="Maven: redis.clients:jedis:2.6.2" level="project" />
-    <orderEntry type="library" scope="PROVIDED" name="Maven: org.apache.commons:commons-pool2:2.0" level="project" />
+    <orderEntry type="library" scope="PROVIDED" name="Maven: org.spigotmc:spigot:1.8.8-R0.1-SNAPSHOT" level="project" />
+    <orderEntry type="module" module-name="PermissionsAPI" />
+    <orderEntry type="library" name="Maven: com.google.guava:guava:18.0" level="project" />
+    <orderEntry type="library" name="Maven: redis.clients:jedis:2.6.2" level="project" />
+    <orderEntry type="library" name="Maven: org.apache.commons:commons-pool2:2.0" level="project" />
   </component>
 </module>

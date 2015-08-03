@@ -39,13 +39,18 @@ public class ObjectiveSign extends VObjective{
 
     public void updateLines()
     {
+        updateLines(true);
+    }
+
+    public void updateLines(boolean inverse)
+    {
         String old = toggleName();
         for(OfflinePlayer op : receivers)
         {
             if(op.isOnline())
             {
                 create(op.getPlayer());
-                updateScore(op.getPlayer(), true);
+                updateScore(op.getPlayer(), inverse);
                 displayToSidebar(op.getPlayer());
                 RawObjective.removeObjective(op.getPlayer(), old);
                 //remove(op.getPlayer());
