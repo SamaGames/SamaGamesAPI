@@ -1,7 +1,7 @@
 package net.samagames.api.games;
 
+import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
-import com.google.gson.JsonPrimitive;
 
 public interface IGameProperties
 {
@@ -37,7 +37,7 @@ public interface IGameProperties
      * @param key Option key
      * @return The value
      */
-    JsonPrimitive getOption(String key, JsonPrimitive defaultValue);
+    JsonElement getOption(String key, JsonElement defaultValue);
 
     /**
      * Get the game options
