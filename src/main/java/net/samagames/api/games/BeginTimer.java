@@ -7,15 +7,17 @@ import org.bukkit.entity.Player;
 
 public class BeginTimer implements Runnable
 {
+    private static final int timeStart = 30;
     private final Game game;
-
+    private final SamaGamesAPI api;
     private int time;
     private boolean ready;
 
     public BeginTimer(Game game)
     {
         this.game = game;
-        this.time = 120;
+        this.api = SamaGamesAPI.get();
+        this.time = timeStart;
         this.ready = false;
     }
  
@@ -24,34 +26,48 @@ public class BeginTimer implements Runnable
     {
         int nPlayers = this.game.getConnectedPlayers();
  
-        if (nPlayers >= SamaGamesAPI.get().getGameManager().getGameProperties().getMinSlots() && !this.ready)
+        if (nPlayers >= api.getGameManager().getGameProperties().getMinSlots() && !this.ready)
         {
             this.ready = true;
             this.game.setStatus(Status.READY_TO_START);
-            this.time = 120;
+            this.time = timeStart;
         }
 
-        if (nPlayers < SamaGamesAPI.get().getGameManager().getGameProperties().getMinSlots() && this.ready)
+        if (nPlayers < api.getGameManager().getGameProperties().getMinSlots() && this.ready)
         {
             this.ready = false;
             this.game.setStatus(Status.WAITING_FOR_PLAYERS);
 
-            SamaGamesAPI.get().getGameManager().getCoherenceMachine().getMessageManager().writeNotEnougthPlayersToStart();
+            api.getGameManager().getCoherenceMachine().getMessageManager().writeNotEnougthPlayersToStart();
             
             for (Player p : Bukkit.getOnlinePlayers())
-                p.setLevel(120);
+                p.setLevel(timeStart);
         }
 
         if (this.ready)
         {
             this.time--;
+            double pourcentPlayer = (game.getConnectedPlayers()/api.getGameManager().getGameProperties().getMaxSlots());
+            if(time > 5 && pourcentPlayer >= 0.98)
+            {
+                time = 5;
+            }
 
-            SamaGamesAPI.get().getGameManager().getCoherenceMachine().getMessageManager().writeGameStartIn(this.time);
+            api.getGameManager().getCoherenceMachine().getMessageManager().writeGameStartIn(this.time);
             this.sendSound(this.time);
             
-            if(this.time == 0)
+            if(this.time <= 0)
             {
-                this.game.startGame();
+                Bukkit.getScheduler().runTask(api.getPlugin(), () -> {
+                    try{
+                        game.startGame();
+                    }catch (Exception e)
+                    {
+                        e.printStackTrace();
+                    }
+                });
+
+                game.getBeginTimer().cancel();
             }
         }
     }

@@ -222,6 +222,10 @@ public class Game<GAMEPLAYER extends GamePlayer>
         return temp;
     }
 
+    public BukkitTask getBeginTimer() {
+        return beginTimer;
+    }
+
     public int getConnectedPlayers()
     {
         return this.getInGamePlayers().size();
