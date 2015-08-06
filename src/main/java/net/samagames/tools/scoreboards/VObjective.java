@@ -126,12 +126,29 @@ public class VObjective {
         RawObjective.updateScoreObjective(p, this, inverse);
     }
 
-    public void updateScore()
+    public void updateScore(boolean forceRefresh)
     {
-        for(OfflinePlayer op : receivers)
+        if(forceRefresh)
         {
-            if(op.isOnline())
-                RawObjective.updateScoreObjective(op.getPlayer(), this, false);
+            String old = toggleName();
+            for(OfflinePlayer op : receivers)
+            {
+                if(op.isOnline())
+                {
+                    create(op.getPlayer());
+                    RawObjective.updateScoreObjective(op.getPlayer(), this, false);
+                    displayTo(op.getPlayer(), location.getLocation());
+                    RawObjective.removeObjective(op.getPlayer(), old);
+                }
+            }
+        }else{
+            for(OfflinePlayer op : receivers)
+            {
+                if(op.isOnline())
+                {
+                    RawObjective.updateScoreObjective(op.getPlayer(), this, false);
+                }
+            }
         }
     }
 
@@ -148,6 +165,11 @@ public class VObjective {
     {
         VScore score1 = getScore(score);
         removeScore(score1);
+    }
+
+    public void clearScores()
+    {
+        scores.clear();
     }
 
     public void removeScore(VScore score)
