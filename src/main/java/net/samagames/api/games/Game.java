@@ -23,7 +23,7 @@ public class Game<GAMEPLAYER extends GamePlayer>
     protected final String gameName;
     protected final Class<GAMEPLAYER> gamePlayerClass;
     protected final HashMap<UUID, GAMEPLAYER> gamePlayers;
-    protected final BukkitTask beginTimer;
+    protected BukkitTask beginTimer;
 
     protected ICoherenceMachine coherenceMachine;
     protected Status status;
