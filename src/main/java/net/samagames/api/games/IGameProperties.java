@@ -45,4 +45,11 @@ public interface IGameProperties
      * @return The options
      */
     JsonObject getOptions();
+    
+    /**
+     * Get the map properties
+     * 
+     * @return The properties
+     */
+    JsonObject getMapProperties();
 }
