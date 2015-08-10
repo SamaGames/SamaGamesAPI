@@ -3,6 +3,7 @@ package net.samagames.api;
 import net.samagames.api.achievements.IAchievementManager;
 import net.samagames.api.friends.IFriendsManager;
 import net.samagames.api.games.IGameManager;
+import net.samagames.api.gui.IGuiManager;
 import net.samagames.api.names.IUUIDTranslator;
 import net.samagames.api.network.IProxyDataManager;
 import net.samagames.api.parties.IPartiesManager;
@@ -56,6 +57,7 @@ public abstract class SamaGamesAPI {
 
 	public abstract AbstractStatsManager getStatsManager(String game);
 	public abstract AbstractShopsManager getShopsManager(String game);
+	public abstract IGuiManager getGuiManager();
 	public abstract ISettingsManager getSettingsManager();
 	public abstract IPlayerDataManager getPlayerManager();
     public abstract IAchievementManager getAchievementManager();
