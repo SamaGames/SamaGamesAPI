@@ -1,4 +1,4 @@
-package net.samagames.tools;
+package net.samagames.api.gui;
 
 import org.bukkit.Material;
 import org.bukkit.entity.Player;

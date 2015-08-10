@@ -1,6 +1,5 @@
 package net.samagames.api.gui;
 
-import net.samagames.tools.AbstractGui;
 import org.bukkit.entity.HumanEntity;
 import org.bukkit.entity.Player;
 
