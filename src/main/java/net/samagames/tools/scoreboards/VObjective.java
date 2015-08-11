@@ -386,7 +386,7 @@ public class VObjective {
 
             PacketPlayOutScoreboardDisplayObjective packet = new PacketPlayOutScoreboardDisplayObjective();
             try {
-                Reflection.setValue(packet, "a", 1); //Emplacement de l'objective - 0 = list, 1 = sidebar, 2 = belowName
+                Reflection.setValue(packet, "a", location); //Emplacement de l'objective - 0 = list, 1 = sidebar, 2 = belowName
                 Reflection.setValue(packet, "b", objectiveName); //Nom de l'objective
             } catch (Exception e) {
                 e.printStackTrace();

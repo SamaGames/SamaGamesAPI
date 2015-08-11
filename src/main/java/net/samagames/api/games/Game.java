@@ -228,7 +228,13 @@ public class Game<GAMEPLAYER extends GamePlayer>
 
     public int getConnectedPlayers()
     {
-        return this.getInGamePlayers().size();
+        int i = 0;
+        for(GamePlayer player : gamePlayers.values())
+        {
+            if(!player.isSpectator())
+                i++;
+        }
+        return i;
     }
 
     public boolean hasPlayer(Player player)
