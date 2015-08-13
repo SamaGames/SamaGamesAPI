@@ -239,7 +239,7 @@ public class Game<GAMEPLAYER extends GamePlayer>
 
     public boolean hasPlayer(Player player)
     {
-        return this.getInGamePlayers().containsKey(player.getUniqueId());
+        return gamePlayers.containsKey(player.getUniqueId());
     }
 
     public Pair<Boolean, String> canJoinGame(UUID player, boolean reconnect)
