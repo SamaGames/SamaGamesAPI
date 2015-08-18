@@ -3,6 +3,7 @@ package net.samagames.api.games;
 import net.samagames.api.SamaGamesAPI;
 import net.samagames.api.player.AbstractPlayerData;
 import org.bukkit.Bukkit;
+import org.bukkit.GameMode;
 import org.bukkit.entity.Player;
 
 import java.util.UUID;
@@ -46,6 +47,7 @@ public class GamePlayer
     public void setSpectator()
     {
         this.spectator = true;
+        this.getPlayerIfOnline().setGameMode(GameMode.SPECTATOR);
     }
 
     public UUID getUUID()
