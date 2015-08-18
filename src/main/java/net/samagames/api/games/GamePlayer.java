@@ -47,7 +47,8 @@ public class GamePlayer
     public void setSpectator()
     {
         this.spectator = true;
-        this.getPlayerIfOnline().setGameMode(GameMode.SPECTATOR);
+
+        Bukkit.getScheduler().runTask(SamaGamesAPI.get().getPlugin(), () -> this.getPlayerIfOnline().setGameMode(GameMode.SPECTATOR));
     }
 
     public UUID getUUID()
