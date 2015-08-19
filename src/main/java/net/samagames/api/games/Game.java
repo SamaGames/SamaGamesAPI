@@ -2,6 +2,7 @@ package net.samagames.api.games;
 
 import net.samagames.api.SamaGamesAPI;
 import net.samagames.api.games.themachine.ICoherenceMachine;
+import net.samagames.api.games.themachine.items.PlayerTracker;
 import net.samagames.api.games.themachine.messages.templates.EarningMessageTemplate;
 import org.apache.commons.lang3.tuple.Pair;
 import org.bukkit.Bukkit;
@@ -23,6 +24,7 @@ public class Game<GAMEPLAYER extends GamePlayer>
     protected final String gameName;
     protected final Class<GAMEPLAYER> gamePlayerClass;
     protected final HashMap<UUID, GAMEPLAYER> gamePlayers;
+    protected final PlayerTracker playerTracker;
     protected BukkitTask beginTimer;
 
     protected ICoherenceMachine coherenceMachine;
@@ -36,6 +38,7 @@ public class Game<GAMEPLAYER extends GamePlayer>
         this.gameName = gameName;
         this.gamePlayerClass = gamePlayerClass;
         this.gamePlayers = new HashMap<>();
+        this.playerTracker = new PlayerTracker(this);
         this.beginTimer = Bukkit.getScheduler().runTaskTimerAsynchronously(SamaGamesAPI.get().getPlugin(), new BeginTimer(this), 20L, 20L);
 
         this.status = Status.WAITING_FOR_PLAYERS;
@@ -224,6 +227,11 @@ public class Game<GAMEPLAYER extends GamePlayer>
 
     public BukkitTask getBeginTimer() {
         return beginTimer;
+    }
+
+    public PlayerTracker getPlayerTracker()
+    {
+        return this.playerTracker;
     }
 
     public int getConnectedPlayers()

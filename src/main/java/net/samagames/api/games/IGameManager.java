@@ -88,6 +88,13 @@ public interface IGameManager
     IGameProperties getGameProperties();
 
     /**
+     * Get the game implemented gui manager
+     *
+     * @return The implementation
+     */
+    GameGuiManager getGameGuiManager();
+
+    /**
      * Get the max reconnect time in minutes
      *
      * @return The time

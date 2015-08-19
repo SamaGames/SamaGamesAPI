@@ -48,7 +48,19 @@ public class GamePlayer
     {
         this.spectator = true;
 
-        Bukkit.getScheduler().runTask(SamaGamesAPI.get().getPlugin(), () -> this.getPlayerIfOnline().setGameMode(GameMode.SPECTATOR));
+        Bukkit.getScheduler().runTask(SamaGamesAPI.get().getPlugin(), () ->
+        {
+            this.getPlayerIfOnline().setGameMode(GameMode.CREATIVE);
+
+            for(Player player : Bukkit.getOnlinePlayers())
+            {
+                player.hidePlayer(this.getPlayerIfOnline());
+                this.getPlayerIfOnline().hidePlayer(player);
+            }
+
+            this.getPlayerIfOnline().getInventory().setItem(0, SamaGamesAPI.get().getGameManager().getGame().getPlayerTracker());
+            this.getPlayerIfOnline().getInventory().setItem(8, SamaGamesAPI.get().getGameManager().getCoherenceMachine().getLeaveItem());
+        });
     }
 
     public UUID getUUID()
