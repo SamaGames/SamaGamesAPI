@@ -14,16 +14,19 @@ public class SpectatorListener implements Listener
     @EventHandler
     public void onPlayerInteract(PlayerInteractEvent event)
     {
-        if(event.getItem().isSimilar(SamaGamesAPI.get().getGameManager().getCoherenceMachine().getLeaveItem()))
+        if(event.getItem() != null)
         {
-            event.getPlayer().kickPlayer(null);
-            return;
-        }
+            if(event.getItem().isSimilar(SamaGamesAPI.get().getGameManager().getCoherenceMachine().getLeaveItem()))
+            {
+                event.getPlayer().kickPlayer(null);
+                return;
+            }
 
-        if(SamaGamesAPI.get().getGameManager().getGame().isSpectator(event.getPlayer()))
-        {
-            if(event.getItem().isSimilar(SamaGamesAPI.get().getGameManager().getGame().getPlayerTracker()))
-                SamaGamesAPI.get().getGameManager().getGame().getPlayerTracker().run(event.getPlayer());
+            if(SamaGamesAPI.get().getGameManager().getGame().isSpectator(event.getPlayer()))
+            {
+                if(event.getItem().isSimilar(SamaGamesAPI.get().getGameManager().getGame().getPlayerTracker()))
+                    SamaGamesAPI.get().getGameManager().getGame().getPlayerTracker().run(event.getPlayer());
+            }
         }
     }
 

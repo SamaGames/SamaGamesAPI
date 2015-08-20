@@ -3,7 +3,6 @@ package net.samagames.api;
 import net.samagames.api.achievements.IAchievementManager;
 import net.samagames.api.friends.IFriendsManager;
 import net.samagames.api.games.IGameManager;
-import net.samagames.api.games.SpectatorListener;
 import net.samagames.api.gui.IGuiManager;
 import net.samagames.api.names.IUUIDTranslator;
 import net.samagames.api.network.IProxyDataManager;
@@ -16,7 +15,6 @@ import net.samagames.api.settings.ISettingsManager;
 import net.samagames.api.shops.AbstractShopsManager;
 import net.samagames.api.stats.AbstractStatsManager;
 import net.samagames.tools.BarAPI.BarAPI;
-import org.bukkit.Bukkit;
 import org.bukkit.plugin.java.JavaPlugin;
 import redis.clients.jedis.Jedis;
 
@@ -36,8 +34,6 @@ public abstract class SamaGamesAPI {
 	protected SamaGamesAPI(JavaPlugin pluginn) {
 		instance = this;
         plugin = pluginn;
-
-        Bukkit.getPluginManager().registerEvents(new SpectatorListener(), pluginn);
     }
 
 	public static SamaGamesAPI get() {
