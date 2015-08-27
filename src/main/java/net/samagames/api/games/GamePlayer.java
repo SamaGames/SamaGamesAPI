@@ -15,6 +15,7 @@ public class GamePlayer
     protected int coins;
     protected int stars;
     protected boolean spectator;
+    protected boolean moderator;
 
     public GamePlayer(Player player)
     {
@@ -23,6 +24,7 @@ public class GamePlayer
         this.coins = 0;
         this.stars = 0;
         this.spectator = false;
+        this.moderator = false;
     }
 
     public void handleLogin(boolean reconnect)
@@ -63,6 +65,12 @@ public class GamePlayer
         });
     }
 
+    public void setModerator()
+    {
+        this.moderator = true;
+        this.setSpectator();
+    }
+
     public UUID getUUID()
     {
         return this.uuid;
@@ -91,5 +99,10 @@ public class GamePlayer
     public boolean isSpectator()
     {
         return this.spectator;
+    }
+
+    public boolean isModerator()
+    {
+        return this.moderator;
     }
 }
