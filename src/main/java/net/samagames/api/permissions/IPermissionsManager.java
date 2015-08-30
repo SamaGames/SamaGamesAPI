@@ -1,7 +1,6 @@
 package net.samagames.api.permissions;
 
-import net.samagames.permissionsapi.PermissionsAPI;
-import net.samagames.permissionsapi.permissions.PermissionEntity;
+import net.samagames.api.permissions.permissions.PermissionEntity;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
