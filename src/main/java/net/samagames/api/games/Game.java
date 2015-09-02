@@ -4,6 +4,7 @@ import net.samagames.api.SamaGamesAPI;
 import net.samagames.api.games.themachine.ICoherenceMachine;
 import net.samagames.api.games.themachine.items.PlayerTracker;
 import net.samagames.api.games.themachine.messages.templates.EarningMessageTemplate;
+import net.samagames.tools.Titles;
 import org.apache.commons.lang3.tuple.Pair;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -22,6 +23,7 @@ public class Game<GAMEPLAYER extends GamePlayer>
 
     protected final String gameCodeName;
     protected final String gameName;
+    protected final String gameDescription;
     protected final Class<GAMEPLAYER> gamePlayerClass;
     protected final HashMap<UUID, GAMEPLAYER> gamePlayers;
     protected final PlayerTracker playerTracker;
@@ -30,12 +32,13 @@ public class Game<GAMEPLAYER extends GamePlayer>
     protected ICoherenceMachine coherenceMachine;
     protected Status status;
 
-    public Game(String gameCodeName, String gameName, Class<GAMEPLAYER> gamePlayerClass)
+    public Game(String gameCodeName, String gameName, String gameDescription, Class<GAMEPLAYER> gamePlayerClass)
     {
         this.gameManager = SamaGamesAPI.get().getGameManager();
 
         this.gameCodeName = gameCodeName;
         this.gameName = gameName;
+        this.gameDescription = gameDescription;
         this.gamePlayerClass = gamePlayerClass;
         this.gamePlayers = new HashMap<>();
         this.playerTracker = new PlayerTracker(this);
@@ -65,6 +68,8 @@ public class Game<GAMEPLAYER extends GamePlayer>
             gamePlayerObject.handleLogin(false);
 
             this.gamePlayers.put(player.getUniqueId(), gamePlayerObject);
+
+            Titles.sendTitle(player, 20, 20 * 3, 20, ChatColor.DARK_AQUA + this.gameName, ChatColor.AQUA + this.gameDescription);
         }
         catch (InstantiationException | IllegalAccessException | InvocationTargetException | NoSuchMethodException e)
         {
@@ -79,7 +84,7 @@ public class Game<GAMEPLAYER extends GamePlayer>
         for(UUID gamePlayerUUID : this.gamePlayers.keySet())
             Bukkit.getPlayer(gamePlayerUUID).hidePlayer(player);
 
-        setSpectator(player);
+        this.setModerator(player);
         player.setGameMode(GameMode.SPECTATOR);
         player.sendMessage(ChatColor.GREEN + "Vous êtes invisibles aux yeux de tous, attention à vos actions !");
     }
@@ -108,7 +113,7 @@ public class Game<GAMEPLAYER extends GamePlayer>
             if(this.status != Status.IN_GAME)
                 this.gamePlayers.remove(player.getUniqueId());
 
-            gameManager.refreshArena();
+            this.gameManager.refreshArena();
         }
     }
 
@@ -129,14 +134,11 @@ public class Game<GAMEPLAYER extends GamePlayer>
         this.setStatus(Status.FINISHED);
         Bukkit.getScheduler().runTaskLater(SamaGamesAPI.get().getPlugin(), () ->
         {
-            for (UUID playerUUID : this.gamePlayers.keySet())
+            this.gamePlayers.keySet().stream().filter(playerUUID -> Bukkit.getPlayer(playerUUID) != null).forEach(playerUUID ->
             {
-                if (Bukkit.getPlayer(playerUUID) != null)
-                {
-                    EarningMessageTemplate earningMessageTemplate = this.coherenceMachine.getTemplateManager().getEarningMessageTemplate();
-                    earningMessageTemplate.execute(Bukkit.getPlayer(playerUUID), this.getPlayer(playerUUID).getCoins(), this.getPlayer(playerUUID).getStars());
-                }
-            }
+                EarningMessageTemplate earningMessageTemplate = this.coherenceMachine.getTemplateManager().getEarningMessageTemplate();
+                earningMessageTemplate.execute(Bukkit.getPlayer(playerUUID), this.getPlayer(playerUUID).getCoins(), this.getPlayer(playerUUID).getStars());
+            });
         }, 20L * 3);
 
         Bukkit.getScheduler().runTaskLater(SamaGamesAPI.get().getPlugin(), () ->
@@ -172,6 +174,11 @@ public class Game<GAMEPLAYER extends GamePlayer>
     public void setSpectator(Player player)
     {
         this.gamePlayers.get(player.getUniqueId()).setSpectator();
+    }
+
+    public void setModerator(Player player)
+    {
+        this.gamePlayers.get(player.getUniqueId()).setModerator();
     }
 
     public String getGameCodeName()
@@ -237,11 +244,11 @@ public class Game<GAMEPLAYER extends GamePlayer>
     public int getConnectedPlayers()
     {
         int i = 0;
+
         for(GamePlayer player : gamePlayers.values())
-        {
             if(!player.isSpectator())
                 i++;
-        }
+
         return i;
     }
 
