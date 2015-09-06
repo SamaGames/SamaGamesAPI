@@ -374,9 +374,9 @@ public class Game<GAMEPLAYER extends GamePlayer>
      *
      * @return The map containing the in-game players.
      */
-    public HashMap<UUID, GAMEPLAYER> getInGamePlayers()
+    public Map<UUID, GAMEPLAYER> getInGamePlayers()
     {
-        HashMap<UUID, GAMEPLAYER> inGamePlayers = new HashMap<>();
+        Map<UUID, GAMEPLAYER> inGamePlayers = new HashMap<>();
 
         for(UUID key : this.gamePlayers.keySet())
         {
@@ -398,9 +398,9 @@ public class Game<GAMEPLAYER extends GamePlayer>
      *
      * @return The map containing the spectating players.
      */
-    public HashMap<UUID, GAMEPLAYER> getSpectatorPlayers()
+    public Map<UUID, GAMEPLAYER> getSpectatorPlayers()
     {
-        HashMap<UUID, GAMEPLAYER> spectators = new HashMap<>();
+        Map<UUID, GAMEPLAYER> spectators = new HashMap<>();
 
         for(UUID key : this.gamePlayers.keySet())
         {
