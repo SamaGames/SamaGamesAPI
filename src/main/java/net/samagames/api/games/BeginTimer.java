@@ -20,12 +20,12 @@ public class BeginTimer implements Runnable
         this.time = timeStart;
         this.ready = false;
     }
- 
+
     @Override
     public void run()
     {
         int nPlayers = this.game.getConnectedPlayers();
- 
+
         if (nPlayers >= api.getGameManager().getGameProperties().getMinSlots() && !this.ready)
         {
             this.ready = true;
@@ -75,7 +75,7 @@ public class BeginTimer implements Runnable
         }
     }
 
-    public void sendSound(int seconds)
+    private void sendSound(int seconds)
     {
         boolean ring = false;
         
@@ -94,5 +94,28 @@ public class BeginTimer implements Runnable
             if (seconds == 0)
                 player.playSound(player.getLocation(), Sound.NOTE_PLING, 1, 1);
         }
+    }
+
+    /**
+     * Returns the amount of seconds left before the beginning of the game.
+     *
+     * @return The seconds left; the maximal waiting time if the counter is not started.
+     * Use {@link #isTimerRunning()} to differentiate these cases.
+     */
+    public int getSecondsLeft()
+    {
+        return time;
+    }
+
+    /**
+     * Checks if the timer is currently running, i.e. if the amount of players connected
+     * is above the minimal amount required to start the game, but the game is not started
+     * yet.
+     *
+     * @return {@code true} if the timer is running.
+     */
+    public boolean isTimerRunning()
+    {
+        return ready && time > 0;
     }
 }
