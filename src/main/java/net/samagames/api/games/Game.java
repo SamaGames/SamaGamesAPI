@@ -13,9 +13,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitTask;
 
 import java.lang.reflect.InvocationTargetException;
-import java.util.HashMap;
-import java.util.Set;
-import java.util.UUID;
+import java.util.*;
 
 
 /**
@@ -413,6 +411,40 @@ public class Game<GAMEPLAYER extends GamePlayer>
         }
 
         return spectators;
+    }
+
+    /**
+     * Return a map ({@link UUID} → {@link GamePlayer}) of the currently spectating players
+     * (moderators <strong>excluded</strong>).
+     *
+     * This map does not contains offline players who are still able to login, if the
+     * reconnection is allowed.
+     *
+     * @return The map containing the spectating players.
+     */
+    public Map<UUID, GAMEPLAYER> getVisibleSpectatingPlayers()
+    {
+        HashMap<UUID, GAMEPLAYER> spectators = new HashMap<>();
+
+        for(UUID key : this.gamePlayers.keySet())
+        {
+            final GAMEPLAYER gPlayer = this.gamePlayers.get(key);
+
+            if(gPlayer.isSpectator() && !gPlayer.isModerator())
+                spectators.put(key, gPlayer);
+        }
+
+        return spectators;
+    }
+
+    /**
+     * Return a read-only map ({@link UUID} → {@link GamePlayer}) of the registered players.
+     *
+     * @return All registered game players.
+     */
+    public Map<UUID, GAMEPLAYER> getRegisteredGamePlayers()
+    {
+        return Collections.unmodifiableMap(gamePlayers);
     }
 
     /**

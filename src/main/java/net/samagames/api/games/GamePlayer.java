@@ -4,6 +4,7 @@ import net.samagames.api.SamaGamesAPI;
 import net.samagames.api.player.AbstractPlayerData;
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 
 import java.util.UUID;
@@ -83,7 +84,7 @@ public class GamePlayer
 
             bukkitPlayer.setGameMode(GameMode.CREATIVE);
 
-            for(Player player : Bukkit.getOnlinePlayers())
+            for (Player player : Bukkit.getOnlinePlayers())
             {
                 player.hidePlayer(bukkitPlayer);
                 bukkitPlayer.hidePlayer(player);
@@ -122,6 +123,27 @@ public class GamePlayer
     public Player getPlayerIfOnline()
     {
         return Bukkit.getPlayer(this.uuid);
+    }
+
+    /**
+     * Returns the Bukkit's {@link OfflinePlayer} object representing the
+     * underlying player.
+     *
+     * @return The {@link OfflinePlayer} object.
+     */
+    public OfflinePlayer getOfflinePlayer()
+    {
+        return Bukkit.getOfflinePlayer(this.uuid);
+    }
+
+    /**
+     * Checks if the underlying player is currently online.
+     *
+     * @return {@code true} if online.
+     */
+    public boolean isOnline()
+    {
+        return getOfflinePlayer().isOnline();
     }
 
     /**
