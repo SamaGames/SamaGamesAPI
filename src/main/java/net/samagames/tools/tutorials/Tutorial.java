@@ -2,6 +2,10 @@ package net.samagames.tools.tutorials;
 
 import net.samagames.api.SamaGamesAPI;
 import org.bukkit.entity.Player;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.Listener;
+import org.bukkit.event.player.PlayerKickEvent;
+import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.scheduler.BukkitTask;
 
@@ -51,9 +55,9 @@ import java.util.concurrent.ConcurrentHashMap;
  *
  * @author Amaury Carrade
  */
-public abstract class Tutorial
+public abstract class Tutorial implements Listener
 {
-	private final Plugin p = SamaGamesAPI.get().getPlugin();
+	private final Plugin p;
 
 	/**
 	 * Map: player's UUID -> task executing the tutorial
@@ -69,6 +73,13 @@ public abstract class Tutorial
 	private long timeNeededToPlayThisTutorial = 0l;
 	private long readingTime = 50l;
 	private Long tutorialHour = null;
+
+
+	public Tutorial()
+	{
+		p = SamaGamesAPI.get().getPlugin();
+		p.getServer().getPluginManager().registerEvents(this, p);
+	}
 
 
 
@@ -291,5 +302,31 @@ public abstract class Tutorial
 	boolean isWatchingTutorial(UUID id)
 	{
 		return viewers.containsKey(id);
+	}
+
+
+
+
+	/* * ***  INTERNAL EVENTS  *** * */
+
+
+	@EventHandler
+	public void onPlayerQuits(PlayerQuitEvent ev)
+	{
+		onPlayerQuits(ev.getPlayer());
+	}
+
+	@EventHandler
+	public void onPlayerQuits(PlayerKickEvent ev)
+	{
+		onPlayerQuits(ev.getPlayer());
+	}
+
+	public void onPlayerQuits(Player player)
+	{
+		if(isWatchingTutorial(player.getUniqueId()))
+		{
+			stop(player.getUniqueId(), true);
+		}
 	}
 }
