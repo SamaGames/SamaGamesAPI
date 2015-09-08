@@ -1,6 +1,5 @@
 package net.samagames.api.games;
 
-import com.google.gson.JsonObject;
 import net.samagames.api.SamaGamesAPI;
 import net.samagames.api.games.themachine.ICoherenceMachine;
 import net.samagames.api.games.themachine.items.PlayerTracker;
@@ -14,8 +13,8 @@ import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitTask;
 
 import java.lang.reflect.InvocationTargetException;
-import java.sql.Timestamp;
 import java.util.*;
+
 
 /**
  * This class represents the game executed by the plugin using this, if applicable.
@@ -25,10 +24,8 @@ import java.util.*;
  *                    This class must be a subclass of {@link GamePlayer}. If you don't need
  *                    to store specific data about this player, use the {@link GamePlayer}
  *                    class here.
- * @param <GAMESUMMARY> The class used to make the summary of the game and save it in the
- *                     database. In the future, the players'll be able to view it.
  */
-public class Game<GAMEPLAYER extends GamePlayer, GAMESUMMARY extends GameSummary>
+public class Game<GAMEPLAYER extends GamePlayer>
 {
     protected final IGameManager gameManager;
 
@@ -36,7 +33,6 @@ public class Game<GAMEPLAYER extends GamePlayer, GAMESUMMARY extends GameSummary
     protected final String gameName;
     protected final String gameDescription;
     protected final Class<GAMEPLAYER> gamePlayerClass;
-    protected final Class<GAMESUMMARY> gameSummaryClass;
     protected final HashMap<UUID, GAMEPLAYER> gamePlayers;
     protected final PlayerTracker playerTracker;
     protected BukkitTask beginTimer;
@@ -54,9 +50,9 @@ public class Game<GAMEPLAYER extends GamePlayer, GAMESUMMARY extends GameSummary
      *                        as the {@link GAMEPLAYER} class. Use {@code GamePlayer.class}
      *                        if you are not using a custom class.
      */
-    public Game(String gameCodeName, String gameName, Class<GAMEPLAYER> gamePlayerClass, Class<GAMESUMMARY> gameSummaryClass)
+    public Game(String gameCodeName, String gameName, Class<GAMEPLAYER> gamePlayerClass)
     {
-        this(gameCodeName, gameName, "", gamePlayerClass, gameSummaryClass);
+        this(gameCodeName, gameName, "", gamePlayerClass);
     }
 
     /**
@@ -68,7 +64,7 @@ public class Game<GAMEPLAYER extends GamePlayer, GAMESUMMARY extends GameSummary
      *                        as the {@link GAMEPLAYER} class. Use {@code GamePlayer.class}
      *                        if you are not using a custom class.
      */
-    public Game(String gameCodeName, String gameName, String gameDescription, Class<GAMEPLAYER> gamePlayerClass, Class<GAMESUMMARY> gameSummaryClass)
+    public Game(String gameCodeName, String gameName, String gameDescription, Class<GAMEPLAYER> gamePlayerClass)
     {
         this.gameManager = SamaGamesAPI.get().getGameManager();
 
@@ -76,7 +72,6 @@ public class Game<GAMEPLAYER extends GamePlayer, GAMESUMMARY extends GameSummary
         this.gameName = gameName;
         this.gameDescription = gameDescription;
         this.gamePlayerClass = gamePlayerClass;
-        this.gameSummaryClass = gameSummaryClass;
         this.gamePlayers = new HashMap<>();
         this.playerTracker = new PlayerTracker(this);
         this.beginTimer = Bukkit.getScheduler().runTaskTimerAsynchronously(SamaGamesAPI.get().getPlugin(), new BeginTimer(this), 20L, 20L);
@@ -227,23 +222,6 @@ public class Game<GAMEPLAYER extends GamePlayer, GAMESUMMARY extends GameSummary
     public void handleGameEnd()
     {
         this.setStatus(Status.FINISHED);
-
-        try
-        {
-            GameSummary gameSummaryInstance = this.gameSummaryClass.getConstructor(this.getClass()).newInstance(this);
-            JsonObject gameSummary = gameSummaryInstance.make();
-
-            gameSummary.addProperty("game", this.gameCodeName);
-            gameSummary.addProperty("server", SamaGamesAPI.get().getServerName());
-            gameSummary.addProperty("timestamp", new Timestamp(new Date().getTime()).toString());
-
-            //TODO: Push to DB
-        }
-        catch (NoSuchMethodException | InstantiationException | IllegalAccessException | InvocationTargetException e)
-        {
-            e.printStackTrace();
-        }
-
         Bukkit.getScheduler().runTaskLater(SamaGamesAPI.get().getPlugin(), () ->
         {
             this.gamePlayers.keySet().stream().filter(playerUUID -> Bukkit.getPlayer(playerUUID) != null).forEach(playerUUID ->
