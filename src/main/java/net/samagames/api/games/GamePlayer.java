@@ -81,6 +81,8 @@ public class GamePlayer
         Bukkit.getScheduler().runTask(SamaGamesAPI.get().getPlugin(), () ->
         {
             final Player bukkitPlayer = this.getPlayerIfOnline();
+            if (bukkitPlayer == null)
+                return;
 
             bukkitPlayer.setGameMode(GameMode.CREATIVE);
 

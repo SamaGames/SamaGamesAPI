@@ -190,7 +190,7 @@ public class SpectatorListener implements Listener
     public void onEntityTarget(EntityTargetEvent event)
     {
         if(event.getTarget() instanceof Player)
-            if(!this.game.isGameStarted() || (this.game.isGameStarted() && this.game.isSpectator((Player) event.getEntity())))
+            if(!this.game.isGameStarted() || (this.game.isGameStarted() && this.game.isSpectator((Player) event.getTarget())))
                 event.setCancelled(true);
     }
 }

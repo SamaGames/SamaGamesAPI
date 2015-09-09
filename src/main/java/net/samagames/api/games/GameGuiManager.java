@@ -10,7 +10,7 @@ import java.util.concurrent.ConcurrentHashMap;
 
 public class GameGuiManager implements IGuiManager
 {
-    private ConcurrentHashMap<UUID, AbstractGui> playersGui;
+    private ConcurrentHashMap<UUID, AbstractGui> playersGui = new ConcurrentHashMap<>();
 
     public void openGui(Player player, AbstractGui gui)
     {
