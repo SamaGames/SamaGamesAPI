@@ -57,17 +57,7 @@ public class v1_8 extends FakeWither {
 			Class<?> PacketPlayOutSpawnEntityLiving = Util.getCraftClass("PacketPlayOutSpawnEntityLiving");
 
 			packet = PacketPlayOutSpawnEntityLiving.getConstructor(new Class<?>[] { EntityLiving }).newInstance(dragon);
-		} catch (IllegalArgumentException e) {
-			e.printStackTrace();
-		} catch (SecurityException e) {
-			e.printStackTrace();
-		} catch (InstantiationException e) {
-			e.printStackTrace();
-		} catch (IllegalAccessException e) {
-			e.printStackTrace();
-		} catch (InvocationTargetException e) {
-			e.printStackTrace();
-		} catch (NoSuchMethodException e) {
+		} catch (IllegalArgumentException | NoSuchMethodException | InvocationTargetException | IllegalAccessException | InstantiationException | SecurityException e) {
 			e.printStackTrace();
 		}
 
@@ -84,15 +74,7 @@ public class v1_8 extends FakeWither {
 			Field a = PacketPlayOutEntityDestroy.getDeclaredField("a");
 			a.setAccessible(true);
 			a.set(packet, new int[] { id });
-		} catch (SecurityException e) {
-			e.printStackTrace();
-		} catch (NoSuchFieldException e) {
-			e.printStackTrace();
-		} catch (InstantiationException e) {
-			e.printStackTrace();
-		} catch (IllegalAccessException e) {
-			e.printStackTrace();
-		} catch (IllegalArgumentException e) {
+		} catch (SecurityException | IllegalArgumentException | IllegalAccessException | InstantiationException | NoSuchFieldException e) {
 			e.printStackTrace();
 		}
 
@@ -108,17 +90,7 @@ public class v1_8 extends FakeWither {
 		Object packet = null;
 		try {
 			packet = PacketPlayOutEntityMetadata.getConstructor(new Class<?>[] { int.class, DataWatcher, boolean.class }).newInstance(id, watcher, true);
-		} catch (IllegalArgumentException e) {
-			e.printStackTrace();
-		} catch (SecurityException e) {
-			e.printStackTrace();
-		} catch (InstantiationException e) {
-			e.printStackTrace();
-		} catch (IllegalAccessException e) {
-			e.printStackTrace();
-		} catch (InvocationTargetException e) {
-			e.printStackTrace();
-		} catch (NoSuchMethodException e) {
+		} catch (IllegalArgumentException | NoSuchMethodException | InvocationTargetException | IllegalAccessException | InstantiationException | SecurityException e) {
 			e.printStackTrace();
 		}
 
@@ -142,17 +114,7 @@ public class v1_8 extends FakeWither {
 		                    (byte) ((int) loc.getPitch() * 256 / 360),
                             false);
 		    
-		} catch (IllegalArgumentException e) {
-			e.printStackTrace();
-		} catch (SecurityException e) {
-			e.printStackTrace();
-		} catch (InstantiationException e) {
-			e.printStackTrace();
-		} catch (IllegalAccessException e) {
-			e.printStackTrace();
-		} catch (InvocationTargetException e) {
-			e.printStackTrace();
-		} catch (NoSuchMethodException e) {
+		} catch (IllegalArgumentException | NoSuchMethodException | InvocationTargetException | IllegalAccessException | InstantiationException | SecurityException e) {
 			e.printStackTrace();
 		}
 
@@ -179,22 +141,7 @@ public class v1_8 extends FakeWither {
 			a.invoke(watcher, 11, (Byte) (byte) 1);
 			a.invoke(watcher, 15, (Byte) (byte) 1);
 
-		} catch (IllegalArgumentException e) {
-
-			e.printStackTrace();
-		} catch (SecurityException e) {
-
-			e.printStackTrace();
-		} catch (InstantiationException e) {
-
-			e.printStackTrace();
-		} catch (IllegalAccessException e) {
-
-			e.printStackTrace();
-		} catch (InvocationTargetException e) {
-
-			e.printStackTrace();
-		} catch (NoSuchMethodException e) {
+		} catch (IllegalArgumentException | NoSuchMethodException | InvocationTargetException | IllegalAccessException | InstantiationException | SecurityException e) {
 
 			e.printStackTrace();
 		}

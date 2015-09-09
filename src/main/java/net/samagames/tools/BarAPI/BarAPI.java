@@ -25,8 +25,8 @@ import java.util.UUID;
  */
 
 public class BarAPI implements Listener {
-	private static HashMap<UUID, FakeWither> wither_players = new HashMap<UUID, FakeWither>();
-	private static HashMap<UUID, Integer> timers = new HashMap<UUID, Integer>();
+	private static HashMap<UUID, FakeWither> wither_players = new HashMap<>();
+	private static HashMap<UUID, Integer> timers = new HashMap<>();
 
 	private static BarAPI api;
 
@@ -42,9 +42,7 @@ public class BarAPI implements Listener {
 		new BukkitRunnable() {
 			@Override
 			public void run() {
-				Bukkit.getOnlinePlayers().stream().forEach(p -> {
-					handleTeleport(p, p.getLocation());
-				});
+				Bukkit.getOnlinePlayers().stream().forEach(p -> handleTeleport(p, p.getLocation()));
 			}
 		}.runTaskTimerAsynchronously(plugin, 0, 5);
 	}

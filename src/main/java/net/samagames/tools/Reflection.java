@@ -522,7 +522,7 @@ public class Reflection {
         DOUBLE(double.class, Double.class),
         BOOLEAN(boolean.class, Boolean.class);
 
-        private static final Map<Class<?>, DataType> CLASS_MAP = new HashMap<Class<?>, DataType>();
+        private static final Map<Class<?>, DataType> CLASS_MAP = new HashMap<>();
         private final Class<?> primitive;
         private final Class<?> reference;
 
@@ -789,7 +789,7 @@ public class Reflection {
         STATUS_OUT_PONG("PacketStatusOutPong"),
         STATUS_OUT_SERVER_INFO("PacketStatusOutServerInfo");
 
-        private static final Map<String, PacketType> NAME_MAP = new HashMap<String, PacketType>();
+        private static final Map<String, PacketType> NAME_MAP = new HashMap<>();
         private final String name;
         private Class<?> packet;
 

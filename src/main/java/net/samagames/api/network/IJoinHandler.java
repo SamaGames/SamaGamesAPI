@@ -13,7 +13,7 @@ public interface IJoinHandler {
      * @param response response filled by previous handlers
      * @return filled answer
      */
-    public default JoinResponse requestJoin(UUID player, JoinResponse response) {
+    default JoinResponse requestJoin(UUID player, JoinResponse response) {
         return response;
     }
 
@@ -24,36 +24,37 @@ public interface IJoinHandler {
      * @param response The pre-filled response
      * @return Filled response
      */
-    public default JoinResponse requestPartyJoin(UUID partyLeader, Set<UUID> partyMembers, JoinResponse response) {
+    default JoinResponse requestPartyJoin(UUID partyLeader, Set<UUID> partyMembers, JoinResponse response) {
         return response;
     }
 
     /**
      * Called when an user logins on the server. It the player didn't request join, requestjoin will be fired automatically before this.
-     * @param player joining player
+     * @param player joining player UUID
+     * @param username joining player username
      */
-    public default void onLogin(UUID player) {
+    default void onLogin(UUID player, String username) {
     }
 
     /**
      * Called when an user joins the server
      * @param player joining player
      */
-    public default void finishJoin(Player player) {
+    default void finishJoin(Player player) {
     }
 
     /**
      * Called when an user joins as a moderator. Called instead of `onLogin` and `finishJoin`
      * @param player Joining player
      */
-    public default void onModerationJoin(Player player) {
+    default void onModerationJoin(Player player) {
     }
 
     /**
      * Called when an user logs out
      * @param player Leaving player
      */
-    public default void onLogout(Player player) {
+    default void onLogout(Player player) {
 
     }
 

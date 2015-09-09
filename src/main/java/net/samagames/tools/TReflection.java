@@ -158,17 +158,12 @@ public final class TReflection {
             if ((methodName == null || method.getName().equals(methodName)) && (returnType == null) || method.getReturnType().equals(returnType) && Arrays.equals(method.getParameterTypes(), params)) {
                 method.setAccessible(true);
 
-                return new MethodInvoker() {
-
-                    @Override
-                    public Object invoke(Object target, Object... arguments) {
-                        try {
-                            return method.invoke(target, arguments);
-                        } catch (Exception e) {
-                            throw new RuntimeException("Cannot invoke method " + method, e);
-                        }
+                return (target, arguments) -> {
+                    try {
+                        return method.invoke(target, arguments);
+                    } catch (Exception e) {
+                        throw new RuntimeException("Cannot invoke method " + method, e);
                     }
-
                 };
             }
         }
@@ -205,17 +200,12 @@ public final class TReflection {
             if (Arrays.equals(constructor.getParameterTypes(), params)) {
                 constructor.setAccessible(true);
 
-                return new ConstructorInvoker() {
-
-                    @Override
-                    public Object invoke(Object... arguments) {
-                        try {
-                            return constructor.newInstance(arguments);
-                        } catch (Exception e) {
-                            throw new RuntimeException("Cannot invoke constructor " + constructor, e);
-                        }
+                return arguments -> {
+                    try {
+                        return constructor.newInstance(arguments);
+                    } catch (Exception e) {
+                        throw new RuntimeException("Cannot invoke constructor " + constructor, e);
                     }
-
                 };
             }
         }

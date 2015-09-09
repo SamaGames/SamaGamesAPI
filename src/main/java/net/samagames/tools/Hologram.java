@@ -22,8 +22,8 @@ import java.util.List;
  */
 public class Hologram {
     private static final double distance = 0.23;
-    private List<String> lines = new ArrayList<String>();
-    private List<Integer> ids = new ArrayList<Integer>();
+    private List<String> lines = new ArrayList<>();
+    private List<Integer> ids = new ArrayList<>();
     private boolean showing = false;
     private Location location;
 
@@ -69,8 +69,9 @@ public class Hologram {
             }
         }
         Location first = loc.clone().add(0, (this.lines.size() / 2) * distance, 0);
-        for (int i = 0; i < this.lines.size(); i++) {
-            ids.addAll(showLine(first.clone(), this.lines.get(i)));
+        for (String line : this.lines)
+        {
+            ids.addAll(showLine(first.clone(), line));
             first.subtract(0, distance, 0);
         }
         showing = true;

@@ -194,25 +194,18 @@ public abstract class TinyProtocol {
             final ChannelPipeline pipeline = serverChannel.pipeline();
 
             // Remove channel handler
-            serverChannel.eventLoop().execute(new Runnable() {
-
-                @Override
-                public void run() {
-                    try {
-                        pipeline.remove(serverChannelHandler);
-                    } catch (NoSuchElementException e) {
-                        // That's fine
-                    }
+            serverChannel.eventLoop().execute(() -> {
+                try {
+                    pipeline.remove(serverChannelHandler);
+                } catch (NoSuchElementException e) {
+                    // That's fine
                 }
-
             });
         }
     }
 
     private void registerPlayers(Plugin plugin) {
-        for (Player player : plugin.getServer().getOnlinePlayers()) {
-            injectPlayer(player);
-        }
+        plugin.getServer().getOnlinePlayers().forEach(this::injectPlayer);
     }
 
     /**
@@ -376,14 +369,7 @@ public abstract class TinyProtocol {
         }
 
         // See ChannelInjector in ProtocolLib, line 590
-        channel.eventLoop().execute(new Runnable() {
-
-            @Override
-            public void run() {
-                channel.pipeline().remove(handlerName);
-            }
-
-        });
+        channel.eventLoop().execute(() -> channel.pipeline().remove(handlerName));
     }
 
     /**
