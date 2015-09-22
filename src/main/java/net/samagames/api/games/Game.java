@@ -227,7 +227,7 @@ public class Game<GAMEPLAYER extends GamePlayer>
                 {
                     EarningMessageTemplate earningMessageTemplate = this.coherenceMachine.getTemplateManager().getEarningMessageTemplate();
                     earningMessageTemplate.execute(Bukkit.getPlayer(playerUUID), this.getPlayer(playerUUID).getCoins(), this.getPlayer(playerUUID).getStars());
-                    this.increaseStat(playerUUID, "played_games", 1);
+                    this.increaseStat(playerUUID, "played-games", 1);
                 }), 20L * 3);
 
         Bukkit.getScheduler().runTaskLater(SamaGamesAPI.get().getPlugin(), () ->
