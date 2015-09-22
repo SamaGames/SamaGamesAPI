@@ -103,7 +103,7 @@ public class SpectatorListener implements Listener
     @EventHandler
     public void onInventoryOpenEvent(InventoryOpenEvent event)
     {
-        if(!this.game.isGameStarted() || (this.game.isGameStarted() && this.game.isSpectator((Player) event.getPlayer())))
+        if (this.game.isGameStarted() && this.game.isSpectator((Player) event.getPlayer()))
             event.setCancelled(true);
     }
 
