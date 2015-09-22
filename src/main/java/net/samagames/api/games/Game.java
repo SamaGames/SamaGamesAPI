@@ -68,7 +68,7 @@ public class Game<GAMEPLAYER extends GamePlayer>
     {
         this.gameManager = SamaGamesAPI.get().getGameManager();
 
-        this.gameCodeName = gameCodeName;
+        this.gameCodeName = gameCodeName.toLowerCase();
         this.gameName = gameName;
         this.gameDescription = gameDescription;
         this.gamePlayerClass = gamePlayerClass;
