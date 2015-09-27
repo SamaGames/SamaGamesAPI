@@ -1,7 +1,13 @@
 package net.samagames.api.games;
 
+import net.samagames.api.SamaGamesAPI;
 import net.samagames.api.games.themachine.ICoherenceMachine;
+import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.Listener;
+import org.bukkit.event.block.*;
+import org.bukkit.event.world.StructureGrowEvent;
 
 import java.util.UUID;
 
@@ -115,4 +121,65 @@ public interface IGameManager
      * @return True or False
      */
     boolean isReconnectAllowed();
+
+    default void disableNature()
+    {
+        Bukkit.getPluginManager().registerEvents(new Listener()
+        {
+            @Override
+            public int hashCode()
+            {
+                return super.hashCode();
+            }
+
+            @EventHandler
+            public void onBlockGrowEvent(BlockGrowEvent event)
+            {
+                event.setCancelled(true);
+            }
+
+            @EventHandler
+            public void onLeavesDecayEvent(LeavesDecayEvent event)
+            {
+                event.setCancelled(true);
+            }
+
+            @EventHandler
+            public void onBlockFadeEvent(BlockFadeEvent event)
+            {
+                event.setCancelled(true);
+            }
+
+            @EventHandler
+            public void onBlockPhysicsEvent(BlockPhysicsEvent event)
+            {
+                event.setCancelled(true);
+            }
+
+            @EventHandler
+            public void onBlockRedstoneEvent(BlockRedstoneEvent event)
+            {
+                event.setNewCurrent(event.getOldCurrent());
+            }
+
+            @EventHandler
+            public void onBlockSpreadEvent(BlockSpreadEvent event)
+            {
+                event.setCancelled(true);
+            }
+
+            @EventHandler
+            public void onBlockFormEvent(BlockFormEvent event)
+            {
+                event.setCancelled(true);
+            }
+
+            @EventHandler
+            public void onStructureGrowEvent(StructureGrowEvent event)
+            {
+                event.setCancelled(true);
+            }
+
+        }, SamaGamesAPI.get().getPlugin());
+    }
 }
