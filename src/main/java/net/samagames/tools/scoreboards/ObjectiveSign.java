@@ -1,7 +1,5 @@
 package net.samagames.tools.scoreboards;
 
-import org.bukkit.OfflinePlayer;
-
 import java.util.HashMap;
 
 /**
@@ -44,30 +42,23 @@ public class ObjectiveSign extends VObjective{
     public void updateLines(boolean inverse)
     {
         String old = toggleName();
-        for(OfflinePlayer op : receivers)
-        {
-            if(op.isOnline())
-            {
-                create(op.getPlayer());
-                updateScore(op.getPlayer(), inverse);
-                displayTo(op.getPlayer(), location.getLocation());
-                RawObjective.removeObjective(op.getPlayer(), old);
-                //remove(op.getPlayer());
-            }
-        }
+        //remove(op.getPlayer());
+        receivers.stream().filter(op -> op.isOnline()).forEach(op -> {
+            create(op.getPlayer());
+            updateScore(op.getPlayer(), inverse);
+            displayTo(op.getPlayer(), location.getLocation());
+            RawObjective.removeObjective(op.getPlayer(), old);
+            //remove(op.getPlayer());
+        });
     }
 
     protected void replaceScore(VScore remove, VScore add)
     {
         scores.remove(remove);
-        for(OfflinePlayer op : receivers)
-        {
-            if(op.isOnline())
-            {
-                RawObjective.updateScoreObjective(op.getPlayer(), this, add);
-                RawObjective.removeScoreObjective(op.getPlayer(), this, remove);
-            }
-        }
+        receivers.stream().filter(op -> op.isOnline()).forEach(op -> {
+            RawObjective.updateScoreObjective(op.getPlayer(), this, add);
+            RawObjective.removeScoreObjective(op.getPlayer(), this, remove);
+        });
     }
 
 

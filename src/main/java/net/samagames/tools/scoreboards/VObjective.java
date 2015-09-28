@@ -109,11 +109,7 @@ public class VObjective {
 
     public void updateScore(VScore score)
     {
-        for(OfflinePlayer op : receivers)
-        {
-            if(op.isOnline())
-                RawObjective.updateScoreObjective(op.getPlayer(), this, score);
-        }
+        receivers.stream().filter(op -> op.isOnline()).forEach(op -> RawObjective.updateScoreObjective(op.getPlayer(), this, score));
     }
 
     protected void updateScore(Player p)
@@ -131,34 +127,22 @@ public class VObjective {
         if(forceRefresh)
         {
             String old = toggleName();
-            for(OfflinePlayer op : receivers)
-            {
-                if(op.isOnline())
-                {
-                    create(op.getPlayer());
-                    RawObjective.updateScoreObjective(op.getPlayer(), this, false);
-                    displayTo(op.getPlayer(), location.getLocation());
-                    RawObjective.removeObjective(op.getPlayer(), old);
-                }
-            }
+            receivers.stream().filter(op -> op.isOnline()).forEach(op -> {
+                create(op.getPlayer());
+                RawObjective.updateScoreObjective(op.getPlayer(), this, false);
+                displayTo(op.getPlayer(), location.getLocation());
+                RawObjective.removeObjective(op.getPlayer(), old);
+            });
         }else{
-            for(OfflinePlayer op : receivers)
-            {
-                if(op.isOnline())
-                {
-                    RawObjective.updateScoreObjective(op.getPlayer(), this, false);
-                }
-            }
+            receivers.stream().filter(op -> op.isOnline()).forEach(op -> {
+                RawObjective.updateScoreObjective(op.getPlayer(), this, false);
+            });
         }
     }
 
     public void update()
     {
-        for(OfflinePlayer op : receivers)
-        {
-            if(op.isOnline())
-                RawObjective.updateObjective(op.getPlayer(), this);
-        }
+        receivers.stream().filter(op -> op.isOnline()).forEach(op -> RawObjective.updateObjective(op.getPlayer(), this));
     }
 
     public void removeScore(String score)
@@ -175,11 +159,7 @@ public class VObjective {
     public void removeScore(VScore score)
     {
         scores.remove(score);
-        for(OfflinePlayer op : receivers)
-        {
-            if(op.isOnline())
-                RawObjective.removeScoreObjective(op.getPlayer(), this, score);
-        }
+        receivers.stream().filter(op -> op.isOnline()).forEach(op -> RawObjective.removeScoreObjective(op.getPlayer(), this, score));
     }
 
     public ConcurrentLinkedQueue<VScore> getScores()

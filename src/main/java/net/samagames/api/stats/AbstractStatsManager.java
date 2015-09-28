@@ -22,5 +22,9 @@ public abstract class AbstractStatsManager {
 
 	public abstract double getStatValue(UUID player, String stat);
 
+	public abstract double getRankValue(UUID player, String stat);
+
 	public abstract Leaderboard getLeaderboard(String stat);
+
+	public abstract void clearCache();
 }

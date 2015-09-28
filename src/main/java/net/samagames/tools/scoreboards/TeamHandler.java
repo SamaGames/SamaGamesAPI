@@ -9,10 +9,7 @@ import org.bukkit.entity.Player;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.List;
+import java.util.*;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.CopyOnWriteArrayList;
 
@@ -199,7 +196,7 @@ public class TeamHandler {
         }
 
         public static void createTeam(Player p, VTeam team) {
-            sendPacket(makePacket(team, new ArrayList<String>(), 0), p);
+            sendPacket(makePacket(team, new ArrayList<>(), 0), p);
         }
 
         public static void sendTeam(Player p, VTeam team) {
@@ -207,11 +204,11 @@ public class TeamHandler {
         }
 
         public static void removeTeam(Player p, VTeam team) {
-            sendPacket(makePacket(team, new ArrayList<String>(), 1), p);
+            sendPacket(makePacket(team, new ArrayList<>(), 1), p);
         }
 
         public static void changeTeam(Player p, VTeam team) {
-            sendPacket(makePacket(team, new ArrayList<String>(), 2), p);
+            sendPacket(makePacket(team, new ArrayList<>(), 2), p);
         }
 
         public static void addPlayerToTeam(Player receiver, VTeam team, Player toadd) {
@@ -219,7 +216,7 @@ public class TeamHandler {
         }
 
         public static void addPlayerToTeam(Player receiver, VTeam team, String toadd) {
-            sendPacket(makePacket(team, Arrays.asList(toadd), 3), receiver);
+            sendPacket(makePacket(team, Collections.singletonList(toadd), 3), receiver);
         }
 
         public static void removePlayerFromTeam(Player receiver, VTeam team, Player toremove) {
@@ -228,7 +225,7 @@ public class TeamHandler {
 
         public static void removePlayerFromTeam(Player receiver, VTeam team, String toremove) {
             if (team.players.contains(toremove))
-                sendPacket(makePacket(team, Arrays.asList(toremove), 4), receiver);
+                sendPacket(makePacket(team, Collections.singletonList(toremove), 4), receiver);
         }
 
         private static PacketPlayOutScoreboardTeam makePacket(VTeam team, List<String> news, int n) {

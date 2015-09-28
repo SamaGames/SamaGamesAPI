@@ -36,7 +36,7 @@ public class Hologram {
     public Hologram(String... lines) {
         this.lines.addAll(Arrays.asList(lines));
 
-        TaskID = Bukkit.getScheduler().runTaskTimerAsynchronously(SamaGamesAPI.get().getPlugin(), () -> sendLinesForPlayers(), 10L, 10L);
+        TaskID = Bukkit.getScheduler().runTaskTimerAsynchronously(SamaGamesAPI.get().getPlugin(), this::sendLinesForPlayers, 10L, 10L);
     }
 
     private static Entity generateEntitiesForLine(Location loc, String text)

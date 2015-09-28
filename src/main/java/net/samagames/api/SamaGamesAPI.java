@@ -52,7 +52,6 @@ public abstract class SamaGamesAPI {
 
 	public abstract String getServerName();
 
-    public abstract Jedis getResource();
     public abstract Jedis getBungeeResource();
 
 	public abstract AbstractStatsManager getStatsManager(String game);
