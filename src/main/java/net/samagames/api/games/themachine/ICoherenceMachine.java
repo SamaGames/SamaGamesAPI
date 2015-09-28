@@ -15,6 +15,12 @@ public interface ICoherenceMachine
     void setStartCountdownCatchPhrase(String phrase);
 
     /**
+     * Définir une abréviation pour le nom du jeu dans le chat
+     * @param shortcut L'abréviation
+     */
+    void setNameShortcut(String shortcut);
+
+    /**
      * Renvoi le tag du jeu pour les messages dans le chat
      * @return Tag du jeu
      */
@@ -55,4 +61,10 @@ public interface ICoherenceMachine
      * @return Le message
      */
     String getStartCountdownCatchPhrase();
+
+    /**
+     * Renvoi l'abréviation du nom du jeu dans le chat
+     * @return L'abréviation
+     */
+    String getNameShortcut();
 }
