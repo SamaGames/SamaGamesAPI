@@ -9,6 +9,12 @@ import org.bukkit.inventory.ItemStack;
 public interface ICoherenceMachine
 {
     /**
+     * Définir le message sous le compteur au début de la partie (< 5 secondes)
+     * @param phrase La phrase
+     */
+    void setStartCountdownCatchPhrase(String phrase);
+
+    /**
      * Renvoi le tag du jeu pour les messages dans le chat
      * @return Tag du jeu
      */
@@ -43,4 +49,10 @@ public interface ICoherenceMachine
      * @return L'objet
      */
     ItemStack getLeaveItem();
+
+    /**
+     * Renvoi le message sous le compteur au début de la partie (< 5 secondes)
+     * @return Le message
+     */
+    String getStartCountdownCatchPhrase();
 }

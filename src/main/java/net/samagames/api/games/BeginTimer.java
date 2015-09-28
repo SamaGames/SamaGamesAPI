@@ -1,7 +1,9 @@
 package net.samagames.api.games;
 
 import net.samagames.api.SamaGamesAPI;
+import net.samagames.tools.Titles;
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 
@@ -47,24 +49,29 @@ public class BeginTimer implements Runnable
         if (this.ready)
         {
             this.time--;
-            double pourcentPlayer = (game.getConnectedPlayers()/api.getGameManager().getGameProperties().getMaxSlots());
+            double pourcentPlayer = (game.getConnectedPlayers() / api.getGameManager().getGameProperties().getMaxSlots());
 
             if(time > 5 && pourcentPlayer >= 0.98)
-            {
                 time = 5;
-            }
 
             if(time < 5 || (time > 5 && time % 10 == 0))
                 api.getGameManager().getCoherenceMachine().getMessageManager().writeGameStartIn(this.time);
+
+            if(time <= 5)
+                for (Player player : Bukkit.getOnlinePlayers())
+                    Titles.sendTitle(player, 0, 22, 0, ChatColor.RED + "" + ChatColor.BOLD + time, ChatColor.YELLOW + api.getGameManager().getCoherenceMachine().getStartCountdownCatchPhrase());
 
             this.sendSound(this.time);
             
             if(this.time <= 0)
             {
-                Bukkit.getScheduler().runTask(api.getPlugin(), () -> {
-                    try{
+                Bukkit.getScheduler().runTask(api.getPlugin(), () ->
+                {
+                    try
+                    {
                         game.startGame();
-                    }catch (Exception e)
+                    }
+                    catch (Exception e)
                     {
                         e.printStackTrace();
                     }
