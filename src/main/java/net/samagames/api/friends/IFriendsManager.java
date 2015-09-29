@@ -55,4 +55,11 @@ public interface IFriendsManager {
 	 */
 	public List<String> sentRequests(UUID asking);
 
+	/**
+	 * Permet de supprimer un ami
+	 * @param asking La personne souhaitant la supression
+	 * @param target La personne ciblé par cette supression
+	 * @return
+	 */
+	public boolean removeFriend(UUID asking, UUID target);
 }
