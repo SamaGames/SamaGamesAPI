@@ -87,10 +87,7 @@ public class GamePlayer
             bukkitPlayer.setGameMode(GameMode.CREATIVE);
 
             for (Player player : Bukkit.getOnlinePlayers())
-            {
                 player.hidePlayer(bukkitPlayer);
-                bukkitPlayer.hidePlayer(player);
-            }
 
             bukkitPlayer.getInventory().setItem(0, SamaGamesAPI.get().getGameManager().getGame().getPlayerTracker());
             bukkitPlayer.getInventory().setItem(8, SamaGamesAPI.get().getGameManager().getCoherenceMachine().getLeaveItem());

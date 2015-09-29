@@ -122,7 +122,7 @@ public class Game<GAMEPLAYER extends GamePlayer>
 
             this.gamePlayers.put(player.getUniqueId(), gamePlayerObject);
 
-            Titles.sendTitle(player, 20, 20 * 3, 20, ChatColor.DARK_AQUA + this.gameName, ChatColor.AQUA + this.gameDescription);
+            Titles.sendTitle(player, 20, 20 * 3, 20, ChatColor.DARK_AQUA + "" + ChatColor.BOLD + this.gameName, ChatColor.AQUA + this.gameDescription);
         }
         catch (InstantiationException | IllegalAccessException | InvocationTargetException | NoSuchMethodException e)
         {
