@@ -54,10 +54,10 @@ public class BeginTimer implements Runnable
             if(time > 5 && pourcentPlayer >= 0.98)
                 time = 5;
 
-            if(time < 5 || (time > 5 && time % 10 == 0))
+            if((time < 5 && time > 0) || (time > 5 && time % 10 == 0))
                 api.getGameManager().getCoherenceMachine().getMessageManager().writeGameStartIn(this.time);
 
-            if(time <= 5)
+            if(time <= 5 && time > 0)
                 for (Player player : Bukkit.getOnlinePlayers())
                     Titles.sendTitle(player, 0, 22, 0, ChatColor.RED + "" + ChatColor.BOLD + time, ChatColor.YELLOW + api.getGameManager().getCoherenceMachine().getStartCountdownCatchPhrase());
 
