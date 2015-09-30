@@ -74,7 +74,6 @@ public class Game<GAMEPLAYER extends GamePlayer>
         this.gamePlayerClass = gamePlayerClass;
         this.gamePlayers = new HashMap<>();
         this.playerTracker = new PlayerTracker(this);
-        this.beginTimer = Bukkit.getScheduler().runTaskTimerAsynchronously(SamaGamesAPI.get().getPlugin(), new BeginTimer(this), 20L, 20L);
 
         this.status = Status.WAITING_FOR_PLAYERS;
     }
@@ -102,6 +101,7 @@ public class Game<GAMEPLAYER extends GamePlayer>
     public void handlePostRegistration()
     {
         this.coherenceMachine = this.gameManager.getCoherenceMachine();
+        this.beginTimer = Bukkit.getScheduler().runTaskTimerAsynchronously(SamaGamesAPI.get().getPlugin(), new BeginTimer(this), 20L, 20L);
     }
 
     /**
