@@ -14,7 +14,6 @@ public class BeginTimer implements Runnable
     private final SamaGamesAPI api;
     private int time;
     private boolean ready;
-    private String catchPhrase;
 
     public BeginTimer(Game game)
     {
@@ -22,7 +21,6 @@ public class BeginTimer implements Runnable
         this.api = SamaGamesAPI.get();
         this.time = timeStart;
         this.ready = false;
-        this.catchPhrase = this.api.getGameManager().getCoherenceMachine().getStartCountdownCatchPhrase();
     }
 
     @Override
@@ -30,48 +28,48 @@ public class BeginTimer implements Runnable
     {
         int nPlayers = this.game.getConnectedPlayers();
 
-        if (nPlayers >= this.api.getGameManager().getGameProperties().getMinSlots() && !this.ready)
+        if (nPlayers >= api.getGameManager().getGameProperties().getMinSlots() && !this.ready)
         {
             this.ready = true;
             this.game.setStatus(Status.READY_TO_START);
-            this.time = this.timeStart;
+            this.time = timeStart;
         }
 
-        if (nPlayers < this.api.getGameManager().getGameProperties().getMinSlots() && this.ready)
+        if (nPlayers < api.getGameManager().getGameProperties().getMinSlots() && this.ready)
         {
             this.ready = false;
             this.game.setStatus(Status.WAITING_FOR_PLAYERS);
 
-            this.api.getGameManager().getCoherenceMachine().getMessageManager().writeNotEnougthPlayersToStart();
+            api.getGameManager().getCoherenceMachine().getMessageManager().writeNotEnougthPlayersToStart();
             
             for (Player p : Bukkit.getOnlinePlayers())
-                p.setLevel(this.timeStart);
+                p.setLevel(timeStart);
         }
 
         if (this.ready)
         {
             this.time--;
-            double pourcentPlayer = (this.game.getConnectedPlayers() / this.api.getGameManager().getGameProperties().getMaxSlots());
+            double pourcentPlayer = (game.getConnectedPlayers() / api.getGameManager().getGameProperties().getMaxSlots());
 
-            if(this.time > 5 && pourcentPlayer >= 0.98)
-                this.time = 5;
+            if(time > 5 && pourcentPlayer >= 0.98)
+                time = 5;
 
-            if((this.time < 5 && this.time > 0) || (this.time > 5 && this.time % 10 == 0))
+            if((time < 5 && time > 0) || (time > 5 && time % 10 == 0))
                 api.getGameManager().getCoherenceMachine().getMessageManager().writeGameStartIn(this.time);
 
-            if(this.time <= 5 && this.time > 0)
+            if(time <= 5 && time > 0)
                 for (Player player : Bukkit.getOnlinePlayers())
-                    Titles.sendTitle(player, 0, 22, 0, ChatColor.RED + "" + ChatColor.BOLD + this.time, ChatColor.YELLOW + this.catchPhrase);
+                    Titles.sendTitle(player, 0, 22, 0, ChatColor.RED + "" + ChatColor.BOLD + time, ChatColor.YELLOW + api.getGameManager().getCoherenceMachine().getStartCountdownCatchPhrase());
 
             this.sendSound(this.time);
             
             if(this.time <= 0)
             {
-                Bukkit.getScheduler().runTask(this.api.getPlugin(), () ->
+                Bukkit.getScheduler().runTask(api.getPlugin(), () ->
                 {
                     try
                     {
-                        this.game.startGame();
+                        game.startGame();
                     }
                     catch (Exception e)
                     {
@@ -79,14 +77,9 @@ public class BeginTimer implements Runnable
                     }
                 });
 
-                this.game.getBeginTimerTask().cancel();
+                game.getBeginTimer().cancel();
             }
         }
-    }
-
-    public void setCatchPhrase(String phrase)
-    {
-        this.catchPhrase = phrase;
     }
 
     private void sendSound(int seconds)
@@ -118,7 +111,7 @@ public class BeginTimer implements Runnable
      */
     public int getSecondsLeft()
     {
-        return this.time;
+        return time;
     }
 
     /**
@@ -130,6 +123,6 @@ public class BeginTimer implements Runnable
      */
     public boolean isTimerRunning()
     {
-        return this.ready && this.time > 0;
+        return ready && time > 0;
     }
 }
