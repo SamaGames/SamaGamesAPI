@@ -340,6 +340,16 @@ public class Game<GAMEPLAYER extends GamePlayer>
     }
 
     /**
+     * Returns the CoherenceMachine instance
+     *
+     * @return The instance
+     */
+    public ICoherenceMachine getCoherenceMachine()
+    {
+        return this.coherenceMachine;
+    }
+
+    /**
      * Set the game's status. You'll never have to use this normally.
      *
      * @param status The new status.
