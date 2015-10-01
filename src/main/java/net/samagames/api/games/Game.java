@@ -35,7 +35,8 @@ public class Game<GAMEPLAYER extends GamePlayer>
     protected final Class<GAMEPLAYER> gamePlayerClass;
     protected final HashMap<UUID, GAMEPLAYER> gamePlayers;
     protected final PlayerTracker playerTracker;
-    protected BukkitTask beginTimer;
+    protected BeginTimer beginTimer;
+    protected BukkitTask beginTimerTask;
 
     protected ICoherenceMachine coherenceMachine;
     protected Status status;
@@ -87,7 +88,7 @@ public class Game<GAMEPLAYER extends GamePlayer>
      */
     public void startGame()
     {
-        this.beginTimer.cancel();
+        this.beginTimerTask.cancel();
         this.setStatus(Status.IN_GAME);
 
         this.coherenceMachine.getMessageManager().writeGameStart();
@@ -101,7 +102,8 @@ public class Game<GAMEPLAYER extends GamePlayer>
     public void handlePostRegistration()
     {
         this.coherenceMachine = this.gameManager.getCoherenceMachine();
-        this.beginTimer = Bukkit.getScheduler().runTaskTimerAsynchronously(SamaGamesAPI.get().getPlugin(), new BeginTimer(this), 20L, 20L);
+        this.beginTimer = new BeginTimer(this);
+        this.beginTimerTask = Bukkit.getScheduler().runTaskTimerAsynchronously(SamaGamesAPI.get().getPlugin(), this.beginTimer, 20L, 20L);
     }
 
     /**
@@ -449,10 +451,21 @@ public class Game<GAMEPLAYER extends GamePlayer>
     /**
      * Returns the timer used to count down the time when the game is not started.
      *
-     * @return The timer.
+     * @return The timer (instance)
      */
-    public BukkitTask getBeginTimer() {
-        return beginTimer;
+    public BeginTimer getBeginTimer()
+    {
+        return this.beginTimer;
+    }
+
+    /**
+     * Returns the timer used to count down the time when the game is not started.
+     *
+     * @return The timer (task)
+     */
+    public BukkitTask getBeginTimerTask()
+    {
+        return this.beginTimerTask;
     }
 
     /**
