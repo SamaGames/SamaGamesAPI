@@ -21,10 +21,6 @@ import org.bukkit.event.player.PlayerPickupItemEvent;
 import org.bukkit.event.player.PlayerTeleportEvent;
 import org.bukkit.util.Vector;
 
-import java.io.ByteArrayOutputStream;
-import java.io.DataOutputStream;
-import java.io.IOException;
-
 public class SpectatorListener implements Listener
 {
     private Game game;
@@ -48,20 +44,7 @@ public class SpectatorListener implements Listener
                 {
                     event.setCancelled(true);
 
-                    ByteArrayOutputStream b = new ByteArrayOutputStream();
-                    DataOutputStream out = new DataOutputStream(b);
-
-                    try
-                    {
-                        out.writeUTF("Connect");
-                        out.writeUTF("lobby");
-                    }
-                    catch (IOException e)
-                    {
-                        Bukkit.getLogger().info("You'll never see me!");
-                    }
-
-                    event.getPlayer().sendPluginMessage(SamaGamesAPI.get().getPlugin(), "BungeeCord", b.toByteArray());
+                    SamaGamesAPI.get().getProxyDataManager().apiexec("connect", event.getPlayer().getUniqueId().toString(), "lobby");
 
                     return;
                 }
