@@ -5,6 +5,7 @@ import net.samagames.api.friends.IFriendsManager;
 import net.samagames.api.games.IGameManager;
 import net.samagames.api.gui.IGuiManager;
 import net.samagames.api.names.IUUIDTranslator;
+import net.samagames.api.network.IJoinManager;
 import net.samagames.api.network.IProxyDataManager;
 import net.samagames.api.parties.IPartiesManager;
 import net.samagames.api.permissions.IPermissionsManager;
@@ -70,6 +71,7 @@ public abstract class SamaGamesAPI {
 	public abstract IPartiesManager getPartiesManager();
 
 	public abstract BarAPI getBarAPI();
+	public abstract IJoinManager getJoinManager();
 
 	public abstract IPermissionsManager getPermissionsManager();
 
