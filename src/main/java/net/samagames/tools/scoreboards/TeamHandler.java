@@ -314,7 +314,7 @@ public class TeamHandler {
         }
 
         public void setPrefix(String p) {
-            prefix = p;
+            prefix = p.substring(0, Math.min(p.length(), 16));
         }
 
         public String getSuffix() {
@@ -322,7 +322,7 @@ public class TeamHandler {
         }
 
         public void setSuffix(String s) {
-            suffix = s;
+            suffix =  s.substring(0, Math.min(s.length(), 16));
         }
 
         public boolean contains(OfflinePlayer op) {
