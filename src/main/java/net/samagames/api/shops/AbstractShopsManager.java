@@ -108,4 +108,10 @@ public abstract class AbstractShopsManager {
     public void setCurrentLevel(Player player, String item, String level) {
         setCurrentLevel(player.getUniqueId(), item, level);
     }
+
+    public abstract void resetLevel(UUID uuid, String item);
+
+    public void resetLevel(Player player, String item) {
+        resetLevel(player.getUniqueId(), item);
+    }
 }
