@@ -12,10 +12,12 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockCanBuildEvent;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
+import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.EntityTargetEvent;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryOpenEvent;
 import org.bukkit.event.inventory.InventoryType;
+import org.bukkit.event.player.PlayerExpChangeEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerPickupItemEvent;
 import org.bukkit.event.player.PlayerTeleportEvent;
@@ -163,6 +165,15 @@ public class SpectatorListener implements Listener
     }
 
     @EventHandler
+    public void onEntityDamageEvent(final EntityDamageByEntityEvent e)
+    {
+        if(e.getDamager() instanceof Player && this.game.isSpectator((Player) e.getEntity()))
+        {
+            e.setCancelled(true);
+        }
+    }
+
+    @EventHandler
     public void onPlayerPickItem(PlayerPickupItemEvent event)
     {
         if(!this.game.isGameStarted() || (this.game.isGameStarted() && this.game.isSpectator(event.getPlayer())))
@@ -173,7 +184,10 @@ public class SpectatorListener implements Listener
     public void onEntityTarget(EntityTargetEvent event)
     {
         if(event.getTarget() instanceof Player)
-            if(!this.game.isGameStarted() || (this.game.isGameStarted() && this.game.isSpectator((Player) event.getTarget())))
+            if(!this.game.isGameStarted() || this.game.isSpectator((Player) event.getTarget()))
+            {
                 event.setCancelled(true);
+                event.setTarget(null);
+            }
     }
 }
