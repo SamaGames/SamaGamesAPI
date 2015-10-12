@@ -2,7 +2,9 @@ package net.samagames.api.games;
 
 import net.samagames.api.SamaGamesAPI;
 import net.samagames.api.player.AbstractPlayerData;
+import net.samagames.tools.chat.fanciful.FancyMessage;
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.GameMode;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
@@ -81,16 +83,16 @@ public class GamePlayer
         Bukkit.getScheduler().runTask(SamaGamesAPI.get().getPlugin(), () ->
         {
             final Player bukkitPlayer = this.getPlayerIfOnline();
+
             if (bukkitPlayer == null)
                 return;
 
-            bukkitPlayer.setGameMode(GameMode.CREATIVE);
+            bukkitPlayer.setGameMode(GameMode.SPECTATOR);
 
             for (Player player : Bukkit.getOnlinePlayers())
                 player.hidePlayer(bukkitPlayer);
 
-            //bukkitPlayer.getInventory().setItem(0, SamaGamesAPI.get().getGameManager().getGame().getPlayerTracker());
-            bukkitPlayer.getInventory().setItem(8, SamaGamesAPI.get().getGameManager().getCoherenceMachine().getLeaveItem());
+            new FancyMessage("Cliquez ").style(ChatColor.YELLOW, ChatColor.BOLD).then("[ICI]").style(ChatColor.AQUA, ChatColor.BOLD).then(" pour retourner au hub !").style(ChatColor.YELLOW, ChatColor.BOLD).send(bukkitPlayer);
         });
     }
 
