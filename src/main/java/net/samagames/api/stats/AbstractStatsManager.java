@@ -27,4 +27,6 @@ public abstract class AbstractStatsManager {
 	public abstract Leaderboard getLeaderboard(String stat);
 
 	public abstract void clearCache();
+
+	public abstract void finish();
 }

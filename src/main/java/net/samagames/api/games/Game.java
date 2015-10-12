@@ -236,7 +236,15 @@ public class Game<GAMEPLAYER extends GamePlayer>
                 this.gameManager.kickPlayer(player, null);
         }, 20L * 10);
 
-        Bukkit.getScheduler().runTaskLater(SamaGamesAPI.get().getPlugin(), Bukkit::shutdown, 20L * 15);
+        Bukkit.getScheduler().runTaskLater(SamaGamesAPI.get().getPlugin(), new Runnable()
+        {
+            @Override
+            public void run()
+            {
+                SamaGamesAPI.get().getStatsManager(gameCodeName).finish();
+                Bukkit.shutdown();
+            }
+        }, 20L * 15);
     }
 
     /**

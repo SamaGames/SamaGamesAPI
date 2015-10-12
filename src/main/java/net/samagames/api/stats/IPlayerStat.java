@@ -10,4 +10,5 @@ public interface IPlayerStat
     String getStat();
     long getRank();
     double getValue();
+    void send();
 }
