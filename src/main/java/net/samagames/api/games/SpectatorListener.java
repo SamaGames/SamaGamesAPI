@@ -17,10 +17,7 @@ import org.bukkit.event.entity.EntityTargetEvent;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryOpenEvent;
 import org.bukkit.event.inventory.InventoryType;
-import org.bukkit.event.player.PlayerExpChangeEvent;
-import org.bukkit.event.player.PlayerInteractEvent;
-import org.bukkit.event.player.PlayerPickupItemEvent;
-import org.bukkit.event.player.PlayerTeleportEvent;
+import org.bukkit.event.player.*;
 import org.bukkit.util.Vector;
 
 public class SpectatorListener implements Listener
@@ -190,4 +187,25 @@ public class SpectatorListener implements Listener
                 event.setTarget(null);
             }
     }
-}
+
+
+    @EventHandler
+    public void onBukket(PlayerBucketFillEvent event)
+    {
+        if (!this.game.isGameStarted() || (this.game.isGameStarted() && this.game.isSpectator(event.getPlayer())))
+            event.setCancelled(true);
+    }
+
+    @EventHandler
+    public void onPlayerBucketEmpty(PlayerBucketEmptyEvent event) {
+        if (!this.game.isGameStarted() || (this.game.isGameStarted() && this.game.isSpectator(event.getPlayer())))
+        {
+            // Force client update to avoid lava render when cancelled
+            event.getPlayer().getWorld().getBlockAt(event.getBlockClicked().getLocation().add(event.getBlockFace().getModX(), event.getBlockFace().getModY(), event.getBlockFace().getModZ())).setType(Material.AIR);
+
+            // Force client update to avoid sync problems when cancelled
+            event.getPlayer().getItemInHand().setType(event.getBucket());
+            event.setCancelled(true);
+        }
+    }
+    }
