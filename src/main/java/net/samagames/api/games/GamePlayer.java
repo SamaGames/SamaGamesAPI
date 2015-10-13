@@ -92,7 +92,7 @@ public class GamePlayer
             for (Player player : Bukkit.getOnlinePlayers())
                 player.hidePlayer(bukkitPlayer);
 
-            new FancyMessage("Cliquez ").style(ChatColor.YELLOW, ChatColor.BOLD).then("[ICI]").style(ChatColor.AQUA, ChatColor.BOLD).then(" pour retourner au hub !").style(ChatColor.YELLOW, ChatColor.BOLD).send(bukkitPlayer);
+            new FancyMessage("Cliquez ").color(ChatColor.YELLOW).style(ChatColor.BOLD).then("[ICI]").color(ChatColor.AQUA).style(ChatColor.BOLD).then(" pour retourner au hub !").color(ChatColor.YELLOW).style(ChatColor.BOLD).send(bukkitPlayer);
         });
     }
 
