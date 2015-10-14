@@ -10,6 +10,7 @@ import java.util.UUID;
  * (C) Copyright Elydra Network 2015
  * All rights reserved.
  */
+@Deprecated
 public interface IFriendsManager {
 
 	/**
