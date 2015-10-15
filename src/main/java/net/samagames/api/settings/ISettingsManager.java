@@ -30,6 +30,15 @@ public interface ISettingsManager {
     public void setSetting(UUID player, String setting, String value);
 
 	/**
+	 * Définit la valeur d'un paramètre pour un joueur
+	 * @param player	Joueur a modifier
+	 * @param setting	Paramètre a modifier
+	 * @param value		Valeur à définir
+	 * @param callback  Callback
+	 */
+	public void setSetting(UUID player, String setting, String value, Runnable callback);
+
+	/**
 	 * Permet de savoir si une option est activée
 	 * @param player	Joueur a récupérer
 	 * @param option	Option à récupérer
