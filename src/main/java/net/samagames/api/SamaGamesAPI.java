@@ -16,6 +16,7 @@ import net.samagames.api.settings.ISettingsManager;
 import net.samagames.api.shops.AbstractShopsManager;
 import net.samagames.api.stats.AbstractStatsManager;
 import net.samagames.tools.BarAPI.BarAPI;
+import net.samagames.tools.npc.NPCManager;
 import org.bukkit.plugin.java.JavaPlugin;
 import redis.clients.jedis.Jedis;
 
@@ -75,4 +76,5 @@ public abstract class SamaGamesAPI {
 
 	public abstract IPermissionsManager getPermissionsManager();
 
+	public abstract NPCManager getNPCManager();
 }
