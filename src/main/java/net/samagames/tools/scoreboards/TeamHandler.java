@@ -53,7 +53,16 @@ public class TeamHandler {
 
     public boolean addPlayerToTeam(OfflinePlayer p, VTeam team)
     {
-        return addPlayerToTeam(p.getName(), team);
+        while(removeFromAllTeams(p)){}
+
+        team.addPlayer(p);
+        for(OfflinePlayer offlinePlayer : receivers)
+        {
+            if(!offlinePlayer.isOnline())
+                continue;
+            RawTeam.addPlayerToTeam(offlinePlayer.getPlayer(), team, p.getName());
+        }
+        return true;
     }
 
     public boolean addPlayerToTeam(String p, VTeam team)
@@ -253,7 +262,7 @@ public class TeamHandler {
                 Reflection.setValue(packet, "b", team.getDisplayName());
                 Reflection.setValue(packet, "c", team.getPrefix());
                 Reflection.setValue(packet, "d", team.getSuffix());
-                Reflection.setValue(packet, "e", team.getNameVisible());
+                Reflection.setValue(packet, "e", team.getNameVisible().e);
                 Reflection.setValue(packet, "i", 0);
                 Reflection.setValue(packet, "f", -1);
                 Reflection.setValue(packet, "g", (Collection) news);
