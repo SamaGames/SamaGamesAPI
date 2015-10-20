@@ -58,16 +58,13 @@ public class NPCEntity {
         return entityHuman;
     }
 
-    public void firstSpawn(Player player)
-    {
-        sendPacket(player, new PacketPlayOutPlayerInfo(PacketPlayOutPlayerInfo.EnumPlayerInfoAction.ADD_PLAYER, entityPlayer));
-        spawnEntity(player);
-        sendPacket(player, new PacketPlayOutPlayerInfo(PacketPlayOutPlayerInfo.EnumPlayerInfoAction.REMOVE_PLAYER, entityPlayer));
-    }
-
     public void spawnEntity(Player player)
     {
+        sendPacket(player, new PacketPlayOutPlayerInfo(PacketPlayOutPlayerInfo.EnumPlayerInfoAction.ADD_PLAYER, entityPlayer));
         sendPacket(player, generateSpawnPacket(entityPlayer));
+        sendPacket(player, new PacketPlayOutEntity.PacketPlayOutEntityLook(entityPlayer.getId(), (byte)entityPlayer.yaw, (byte)entityPlayer.pitch, true));
+        //sendPacket(player, new PacketPlayOutEntityMetadata(entityPlayer.getId(), entityPlayer.getDataWatcher()));
+        sendPacket(player, new PacketPlayOutPlayerInfo(PacketPlayOutPlayerInfo.EnumPlayerInfoAction.REMOVE_PLAYER, entityPlayer));
     }
 
     public void destroyEntity(Player player)
@@ -78,6 +75,16 @@ public class NPCEntity {
     protected Packet generateSpawnPacket(EntityHuman entityHuman)
     {
         return new PacketPlayOutNamedEntitySpawn(entityHuman);
+    }
+
+    public EntityPlayer getEntityPlayer()
+    {
+        return entityPlayer;
+    }
+
+    public void setEntityPlayer(EntityPlayer entityPlayer)
+    {
+        this.entityPlayer = entityPlayer;
     }
 
     public Packet generateDestroyPacket(EntityHuman human)

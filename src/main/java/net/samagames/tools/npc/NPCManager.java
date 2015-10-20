@@ -111,7 +111,7 @@ public class NPCManager {
         for(NPCEntity entity : entities)
         {
             entity.addReceiver(player.getUniqueId());
-            entity.firstSpawn(player);
+            entity.spawnEntity(player);
         }
     }
 
