@@ -50,9 +50,11 @@ public class NPCEntity {
         WorldServer world = ((CraftWorld) position.getWorld()).getHandle();
         PlayerInteractManager playerInteractManager = new PlayerInteractManager(world);
         EntityPlayer entityHuman = new EntityPlayer(world.getServer().getServer(), world, gameProfile, playerInteractManager);
-        entityHuman.setPosition(position.getX(),
+        entityHuman.setLocation(position.getX(),
                 position.getY(),
-                position.getZ());
+                position.getZ(),
+                position.getYaw(),
+                position.getPitch());
         return entityHuman;
     }
 
