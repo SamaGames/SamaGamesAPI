@@ -53,16 +53,7 @@ public class TeamHandler {
 
     public boolean addPlayerToTeam(OfflinePlayer p, VTeam team)
     {
-        while(removeFromAllTeams(p)){}
-
-        team.addPlayer(p);
-        for(OfflinePlayer offlinePlayer : receivers)
-        {
-            if(!offlinePlayer.isOnline())
-                continue;
-            RawTeam.addPlayerToTeam(offlinePlayer.getPlayer(), team, p.getName());
-        }
-        return true;
+        return addPlayerToTeam(p.getName(), team);
     }
 
     public boolean addPlayerToTeam(String p, VTeam team)
