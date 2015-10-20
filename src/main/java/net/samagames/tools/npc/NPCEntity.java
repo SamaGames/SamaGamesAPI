@@ -53,8 +53,6 @@ public class NPCEntity {
         entityHuman.setPosition(position.getX(),
                 position.getY(),
                 position.getZ());
-        entityHuman.setSneaking(true);
-        entityHuman.setInvisible(true);
         return entityHuman;
     }
 
