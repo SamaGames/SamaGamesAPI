@@ -53,6 +53,11 @@ public class TeamHandler {
 
     public boolean addPlayerToTeam(OfflinePlayer p, VTeam team)
     {
+        return addPlayerToTeam(p.getName(), team);
+    }
+
+    public boolean addPlayerToTeam(String p, VTeam team)
+    {
         while(removeFromAllTeams(p)){}
 
         team.addPlayer(p);
@@ -60,7 +65,7 @@ public class TeamHandler {
         {
             if(!offlinePlayer.isOnline())
                 continue;
-            RawTeam.addPlayerToTeam(offlinePlayer.getPlayer(), team, p.getName());
+            RawTeam.addPlayerToTeam(offlinePlayer.getPlayer(), team, p);
         }
         return true;
     }
@@ -77,9 +82,12 @@ public class TeamHandler {
         return true;
     }
 
-    protected boolean removeFromAllTeams(OfflinePlayer offlinePlayer) {
-        String player = offlinePlayer.getName();
+    protected boolean removeFromAllTeams(OfflinePlayer offlinePlayer)
+    {
+        return removeFromAllTeams(offlinePlayer.getName());
+    }
 
+    protected boolean removeFromAllTeams(String player) {
         for (VTeam team : teams) {
             for (String op : team.getPlayers()) {
                 if (player.equals(op)) {
@@ -341,6 +349,10 @@ public class TeamHandler {
 
         public void addPlayer(OfflinePlayer op) {
             players.add(op.getName());
+        }
+
+        public void addPlayer(String op) {
+            players.add(op);
         }
 
         public void removePlayer(OfflinePlayer op) {
