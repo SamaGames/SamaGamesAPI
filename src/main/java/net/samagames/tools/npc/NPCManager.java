@@ -1,12 +1,14 @@
 package net.samagames.tools.npc;
 
 import net.samagames.api.SamaGamesAPI;
+import net.samagames.tools.CallBack;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 
+import javax.security.auth.callback.Callback;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -27,6 +29,8 @@ public class NPCManager {
     private List<NPCEntity> entities = new ArrayList<>();
 
     protected List<OfflinePlayer> receivers = new ArrayList<>();
+
+    private CallBack<NPCEntity> scoreBoardRegister;
 
     public NPCManager(SamaGamesAPI api)
     {
@@ -49,6 +53,9 @@ public class NPCManager {
     {
         NPCEntity entity = new NPCEntity(uuid, ("[NPC]"+entities.size()), location);
         entities.add(entity);
+        if(scoreBoardRegister != null)
+            scoreBoardRegister.done(entity, null);
+
         return entity;
     }
 
@@ -118,4 +125,7 @@ public class NPCManager {
         }
     }
 
+    public void setScoreBoardRegister(CallBack<NPCEntity> scoreBoardRegister) {
+        this.scoreBoardRegister = scoreBoardRegister;
+    }
 }

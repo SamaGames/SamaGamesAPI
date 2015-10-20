@@ -245,7 +245,7 @@ public class TeamHandler {
                 Reflection.setValue(packet, "b", team.getDisplayName());
                 Reflection.setValue(packet, "c", team.getPrefix());
                 Reflection.setValue(packet, "d", team.getSuffix());
-                Reflection.setValue(packet, "e", ScoreboardTeamBase.EnumNameTagVisibility.ALWAYS.e);
+                Reflection.setValue(packet, "e", team.getNameVisible());
                 Reflection.setValue(packet, "i", 0);
                 Reflection.setValue(packet, "f", -1);
                 Reflection.setValue(packet, "g", (Collection) news);
@@ -281,6 +281,8 @@ public class TeamHandler {
         private String display = "";
         private String prefix = ChatColor.GRAY + "";
         private String suffix = "";
+
+        private ScoreboardTeamBase.EnumNameTagVisibility nameVisible = ScoreboardTeamBase.EnumNameTagVisibility.ALWAYS;
 
         private CopyOnWriteArrayList<String> players = new CopyOnWriteArrayList<>();
 
@@ -360,6 +362,14 @@ public class TeamHandler {
 
         public void setRealName(String realName) {
             this.realName = realName;
+        }
+
+        public ScoreboardTeamBase.EnumNameTagVisibility getNameVisible() {
+            return nameVisible;
+        }
+
+        public void setNameVisible(ScoreboardTeamBase.EnumNameTagVisibility nameVisible) {
+            this.nameVisible = nameVisible;
         }
     }
 }
