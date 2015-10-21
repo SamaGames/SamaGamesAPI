@@ -103,6 +103,11 @@ public class GamePlayer
     {
         this.moderator = true;
         this.setSpectator();
+
+        Player player = this.getPlayerIfOnline();
+
+        for (Player gamePlayer : Bukkit.getOnlinePlayers())
+            gamePlayer.hidePlayer(player);
     }
 
     /**
