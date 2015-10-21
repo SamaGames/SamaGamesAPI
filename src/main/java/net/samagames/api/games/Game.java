@@ -36,6 +36,7 @@ public class Game<GAMEPLAYER extends GamePlayer>
     protected final HashMap<UUID, GAMEPLAYER> gamePlayers;
     protected final PlayerTracker playerTracker;
     protected BukkitTask beginTimer;
+    protected BeginTimer beginObj;
 
     protected ICoherenceMachine coherenceMachine;
     protected Status status;
@@ -101,7 +102,8 @@ public class Game<GAMEPLAYER extends GamePlayer>
     public void handlePostRegistration()
     {
         this.coherenceMachine = this.gameManager.getCoherenceMachine();
-        this.beginTimer = Bukkit.getScheduler().runTaskTimerAsynchronously(SamaGamesAPI.get().getPlugin(), new BeginTimer(this), 20L, 20L);
+        this.beginObj = new BeginTimer(this);
+        this.beginTimer = Bukkit.getScheduler().runTaskTimerAsynchronously(SamaGamesAPI.get().getPlugin(), beginObj, 20L, 20L);
     }
 
     /**
