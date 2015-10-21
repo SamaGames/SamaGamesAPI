@@ -9,7 +9,7 @@ import org.bukkit.entity.Player;
 
 public class BeginTimer implements Runnable
 {
-    private static final int timeStart = 30;
+    private int timeStart = 30;
     private final Game game;
     private final SamaGamesAPI api;
     private int time;
@@ -80,6 +80,11 @@ public class BeginTimer implements Runnable
                 game.getBeginTimer().cancel();
             }
         }
+    }
+
+    public void setTimeStart(int timeStart)
+    {
+        this.timeStart = timeStart;
     }
 
     private void sendSound(int seconds)
