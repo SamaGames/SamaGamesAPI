@@ -198,6 +198,11 @@ public class Game<GAMEPLAYER extends GamePlayer>
     public void handleReconnect(Player player)
     {
         this.gameManager.getCoherenceMachine().getMessageManager().writePlayerReconnected(player);
+        GamePlayer gamePlayer = this.gamePlayers.get(player.getUniqueId());
+        if (gamePlayer != null && (gamePlayer.isSpectator() && !gamePlayer.isModerator()))
+        {
+            gamePlayer.setSpectator();
+        }
         this.gamePlayers.get(player.getUniqueId()).handleLogin(true);
     }
 
