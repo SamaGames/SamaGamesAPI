@@ -40,6 +40,7 @@ public class Game<GAMEPLAYER extends GamePlayer>
 
     protected ICoherenceMachine coherenceMachine;
     protected Status status;
+    protected long startTime = -1;
 
     /**
      * With this constructor, the players will not see a description of the game when
@@ -88,6 +89,7 @@ public class Game<GAMEPLAYER extends GamePlayer>
      */
     public void startGame()
     {
+        this.startTime = System.currentTimeMillis();
         this.beginTimer.cancel();
         this.setStatus(Status.IN_GAME);
 
@@ -586,5 +588,10 @@ public class Game<GAMEPLAYER extends GamePlayer>
     public boolean isGameStarted()
     {
         return this.status == Status.IN_GAME || this.status == Status.FINISHED || this.status == Status.REBOOTING;
+    }
+
+    public long getStartTime()
+    {
+        return startTime;
     }
 }
