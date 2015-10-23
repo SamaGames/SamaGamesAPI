@@ -143,10 +143,13 @@ public class Game<GAMEPLAYER extends GamePlayer>
      */
     public void handleModeratorLogin(Player player)
     {
-        for(UUID gamePlayerUUID : this.gamePlayers.keySet())
-            Bukkit.getPlayer(gamePlayerUUID).hidePlayer(player);
+        for(GamePlayer gamePlayer : this.gamePlayers.values())
+        {
+            Player p = gamePlayer.getPlayerIfOnline();
+            if (p != null)
+                p.hidePlayer(player);
+        }
 
-        this.setModerator(player);
         player.setGameMode(GameMode.SPECTATOR);
         player.sendMessage(ChatColor.GREEN + "Vous êtes invisibles aux yeux de tous, attention à vos actions !");
     }
@@ -310,18 +313,6 @@ public class Game<GAMEPLAYER extends GamePlayer>
     public void setSpectator(Player player)
     {
         this.gamePlayers.get(player.getUniqueId()).setSpectator();
-    }
-
-    /**
-     * Marks a player as moderator. Internal use only.
-     *
-     * @param player The player to mark as a moderator.
-     *
-     * @see GamePlayer#setModerator() () The method of the GamePlayer object.
-     */
-    public void setModerator(Player player)
-    {
-        this.gamePlayers.get(player.getUniqueId()).setModerator();
     }
 
     /**

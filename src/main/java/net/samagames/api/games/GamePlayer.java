@@ -97,20 +97,6 @@ public class GamePlayer
     }
 
     /**
-     * Marks this player as a moderator. The player is also put in spectator mode.
-     */
-    public void setModerator()
-    {
-        this.moderator = true;
-        this.setSpectator();
-
-        Player player = this.getPlayerIfOnline();
-
-        for (Player gamePlayer : Bukkit.getOnlinePlayers())
-            gamePlayer.hidePlayer(player);
-    }
-
-    /**
      * Returns the {@link UUID} of the underlying player.
      *
      * @return The UUID.
