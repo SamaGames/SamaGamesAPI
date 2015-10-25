@@ -175,7 +175,7 @@ public class Game<GAMEPLAYER extends GamePlayer>
             {
                 if(this.gameManager.isReconnectAllowed() && this.status == Status.IN_GAME)
                 {
-                    this.gameManager.getCoherenceMachine().getMessageManager().writePlayerDisconnected(player, (int) (this.startTime - (this.gameManager.getMaxReconnectTime() * 60000)));
+                    this.gameManager.getCoherenceMachine().getMessageManager().writePlayerDisconnected(player, (this.gameManager.getMaxReconnectTime() * 60000) - (int) (System.currentTimeMillis() - startTime));
                 }
                 else
                 {
