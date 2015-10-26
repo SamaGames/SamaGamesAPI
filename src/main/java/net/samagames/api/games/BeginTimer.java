@@ -9,7 +9,7 @@ import org.bukkit.entity.Player;
 
 public class BeginTimer implements Runnable
 {
-    private static final int timeStart = 30;
+    private int timeStart = 30;
     private final Game game;
     private final SamaGamesAPI api;
     private int time;
@@ -49,10 +49,6 @@ public class BeginTimer implements Runnable
         if (this.ready)
         {
             this.time--;
-            double pourcentPlayer = (game.getConnectedPlayers() / api.getGameManager().getGameProperties().getMaxSlots());
-
-            if(time > 5 && pourcentPlayer >= 0.98)
-                time = 5;
 
             if((time < 5 && time > 0) || (time > 5 && time % 10 == 0))
                 api.getGameManager().getCoherenceMachine().getMessageManager().writeGameStartIn(this.time);
@@ -80,6 +76,11 @@ public class BeginTimer implements Runnable
                 game.getBeginTimer().cancel();
             }
         }
+    }
+
+    public void setTimeStart(int timeStart)
+    {
+        this.timeStart = timeStart;
     }
 
     private void sendSound(int seconds)

@@ -36,9 +36,11 @@ public class Game<GAMEPLAYER extends GamePlayer>
     protected final HashMap<UUID, GAMEPLAYER> gamePlayers;
     protected final PlayerTracker playerTracker;
     protected BukkitTask beginTimer;
+    protected BeginTimer beginObj;
 
     protected ICoherenceMachine coherenceMachine;
     protected Status status;
+    protected long startTime = -1;
 
     /**
      * With this constructor, the players will not see a description of the game when
@@ -87,6 +89,7 @@ public class Game<GAMEPLAYER extends GamePlayer>
      */
     public void startGame()
     {
+        this.startTime = System.currentTimeMillis();
         this.beginTimer.cancel();
         this.setStatus(Status.IN_GAME);
 
@@ -101,7 +104,8 @@ public class Game<GAMEPLAYER extends GamePlayer>
     public void handlePostRegistration()
     {
         this.coherenceMachine = this.gameManager.getCoherenceMachine();
-        this.beginTimer = Bukkit.getScheduler().runTaskTimerAsynchronously(SamaGamesAPI.get().getPlugin(), new BeginTimer(this), 20L, 20L);
+        this.beginObj = new BeginTimer(this);
+        this.beginTimer = Bukkit.getScheduler().runTaskTimerAsynchronously(SamaGamesAPI.get().getPlugin(), beginObj, 20L, 20L);
     }
 
     /**
@@ -141,10 +145,13 @@ public class Game<GAMEPLAYER extends GamePlayer>
      */
     public void handleModeratorLogin(Player player)
     {
-        for(UUID gamePlayerUUID : this.gamePlayers.keySet())
-            Bukkit.getPlayer(gamePlayerUUID).hidePlayer(player);
+        for(GamePlayer gamePlayer : this.gamePlayers.values())
+        {
+            Player p = gamePlayer.getPlayerIfOnline();
+            if (p != null)
+                p.hidePlayer(player);
+        }
 
-        this.setModerator(player);
         player.setGameMode(GameMode.SPECTATOR);
         player.sendMessage(ChatColor.GREEN + "Vous êtes invisibles aux yeux de tous, attention à vos actions !");
     }
@@ -168,7 +175,7 @@ public class Game<GAMEPLAYER extends GamePlayer>
             {
                 if(this.gameManager.isReconnectAllowed() && this.status == Status.IN_GAME)
                 {
-                    this.gameManager.getCoherenceMachine().getMessageManager().writePlayerDisconnected(player, this.gameManager.getMaxReconnectTime());
+                    this.gameManager.getCoherenceMachine().getMessageManager().writePlayerDisconnected(player, (this.gameManager.getMaxReconnectTime() * 60000) - (int) (System.currentTimeMillis() - startTime));
                 }
                 else
                 {
@@ -196,6 +203,11 @@ public class Game<GAMEPLAYER extends GamePlayer>
     public void handleReconnect(Player player)
     {
         this.gameManager.getCoherenceMachine().getMessageManager().writePlayerReconnected(player);
+        GamePlayer gamePlayer = this.gamePlayers.get(player.getUniqueId());
+        if (gamePlayer != null && (gamePlayer.isSpectator() && !gamePlayer.isModerator()))
+        {
+            gamePlayer.setSpectator();
+        }
         this.gamePlayers.get(player.getUniqueId()).handleLogin(true);
     }
 
@@ -303,18 +315,6 @@ public class Game<GAMEPLAYER extends GamePlayer>
     public void setSpectator(Player player)
     {
         this.gamePlayers.get(player.getUniqueId()).setSpectator();
-    }
-
-    /**
-     * Marks a player as moderator. Internal use only.
-     *
-     * @param player The player to mark as a moderator.
-     *
-     * @see GamePlayer#setModerator() () The method of the GamePlayer object.
-     */
-    public void setModerator(Player player)
-    {
-        this.gamePlayers.get(player.getUniqueId()).setModerator();
     }
 
     /**
@@ -588,5 +588,10 @@ public class Game<GAMEPLAYER extends GamePlayer>
     public boolean isGameStarted()
     {
         return this.status == Status.IN_GAME || this.status == Status.FINISHED || this.status == Status.REBOOTING;
+    }
+
+    public long getStartTime()
+    {
+        return startTime;
     }
 }
