@@ -3,6 +3,7 @@ package net.samagames.api.network;
 import org.bukkit.event.Listener;
 
 import java.util.HashSet;
+import java.util.List;
 import java.util.UUID;
 
 public interface IJoinManager extends Listener {
@@ -16,5 +17,6 @@ public interface IJoinManager extends Listener {
 
     public int countExpectedPlayers();
     public HashSet<UUID> getExpectedPlayers();
+    public List<UUID> getModeratorsExpected();
 
 }
