@@ -13,8 +13,8 @@ public class EarningMessageTemplate
         ArrayList<String> finalLines = new ArrayList<>();
         finalLines.add(ChatUtils.getCenteredText(ChatColor.WHITE + "•" + ChatColor.BOLD + " Récompenses " + ChatColor.RESET + ChatColor.WHITE + "•"));
         finalLines.add("");
-        finalLines.add(ChatUtils.getCenteredText(ChatColor.GOLD + "Vous avez gagné " + coins + " pièces !"));
-        finalLines.add(ChatUtils.getCenteredText(ChatColor.AQUA + "Vous avez gagné " + stars + " étoiles !"));
+        finalLines.add(ChatUtils.getCenteredText(ChatColor.GOLD + "Vous avez gagné " + coins + (coins == 1 ? " pièce !" : " pièces !")));
+        finalLines.add(ChatUtils.getCenteredText(ChatColor.AQUA + "Vous avez gagné " + stars + (stars == 1 ? " étoile !" : " étoiles !")));
         finalLines.add("");
 
         return finalLines;
