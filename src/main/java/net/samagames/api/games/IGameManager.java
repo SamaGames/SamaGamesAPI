@@ -1,14 +1,9 @@
 package net.samagames.api.games;
 
-import net.samagames.api.SamaGamesAPI;
 import net.samagames.api.games.themachine.ICoherenceMachine;
-import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
-import org.bukkit.event.EventHandler;
-import org.bukkit.event.Listener;
-import org.bukkit.event.block.*;
-import org.bukkit.event.world.StructureGrowEvent;
 
+import java.util.ArrayList;
 import java.util.UUID;
 
 public interface IGameManager
@@ -19,6 +14,13 @@ public interface IGameManager
      * @param game Arena object
      */
     void registerGame(Game game);
+
+    /**
+     * Register a game hook
+     *
+     * @param hook Game hook
+     */
+    void registerGameHook(GameHook hook);
 
     /**
      * Kick a player from the game
@@ -73,6 +75,14 @@ public interface IGameManager
     Game getGame();
 
     /**
+     * Get a list of registered game hooks for the specified type
+     *
+     * @param type Game hook type
+     * @return A game hook list
+     */
+    ArrayList<GameHook> getGameHooksByType(GameHook.Type type);
+
+    /**
      * Get the status of the game
      *
      * @return The status (null if arena is null)
@@ -121,65 +131,4 @@ public interface IGameManager
      * @return True or False
      */
     boolean isReconnectAllowed();
-
-    default void disableNature()
-    {
-        Bukkit.getPluginManager().registerEvents(new Listener()
-        {
-            @Override
-            public int hashCode()
-            {
-                return super.hashCode();
-            }
-
-            @EventHandler
-            public void onBlockGrowEvent(BlockGrowEvent event)
-            {
-                event.setCancelled(true);
-            }
-
-            @EventHandler
-            public void onLeavesDecayEvent(LeavesDecayEvent event)
-            {
-                event.setCancelled(true);
-            }
-
-            @EventHandler
-            public void onBlockFadeEvent(BlockFadeEvent event)
-            {
-                event.setCancelled(true);
-            }
-
-            @EventHandler
-            public void onBlockPhysicsEvent(BlockPhysicsEvent event)
-            {
-                event.setCancelled(true);
-            }
-
-            @EventHandler
-            public void onBlockRedstoneEvent(BlockRedstoneEvent event)
-            {
-                event.setNewCurrent(event.getOldCurrent());
-            }
-
-            @EventHandler
-            public void onBlockSpreadEvent(BlockSpreadEvent event)
-            {
-                event.setCancelled(true);
-            }
-
-            @EventHandler
-            public void onBlockFormEvent(BlockFormEvent event)
-            {
-                event.setCancelled(true);
-            }
-
-            @EventHandler
-            public void onStructureGrowEvent(StructureGrowEvent event)
-            {
-                event.setCancelled(true);
-            }
-
-        }, SamaGamesAPI.get().getPlugin());
-    }
 }

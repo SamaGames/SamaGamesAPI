@@ -94,6 +94,8 @@ public class Game<GAMEPLAYER extends GamePlayer>
         this.setStatus(Status.IN_GAME);
 
         this.coherenceMachine.getMessageManager().writeGameStart();
+
+        this.gameManager.getGameHooksByType(GameHook.Type.START).forEach(gameHook -> gameHook.run(this));
     }
 
     /**
@@ -185,6 +187,8 @@ public class Game<GAMEPLAYER extends GamePlayer>
 
             this.gamePlayers.get(player.getUniqueId()).handleLogout();
 
+            this.gameManager.getGameHooksByType(GameHook.Type.DISCONNECT).forEach(gameHook -> gameHook.run(this, player));
+
             if(this.status != Status.IN_GAME)
                 this.gamePlayers.remove(player.getUniqueId());
 
@@ -203,12 +207,15 @@ public class Game<GAMEPLAYER extends GamePlayer>
     public void handleReconnect(Player player)
     {
         this.gameManager.getCoherenceMachine().getMessageManager().writePlayerReconnected(player);
+
         GamePlayer gamePlayer = this.gamePlayers.get(player.getUniqueId());
+
         if (gamePlayer != null && (gamePlayer.isSpectator() && !gamePlayer.isModerator()))
-        {
             gamePlayer.setSpectator();
-        }
+
         this.gamePlayers.get(player.getUniqueId()).handleLogin(true);
+
+        this.gameManager.getGameHooksByType(GameHook.Type.RECONNECT).forEach(gameHook -> gameHook.run(this, player));
     }
 
     /**
@@ -234,13 +241,18 @@ public class Game<GAMEPLAYER extends GamePlayer>
     public void handleGameEnd()
     {
         this.setStatus(Status.FINISHED);
+
+        this.gameManager.getGameHooksByType(GameHook.Type.END).forEach(gameHook -> gameHook.run(this));
+
         Bukkit.getScheduler().runTaskLater(SamaGamesAPI.get().getPlugin(), () ->
-                this.gamePlayers.keySet().stream().filter(playerUUID -> Bukkit.getPlayer(playerUUID) != null).forEach(playerUUID ->
-                {
-                    EarningMessageTemplate earningMessageTemplate = this.coherenceMachine.getTemplateManager().getEarningMessageTemplate();
-                    earningMessageTemplate.execute(Bukkit.getPlayer(playerUUID), this.getPlayer(playerUUID).getCoins(), this.getPlayer(playerUUID).getStars());
-                    this.increaseStat(playerUUID, "played-games", 1);
-                }), 20L * 3);
+        {
+            this.gamePlayers.keySet().stream().filter(playerUUID -> Bukkit.getPlayer(playerUUID) != null).forEach(playerUUID ->
+            {
+                EarningMessageTemplate earningMessageTemplate = this.coherenceMachine.getTemplateManager().getEarningMessageTemplate();
+                earningMessageTemplate.execute(Bukkit.getPlayer(playerUUID), this.getPlayer(playerUUID).getCoins(), this.getPlayer(playerUUID).getStars());
+                this.increaseStat(playerUUID, "played-games", 1);
+            });
+        }, 20L * 3);
 
         Bukkit.getScheduler().runTaskLater(SamaGamesAPI.get().getPlugin(), () ->
         {
@@ -248,14 +260,10 @@ public class Game<GAMEPLAYER extends GamePlayer>
                 this.gameManager.kickPlayer(player, null);
         }, 20L * 10);
 
-        Bukkit.getScheduler().runTaskLater(SamaGamesAPI.get().getPlugin(), new Runnable()
+        Bukkit.getScheduler().runTaskLater(SamaGamesAPI.get().getPlugin(), () ->
         {
-            @Override
-            public void run()
-            {
-                SamaGamesAPI.get().getStatsManager(gameCodeName).finish();
-                Bukkit.shutdown();
-            }
+            SamaGamesAPI.get().getStatsManager(this.gameCodeName).finish();
+            Bukkit.shutdown();
         }, 20L * 15);
     }
 
