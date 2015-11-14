@@ -381,7 +381,7 @@ public abstract class AbstractPlayerData {
     public abstract long decreaseStars(long decrBy);
 
     public void creditStars(long amount, String reason) {
-        creditStars(amount, reason, true, null);
+        creditStars(amount, reason, false, null);
     }
 
     public void creditStars(long amount, String reason, boolean applyMultiplier) {

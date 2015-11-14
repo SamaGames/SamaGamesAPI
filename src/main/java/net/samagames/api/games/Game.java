@@ -298,7 +298,7 @@ public class Game<GAMEPLAYER extends GamePlayer>
         if(this.gamePlayers.containsKey(player.getUniqueId()))
             this.gamePlayers.get(player.getUniqueId()).addStars(stars, reason);
         else
-            SamaGamesAPI.get().getPlayerManager().getPlayerData(player.getUniqueId()).creditStars(stars, reason, true);
+            SamaGamesAPI.get().getPlayerManager().getPlayerData(player.getUniqueId()).creditStars(stars, reason, false);
     }
 
     /**
