@@ -336,7 +336,7 @@ public abstract class AbstractPlayerData {
     }
 
     /**
-     * Effectue un crédit de coins au joueur
+     * Effectue un crédit de coins au joueur, deja async
      * @param amount Montant à créditer
      * @param reason Raison du crédit
      * @param applyMultiplier Appliquer les multiplicateurs du joueurs
@@ -392,6 +392,7 @@ public abstract class AbstractPlayerData {
         creditStars(amount, reason, true, financialCallback);
     }
 
+    //Deja Async
     public abstract void creditStars(long amount, String reason, boolean applyMultiplier, IFinancialCallback<Long> financialCallback);
 
     public void withdrawStars(long amount) {
