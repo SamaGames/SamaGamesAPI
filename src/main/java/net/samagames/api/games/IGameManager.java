@@ -116,5 +116,5 @@ public interface IGameManager
      *
      * @return True or False
      */
-    boolean isReconnectAllowed();
+    boolean isReconnectAllowed(Player player);
 }

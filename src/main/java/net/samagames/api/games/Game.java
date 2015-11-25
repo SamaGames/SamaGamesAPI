@@ -173,7 +173,7 @@ public class Game<GAMEPLAYER extends GamePlayer>
         {
             if(!this.gamePlayers.get(player.getUniqueId()).isSpectator())
             {
-                if(this.gameManager.isReconnectAllowed() && this.status == Status.IN_GAME)
+                if(this.gameManager.isReconnectAllowed(player) && this.status == Status.IN_GAME)
                 {
                     this.gameManager.getCoherenceMachine().getMessageManager().writePlayerDisconnected(player, (this.gameManager.getMaxReconnectTime() * 60000) - (int) (System.currentTimeMillis() - startTime));
                 }
