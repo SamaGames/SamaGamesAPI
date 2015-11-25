@@ -16,13 +16,6 @@ public interface IGameManager
     void registerGame(Game game);
 
     /**
-     * Register a game hook
-     *
-     * @param hook Game hook
-     */
-    void registerGameHook(GameHook hook);
-
-    /**
      * Kick a player from the game
      *
      * @param player The player
@@ -48,8 +41,9 @@ public interface IGameManager
      * Event fired the reconnect time for a player is out (Only for supported game)
      *
      * @param player The Player
+     * @param silent Message displaying
      */
-    void onPlayerReconnectTimeOut(Player player);
+    void onPlayerReconnectTimeOut(Player player, boolean silent);
 
     /**
      * Refresh the arena to the hubs
@@ -73,14 +67,6 @@ public interface IGameManager
      * @return The registered game (null if none)
      */
     Game getGame();
-
-    /**
-     * Get a list of registered game hooks for the specified type
-     *
-     * @param type Game hook type
-     * @return A game hook list
-     */
-    ArrayList<GameHook> getGameHooksByType(GameHook.Type type);
 
     /**
      * Get the status of the game

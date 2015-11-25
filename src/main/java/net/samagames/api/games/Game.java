@@ -94,8 +94,6 @@ public class Game<GAMEPLAYER extends GamePlayer>
         this.setStatus(Status.IN_GAME);
 
         this.coherenceMachine.getMessageManager().writeGameStart();
-
-        this.gameManager.getGameHooksByType(GameHook.Type.START).forEach(gameHook -> gameHook.run(this));
     }
 
     /**
@@ -187,8 +185,6 @@ public class Game<GAMEPLAYER extends GamePlayer>
 
             this.gamePlayers.get(player.getUniqueId()).handleLogout();
 
-            this.gameManager.getGameHooksByType(GameHook.Type.DISCONNECT).forEach(gameHook -> gameHook.run(this, player));
-
             if(this.status != Status.IN_GAME)
                 this.gamePlayers.remove(player.getUniqueId());
 
@@ -214,8 +210,6 @@ public class Game<GAMEPLAYER extends GamePlayer>
             gamePlayer.setSpectator();
 
         this.gamePlayers.get(player.getUniqueId()).handleLogin(true);
-
-        this.gameManager.getGameHooksByType(GameHook.Type.RECONNECT).forEach(gameHook -> gameHook.run(this, player));
     }
 
     /**
@@ -225,11 +219,14 @@ public class Game<GAMEPLAYER extends GamePlayer>
      * You need to call the {@code super} method at the beginning of your own one.
      *
      * @param player The player who can no longer rejoin the game.
+     * @param silent Display a message
      */
-    public void handleReconnectTimeOut(Player player)
+    public void handleReconnectTimeOut(Player player, boolean silent)
     {
         this.setSpectator(player);
-        this.gameManager.getCoherenceMachine().getMessageManager().writePlayerReconnectTimeOut(player);
+
+        if (!silent)
+            this.gameManager.getCoherenceMachine().getMessageManager().writePlayerReconnectTimeOut(player);
     }
 
     /**
@@ -241,8 +238,6 @@ public class Game<GAMEPLAYER extends GamePlayer>
     public void handleGameEnd()
     {
         this.setStatus(Status.FINISHED);
-
-        this.gameManager.getGameHooksByType(GameHook.Type.END).forEach(gameHook -> gameHook.run(this));
 
         Bukkit.getScheduler().runTaskLater(SamaGamesAPI.get().getPlugin(), () ->
         {
