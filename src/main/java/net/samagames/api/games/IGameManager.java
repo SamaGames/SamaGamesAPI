@@ -114,7 +114,16 @@ public interface IGameManager
     /**
      * Return if the game support the reconnect
      *
+     * @param player The player
      * @return True or False
      */
     boolean isReconnectAllowed(Player player);
+
+    /**
+     * Return if the game support the reconnect
+     *
+     * @param player The player
+     * @return True or False
+     */
+    boolean isReconnectAllowed(UUID player);
 }
