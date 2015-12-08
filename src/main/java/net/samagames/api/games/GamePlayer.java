@@ -52,25 +52,23 @@ public class GamePlayer
     /**
      * Credits coins to this player.
      *
-     * @param coins The amount of coins to credit.
+     * @param coins_ The amount of coins to credit.
      * @param reason The displayed reason of the credit.
      */
-    public void addCoins(int coins, String reason)
+    public void addCoins(int coins_, String reason)
     {
-        this.coins += coins;
-        SamaGamesAPI.get().getPlayerManager().getPlayerData(this.uuid).creditCoins(coins, reason, true);
+        SamaGamesAPI.get().getPlayerManager().getPlayerData(this.uuid).creditCoins(coins_, reason, true, (newAmount, difference, error) -> coins += difference);
     }
 
     /**
      * Credits stars to this player.
      *
-     * @param stars The amount of stars to credit.
+     * @param stars_ The amount of stars to credit.
      * @param reason The displayed reason of the credit.
      */
-    public void addStars(int stars, String reason)
+    public void addStars(int stars_, String reason)
     {
-        this.stars += stars;
-        SamaGamesAPI.get().getPlayerManager().getPlayerData(this.uuid).creditStars(stars, reason, false);
+        SamaGamesAPI.get().getPlayerManager().getPlayerData(this.uuid).creditStars(stars_, reason, false, (newAmount, difference, error) -> stars += difference);
     }
 
     /**
