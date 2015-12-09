@@ -317,7 +317,11 @@ public class Game<GAMEPLAYER extends GamePlayer>
      */
     public void setSpectator(Player player)
     {
-        this.gamePlayers.get(player.getUniqueId()).setSpectator();
+        if (player == null)
+            return;
+
+        if (this.gamePlayers.containsKey(player.getUniqueId()))
+            this.gamePlayers.get(player.getUniqueId()).setSpectator();
     }
 
     /**
