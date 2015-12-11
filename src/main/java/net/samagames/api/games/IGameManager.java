@@ -1,9 +1,9 @@
 package net.samagames.api.games;
 
 import net.samagames.api.games.themachine.ICoherenceMachine;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 
-import java.util.ArrayList;
 import java.util.UUID;
 
 public interface IGameManager
@@ -43,7 +43,7 @@ public interface IGameManager
      * @param player The Player
      * @param silent Message displaying
      */
-    void onPlayerReconnectTimeOut(Player player, boolean silent);
+    void onPlayerReconnectTimeOut(OfflinePlayer player, boolean silent);
 
     /**
      * Refresh the arena to the hubs

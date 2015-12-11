@@ -9,6 +9,7 @@ import org.apache.commons.lang3.tuple.Pair;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.GameMode;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitTask;
 
@@ -221,12 +222,16 @@ public class Game<GAMEPLAYER extends GamePlayer>
      * @param player The player who can no longer rejoin the game.
      * @param silent Display a message
      */
-    public void handleReconnectTimeOut(Player player, boolean silent)
+    public void handleReconnectTimeOut(OfflinePlayer player, boolean silent)
     {
-        this.setSpectator(player);
+        this.gamePlayers.get(player.getUniqueId()).handleLogout();
+
+        this.gamePlayers.remove(player.getUniqueId());
+
+        this.gameManager.refreshArena();
 
         if (!silent)
-            this.gameManager.getCoherenceMachine().getMessageManager().writePlayerReconnectTimeOut(player);
+            this.gameManager.getCoherenceMachine().getMessageManager().writePlayerReconnectTimeOut(player.getPlayer());
     }
 
     /**
