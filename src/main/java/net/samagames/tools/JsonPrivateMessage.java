@@ -1,29 +1,58 @@
 package net.samagames.tools;
 
-public class JsonPrivateMessage {
-
+/**
+ * Json private message object
+ *
+ * Copyright (c) for SamaGames
+ * All right reserved
+ */
+public class JsonPrivateMessage
+{
     private UnknownPlayer sender;
     private UnknownPlayer receiver;
     private String message;
 
-    public JsonPrivateMessage(UnknownPlayer sender, UnknownPlayer receiver, String message) {
+    /**
+     * Constructor
+     *
+     * @param sender Sender of the private message
+     * @param receiver Receiver of the private message
+     * @param message Message's content
+     */
+    public JsonPrivateMessage(UnknownPlayer sender, UnknownPlayer receiver, String message)
+    {
         this.sender = sender;
         this.receiver = receiver;
         this.message = message;
     }
 
-    public JsonPrivateMessage() {
+    /**
+     * Get the sender of the message
+     *
+     * @return Sender
+     */
+    public UnknownPlayer getSender()
+    {
+        return this.sender;
     }
 
-    public UnknownPlayer getSender() {
-        return sender;
+    /**
+     * Get the receiver of the message
+     *
+     * @return Receiver
+     */
+    public UnknownPlayer getReceiver()
+    {
+        return this.receiver;
     }
 
-    public UnknownPlayer getReceiver() {
-        return receiver;
-    }
-
-    public String getMessage() {
-        return message;
+    /**
+     * Get message's content
+     *
+     * @return Message's content
+     */
+    public String getMessage()
+    {
+        return this.message;
     }
 }

@@ -7,63 +7,120 @@ import com.google.gson.Gson;
 import org.bukkit.entity.Player;
 
 /**
- * This file is a part of the SamaGames project
- * This code is absolutely confidential.
- * Created by zyuiop
- * (C) Copyright Elydra Network 2015
- * All rights reserved.
+ * Json mod message object
+ *
+ * Copyright (c) for SamaGames
+ * All right reserved
  */
-public class JsonModMessage {
-
+public class JsonModMessage
+{
 	protected String sender;
 	protected ChatColor senderPrefix;
 	protected String message;
 
-	public JsonModMessage() {
-	}
-
-	public JsonModMessage(String sender, ChatColor senderPrefix, String message) {
+    /**
+     * Constructor
+     *
+     * @param sender Sender of the moderator message
+     * @param senderPrefix Prefix color of the sender
+     * @param message Message content
+     */
+	public JsonModMessage(String sender, ChatColor senderPrefix, String message)
+    {
 		this.sender = sender;
 		this.senderPrefix = senderPrefix;
 		this.message = message;
 	}
 
-	public static JsonModMessage build(CommandSender sender, String message) {
-		if (sender instanceof Player) {
+    /**
+     * Create an instance of a message with a given sender
+     * and message
+     *
+     * @param sender Sender of the moderator message
+     * @param message Prefix color of the sender
+     *
+     * @return New instance
+     */
+	public static JsonModMessage build(CommandSender sender, String message)
+    {
+		if (sender instanceof Player)
+        {
 			String prefix = SamaGamesAPI.get().getPermissionsManager().getPrefix(SamaGamesAPI.get().getPermissionsManager().getApi().getUser(((Player) sender).getUniqueId()));
 			ChatColor pr = (prefix == null) ? ChatColor.AQUA : ChatColor.getByChar(prefix.charAt(prefix.length() - 1));
 
 			return new JsonModMessage(sender.getName(), pr, message);
-		} else {
+		}
+        else
+        {
 			return new JsonModMessage(sender.getName(), ChatColor.AQUA, message);
 		}
 	}
 
-	public String getSender() {
-		return sender;
+    /**
+     * Send the moderator message
+     */
+    public void send()
+    {
+        SamaGamesAPI.get().getPubSub().send("moderationchan", new Gson().toJson(this));
+    }
+
+    /**
+     * Set the sender of the message
+     *
+     * @param sender Message's sender
+     */
+    public void setSender(String sender)
+    {
+        this.sender = sender;
+    }
+
+    /**
+     * Set the prefix color of the sender
+     *
+     * @param senderPrefix Prefix's color
+     */
+    public void setSenderPrefix(ChatColor senderPrefix)
+    {
+        this.senderPrefix = senderPrefix;
+    }
+
+    /**
+     * Set the content of the message
+     *
+     * @param message Message's content
+     */
+    public void setMessage(String message)
+    {
+        this.message = message;
+    }
+
+    /**
+     * Get the sender of the message
+     *
+     * @return Message's sender
+     */
+	public String getSender()
+    {
+		return this.sender;
 	}
 
-	public void setSender(String sender) {
-		this.sender = sender;
+    /**
+     * Get the prefix color of the sender
+     *
+     * @return Prefix's color
+     */
+	public ChatColor getSenderPrefix()
+    {
+		return this.senderPrefix;
 	}
 
-	public ChatColor getSenderPrefix() {
-		return senderPrefix;
-	}
-
-	public void setSenderPrefix(ChatColor senderPrefix) {
-		this.senderPrefix = senderPrefix;
-	}
-
-	public String getMessage() {
-		return message;
-	}
-
-	public void setMessage(String message) {
-		this.message = message;
-	}
-
-	public void send() {
-		SamaGamesAPI.get().getPubSub().send("moderationchan", new Gson().toJson(this));
+    /**
+     * Get the content of the message
+     *
+     * @return Message's content
+     */
+	public String getMessage()
+    {
+		return this.message;
 	}
 }
