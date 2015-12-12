@@ -15,205 +15,343 @@ import java.util.List;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
 /**
- * Created by Geekpower14 on 01/01/2015.
+ * Virtual objective class
+ *
+ * Copyright (c) for SamaGames
+ * All right reserved
  */
-public class VObjective {
-
+public class VObjective
+{
     protected String name;
     protected String displayName;
     protected EnumScoreboardHealthDisplay format;
-
     protected ObjectiveLocation location = ObjectiveLocation.SIDEBAR;
+    protected List<OfflinePlayer> receivers;
+    protected ConcurrentLinkedQueue<VScore> scores;
 
-    protected List<OfflinePlayer> receivers = new ArrayList<>();
-
-    protected ConcurrentLinkedQueue<VScore> scores = new ConcurrentLinkedQueue<>();
-
+    /**
+     * Constructor
+     *
+     * @param name Objective's name
+     * @param displayName Objective's display name
+     */
     public VObjective(String name, String displayName)
     {
-        format = EnumScoreboardHealthDisplay.INTEGER;
+        this.receivers = new ArrayList<>();
+        this.scores = new ConcurrentLinkedQueue<>();
+
+        this.format = EnumScoreboardHealthDisplay.INTEGER;
         this.name = name;
         this.displayName = displayName;
     }
 
-    public ObjectiveLocation getLocation()
-    {
-        return location;
-    }
-
+    /**
+     * Set objective location
+     *
+     * @param location Location
+     */
     public void setLocation(ObjectiveLocation location)
     {
         this.location = location;
     }
 
-    protected String toggleName()
+    /**
+     * Update objective's name
+     *
+     * @return Old name
+     */
+    public String toggleName()
     {
-        String old = name;
-        if(name.endsWith("1"))
-        {
-            name = name.substring(0, name.length()-1);
-        }else
-        {
-            name += "1";
-        }
+        String old = this.name;
+
+        if(this.name.endsWith("1"))
+            this.name = this.name.substring(0, this.name.length() - 1);
+        else
+            this.name += "1";
+
         return old;
     }
 
+    /**
+     * Add a receiver to the objective
+     *
+     * @param offlinePlayer Player
+     */
     public boolean addReceiver(OfflinePlayer offlinePlayer)
     {
         if(!offlinePlayer.isOnline())
             return false;
-        receivers.add(offlinePlayer);
+
+        this.receivers.add(offlinePlayer);
+
         Player p = offlinePlayer.getPlayer();
 
-        init(p);
-        updateScore(p);
+        this.init(p);
+        this.updateScore(p);
+
         return true;
     }
 
+    /**
+     * Remove a receiver from the objective
+     *
+     * @param offlinePlayer Player
+     */
     public void removeReceiver(OfflinePlayer offlinePlayer)
     {
-        receivers.remove(offlinePlayer);
+        this.receivers.remove(offlinePlayer);
+
         if(offlinePlayer.isOnline())
-            remove(offlinePlayer.getPlayer());
+            this.remove(offlinePlayer.getPlayer());
     }
 
-    protected void init(Player receiver)
+    /**
+     * Initialize the objective for a given player
+     *
+     * @param receiver Player
+     */
+    public void init(Player receiver)
     {
-        create(receiver);
-        displayTo(receiver, location.getLocation());
+        this.create(receiver);
+        this.displayTo(receiver, this.location.getLocation());
     }
 
-    protected void create(Player receiver)
+    /**
+     * Create the objective of a given player
+     *
+     * @param receiver Player
+     */
+    public void create(Player receiver)
     {
         RawObjective.createObjective(receiver, this);
     }
 
-    //Emplacement de l'objective - 0 = list, 1 = sidebar, 2 = belowName
-    protected void displayTo(Player receiver, int location)
+    /**
+     * Send the objective to a given player at the given
+     * location
+     *
+     * @param receiver Player
+     * @param location Location
+     */
+    public void displayTo(Player receiver, int location)
     {
         RawObjective.displayObjective(receiver, getName(), location);
     }
 
-    protected void remove(Player receiver)
+    /**
+     * Remove a given receiver from the objective
+     *
+     * @param receiver Player
+     */
+    public void remove(Player receiver)
     {
         RawObjective.removeObjective(receiver, this);
     }
 
-
-
+    /**
+     * Update a given score
+     *
+     * @param score Score
+     */
     public void updateScore(String score)
     {
-        updateScore(getScore(score));
+        this.updateScore(getScore(score));
     }
 
+    /**
+     * Update a given score
+     *
+     * @param score Score
+     */
     public void updateScore(VScore score)
     {
-        receivers.stream().filter(op -> op.isOnline()).forEach(op -> RawObjective.updateScoreObjective(op.getPlayer(), this, score));
+        this.receivers.stream().filter(OfflinePlayer::isOnline).forEach(op -> RawObjective.updateScoreObjective(op.getPlayer(), this, score));
     }
 
-    protected void updateScore(Player p)
+    /**
+     * Get objective location
+     *
+     * @return Location
+     */
+    public ObjectiveLocation getLocation()
+    {
+        return this.location;
+    }
+
+    /**
+     * Update given players score
+     *
+     * @param p Player
+     */
+    public void updateScore(Player p)
     {
         RawObjective.updateScoreObjective(p, this, false);
     }
 
-    protected void updateScore(Player p, boolean inverse)
+    /**
+     * Update given players score
+     *
+     * @param p Player
+     * @param inverse Inverse lines
+     */
+    public void updateScore(Player p, boolean inverse)
     {
         RawObjective.updateScoreObjective(p, this, inverse);
     }
 
+    /**
+     * Update the objective to all players
+     *
+     * @param forceRefresh Re-send packets to overwrite
+     */
     public void updateScore(boolean forceRefresh)
     {
         if(forceRefresh)
         {
             String old = toggleName();
-            receivers.stream().filter(op -> op.isOnline()).forEach(op -> {
-                create(op.getPlayer());
+
+            this.receivers.stream().filter(OfflinePlayer::isOnline).forEach(op ->
+            {
+                this.create(op.getPlayer());
                 RawObjective.updateScoreObjective(op.getPlayer(), this, false);
-                displayTo(op.getPlayer(), location.getLocation());
+                this.displayTo(op.getPlayer(), this.location.getLocation());
                 RawObjective.removeObjective(op.getPlayer(), old);
             });
-        }else{
-            receivers.stream().filter(op -> op.isOnline()).forEach(op -> {
+        }
+        else
+        {
+            this.receivers.stream().filter(OfflinePlayer::isOnline).forEach(op ->
+            {
                 RawObjective.updateScoreObjective(op.getPlayer(), this, false);
             });
         }
     }
 
+    /**
+     * Update the objective to all players
+     */
     public void update()
     {
-        receivers.stream().filter(op -> op.isOnline()).forEach(op -> RawObjective.updateObjective(op.getPlayer(), this));
+        this.receivers.stream().filter(OfflinePlayer::isOnline).forEach(op -> RawObjective.updateObjective(op.getPlayer(), this));
     }
 
+    /**
+     * Remove a given score from the objective
+     *
+     * @param score Score
+     */
     public void removeScore(String score)
     {
         VScore score1 = getScore(score);
-        removeScore(score1);
+        this.removeScore(score1);
     }
 
+    /**
+     * Clear the objective's scores
+     */
     public void clearScores()
     {
-        scores.clear();
+        this.scores.clear();
     }
 
+    /**
+     * Remove a given score from the objective
+     *
+     * @param score Score
+     */
     public void removeScore(VScore score)
     {
-        scores.remove(score);
-        receivers.stream().filter(op -> op.isOnline()).forEach(op -> RawObjective.removeScoreObjective(op.getPlayer(), this, score));
+        this.scores.remove(score);
+        this.receivers.stream().filter(OfflinePlayer::isOnline).forEach(op -> RawObjective.removeScoreObjective(op.getPlayer(), this, score));
     }
 
-    public ConcurrentLinkedQueue<VScore> getScores()
-    {
-        return scores;
-    }
-
+    /**
+     * Get objective's score of a given player
+     *
+     * @param player Player
+     *
+     * @return Player's score
+     */
     public VScore getScore(String player)
     {
-        for(VScore score : scores)
-        {
+        for(VScore score : this.scores)
             if(score.getPlayerName().equals(player))
-            {
                 return score;
-            }
-        }
+
         VScore score = new VScore(player, 0);
-        scores.add(score);
+        this.scores.add(score);
+
         return score;
     }
 
+    /**
+     * Get objective's scores
+     *
+     * @return Scores
+     */
+    public ConcurrentLinkedQueue<VScore> getScores()
+    {
+        return this.scores;
+    }
+
+    /**
+     * Is objective contains a given player's score
+     *
+     * @param player Player
+     *
+     * @return {@code true} is found
+     */
     public boolean containsScore(String player)
     {
-        for(VScore score : scores)
-        {
+        for(VScore score : this.scores)
             if(score.getPlayerName().equals(player))
-            {
                 return true;
-            }
-        }
+
         return false;
     }
 
+    /**
+     * Get objective's name
+     *
+     * @return Name
+     */
     public String getName()
     {
-        return name;
+        return this.name;
     }
 
+    /**
+     * Get objective's display name
+     *
+     * @return Display name
+     */
     public String getDisplayName()
     {
-        return displayName;
+        return this.displayName;
     }
 
+    /**
+     * Set objective's display name
+     *
+     * @param displayName Display name
+     */
     public void setDisplayName(String displayName)
     {
         this.displayName = displayName;
     }
 
+    /**
+     * Get objective's format
+     *
+     * @return Format
+     */
     public EnumScoreboardHealthDisplay getFormat()
     {
-        return format;
+        return this.format;
     }
 
-    public enum ObjectiveLocation{
+    public enum ObjectiveLocation
+    {
         LIST(0),
         SIDEBAR(1),
         BELOWNAME(2);
@@ -225,8 +363,9 @@ public class VObjective {
             this.location = location;
         }
 
-        public int getLocation() {
-            return location;
+        public int getLocation()
+        {
+            return this.location;
         }
     }
 
@@ -236,19 +375,22 @@ public class VObjective {
         private static Field getPlayerConnection;
         private static Method sendPacket;
 
-        static {
-            try {
-
+        static
+        {
+            try
+            {
                 getEntityHandle = Reflection.getOBCClass("entity.CraftPlayer").getMethod("getHandle");
                 getPlayerConnection = Reflection.getNMSClass("EntityPlayer").getDeclaredField("playerConnection");
                 sendPacket = Reflection.getNMSClass("PlayerConnection").getMethod("sendPacket", Reflection.getNMSClass("Packet"));
-
-            } catch (Exception e) {
+            }
+            catch (Exception e)
+            {
                 e.printStackTrace();
             }
         }
 
-        /** Objective Management **/
+        /* Objective Management */
+
         public static void createObjective(Player p, VObjective objective)
         {
             sendPacket(makeScoreboardObjectivePacket(0, objective.getName(), objective.getDisplayName(), objective.getFormat()), p);
@@ -269,13 +411,14 @@ public class VObjective {
             sendPacket(makeScoreboardObjectivePacket(1, name, "", EnumScoreboardHealthDisplay.INTEGER), p);
         }
 
-        /** Objective Display **/
+        /* Objective Display */
+
         public static void displayObjective(Player p, String name, int location)
         {
             sendPacket(makeScoreboardDiplayPacket(name, location), p);
         }
 
-        /** Objective Score Management **/
+        /* Objective Score Management */
 
         public static void createScoreObjective(Player p, VObjective objective)
         {
@@ -292,17 +435,13 @@ public class VObjective {
             if(!inverse)
             {
                 for(VScore score : objective.getScores())
-                {
                     updateScoreObjective(p, objective, score);
-                }
+
                 return;
             }
-            int i = 0;
+
             for(VScore score : objective.getScores())
-            {
                 updateScoreObjective(p, objective, score, objective.getScores().size()-score.getScore()-1);
-                i++;
-            }
         }
 
         public static void updateScoreObjective(Player p, VObjective objective, VScore score)
@@ -318,9 +457,7 @@ public class VObjective {
         public static void removeScoreObjective(Player p, VObjective objective)
         {
             for(VScore score : objective.getScores())
-            {
                 removeScoreObjective(p, objective, score);
-            }
         }
 
         public static void removeScoreObjective(Player p, VObjective objective, VScore score)
@@ -328,19 +465,22 @@ public class VObjective {
             sendPacket(makeScoreboardScorePacket(objective.getName(), PacketPlayOutScoreboardScore.EnumScoreboardAction.REMOVE, score.getPlayerName(), 0), p);
         }
 
-
         public static PacketPlayOutScoreboardScore makeScoreboardScorePacket(String objectiveName, PacketPlayOutScoreboardScore.EnumScoreboardAction action, String scoreName, int scoreValue)
         {
             if(objectiveName == null)
                 objectiveName = "";
 
             PacketPlayOutScoreboardScore packet = new PacketPlayOutScoreboardScore();
-            try {
+
+            try
+            {
                 Reflection.setValue(packet, "a", scoreName); //Nom du joueur
                 Reflection.setValue(packet, "b", objectiveName); //Nom de l'objective
                 Reflection.setValue(packet, "c", scoreValue); //Valeur du score
                 Reflection.setValue(packet, "d", action); //Action du packet
-            } catch (Exception e) {
+            }
+            catch (Exception e)
+            {
                 e.printStackTrace();
             }
 
@@ -350,46 +490,57 @@ public class VObjective {
         public static PacketPlayOutScoreboardObjective makeScoreboardObjectivePacket(int action, String objectiveName, String objectiveDispleyName,  EnumScoreboardHealthDisplay format)
         {
             PacketPlayOutScoreboardObjective packet = new PacketPlayOutScoreboardObjective();
-            try {
+
+            try
+            {
                 Reflection.setValue(packet, "a", objectiveName); //Nom de l'objective
                 Reflection.setValue(packet, "b", objectiveDispleyName); //Nom affiché de l'objective
                 Reflection.setValue(packet, "c", format); //Affichage des données Nombre/Coeurs
                 Reflection.setValue(packet, "d", action); //Action à effectuer - 0: Create 1: Remove 2: Update
-            } catch (Exception e) {
+            }
+            catch (Exception e)
+            {
                 e.printStackTrace();
             }
+
             return packet;
         }
 
         public static PacketPlayOutScoreboardDisplayObjective makeScoreboardDiplayPacket(String objectiveName, int location)
         {
-
             PacketPlayOutScoreboardDisplayObjective packet = new PacketPlayOutScoreboardDisplayObjective();
-            try {
+
+            try
+            {
                 Reflection.setValue(packet, "a", location); //Emplacement de l'objective - 0 = list, 1 = sidebar, 2 = belowName
                 Reflection.setValue(packet, "b", objectiveName); //Nom de l'objective
-            } catch (Exception e) {
+            }
+            catch (Exception e)
+            {
                 e.printStackTrace();
             }
 
             return packet;
         }
 
-        //simple method for sending a packet to a CraftPlayer
-        public static void sendPacket(Object packet, Player player) {
-            try {
+        public static void sendPacket(Object packet, Player player)
+        {
+            try
+            {
                 Object nms_player = getEntityHandle.invoke(player);
                 Object nms_connection = getPlayerConnection.get(nms_player);
                 sendPacket.invoke(nms_connection, packet);
-                //System .out.println(player.getName() + " recieved packet.");
-            } catch (Exception e) {
+            }
+            catch (Exception e)
+            {
                 e.printStackTrace();
             }
         }
 
     }
 
-    public class VScore{
+    public class VScore
+    {
         private String playerName;
         private int score;
 
@@ -406,12 +557,7 @@ public class VObjective {
 
         public void setScore(int score)
         {
-            //int old = this.score;
             this.score = score;
-           /*if(old != this.score)
-            {
-                //TODO: HANDLE si besoin de updateScore auto
-            }*/
         }
 
         public void removeScore(int score)
@@ -434,6 +580,5 @@ public class VObjective {
             return this.playerName;
         }
     }
-
 }
 

@@ -4,8 +4,15 @@ import org.bukkit.entity.Player;
 
 public class DirectionUtils
 {
-    public enum Directions { NORTH, SOUTH, EAST, WEST };
+    public enum Directions { NORTH, SOUTH, EAST, WEST }
 
+    /**
+     * Get given player's location with his location
+     *
+     * @param player Player
+     *
+     * @return Enumeration entry {@link Directions}
+     */
     public static Directions getPlayerDirection(Player player)
     {
         double rotation = (player.getLocation().getYaw() - 90) % 360;

@@ -4,11 +4,23 @@ import org.bukkit.Location;
 
 import java.util.List;
 
+/**
+ * Area utils
+ *
+ * Copyright (c) for SamaGames
+ * All right reserved
+ */
 public class Area
 {
     private final Location min;
     private final Location max;
 
+    /**
+     * Constructor
+     *
+     * @param first First point
+     * @param second Second point
+     */
     public Area(Location first, Location second)
     {
         this.min = new Location(null, 0, 0, 0);
@@ -55,19 +67,63 @@ public class Area
 
     }
 
-    public Area(List<String> src)
+    /**
+     * Get area size in X axis
+     *
+     * @return Size
+     */
+    public int getSizeX()
     {
-        this(LocationUtils.str2loc(src.get(0)), LocationUtils.str2loc(src.get(1)));
+        return this.max.getBlockX() - this.min.getBlockX();
     }
 
-    public Location getMin() {
+    /**
+     * Get area size in Y axis
+     *
+     * @return Size
+     */
+    public int getSizeY()
+    {
+        return this.max.getBlockY() - this.min.getBlockY();
+    }
+
+    /**
+     * Get area size in Z axis
+     *
+     * @return Size
+     */
+    public int getSizeZ()
+    {
+        return this.max.getBlockZ() - this.min.getBlockZ();
+    }
+
+    /**
+     * Get lower point
+     *
+     * @return Location
+     */
+    public Location getMin()
+    {
         return this.min;
     }
 
-    public Location getMax() {
+    /**
+     * Get higher point
+     *
+     * @return Location
+     */
+    public Location getMax()
+    {
         return this.max;
     }
 
+    /**
+     * Is given location in area
+     *
+     * @param loc Location
+     *
+     * @return {@code true} if in
+     */
     public boolean isInArea(Location loc)
     {
         if (loc == null)
@@ -82,19 +138,24 @@ public class Area
         return true;
     }
 
+    /**
+     * Is given location in range around the
+     * area
+     *
+     * @param loc Location
+     * @param range Range radius
+     *
+     * @return {@code true} if in
+     */
     public boolean isInLimit(Location loc, int range)
     {
         if (loc == null)
             return false;
-        else if (loc.getX() > max.getX() - range || min.getX() + range > loc.getX())
+        else if (loc.getX() > this.max.getX() - range || this.min.getX() + range > loc.getX())
             return true;
-        else if (loc.getZ() > max.getZ() - range || min.getZ() + range > loc.getZ())
+        else if (loc.getZ() > this.max.getZ() - range || this.min.getZ() + range > loc.getZ())
             return true;
 
         return false;
     }
-
-    public int getSizeX() { return max.getBlockX() - min.getBlockX(); }
-    public int getSizeY() { return max.getBlockY() - min.getBlockY(); }
-    public int getSizeZ() { return max.getBlockZ() - min.getBlockZ(); }
 }

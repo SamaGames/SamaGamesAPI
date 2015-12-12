@@ -1,14 +1,20 @@
 package net.samagames.tools;
 
 /**
- * Created by Silva on 20/10/2015.
+ * CallBack class
+ *
+ * @param <V> Data type
+ *
+ * Copyright (c) for SamaGames
+ * All right reserved
  */
-public interface CallBack<V> {
-
+public interface CallBack<V>
+{
     /**
      * Function called after action
+     *
      * @param data Data returned by the action
-     * @param error
+     * @param error Error
      */
     void done(V data, Throwable error);
 }

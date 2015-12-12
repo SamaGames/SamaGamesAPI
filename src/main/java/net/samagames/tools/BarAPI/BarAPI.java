@@ -56,7 +56,7 @@ public class BarAPI implements Listener {
 	 *            The message shown.<br>
 	 *            Due to limitations in Minecraft this message cannot be longer than 64 characters.<br>
 	 *            It will be cut to that size automatically.
-	 * @see BarAPI#setMessage(player, message)
+	 * @see BarAPI#setMessage(Player, String)
 	 */
 	public static void setMessage(String message) {
 		for (Player player : Bukkit.getOnlinePlayers()) {
@@ -103,7 +103,7 @@ public class BarAPI implements Listener {
 	 *            This value must be between 0F (inclusive) and 100F (inclusive).
 	 * @throws IllegalArgumentException
 	 *             If the percentage is not within valid bounds.
-	 * @see BarAPI#setMessage(player, message, percent)
+	 * @see BarAPI#setMessage(Player, String, float)
 	 */
 	public static void setMessage(String message, float percent) {
 		for (Player player : Bukkit.getOnlinePlayers()) {
@@ -158,7 +158,7 @@ public class BarAPI implements Listener {
 	 *            Supports values above 1 (inclusive).
 	 * @throws IllegalArgumentException
 	 *             If seconds is zero or below.
-	 * @see BarAPI#setMessage(player, message, seconds)
+	 * @see BarAPI#setMessage(Player, String, int)
 	 */
 	public static void setMessage(String message, int seconds) {
 		for (Player player : Bukkit.getOnlinePlayers()) {

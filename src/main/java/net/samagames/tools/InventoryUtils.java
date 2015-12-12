@@ -4,8 +4,19 @@ import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.potion.PotionEffect;
 
+/**
+ * Inventory utils
+ *
+ * Copyright (c) for SamaGames
+ * All right reserved
+ */
 public class InventoryUtils
 {
+    /**
+     * Clean player's inventory
+     *
+     * @param player Player
+     */
     public static void cleanPlayer(Player player)
     {
         if(player != null && Bukkit.getPlayer(player.getUniqueId()) != null)

@@ -16,27 +16,270 @@ import java.util.HashMap;
 import java.util.List;
 
 /**
- * This file is a part of the SamaGames Project CodeBase
- * This code is absolutely confidential.
- * Created by Geekpower14 on 14/03/2015.
- * (C) Copyright Elydra Network 2014 & 2015
- * All rights reserved.
+ * Hologram object
+ *
+ * Copyright (c) for SamaGames
+ * All right reserved
  */
-
-//https://www.youtube.com/watch?v=RiE47vq5WsY
-public class Hologram {
+public class Hologram
+{
     private static final double distance = 0.24;
-    public double rangeView = 60;
-    protected HashMap<OfflinePlayer, Boolean> receivers = new HashMap<>();
-    private List<String> lines = new ArrayList<>();
-    private HashMap<Integer, Entity> entities = new HashMap<>();
-    private Location location;
-    private BukkitTask TaskID;
 
-    public Hologram(String... lines) {
+    private HashMap<OfflinePlayer, Boolean> receivers;
+    private HashMap<Integer, Entity> entities;
+    private List<String> lines;
+    private Location location;
+    private BukkitTask taskID;
+    private double rangeView = 60;
+
+    /**
+     * Constructor
+     *
+     * @param lines Hologram's lines
+     */
+    public Hologram(String... lines)
+    {
+        this.receivers = new HashMap<>();
+        this.entities = new HashMap<>();
+
+        this.lines = new ArrayList<>();
         this.lines.addAll(Arrays.asList(lines));
 
-        TaskID = Bukkit.getScheduler().runTaskTimerAsynchronously(SamaGamesAPI.get().getPlugin(), this::sendLinesForPlayers, 10L, 10L);
+        this.taskID = Bukkit.getScheduler().runTaskTimerAsynchronously(SamaGamesAPI.get().getPlugin(), this::sendLinesForPlayers, 10L, 10L);
+    }
+
+    /**
+     * Add hologram's receiver
+     *
+     * @param offlinePlayer Player
+     *
+     * @return {@code true} is success
+     */
+    public boolean addReceiver(OfflinePlayer offlinePlayer)
+    {
+        if(!offlinePlayer.isOnline())
+            return false;
+
+        Player p = offlinePlayer.getPlayer();
+        boolean inRange = false;
+
+        if(p.getLocation().getWorld() == this.location.getWorld() && p.getLocation().distance(this.location) <= this.rangeView)
+        {
+            inRange = true;
+            this.sendLines(offlinePlayer.getPlayer());
+        }
+
+        this.receivers.put(offlinePlayer, inRange);
+
+        return true;
+    }
+
+    /**
+     * Remove hologram's receiver
+     *
+     * @param offlinePlayer Player
+     *
+     * @return {@code true} is success
+     */
+    public boolean removeReceiver(OfflinePlayer offlinePlayer)
+    {
+        if(!offlinePlayer.isOnline())
+            return false;
+
+        this.receivers.remove(offlinePlayer);
+        this.removeLines(offlinePlayer.getPlayer());
+
+        return true;
+    }
+
+    /**
+     * Remove a given line to a given player
+     *
+     * @param p Player
+     * @param line Line number
+     *
+     * @return {@code true} is success
+     */
+    public boolean removeLineForPlayer(Player p, int line)
+    {
+        Entity entities = this.entities.get(line);
+
+        if(entities == null)
+            return false;
+
+        PacketPlayOutEntityDestroy packet = new PacketPlayOutEntityDestroy(entities.getId());
+        ((CraftPlayer) p).getHandle().playerConnection.sendPacket(packet);
+
+        return true;
+    }
+
+    /**
+     * Remove lines to all players
+     */
+    public void removeLinesForPlayers()
+    {
+        for(OfflinePlayer offlinePlayer : this.receivers.keySet())
+        {
+            if(!offlinePlayer.isOnline())
+                continue;
+
+            this.removeLines(offlinePlayer.getPlayer());
+        }
+    }
+
+    /**
+     * Destroy the hologram
+     */
+    public void destroy()
+    {
+        this.removeLinesForPlayers();
+
+        this.clearEntities();
+        this.clearLines();
+
+        this.location = null;
+    }
+
+    /**
+     * Destroy the hologram, it can't be
+     * used anymore
+     */
+    public void fullDestroy()
+    {
+        this.destroy();
+        this.receivers.clear();
+        this.taskID.cancel();
+    }
+
+    /**
+     * Update hologram's lines
+     *
+     * @param lines Hologram's lines
+     */
+    public void change(String... lines)
+    {
+        this.removeLinesForPlayers();
+
+        this.clearEntities();
+        this.clearLines();
+        this.lines = Arrays.asList(lines);
+        this.generateLines(this.location);
+    }
+
+    /**
+     * Set hologram location
+     *
+     * @param location Location
+     */
+    public void setLocation(Location location)
+    {
+        this.location = location;
+    }
+
+    /**
+     * Generate hologram in world
+     */
+    public void generateLines()
+    {
+        this.generateLines(this.location);
+    }
+
+    /**
+     * Generate hologram in world at the given
+     * location
+     *
+     * @param loc Hologram's location
+     */
+    public void generateLines(Location loc)
+    {
+        Location first = loc.clone().add(0, (this.lines.size() / 2) * distance, 0);
+
+        for (int i = 0; i < this.lines.size(); i++)
+        {
+            this.entities.put(i, generateEntitiesForLine(first.clone(), this.lines.get(i)));
+            first.subtract(0, distance, 0);
+        }
+
+        this.location = loc;
+    }
+
+    /**
+     * Send hologram's lines to all players
+     */
+    public void sendLinesForPlayers()
+    {
+        for(OfflinePlayer offlinePlayer : this.receivers.keySet())
+        {
+            if(!offlinePlayer.isOnline())
+                continue;
+
+            Player p = offlinePlayer.getPlayer();
+            boolean wasInRange = this.receivers.get(offlinePlayer);
+            boolean inRange = false;
+
+            if(p.getLocation().getWorld() == this.location.getWorld() && p.getLocation().distance(this.location) <= this.rangeView)
+                inRange = true;
+
+            if(wasInRange == inRange)
+                continue;
+
+            if(wasInRange && !inRange)
+                this.removeLines(p);
+
+            if(!wasInRange && inRange)
+                this.sendLines(p);
+
+            this.receivers.put(offlinePlayer, inRange);
+        }
+    }
+
+    /**
+     * Send hologram's lines to a given player
+     *
+     * @param p Player
+     */
+    public void sendLines(Player p)
+    {
+        for (int i = 0; i < this.lines.size(); i++)
+            this.sendPacketForLine(p, i);
+    }
+
+    /**
+     * Remove hologram's lines to a given player
+     *
+     * @param p Player
+     */
+    public void removeLines(Player p)
+    {
+        for (int i = 0; i < this.lines.size(); i++)
+            this.removeLineForPlayer(p, i);
+    }
+
+    /**
+     * Clear hologram's entities who permits
+     * all the system to work
+     */
+    public void clearEntities()
+    {
+        this.entities.clear();
+    }
+
+    /**
+     * Clear hologram's lines
+     */
+    public void clearLines()
+    {
+        this.lines.clear();
+    }
+
+    /**
+     * Get hologram location
+     *
+     * @return Location
+     */
+    public Location getLocation()
+    {
+        return this.location;
     }
 
     private static Entity generateEntitiesForLine(Location loc, String text)
@@ -53,171 +296,10 @@ public class Hologram {
         return armorStand;
     }
 
-    public boolean addReceiver(OfflinePlayer offlinePlayer)
-    {
-        if(!offlinePlayer.isOnline())
-            return false;
-        Player p = offlinePlayer.getPlayer();
-        boolean inRange = false;
-
-        if(p.getLocation().getWorld() == location.getWorld()
-                && p.getLocation().distance(location) <= rangeView)
-        {
-            inRange = true;
-            sendLines(offlinePlayer.getPlayer());
-        }
-
-        receivers.put(offlinePlayer, inRange);
-
-        return true;
-    }
-
-    public boolean removeReceiver(OfflinePlayer offlinePlayer)
-    {
-        if(!offlinePlayer.isOnline())
-            return false;
-
-        receivers.remove(offlinePlayer);
-        removeLines(offlinePlayer.getPlayer());
-        return true;
-    }
-
-    public void change(String... lines) {
-        removeLinesForPlayers();
-
-        clearEntities();
-        clearLines();
-        this.lines = Arrays.asList(lines);
-        generateLines(this.location);
-    }
-
-    public Location getLocation()
-    {
-        return location;
-    }
-
-    public void setLocation(Location location)
-    {
-        this.location = location;
-    }
-
-    public void generateLines()
-    {
-        generateLines(location);
-    }
-
-    public void generateLines(Location loc) {
-        Location first = loc.clone().add(0, (this.lines.size() / 2) * distance, 0);
-        for (int i = 0; i < this.lines.size(); i++)
-        {
-            entities.put(i, generateEntitiesForLine(first.clone(), this.lines.get(i)));
-            first.subtract(0, distance, 0);
-        }
-        this.location = loc;
-    }
-
-    public void sendLinesForPlayers()
-    {
-        for(OfflinePlayer offlinePlayer : receivers.keySet())
-        {
-            if(!offlinePlayer.isOnline())
-                continue;
-
-            Player p = offlinePlayer.getPlayer();
-            boolean wasInRange = receivers.get(offlinePlayer);
-            boolean inRange = false;
-
-            if(p.getLocation().getWorld() == location.getWorld()
-                    && p.getLocation().distance(location) <= rangeView)
-            {
-                inRange = true;
-            }
-
-            if(wasInRange == inRange)
-                continue;
-
-            if(wasInRange && !inRange)
-            {
-                removeLines(p);
-            }
-
-            if(!wasInRange && inRange)
-            {
-                sendLines(p);
-            }
-            receivers.put(offlinePlayer, inRange);
-        }
-    }
-
-    public void sendLines(Player p)
-    {
-        for (int i = 0; i < this.lines.size(); i++)
-        {
-            sendPacketForLine(p, i);
-        }
-    }
-
-    public void removeLines(Player p)
-    {
-        for (int i = 0; i < this.lines.size(); i++)
-        {
-            removeLineForPlayer(p, i);
-        }
-    }
-
-    public boolean removeLineForPlayer(Player p, int line)
-    {
-        Entity entities = this.entities.get(line);
-        if(entities == null)
-            return false;
-
-        PacketPlayOutEntityDestroy packet = new PacketPlayOutEntityDestroy(entities.getId());
-        ((CraftPlayer) p).getHandle().playerConnection.sendPacket(packet);
-
-        return true;
-    }
-
-    public void destroy()
-    {
-        removeLinesForPlayers();
-
-        clearEntities();
-        clearLines();
-
-        this.location = null;
-    }
-
-    public void fullDestroy()
-    {
-        destroy();
-        receivers.clear();
-        TaskID.cancel();
-    }
-
-    public void removeLinesForPlayers()
-    {
-        for(OfflinePlayer offlinePlayer : receivers.keySet())
-        {
-            if(!offlinePlayer.isOnline())
-                continue;
-
-            removeLines(offlinePlayer.getPlayer());
-        }
-    }
-
-    public void clearEntities()
-    {
-        entities.clear();
-    }
-
-    public void clearLines()
-    {
-        lines.clear();
-    }
-
     private boolean sendPacketForLine(Player p, int line)
     {
         Entity entities = this.entities.get(line);
+
         if(entities == null)
             return false;
 
@@ -232,5 +314,4 @@ public class Hologram {
 
         return true;
     }
-
 }

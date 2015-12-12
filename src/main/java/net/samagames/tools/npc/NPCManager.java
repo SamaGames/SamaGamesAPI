@@ -18,47 +18,104 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
 /**
- * Created by Silva on 20/10/2015.
+ * NPC manager class
+ *
+ * Copyright (c) for SamaGames
+ * All right reserved
  */
-public class NPCManager {
-
-    public SamaGamesAPI api;
-
+public class NPCManager
+{
+    private SamaGamesAPI api;
     private ScheduledExecutorService scheduler;
+    private List<NPCEntity> entities;
+    private CallBack<NPCEntity> scoreboardRegister;
 
-    private List<NPCEntity> entities = new ArrayList<>();
-
-    protected List<OfflinePlayer> receivers = new ArrayList<>();
-
-    private CallBack<NPCEntity> scoreBoardRegister;
-
+    /**
+     * Constructor
+     *
+     * @param api SamaGames API instance
+     */
     public NPCManager(SamaGamesAPI api)
     {
         this.api = api;
-        init();
+        this.entities = new ArrayList<>();
+
+        this.scheduler = Executors.newScheduledThreadPool(2);
+        this.scheduler.scheduleAtFixedRate(this::doCheck, 800, 500, TimeUnit.MILLISECONDS);
     }
 
-    public void init()
-    {
-        scheduler = Executors.newScheduledThreadPool(2);
-        scheduler.scheduleAtFixedRate(() -> doCheck(), 800, 500, TimeUnit.MILLISECONDS);
-    }
-
+    /**
+     * Disable NPC handling
+     */
     public void disable()
     {
-        scheduler.shutdown();
+        this.scheduler.shutdown();
     }
 
+    /**
+     * Register a NPC
+     *
+     * @param uuid NPC UUID
+     * @param location NPC location
+     *
+     * @return Entity instance
+     */
     public NPCEntity registerNPC(UUID uuid, Location location)
     {
-        NPCEntity entity = new NPCEntity(uuid, ("[NPC]"+entities.size()), location);
-        entities.add(entity);
-        if(scoreBoardRegister != null)
-            scoreBoardRegister.done(entity, null);
+        NPCEntity entity = new NPCEntity(uuid, ("[NPC]" + this.entities.size()), location);
+        this.entities.add(entity);
+
+        if(this.scoreboardRegister != null)
+            this.scoreboardRegister.done(entity, null);
 
         return entity;
     }
 
+    /**
+     * Add NPCs receiver
+     *
+     * @param player Player
+     */
+    public void addReceiver(Player player)
+    {
+        for(NPCEntity entity : this.entities)
+        {
+            entity.addReceiver(player.getUniqueId());
+            entity.spawnEntity(player);
+        }
+    }
+
+    /**
+     * Remove NPCs receiver
+     *
+     * @param player Player
+     */
+    public void removeReceiver(Player player)
+    {
+        for(NPCEntity entity : this.entities)
+        {
+            entity.removeReceiver(player.getUniqueId());
+            entity.destroyEntity(player);
+        }
+    }
+
+    /**
+     * Set scoreboard handling for the TAB managing
+     *
+     * @param scoreBoardRegister Callback
+     */
+    public void setScoreboardRegister(CallBack<NPCEntity> scoreBoardRegister)
+    {
+        this.scoreboardRegister = scoreBoardRegister;
+    }
+
+    /**
+     * Get NPC entity by a given name
+     *
+     * @param name NPC name
+     *
+     * @return Entity instance
+     */
     public NPCEntity getNPCEntity(String name)
     {
         for(NPCEntity entity : entities)
@@ -71,61 +128,34 @@ public class NPCManager {
         return null;
     }
 
-    protected void doCheck()
+    /**
+     * Send NPCs to nearby players
+     */
+    private void doCheck()
     {
         for(NPCEntity entity : entities)
         {
             Collection<Entity> nearbyEntities = entity.getPosition().getWorld().getNearbyEntities(entity.getPosition(), 30, 30, 30);
             List<UUID> idInRange = new ArrayList<>();
-            //Receivers in range
-            for(Entity entityW : nearbyEntities)
+
+            nearbyEntities.stream().filter(entityW -> entityW instanceof Player).forEach(entityW ->
             {
-                if(entityW instanceof Player)
+                UUID uniqueId = entityW.getUniqueId();
+
+                if (!entity.isReceiver(uniqueId))
                 {
-                    UUID uniqueId = entityW.getUniqueId();
-                    //New receiver so add it
-                    if(!entity.isReceiver(uniqueId))
-                    {
-                        entity.addReceiver(uniqueId);
-                        entity.spawnEntity((Player) entityW);
-                    }
-                    idInRange.add(uniqueId);
+                    entity.addReceiver(uniqueId);
+                    entity.spawnEntity((Player) entityW);
                 }
-            }
-            //Receiver no longer in range
-            for(UUID uuid : entity.getReceivers())
+
+                idInRange.add(uniqueId);
+            });
+
+            entity.getReceivers().stream().filter(uuid -> !idInRange.contains(uuid)).forEach(uuid ->
             {
-                //No longer receiver so remove it
-                if(!idInRange.contains(uuid))
-                {
-                    entity.removeReceiver(uuid);
-                    entity.destroyEntity(Bukkit.getPlayer(uuid));
-                }
-            }
+                entity.removeReceiver(uuid);
+                entity.destroyEntity(Bukkit.getPlayer(uuid));
+            });
         }
-    }
-
-    public void addReceiver(Player player)
-    {
-        receivers.add(player);
-        for(NPCEntity entity : entities)
-        {
-            entity.addReceiver(player.getUniqueId());
-            entity.spawnEntity(player);
-        }
-    }
-
-    public void removeReceiver(Player player)
-    {
-        receivers.remove(player);
-        for(NPCEntity entity : entities)
-        {
-            entity.removeReceiver(player.getUniqueId());
-            entity.destroyEntity(player);
-        }
-    }
-
-    public void setScoreBoardRegister(CallBack<NPCEntity> scoreBoardRegister) {
-        this.scoreBoardRegister = scoreBoardRegister;
     }
 }

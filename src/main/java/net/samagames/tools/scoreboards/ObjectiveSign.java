@@ -1,65 +1,87 @@
 package net.samagames.tools.scoreboards;
 
+import org.bukkit.OfflinePlayer;
+
 import java.util.HashMap;
 
 /**
- * Created by Geekpower14 on 02/01/2015.
+ * Objective sign class
+ *
+ * Copyright (c) for SamaGames
+ * All right reserved
  */
-public class ObjectiveSign extends VObjective{
-
+public class ObjectiveSign extends VObjective
+{
     public HashMap<Integer, String> lines = new HashMap<>();
 
-    public ObjectiveSign(String name, String displayName) {
+    /**
+     * Constructor
+     *
+     * @param name Objective's name
+     * @param displayName Objective's display name
+     */
+    public ObjectiveSign(String name, String displayName)
+    {
         super(name, displayName);
 
+        this.lines = new HashMap<>();
+
         for(int i = 0; i < 19; i++)
-        {
-            lines.put(i, null);
-        }
+            this.lines.put(i, null);
     }
 
+    /**
+     * Set scoreboard line at the given location
+     *
+     * @param nb Scoreboard's line
+     * @param line Text
+     */
     public void setLine(int nb, String line)
     {
-        /*if(nb < 0 || nb >=19)
-        {
-            Bukkit.getLogger().warning("Scoreboard line :" + nb + " - [0;18]");
-        }*/
+        VScore remove = this.getScore(this.lines.get(nb));
+        this.scores.remove(remove);
 
-        VScore remove = getScore(lines.get(nb));
-        scores.remove(remove);
-        VScore add = getScore(line);
+        VScore add = this.getScore(line);
         add.setScore(nb);
-        lines.put(nb, line);
 
-        // replaceScore(remove, add);*/
+        this.lines.put(nb, line);
     }
 
+    /**
+     * Update lines to receivers
+     */
     public void updateLines()
     {
-        updateLines(true);
+        this.updateLines(true);
     }
 
+    /**
+     * Update lines to receivers
+     *
+     * @param inverse Inverse the order of lines
+     */
     public void updateLines(boolean inverse)
     {
         String old = toggleName();
-        //remove(op.getPlayer());
-        receivers.stream().filter(op -> op.isOnline()).forEach(op -> {
-            create(op.getPlayer());
-            updateScore(op.getPlayer(), inverse);
-            displayTo(op.getPlayer(), location.getLocation());
+
+        this.receivers.stream().filter(OfflinePlayer::isOnline).forEach(op ->
+        {
+            this.create(op.getPlayer());
+            this.updateScore(op.getPlayer(), inverse);
+            this.displayTo(op.getPlayer(), this.location.getLocation());
+
             RawObjective.removeObjective(op.getPlayer(), old);
-            //remove(op.getPlayer());
         });
     }
 
-    protected void replaceScore(VScore remove, VScore add)
+    private void replaceScore(VScore remove, VScore add)
     {
-        scores.remove(remove);
-        receivers.stream().filter(op -> op.isOnline()).forEach(op -> {
+        this.scores.remove(remove);
+
+        this.receivers.stream().filter(OfflinePlayer::isOnline).forEach(op ->
+        {
             RawObjective.updateScoreObjective(op.getPlayer(), this, add);
             RawObjective.removeScoreObjective(op.getPlayer(), this, remove);
         });
     }
-
-
 }
