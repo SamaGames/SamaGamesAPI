@@ -5,62 +5,76 @@ import java.util.Map;
 import java.util.UUID;
 
 /**
- * This file is a part of the SamaGames project
- * This code is absolutely confidential.
- * (C) Copyright Elydra Network 2015
- * All rights reserved.
+ * Friend manager class
+ *
+ * Copyright (c) for SamaGames
+ * All right reserved
  */
 @Deprecated
-public interface IFriendsManager {
+public interface IFriendsManager
+{
+	/**
+	 * Determinate if two given players are friends
+     *
+	 * @param p1 Player one
+	 * @param p2 Player two
+     *
+	 * @return {@code true} if they are friends
+	 */
+	boolean areFriends(UUID p1, UUID p2);
 
 	/**
-	 * Permet de déterminer si deux joueurs sont amis
-	 * @param p1 	Joueur a tester
-	 * @param p2	Joueur a tester
-	 * @return true si les joueurs sont amis, false sinon
+	 * Get the given player's friends in a list of username
+     *
+	 * @param asking Player
+     *
+	 * @return A list of username
 	 */
-	public boolean areFriends(UUID p1, UUID p2);
+	List<String> namesFriendsList(UUID asking);
 
-	/**
-	 * Renvoie la liste des pseudos des amis du joueur
-	 * @param asking	Joueur dont on veut la liste d'amis
-	 * @return Une list de pseudos de joueurs
-	 */
-	public List<String> namesFriendsList(UUID asking);
+    /**
+     * Get the given player's friends in a list of UUID
+     *
+     * @param asking Player
+     *
+     * @return A list of UUID
+     */
+	List<UUID> uuidFriendsList(UUID asking);
 
-	/**
-	 * Permet d'obtenir la liste des amis d'un joueur (sous forme d'UUIDs)
-	 * @param asking	Joueur dont on veut la liste d'amis
-	 * @return Une liste d'uuids de joueurs
-	 */
-	public List<UUID> uuidFriendsList(UUID asking);
+    /**
+     * Get the given player's friends in a list of UUID and username
+     *
+     * @param asking Player
+     *
+     * @return A map of UUID and username
+     */
+	Map<UUID, String> associatedFriendsList(UUID asking);
 
-	/**
-	 * Permet d'obtenir les amis d'un joueur, sous forme d'association UUID - Pseudo
-	 * @param asking	Joueur dont on veut la liste d'amis
-	 * @return Map d'amis au format UUID - PSEUDO
-	 */
-	public Map<UUID, String> associatedFriendsList(UUID asking);
+    /**
+     * Get the given player's waiting friend requests
+     *
+     * @param asking Player
+     *
+     * @return A list of username
+     */
+	List<String> requests(UUID asking);
 
-	/**
-	 * Obtient une liste des pseudos des personnes ayant envoyé une demande d'ami au joueur
-	 * @param asking	Joueur dont on veut la liste de demandes reçues
-	 * @return Les pseudos des joueurs ayant demandé ce joueur en ami
-	 */
-	public List<String> requests(UUID asking);
+    /**
+     * Get the given player's friend requests sent
+     *
+     * @param asking Player
+     *
+     * @return A list of username
+     */
+	List<String> sentRequests(UUID asking);
 
-	/**
-	 * Obtient une liste des demandes d'amis envoyées par ce joueur
-	 * @param asking	Joueur dont on veut la liste de demandes envoyées
-	 * @return Les pseudos des joueurs que ce joueur a demandé en ami
-	 */
-	public List<String> sentRequests(UUID asking);
-
-	/**
-	 * Permet de supprimer un ami
-	 * @param asking La personne souhaitant la supression
-	 * @param target La personne ciblé par cette supression
-	 * @return
-	 */
-	public boolean removeFriend(UUID asking, UUID target);
+    /**
+     * Delete the friendship betweet two given players
+     *
+     * @param asking Player one
+     * @param target Player two
+     *
+     * @return Process result
+     */
+	boolean removeFriend(UUID asking, UUID target);
 }
