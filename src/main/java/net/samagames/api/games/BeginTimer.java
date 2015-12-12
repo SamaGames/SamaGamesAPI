@@ -61,7 +61,7 @@ public class BeginTimer implements Runnable
             this.ready = false;
             this.game.setStatus(Status.WAITING_FOR_PLAYERS);
 
-            this.api.getGameManager().getCoherenceMachine().getMessageManager().writeNotEnougthPlayersToStart();
+            this.api.getGameManager().getCoherenceMachine().getMessageManager().writeNotEnoughPlayersToStart();
             
             for (Player p : Bukkit.getOnlinePlayers())
                 p.setLevel(this.timeStart);
