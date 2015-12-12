@@ -577,7 +577,10 @@ public class Game<GAMEPLAYER extends GamePlayer>
      */
     public boolean isSpectator(Player player)
     {
-        return gamePlayers.get(player.getUniqueId()).isSpectator();
+        if (this.gamePlayers.containsKey(player.getUniqueId()))
+            return this.gamePlayers.get(player.getUniqueId()).isSpectator();
+        else
+            return true;
     }
 
     /**
