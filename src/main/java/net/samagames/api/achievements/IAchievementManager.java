@@ -4,59 +4,76 @@ import org.bukkit.entity.Player;
 
 import java.util.ArrayList;
 
+/**
+ * Achievement manager class
+ *
+ * Copyright (c) for SamaGames
+ * All right reserved
+ */
 public interface IAchievementManager
 {
     /**
-     * Recharge la liste locale des objectifs
+     * Reload achievement list locally
      */
     void reloadList();
 
     /**
-     * Incrémente la progression de l'achievement pour un joueur donné
-     * @param player Le joueur en question
-     * @param achievement L'objectif en question
+     * Increase the progress of a given achievement to a given player
+     *
+     * @param player Player
+     * @param achievement Achievement
      */
     void incrementAchievement(Player player, IncrementationAchievement achievement);
 
     /**
-     * Renvoi un objectif selon son nom
-     * @param name Nom de l'objectif
-     * @return L'objectif demandé
+     * Get the achievement with the given ID
+     *
+     * @param id ID
+     *
+     * @return Achievement
      */
-    Achievement getAchievementByName(String name);
+    Achievement getAchievementByID(String id);
 
     /**
-     * Renvoi une catégorie d'objectifs selon l'identifiant unique donné
-     * @param name Nom de la catégorie
-     * @return La catégorie demandée
+     * Get the achievement category with the given ID
+     *
+     * @param id ID
+     *
+     * @return Achievement category
      */
-    AchievementCategory getAchievementCategoryByName(String name);
+    AchievementCategory getAchievementCategoryByID(String id);
 
     /**
-     * Renvoi la liste des objectifs enregistrés dans la base de donnée
-     * @return La liste des objectifs
+     * Get all the achievements of the database
+     *
+     * @return Achievements
      */
     ArrayList<Achievement> getAchievements();
 
     /**
-     * Renvoi la liste des catégories d'objectifs enregistrés dans la base de donnée
-     * @return La liste des catégories
+     * Get all the achievement categories of the database
+     *
+     * @return Achievement categories
      */
     ArrayList<AchievementCategory> getAchievementsCategories();
 
     /**
-     * Renvoi si l'objectif est débloqué pour le joueur, ou non
-     * @param player Le joueur en question
-     * @param achievement L'objectif à tester
-     * @return Si oui ou non l'objectif est débloqué
+     * Return if the given player has unlocked the given achievement
+     *
+     * @param player Player
+     * @param achievement Achievement
+     *
+     * @return {@code true} if unlocked
      */
     boolean isUnlocked(Player player, Achievement achievement);
 
     /**
-     * Renvoi si l'objectif est débloqué pour le joueur, ou non
-     * @param player Le joueur en question
-     * @param achievement L'objectif à tester
-     * @return Si oui ou non l'objectif est débloqué
+     * Return if the given player has unlocked the given achievement ID
+     *
+     * @param player Player
+     * @param id Achievement's ID
+     *
+     * @return {@code true} if unlocked
      */
-    boolean isUnlocked(Player player, String achievement);
+    boolean isUnlocked(Player player, String id);
 }

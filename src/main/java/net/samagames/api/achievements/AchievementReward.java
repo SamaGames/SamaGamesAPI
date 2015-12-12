@@ -5,6 +5,12 @@ import net.samagames.api.SamaGamesAPI;
 import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 
+/**
+ * Achievement reward object
+ *
+ * Copyright (c) for SamaGames
+ * All right reserved
+ */
 public class AchievementReward
 {
     private String coinsMessage;
@@ -12,12 +18,21 @@ public class AchievementReward
     private int coins;
     private int stars;
 
+    /**
+     * Constructor
+     */
     public AchievementReward()
     {
         this.coinsMessage = null;
         this.starsMessage = null;
     }
 
+    /**
+     * Give the reward of a given achievement to a given player
+     *
+     * @param player Player
+     * @param achievement Achievement
+     */
     public void give(Player player, Achievement achievement)
     {
         if(this.coinsMessage != null && this.coins > 0)
@@ -30,6 +45,14 @@ public class AchievementReward
         player.sendMessage(ChatColor.DARK_AQUA + "♦ " + ChatColor.RESET + ChatColor.AQUA + "Objectif débloqué : " + ChatColor.RESET + ChatColor.GOLD + ChatColor.BOLD + achievement.getDisplayName() + ChatColor.RESET + ChatColor.DARK_AQUA + " ♦");
     }
 
+    /**
+     * Add coins into the reward
+     *
+     * @param coins Number of coins
+     * @param coinsMessage Unlocking message
+     *
+     * @return Actual object
+     */
     public AchievementReward setCoins(int coins, String coinsMessage)
     {
         this.coins = coins;
@@ -38,6 +61,14 @@ public class AchievementReward
         return this;
     }
 
+    /**
+     * Add stars into the reward
+     *
+     * @param stars Number of stars
+     * @param starsMessage Unlocking message
+     *
+     * @return Actual object
+     */
     public AchievementReward setStars(int stars, String starsMessage)
     {
         this.stars = stars;
