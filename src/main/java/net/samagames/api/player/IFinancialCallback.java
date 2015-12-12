@@ -1,18 +1,20 @@
 package net.samagames.api.player;
 
 /**
- * This file is a part of the SamaGames project
- * This code is absolutely confidential.
- * (C) Copyright Elydra Network 2015
- * All rights reserved.
+ * Financial callback class
+ *
+ * Copyright (c) for SamaGames
+ * All right reserved
  */
-public interface IFinancialCallback<V> {
-
-	/**
-	 * Fonction appelée une fois une transaction financière terminée
-	 * @param newAmount Nouveau montant après crédit/débit
-	 * @param difference Montant exact crédité/débité (+ = crédit / - = débit)
-	 * @param error
-	 */
-	public void done(V newAmount, V difference, Throwable error);
+public interface IFinancialCallback
+{
+    /**
+     * Fired after financial operation
+     *
+     * @param newAmount New amount of money
+     * @param difference Difference of money between before and
+     *                   after the operation
+     * @param error {@link Throwable} error if the operation failed
+     */
+	void done(long newAmount, long difference, Throwable error);
 }

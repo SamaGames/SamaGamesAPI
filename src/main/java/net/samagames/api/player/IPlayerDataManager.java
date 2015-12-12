@@ -3,32 +3,36 @@ package net.samagames.api.player;
 import java.util.UUID;
 
 /**
- * This file is a part of the SamaGames project
- * This code is absolutely confidential.
- * (C) Copyright Elydra Network 2015
- * All rights reserved.
+ * Player dada manager class
+ *
+ * Copyright (c) for SamaGames
+ * All right reserved
  */
-public interface IPlayerDataManager {
+public interface IPlayerDataManager
+{
+    /**
+     * Unload cached player's data
+     *
+     * @param player Player's UUID
+     */
+    void unload(UUID player);
 
 	/**
-	 * Retourne les données d'un joueur
-	 * @param player UUID du joueur
-	 * @return les données du joueur
+	 * Get given player's data
+     *
+	 * @param player Player's UUID
+     *
+	 * @return Instance
 	 */
-	public AbstractPlayerData getPlayerData(UUID player);
+    AbstractPlayerData getPlayerData(UUID player);
 
-	/**
-	 * Retourne les données d'un joueur
-	 * @param player	UUID du joueur
-	 * @param forceRefresh	Forcer le rafraichissement depuis la base de données
-	 * @return les données du joueur
-	 */
-	public AbstractPlayerData getPlayerData(UUID player, boolean forceRefresh);
-
-	/**
-	 * Décharge les données du joueur du cache local
-	 * @param player uuid du joueur
-	 */
-	public void unload(UUID player);
-
+    /**
+     * Get given player's data
+     *
+     * @param player Player's UUID
+     * @param forceRefresh Refresh the data before return
+     *
+     * @return Instance
+     */
+    AbstractPlayerData getPlayerData(UUID player, boolean forceRefresh);
 }

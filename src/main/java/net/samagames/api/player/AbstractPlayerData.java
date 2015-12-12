@@ -5,403 +5,513 @@ import net.samagames.api.SamaGamesAPI;
 import java.util.*;
 
 /**
- * This file is a part of the SamaGames project
- * This code is absolutely confidential.
- * Created by zyuiop
- * (C) Copyright Elydra Network 2015
- * All rights reserved.
+ * Player data class
+ *
+ * Copyright (c) for SamaGames
+ * All right reserved
  */
-public abstract class AbstractPlayerData {
+public abstract class AbstractPlayerData
+{
+    private final Map<String, String> playerData;
+    private final UUID playerID;
+    private Date lastRefresh;
 
-    protected Map<String, String> playerData = new HashMap<>();
-    protected Date lastRefresh;
-    protected final UUID playerID;
-
-    protected AbstractPlayerData(UUID playerID) {
+    /**
+     * Constructor
+     *
+     * @param playerID Player data owner UUID {@link UUID}
+     */
+    public AbstractPlayerData(UUID playerID)
+    {
+        this.playerData = new HashMap<>();
         this.playerID = playerID;
     }
 
     /**
-     * Obtient le nom effectif du joueur (/nick)
-     * @return Le nom effectif du joueur ou null si le joueur n'a pas de nom custom.
+     * Get the custom name of the player (/nick)
+     *
+     * @return Custom name
      */
-    public String getCustomName() {
-        return get("effectiveName");
+    public String getCustomName()
+    {
+        return this.get("effectiveName");
     }
 
     /**
-     * Obtient le nom effectif du joueur (/nick)
-     * @return Le pseudo du joueur ou, le cas échéant, son nom modifié.
+     * Get the current effective name of the player
+     *
+     * @return Effective name
      */
-    public String getEffectiveName() {
-        String eName = getCustomName();
-        return (eName == null) ? SamaGamesAPI.get().getUUIDTranslator().getName(playerID) : eName;
+    public String getEffectiveName()
+    {
+        String eName = this.getCustomName();
+        return (eName == null) ? SamaGamesAPI.get().getUUIDTranslator().getName(this.playerID) : eName;
     }
 
     /**
-     * Obtient l'uuid effectif du joueur (/nick)
-     * @return L'uuid effectif du joueur
+     * Get the current effective UUID {@link UUID} of the
+     * player
+     *
+     * @return UUID
      */
-    public UUID getEffectiveUUID() {
-        try {
-            return UUID.fromString(get("effectiveUUID", playerID.toString()));
-        } catch (Exception e) {
+    public UUID getEffectiveUUID()
+    {
+        try
+        {
+            return UUID.fromString(this.get("effectiveUUID", this.playerID.toString()));
+        }
+        catch (Exception e)
+        {
             return null;
         }
     }
 
     /**
-     * Permet d'obtenir l'UUID du joueur
-     * @return UUID du joueur
+     * Get player's UUID
+     *
+     * @return UUID
      */
-    public UUID getPlayerID() {
-        return playerID;
+    public UUID getPlayerID()
+    {
+        return this.playerID;
     }
 
     /**
-     * Renvoie la dernière date d'actualisation depuis la base de données
-     * @return Dernière actualisation
+     * Get last refresh date
+     *
+     * @return Last time
      */
-    public Date getLastRefresh() {
-        return lastRefresh;
+    public Date getLastRefresh()
+    {
+        return this.lastRefresh;
     }
 
     /**
-     * Obtient les clés des données stockées
-     * @return Liste des clés stockées
+     * Get data keys
+     *
+     * @return List of keys
      */
-    public Set<String> getKeys() {
-        return playerData.keySet();
+    public Set<String> getKeys()
+    {
+        return this.playerData.keySet();
     }
 
     /**
-     * Obtient l'ensemble des données du joueur
-     * @return données du joueur
+     * Get player data
+     *
+     * @return Map of keys and values
      */
-    public Map<String, String> getValues() {
-        return playerData;
+    public Map<String, String> getValues()
+    {
+        return this.playerData;
     }
 
     /**
-     * Permet de savoir si les données du joueur contiennent une clé en particulier
-     * @param key Clé à tester
-     * @return true si cette clé existe
+     * Remove the player's data of the given key
+     *
+     * @param key Data's key
      */
-    public boolean contains(String key) {
-        return playerData.containsKey(key);
-    }
-
-    /**
-     * Récupère la valeur d'une clé
-     * @param key clé à récupérer
-     * @return valeur de la clé, null si elle n'existe pas
-     */
-    public String get(String key) {
-        return playerData.get(key);
-    }
-
-    /**
-     * Récupère la valeur d'une clé
-     * @param key clé à récupérer
-     * @param def Valeur par défaut
-     * @return valeur de la clé, <code>def</code> si elle n'existe pas
-     */
-    public String get(String key, String def) {
-        return (contains(key) ? get(key) : def);
-    }
-
-    /**
-     * Définit une valeur dans les données du joueur
-     * @param key	Clé à définir
-     * @param value Valeur à définir
-     */
-    public abstract void set(String key, String value);
-
     public abstract void remove(String key);
 
     /**
-     * Récupère la valeur d'une clé
-     * @param key clé à récupérer
-     * @return valeur de la clé, null si elle n'existe pas
-     * @throws net.samagames.api.player.InvalidTypeException si la valeur n'est pas du bon type
+     * Define a player data
+     *
+     * @param key Key
+     * @param value Value {@link String}
      */
-    public Integer getInt(String key) {
-        String val = get(key);
-        if (val == null)
-            return null;
-
-        try {
-            return Integer.valueOf(val);
-        } catch (Exception e) {
-            throw new InvalidTypeException("This value is not an int.");
-        }
-    }
+    public abstract void set(String key, String value);
 
     /**
-     * Récupère la valeur d'une clé
-     * @param key clé à récupérer
-     * @param def Valeur par défaut
-     * @return valeur de la clé, <code>def</code> si elle n'existe pas
-     * @throws net.samagames.api.player.InvalidTypeException si la valeur n'est pas du bon type
-     */
-    public Integer getInt(String key, int def) {
-        Integer ret = getInt(key);
-        if (ret == null)
-            return def;
-        else
-            return ret;
-    }
-
-    /**
-     * Définit une valeur dans les données du joueur
-     * @param key	Clé à définir
-     * @param value Valeur à définir
+     * Define a player data
+     *
+     * @param key Key
+     * @param value Value {@link Integer}
      */
     public abstract void setInt(String key, int value);
 
     /**
-     * Récupère la valeur d'une clé
-     * @param key clé à récupérer
-     * @return valeur de la clé, null si elle n'existe pas
-     * @throws net.samagames.api.player.InvalidTypeException si la valeur n'est pas du bon type
-     */
-    public Boolean getBoolean(String key) {
-        String val = get(key);
-        if (val == null)
-            return null;
-
-        try {
-            return Boolean.valueOf(val);
-        } catch (Exception e) {
-            throw new InvalidTypeException("This value is not a boolean.");
-        }
-    }
-
-    /**
-     * Récupère la valeur d'une clé
-     * @param key clé à récupérer
-     * @param def Valeur par défaut
-     * @return valeur de la clé, <code>def</code> si elle n'existe pas
-     * @throws net.samagames.api.player.InvalidTypeException si la valeur n'est pas du bon type
-     */
-    public Boolean getBoolean(String key, boolean def) {
-        Boolean ret = getBoolean(key);
-        if (ret == null)
-            return def;
-        else
-            return ret;
-    }
-
-    /**
-     * Définit une valeur dans les données du joueur
-     * @param key	Clé à définir
-     * @param value Valeur à définir
+     * Define a player data
+     *
+     * @param key Key
+     * @param value Value {@link Boolean}
      */
     public abstract void setBoolean(String key, boolean value);
 
     /**
-     * Récupère la valeur d'une clé
-     * @param key clé à récupérer
-     * @return valeur de la clé, null si elle n'existe pas
-     * @throws net.samagames.api.player.InvalidTypeException si la valeur n'est pas du bon type
+     * Define a player data
+     *
+     * @param key Key
+     * @param value Value {@link Double}
      */
-    public Double getDouble(String key) {
-        String val = get(key);
-        if (val == null)
-            return null;
+    public abstract void setDouble(String key, double value);
 
-        try {
-            return Double.valueOf(val);
-        } catch (Exception e) {
+    /**
+     * Define a player data
+     *
+     * @param key Key
+     * @param value Value {@link Long}
+     */
+    public abstract void setLong(String key, long value);
+
+    /**
+     * Get the value of a given key
+     *
+     * @param key Data's key
+     *
+     * @return Value or {@code null} is not found
+     */
+    public String get(String key)
+    {
+        return playerData.get(key);
+    }
+
+    /**
+     * Get the value {@link String} of a given key
+     *
+     * @param key Data's key
+     * @param def Default value
+     *
+     * @return Value or a default value if not found
+     */
+    public String get(String key, String def)
+    {
+        return (this.contains(key) ? this.get(key) : def);
+    }
+
+    /**
+     * Get the value {@link Double} of a given key
+     *
+     * @param key Data's key
+     *
+     * @return Value or a default value if not found
+     */
+    public Double getDouble(String key)
+    {
+        String val = this.get(key);
+
+        try
+        {
+            return (val == null ? null : Double.valueOf(val));
+        }
+        catch (Exception e)
+        {
             throw new InvalidTypeException("This value is not a double.");
         }
     }
 
     /**
-     * Récupère la valeur d'une clé
-     * @param key clé à récupérer
-     * @param def Valeur par défaut
-     * @return valeur de la clé, <code>def</code> si elle n'existe pas
-     * @throws net.samagames.api.player.InvalidTypeException si la valeur n'est pas du bon type
+     * Get the value {@link Double} of a given key
+     *
+     * @param key Data's key
+     * @param def Default value
+     *
+     * @return Value or a default value if not found
      */
-    public Double getDouble(String key, double def) {
-        Double ret = getDouble(key);
-        if (ret == null)
-            return def;
-        else
-            return ret;
+    public Double getDouble(String key, double def)
+    {
+        Double ret = this.getDouble(key);
+        return (ret == null ? def : ret);
     }
 
     /**
-     * Définit une valeur dans les données du joueur
-     * @param key	Clé à définir
-     * @param value Valeur à définir
+     * Get the value {@link Long} of a given key
+     *
+     * @param key Data's key
+     *
+     * @return Value or a default value if not found
      */
-    public abstract void setDouble(String key, double value);
+    public Long getLong(String key)
+    {
+        String val = this.get(key);
 
-    /**
-     * Récupère la valeur d'une clé
-     * @param key clé à récupérer
-     * @return valeur de la clé, null si elle n'existe pas
-     * @throws net.samagames.api.player.InvalidTypeException si la valeur n'est pas du bon type
-     */
-    public Long getLong(String key) {
-        String val = get(key);
-        if (val == null)
-            return null;
-
-        try {
-            return Long.valueOf(val);
-        } catch (Exception e) {
+        try
+        {
+            return (val == null ? null : Long.valueOf(val));
+        }
+        catch (Exception e)
+        {
             throw new InvalidTypeException("This value is not a long.");
         }
     }
 
     /**
-     * Récupère la valeur d'une clé
-     * @param key clé à récupérer
-     * @param def Valeur par défaut
-     * @return valeur de la clé, <code>def</code> si elle n'existe pas
-     * @throws net.samagames.api.player.InvalidTypeException si la valeur n'est pas du bon type
+     * Get the value {@link Long} of a given key
+     *
+     * @param key Data's key
+     * @param def Default value
+     *
+     * @return Value or a default value if not found
      */
-    public Long getLong(String key, long def) {
-        Long ret = getLong(key);
-        if (ret == null)
-            return def;
-        else
-            return ret;
+    public Long getLong(String key, long def)
+    {
+        Long ret = this.getLong(key);
+        return (ret == null ? def : ret);
     }
 
     /**
-     * Définit une valeur dans les données du joueur
-     * @param key	Clé à définir
-     * @param value Valeur à définir
+     * Get the value {@link Integer} of a given key
+     *
+     * @param key Data's key
+     *
+     * @return Value or a default value if not found
      */
-    public abstract void setLong(String key, long value);
+    public Integer getInt(String key)
+    {
+        String val = this.get(key);
 
-	/*
-	Coins management
-	*/
-
-    /**
-     * Retourne le nombre de coins du joueur
-     * ATTENTION ! Ce nombre de coins date du dernier refresh, obtenable via <code>getLastRefresh()</code>
-     * @return le nombre de coins du joueur
-     */
-    public long getCoins() {
-        return getLong("coins", 0L);
+        try
+        {
+            return (val == null ? null : Integer.valueOf(val));
+        }
+        catch (Exception e)
+        {
+            throw new InvalidTypeException("This value is not a integer.");
+        }
     }
 
     /**
-     * Augmente le nombre de coins du joueur. Ne tient compte d'aucun multiplicateur et n'affiche aucun message.
-     * @param incrBy Montant à créditer
-     * @return le nouveau nombre de coins du joueur
+     * Get the value {@link Integer} of a given key
+     *
+     * @param key Data's key
+     * @param def Default value
+     *
+     * @return Value or a default value if not found
      */
-    public abstract long increaseCoins(long incrBy);
-
-    /**
-     * Diminue le nombre de coins du joueur. Ne tient compte d'aucun multiplicateur et n'affiche aucun message.
-     * @param decrBy Montant à créditer
-     * @return le nouveau nombre de coins du joueur
-     */
-    public abstract long decreaseCoins(long decrBy);
-
-    /**
-     * Effectue un crédit de coins au joueur
-     * @param amount Montant à créditer
-     * @param reason Raison du crédit
-     */
-    public void creditCoins(long amount, String reason) {
-        creditCoins(amount, reason, true, null);
+    public Integer getInt(String key, int def)
+    {
+        Integer ret = this.getInt(key);
+        return (ret == null ? def : ret);
     }
 
     /**
-     * Effectue un crédit de coins au joueur
-     * @param amount Montant à créditer
-     * @param reason Raison du crédit
-     * @param applyMultiplier Appliquer les multiplicateurs du joueurs
+     * Get the value {@link Boolean} of a given key
+     *
+     * @param key Data's key
+     *
+     * @return Value or a default value if not found
      */
-    public void creditCoins(long amount, String reason, boolean applyMultiplier) {
-        creditCoins(amount, reason, applyMultiplier, null);
+    public Boolean getBoolean(String key)
+    {
+        String val = get(key);
+
+        try
+        {
+            return (val == null ? null : Boolean.valueOf(val));
+        }
+        catch (Exception e)
+        {
+            throw new InvalidTypeException("This value is not a boolean.");
+        }
     }
 
     /**
-     * Effectue un crédit de coins au joueur
-     * @param amount Montant à créditer
-     * @param reason Raison du crédit
-     * @param financialCallback Callback appellé après l'opération
+     * Get the value {@link Boolean} of a given key
+     *
+     * @param key Data's key
+     * @param def Default value
+     *
+     * @return Value or a default value if not found
      */
-    public void creditCoins(long amount, String reason, IFinancialCallback<Long> financialCallback) {
-        creditCoins(amount, reason, true, financialCallback);
+    public Boolean getBoolean(String key, boolean def)
+    {
+        Boolean ret = this.getBoolean(key);
+        return (ret == null ? def : ret);
     }
 
     /**
-     * Effectue un crédit de coins au joueur, deja async
-     * @param amount Montant à créditer
-     * @param reason Raison du crédit
-     * @param applyMultiplier Appliquer les multiplicateurs du joueurs
-     * @param financialCallback Callback appellé après l'opération
+     * Determinate if the player's data contains a given
+     * key
+     *
+     * @param key Key to test
+     *
+     * @return {@code true} if contains
      */
-    public abstract void creditCoins(long amount, String reason, boolean applyMultiplier, IFinancialCallback<Long> financialCallback);
+    public boolean contains(String key)
+    {
+        return this.playerData.containsKey(key);
+    }
+
 
     /**
-     * Effectue un débit de coins
-     * @param amount Montant à débiter
+     * ========================
+     * > Coins management
+     * ========================
      */
-    public void withdrawCoins(long amount) {
-        withdrawCoins(amount, null);
+
+    /**
+     * Credit the coins number of the player
+     *
+     * @param amount Amount to credit
+     * @param reason Credit's reason
+     * @param applyMultiplier Have to apply multiplier
+     * @param financialCallback Callback fired after the process
+     */
+    public abstract void creditCoins(long amount, String reason, boolean applyMultiplier, IFinancialCallback financialCallback);
+
+    /**
+     * Withdraw the coins number of the player
+     *
+     * @param amount Amount to withdraw
+     * @param financialCallback Callback fired after the process
+     */
+    public abstract void withdrawCoins(long amount, IFinancialCallback financialCallback);
+
+    /**
+     * Credit the coins number of the player
+     * 
+     * @param amount Amount to credit
+     * @param reason Credit's reason
+     */
+    public void creditCoins(long amount, String reason)
+    {
+        this.creditCoins(amount, reason, true, null);
+    }
+    
+    /**
+     * Credit the coins number of the player
+     *
+     * @param amount Amount to credit
+     * @param reason Credit's reason
+     * @param applyMultiplier Have to apply multiplier
+     */
+    public void creditCoins(long amount, String reason, boolean applyMultiplier)
+    {
+        this.creditCoins(amount, reason, applyMultiplier, null);
     }
 
     /**
-     * Effectue un débit de coins
-     * @param amount Montant à débiter
-     * @param financialCallback Callback appellé après l'opération
+     * Credit the coins number of the player
+     *
+     * @param amount Amount to credit
+     * @param reason Credit's reason
+     * @param financialCallback Callback fired after the process
      */
-    public abstract void withdrawCoins(long amount, IFinancialCallback<Long> financialCallback);
+    public void creditCoins(long amount, String reason, IFinancialCallback financialCallback)
+    {
+        this.creditCoins(amount, reason, true, financialCallback);
+    }
 
     /**
-     * Permet de savoir si un joueur a assez de coins pour acheter un produit
-     * @param amount Prix du produit
-     * @return true si le joueur a assez de coins, false sinon
+     * Withdraw the coins number of the player
+     *
+     * @param amount Amount to withdraw
      */
-    public boolean hasEnoughCoins(long amount) {
-        return getCoins() >= amount;
+    public void withdrawCoins(long amount)
+    {
+        this.withdrawCoins(amount, null);
     }
 
-	/*
-	Stars management
-	 */
-
-    public long getStars() {
-        return getLong("stars", 0L);
+    /**
+     * Get current coins number of the player
+     * 
+     * @return Number of coins
+     */
+    public long getCoins()
+    {
+        return this.getLong("coins", 0L);
     }
 
-    public abstract long increaseStars(long incrBy);
-
-    public abstract long decreaseStars(long decrBy);
-
-    public void creditStars(long amount, String reason) {
-        creditStars(amount, reason, false, null);
+    /**
+     * Is the player has current coins
+     * 
+     * @param amount Coins number to check
+     *
+     * @return {@code true} is has enough
+     */
+    public boolean hasEnoughCoins(long amount)
+    {
+        return this.getCoins() >= amount;
     }
 
-    public void creditStars(long amount, String reason, boolean applyMultiplier) {
-        creditStars(amount, reason, applyMultiplier, null);
+
+    /**
+     * ========================
+     * > Stars management
+     * ========================
+     */
+
+    /**
+     * Credit the stars number of the player
+     *
+     * @param amount Amount to credit
+     * @param reason Credit's reason
+     * @param applyMultiplier Have to apply multiplier
+     * @param financialCallback Callback fired after the process
+     */
+    public abstract void creditStars(long amount, String reason, boolean applyMultiplier, IFinancialCallback financialCallback);
+
+    /**
+     * Withdraw the stars number of the player
+     *
+     * @param amount Amount to withdraw
+     * @param financialCallback Callback fired after the process
+     */
+    public abstract void withdrawStars(long amount, IFinancialCallback financialCallback);
+
+    /**
+     * Credit the stars number of the player
+     *
+     * @param amount Amount to credit
+     * @param reason Credit's reason
+     */
+    public void creditStars(long amount, String reason)
+    {
+        this.creditStars(amount, reason, true, null);
     }
 
-    public void creditStars(long amount, String reason, IFinancialCallback<Long> financialCallback) {
-        creditStars(amount, reason, true, financialCallback);
+    /**
+     * Credit the stars number of the player
+     *
+     * @param amount Amount to credit
+     * @param reason Credit's reason
+     * @param applyMultiplier Have to apply multiplier
+     */
+    public void creditStars(long amount, String reason, boolean applyMultiplier)
+    {
+        this.creditStars(amount, reason, applyMultiplier, null);
     }
 
-    //Deja Async
-    public abstract void creditStars(long amount, String reason, boolean applyMultiplier, IFinancialCallback<Long> financialCallback);
-
-    public void withdrawStars(long amount) {
-        withdrawStars(amount, null);
+    /**
+     * Credit the stars number of the player
+     *
+     * @param amount Amount to credit
+     * @param reason Credit's reason
+     * @param financialCallback Callback fired after the process
+     */
+    public void creditStars(long amount, String reason, IFinancialCallback financialCallback)
+    {
+        this.creditStars(amount, reason, true, financialCallback);
     }
 
-    public abstract void withdrawStars(long amount, IFinancialCallback<Long> financialCallback);
+    /**
+     * Withdraw the stars number of the player
+     *
+     * @param amount Amount to withdraw
+     */
+    public void withdrawStars(long amount)
+    {
+        this.withdrawStars(amount, null);
+    }
 
-    public boolean hasEnoughStars(long amount) {
-        return getStars() >= amount;
+    /**
+     * Get current stars number of the player
+     *
+     * @return Number of stars
+     */
+    public long getStars()
+    {
+        return this.getLong("stars", 0L);
+    }
+
+    /**
+     * Is the player has current stars
+     *
+     * @param amount Stars number to check
+     *
+     * @return {@code true} is has enough
+     */
+    public boolean hasEnoughStars(long amount)
+    {
+        return this.getStars() >= amount;
     }
 }
