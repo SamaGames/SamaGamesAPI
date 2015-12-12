@@ -7,10 +7,13 @@ import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
- * Created by Geekpower14 on 10/08/2015.
+ * Gui manager class
+ *
+ * Copyright (c) for SamaGames
+ * All right reserved
  */
-public interface IGuiManager {
-
+public interface IGuiManager
+{
     /**
      * Open the given Abstract GUI to the player
      *
@@ -20,24 +23,25 @@ public interface IGuiManager {
     void openGui(Player player, AbstractGui gui);
 
     /**
-     * Close the opened gui of the player
+     * Close the opened GUI of the player
      *
-     * @param player Player to close the gui
+     * @param player Player
      */
     void closeGui(Player player);
 
     /**
-     * Remove the Gui data of the player from the save list
-     * Automatically called in closeGui(Player player)
+     * Remove the GUI data of the player from the save list
+     * Automatically called in {@link IGuiManager##closeGui(Player)}
      *
      * @param player The Player for data to remove
      */
     void removeClosedGui(Player player);
 
     /**
-     * Get the Gui object of a player
+     * Get the GUI object of a player
      *
-     * @param player The HumanPlayer object to get the gui
+     * @param player The HumanPlayer object to get the GUI
+     *
      * @return The AbstractGui of the player
      */
     AbstractGui getPlayerGui(HumanEntity player);
@@ -45,15 +49,16 @@ public interface IGuiManager {
     /**
      * Get the Gui object of a player
      *
-     * @param player The UUID of the player to get the gui
+     * @param player The UUID of the player to get the GUI
+     *
      * @return The AbstractGui of the player
      */
     AbstractGui getPlayerGui(UUID player);
 
     /**
-     * Get all polayers who have a Gui opened
+     * Get all players who have a GUI opened
      *
-     * @return The gui list and uuid of players who opened the gui
+     * @return The gui list and uuid of players who opened the GUI
      */
     ConcurrentHashMap<UUID, AbstractGui> getPlayersGui();
 }
