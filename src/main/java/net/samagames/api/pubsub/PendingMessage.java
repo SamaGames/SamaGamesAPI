@@ -1,34 +1,72 @@
 package net.samagames.api.pubsub;
 
-public class PendingMessage {
+/**
+ * Sender class
+ *
+ * Copyright (c) for SamaGames
+ * All right reserved
+ */
+public class PendingMessage
+{
 	private final String channel;
 	private final String message;
 	private final Runnable callback;
 
-	public PendingMessage(String channel, String message) {
-		this.channel = channel;
-		this.message = message;
-		this.callback = null;
-	}
-
-	public PendingMessage(String channel, String message, Runnable callback) {
+    /**
+     * Constructor
+     *
+     * @param channel Message's channel
+     * @param message Message's content
+     * @param callback Callback fired after the operation
+     */
+	public PendingMessage(String channel, String message, Runnable callback)
+    {
 		this.channel = channel;
 		this.message = message;
 		this.callback = callback;
 	}
 
-	public String getChannel() {
-		return channel;
+    /**
+     * Constructor
+     *
+     * @param channel Message's channel
+     * @param message Message's content
+     */
+    public PendingMessage(String channel, String message)
+    {
+        this(channel, message, null);
+    }
+
+    /**
+     * Fire callback
+     */
+    public void runAfter()
+    {
+        try
+        {
+            if (this.callback != null)
+                this.callback.run();
+        }
+        catch (Exception ignored) {}
+    }
+
+    /**
+     * Get message's channel
+     *
+     * @return Channel
+     */
+	public String getChannel()
+    {
+		return this.channel;
 	}
 
-	public String getMessage() {
-		return message;
-	}
-
-	public void runAfter() {
-		try {
-			if (callback != null)
-				callback.run();
-		} catch (Exception ignored) {}
+    /**
+     * Get message's content
+     *
+     * @return Message
+     */
+	public String getMessage()
+    {
+		return this.message;
 	}
 }

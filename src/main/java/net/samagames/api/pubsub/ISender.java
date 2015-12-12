@@ -1,14 +1,17 @@
 package net.samagames.api.pubsub;
 
 /**
- * This file is a part of the SamaGames project
- * This code is absolutely confidential.
- * Created by zyuiop
- * (C) Copyright Elydra Network 2015
- * All rights reserved.
+ * Sender class
+ *
+ * Copyright (c) for SamaGames
+ * All right reserved
  */
-public interface ISender {
-
-	public void publish(PendingMessage message);
-
+public interface ISender
+{
+    /**
+     * Publish a given message
+     *
+     * @param message Message
+     */
+	void publish(PendingMessage message);
 }

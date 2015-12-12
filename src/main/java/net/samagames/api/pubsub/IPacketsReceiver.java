@@ -1,14 +1,18 @@
 package net.samagames.api.pubsub;
 
 /**
- * This file is a part of the SamaGames project
- * This code is absolutely confidential.
- * Created by zyuiop
- * (C) Copyright Elydra Network 2015
- * All rights reserved.
+ * Packets receiver class
+ *
+ * Copyright (c) for SamaGames
+ * All right reserved
  */
-public interface IPacketsReceiver {
-
-	public void receive(String channel, String packet);
-
+public interface IPacketsReceiver
+{
+    /**
+     * Fired when a Redis PubSub message is received
+     *
+     * @param channel PubSub message's channel
+     * @param packet PubSub message's content
+     */
+    void receive(String channel, String packet);
 }

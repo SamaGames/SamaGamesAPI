@@ -1,32 +1,48 @@
 package net.samagames.api.pubsub;
 
 /**
- * This file is a part of the SamaGames project
- * This code is absolutely confidential.
- * Created by zyuiop
- * (C) Copyright Elydra Network 2015
- * All rights reserved.
+ * PubSub API class
+ *
+ * Copyright (c) for SamaGames
+ * All right reserved
  */
-public interface IPubSubAPI {
-
+public interface IPubSubAPI
+{
 	/**
-	 * Enregistre un listener sur le channel pubsub passé en argument
-	 * @param channel 	Nom du channel à écouter
-	 * @param receiver 	Objet recevant les packets
+	 * Subscribe a given {@link IPacketsReceiver} to a given channel
+     *
+	 * @param channel Channel to listen
+	 * @param receiver Receiver
 	 */
-	public void subscribe(String channel, IPacketsReceiver receiver);
+	void subscribe(String channel, IPacketsReceiver receiver);
 
+    /**
+     * Subscribe a given {@link IPatternReceiver} to a given pattern
+     *
+     * @param pattern Pattern to listen
+     * @param receiver Receiver
+     */
 	void subscribe(String pattern, IPatternReceiver receiver);
 
 	/**
-	 * Envoie un message sur un channel pubsub
-	 * @param channel	Channel sur lequel envoyer le message
-	 * @param message	Message à publier
+	 * Send a given message into the given channel
+     *
+	 * @param channel Channel
+	 * @param message Message
 	 */
-	public void send(String channel, String message);
+	void send(String channel, String message);
 
+    /**
+     * Send a PubSub message {@link PendingMessage}
+     *
+     * @param message Message
+     */
 	void send(PendingMessage message);
 
-	public ISender getSender();
-
+    /**
+     * Get the message publisher
+     *
+     * @return Instance
+     */
+	ISender getSender();
 }
