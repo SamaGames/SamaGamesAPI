@@ -6,17 +6,23 @@ import java.util.concurrent.TimeUnit;
 import java.util.regex.Pattern;
 
 /**
- * This file is a part of the SamaGames Project CodeBase
- * This code is absolutely confidential.
- * Created by {USER}
- * (C) Copyright Elydra Network 2014 & 2015
- * All rights reserved.
+ * Misc utils
+ *
+ * Copyright (c) for SamaGames
+ * All right reserved
  */
 public class Misc
 {
     private static final Pattern URL = Pattern.compile("\\b(https?)://[-a-zA-Z0-9+&@#/%?=~_|!:,.;]*[-a-zA-Z0-9+&@#/%=~_|]");
-    private static final Pattern MOD = Pattern.compile("^.*@\\{(.*):(.*)\\}");
 
+    /**
+     * Format a millisecond based long into a
+     * structured phrase
+     *
+     * @param time Milliseconds
+     *
+     * @return Structured phrase
+     */
     public static String formatTime(long time)
     {
         long days = TimeUnit.MILLISECONDS.toDays(time);
@@ -46,14 +52,23 @@ public class Misc
         return ret;
     }
 
+    /**
+     * Parse a raw phrase into a date {@link Date}
+     *
+     * @param str Raw phrase
+     *
+     * @return Date object
+     */
     public static Date parseTime(String str)
     {
-        Calendar cal = Calendar.getInstance(); // creates calendar
-        cal.setTime(new Date()); // sets calendar time/date
+        Calendar cal = Calendar.getInstance();
+        cal.setTime(new Date());
+
         for (String t : str.split("\\+"))
         {
             String[] end = t.split(":");
             int type;
+
             if (end[1].equalsIgnoreCase("d"))
                 type = Calendar.DAY_OF_YEAR;
             else if (end[1].equalsIgnoreCase("h"))
@@ -62,18 +77,19 @@ public class Misc
                 type = Calendar.MINUTE;
             else
                 type = Calendar.SECOND;
+
             cal.add(type, Integer.parseInt(end[0]));
         }
         return cal.getTime();
     }
 
+    /**
+     * Get the URL regex pattern
+     *
+     * @return Instance
+     */
     public static Pattern getURLPattern()
     {
         return URL;
-    }
-
-    public static Pattern getModFunctionPattern()
-    {
-        return MOD;
     }
 }
