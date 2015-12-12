@@ -6,17 +6,40 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.UUID;
 
-public interface IJoinManager extends Listener {
-
+/**
+ * Join manager class
+ *
+ * Copyright (c) for SamaGames
+ * All right reserved
+ */
+public interface IJoinManager extends Listener
+{
     /**
      * Register a JoinHandler which is going to be called by the manager
-     * @param handler The handler which will handle join requests
+     *
+     * @param handler The handler
      * @param priority The handler priority (0 = Lowest, please do not use priorities under 10)
      */
-    public void registerHandler(IJoinHandler handler, int priority);
+    void registerHandler(IJoinHandler handler, int priority);
 
-    public int countExpectedPlayers();
-    public HashSet<UUID> getExpectedPlayers();
-    public List<UUID> getModeratorsExpected();
+    /**
+     * Count connected players
+     *
+     * @return Number of players
+     */
+    int countExpectedPlayers();
 
+    /**
+     * Get connected players as a list of UUID
+     *
+     * @return List of UUID
+     */
+    HashSet<UUID> getExpectedPlayers();
+
+    /**
+     * Get connected moderator as a list of UUID
+     *
+     * @return List of UUID
+     */
+    List<UUID> getModeratorsExpected();
 }

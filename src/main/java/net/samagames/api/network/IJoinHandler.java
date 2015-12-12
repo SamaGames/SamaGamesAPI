@@ -5,59 +5,69 @@ import org.bukkit.entity.Player;
 import java.util.Set;
 import java.util.UUID;
 
-public interface IJoinHandler {
-
+/**
+ * Join handler class
+ *
+ * Copyright (c) for SamaGames
+ * All right reserved
+ */
+public interface IJoinHandler
+{
     /**
-     * Called when an user requires to connect, by rightclicking a game sign for example.
-     * @param player joining player
-     * @param response response filled by previous handlers
-     * @return filled answer
-     */
-    default JoinResponse requestJoin(UUID player, JoinResponse response) {
-        return response;
-    }
-
-    /**
-     * Called when an user requires to connect with his party, by rightclicking a game sign for example. It's called instead of requestJoin.
-     * @param partyLeader the leader of the party
-     * @param partyMembers the list of the players of the party, including the leader
-     * @param response The pre-filled response
+     * Called when an user wanted to connect, by right clicking a game sign for example.
+     *
+     * @param player Asking player
+     * @param response Response object {@link JoinResponse}
+     *
      * @return Filled response
      */
-    default JoinResponse requestPartyJoin(UUID partyLeader, Set<UUID> partyMembers, JoinResponse response) {
+    default JoinResponse requestJoin(UUID player, JoinResponse response)
+    {
         return response;
     }
 
     /**
-     * Called when an user logins on the server. It the player didn't request join, requestjoin will be fired automatically before this.
-     * @param player joining player UUID
-     * @param username joining player username
+     * Called when a party wanted to connect, by right clicking a game sign for example.
+     *
+     * @param partyLeader Party leader
+     * @param partyMembers Party members
+     * @param response Response object {@link JoinResponse}
+     *
+     * @return Filled response
      */
-    default void onLogin(UUID player, String username) {
+    default JoinResponse requestPartyJoin(UUID partyLeader, Set<UUID> partyMembers, JoinResponse response)
+    {
+        return response;
     }
 
     /**
-     * Called when an user joins the server
-     * @param player joining player
+     * Event fired when a player login
+     *
+     * @param player Joined player's UUID
+     * @param username Joined player's username
      */
-    default void finishJoin(Player player) {
-    }
+    default void onLogin(UUID player, String username) {}
 
     /**
-     * Called when an user joins as a moderator. Called instead of `onLogin` and `finishJoin`
-     * @param player Joining player
+     * Event fired when a player logged
+     *
+     * @param player Joined player's UUID
      */
-    default void onModerationJoin(Player player) {
-    }
+    default void finishJoin(Player player) {}
 
     /**
-     * Called when an user logs out
-     * @param player Leaving player
+     * Event fired when a moderator login
+     *
+     * <b>Override {@link IJoinHandler##onLogin(UUID, String)} and {@link IJoinHandler##finishJoin(Player)}</b>
+     *
+     * @param player Joined moderator
      */
-    default void onLogout(Player player) {
+    default void onModerationJoin(Player player) {}
 
-    }
-
-
-
+    /**
+     * Event fired when a player logout
+     *
+     * @param player Joined player
+     */
+    default void onLogout(Player player) {}
 }
