@@ -1,32 +1,38 @@
 package net.samagames.api.options;
 
 /**
- * Created by Silva on 15/11/2015.
+ * Server options class
+ *
+ * Copyright (c) for SamaGames
+ * All right reserved
  */
-public interface ServerOptions {
-
-
+public interface ServerOptions
+{
     /**
-     * Get the actual state of the rank display
-     * @return the state
+     * Get if the tab we'll be filled with ranks
+     *
+     * @return {@code true} if activated
      */
     boolean hasRankTabColor();
 
     /**
-     * Set if the tab color of rank is actived or not (for all players).
-     * @param enable (true: all see the rank/ false: nun rank is display)
+     * Set tab filling with ranks
+     *
+     * @param enable {@code true} to enable
      */
     void setRankTabColorEnable(boolean enable);
 
     /**
      * Get if the basic minecraft nature is active or not.
-     * @return true if the nature is active and false if not.
+     *
+     * @return true {@code true} if activated
      */
     boolean hasActiveNature();
 
     /**
      * Set if the basic minecraft nature is active.
-     * @param enable true to activate the nature and false to disable it.
+     *
+     * @param enable {@code true} to enable
      */
     void setActiveNature(boolean enable);
 }
