@@ -8,20 +8,42 @@ import org.bukkit.Bukkit;
 import java.io.*;
 import java.util.logging.Level;
 
+/**
+ * Json configuration class
+ *
+ * Copyright (c) for SamaGames
+ * All right reserved
+ */
 public class JsonConfiguration
 {
     private final File configurationFile;
 
+    /**
+     * Constructor
+     *
+     * @param configurationFile File of the Json file
+     */
     public JsonConfiguration(File configurationFile)
     {
         this.configurationFile = configurationFile;
     }
 
+    /**
+     * Constructor
+     *
+     * @param path Path to the Json file
+     */
     public JsonConfiguration(String path)
     {
         this(new File(path));
     }
 
+    /**
+     * Load the configuration
+     *
+     * @return Json object who represents root
+     * configuration
+     */
     public JsonObject load()
     {
         try
@@ -50,6 +72,11 @@ public class JsonConfiguration
         return null;
     }
 
+    /**
+     * Save the configuration
+     *
+     * @param object Root configuration
+     */
     public void save(JsonObject object)
     {
         Gson gson = new Gson();
