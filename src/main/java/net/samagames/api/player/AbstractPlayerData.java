@@ -12,9 +12,9 @@ import java.util.*;
  */
 public abstract class AbstractPlayerData
 {
-    private final Map<String, String> playerData;
-    private final UUID playerID;
-    private Date lastRefresh;
+    protected final Map<String, String> playerData;
+    protected final UUID playerID;
+    protected Date lastRefresh;
 
     /**
      * Constructor
@@ -358,6 +358,24 @@ public abstract class AbstractPlayerData
 
     /**
      * Credit the coins number of the player
+     *
+     * @param incrBy Amount to credit
+     *
+     * @return The new count
+     */
+    public abstract long increaseCoins(long incrBy);
+
+    /**
+     * Withdraw the coins number of the player
+     *
+     * @param decrBy Amount to withdraw
+     *
+     * @return The new count
+     */
+    public abstract long decreaseCoins(long decrBy);
+
+    /**
+     * Credit the coins number of the player
      * 
      * @param amount Amount to credit
      * @param reason Credit's reason
@@ -447,6 +465,24 @@ public abstract class AbstractPlayerData
      * @param financialCallback Callback fired after the process
      */
     public abstract void withdrawStars(long amount, IFinancialCallback financialCallback);
+
+    /**
+     * Credit the stars number of the player
+     *
+     * @param incrBy Amount to credit
+     *
+     * @return The new count
+     */
+    public abstract long increaseStars(long incrBy);
+
+    /**
+     * Withdraw the stars number of the player
+     *
+     * @param decrBy Amount to withdraw
+     *
+     * @return The new count
+     */
+    public abstract long decreaseStars(long decrBy);
 
     /**
      * Credit the stars number of the player

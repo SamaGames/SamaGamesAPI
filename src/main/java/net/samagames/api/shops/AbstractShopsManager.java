@@ -14,8 +14,8 @@ import java.util.UUID;
  */
 public abstract class AbstractShopsManager
 {
-    private String gameType;
-    private SamaGamesAPI api;
+    protected String gameType;
+    protected SamaGamesAPI api;
 
 	/**
 	 * Constructor
