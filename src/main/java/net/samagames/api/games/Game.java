@@ -224,8 +224,8 @@ public class Game<GAMEPLAYER extends GamePlayer>
      */
     public void handleReconnectTimeOut(OfflinePlayer player, boolean silent)
     {
-        this.gamePlayers.get(player.getUniqueId()).handleLogout();
-        this.gamePlayers.remove(player.getUniqueId());
+        if (this.gamePlayers.containsKey(player.getUniqueId()))
+            this.gamePlayers.remove(player.getUniqueId());
 
         this.gameManager.refreshArena();
 
