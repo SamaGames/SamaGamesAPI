@@ -4,8 +4,20 @@ import org.bukkit.ChatColor;
 
 import java.util.ArrayList;
 
+/**
+ * Rainbow utils
+ *
+ * Copyright (c) for SamaGames
+ * All right reserved
+ */
 public class Rainbow
 {
+    /**
+     * Get a ordered list of color to make
+     * a beautiful rainbow
+     *
+     * @return A list of color
+     */
     public static ArrayList<ChatColor> getRainbow()
     {
         ArrayList<ChatColor> rainbowContent = new ArrayList<>();
