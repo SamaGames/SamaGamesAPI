@@ -6,65 +6,83 @@ import net.samagames.api.games.themachine.messages.IMessageManager;
 import net.samagames.api.games.themachine.messages.ITemplateManager;
 import org.bukkit.inventory.ItemStack;
 
+/**
+ * Coherence Machine class
+ *
+ * Copyright (c) for SamaGames
+ * All right reserved
+ */
 public interface ICoherenceMachine
 {
     /**
-     * Définir le message sous le compteur au début de la partie (< 5 secondes)
-     * @param phrase La phrase
+     * Override the sub-title message when there is less
+     * than 5seconds remaining before the game starts.
+     *
+     * @param phrase Catch phrase
      */
     void setStartCountdownCatchPhrase(String phrase);
 
     /**
-     * Définir une abréviation pour le nom du jeu dans le chat
-     * @param shortcut L'abréviation
+     * Override the game's prefix in chat messages.
+     *
+     * @param shortcut Shortcut
      */
     void setNameShortcut(String shortcut);
 
     /**
-     * Renvoi le tag du jeu pour les messages dans le chat
-     * @return Tag du jeu
+     * Get the game tag
+     *
+     * @return Game tag
      */
     String getGameTag();
 
     /**
-     * Renvoi l'instance du manager de messages basics
-     * @return Manager
+     * Get the message manager {@link IMessageManager}
+     *
+     * @return Message manager
      */
     IMessageManager getMessageManager();
 
     /**
-     * Renvoi l'instance du manager de modèles de messages
+     * Get the template manager {@link ITemplateManager}
+     *
      * @return Manager
      */
     ITemplateManager getTemplateManager();
 
     /**
-     * Renvoi l'objet d'information de jeu
-     * @return L'objet
+     * Get the registered game {@link Game}
+     *
+     * @return Game
      */
     Game getGame();
 
     /**
-     * Renvoi les propriétés du jeu
-     * @return L'objet
+     * Get the game's properties
+     *
+     * @return Game properties object {@link IGameProperties}
      */
     IGameProperties getGameProperties();
 
     /**
-     * Renvoi l'objet servant à quitter le jeu
-     * @return L'objet
+     * Get the ItemStack {@link ItemStack} of the leave door
+     *
+     * @return Door
      */
     ItemStack getLeaveItem();
 
     /**
-     * Renvoi le message sous le compteur au début de la partie (< 5 secondes)
-     * @return Le message
+     * Get the sub-title message when there is less
+     * than 5seconds remaining before the game starts.
+     *
+     * @return Catch phrase
      */
     String getStartCountdownCatchPhrase();
 
     /**
-     * Renvoi l'abréviation du nom du jeu dans le chat
-     * @return L'abréviation
+     * Get the game's prefix in chat messages.
+     *
+     * @return Shortcut
      */
     String getNameShortcut();
 }

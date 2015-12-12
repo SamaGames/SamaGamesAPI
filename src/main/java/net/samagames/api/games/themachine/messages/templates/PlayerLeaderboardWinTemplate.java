@@ -7,8 +7,24 @@ import org.bukkit.entity.Player;
 
 import java.util.ArrayList;
 
+/**
+ * Player leaderboard win message template class
+ *
+ * Copyright (c) for SamaGames
+ * All right reserved
+ */
 public class PlayerLeaderboardWinTemplate
 {
+    /**
+     * Prepare a message to display a leaderboard with
+     * given players
+     *
+     * @param winner Winner in the leaderboard
+     * @param second Second in the leaderboard
+     * @param third Third in the leaderboard (can be null)
+     *
+     * @return Formatted lines
+     */
     public ArrayList<String> prepare(Player winner, Player second, Player third)
     {
         ArrayList<String> lines = new ArrayList<>();
@@ -22,7 +38,20 @@ public class PlayerLeaderboardWinTemplate
         
         return lines;
     }
-    
+
+    /**
+     * Prepare a message to display a leaderboard with
+     * given players and their respective scores
+     *
+     * @param winner Winner in the leaderboard
+     * @param second Second in the leaderboard
+     * @param third Third in the leaderboard (can be null)
+     * @param winnerScore Winner's score
+     * @param secondScore Second's score
+     * @param thirdScore Third's score
+     *
+     * @return Formatted lines
+     */
     public ArrayList<String> prepare(Player winner, Player second, Player third, int winnerScore, int secondScore, int thirdScore)
     {
         ArrayList<String> lines = new ArrayList<>();
@@ -36,7 +65,18 @@ public class PlayerLeaderboardWinTemplate
 
         return lines;
     }
-    
+
+    /**
+     * Prepare a message to display a leaderboard with
+     * given players and a commentary for the winner
+     *
+     * @param winner Winner in the leaderboard
+     * @param second Second in the leaderboard
+     * @param third Third in the leaderboard (can be null)
+     * @param commentary Commentary
+     *
+     * @return Formatted lines
+     */
     public ArrayList<String> prepare(Player winner, Player second, Player third, String commentary)
     {
         ArrayList<String> lines = new ArrayList<>();
@@ -54,7 +94,22 @@ public class PlayerLeaderboardWinTemplate
 
         return lines;
     }
-    
+
+    /**
+     * Prepare a message to display a leaderboard with
+     * given players, their respective scores and a
+     * commentary for the winner
+     *
+     * @param winner Winner in the leaderboard
+     * @param second Second in the leaderboard
+     * @param third Third in the leaderboard (can be null)
+     * @param commentary Commentary
+     * @param winnerScore Winner's score
+     * @param secondScore Second's score
+     * @param thirdScore Third's score
+     *
+     * @return Formatted lines
+     */
     public ArrayList<String> prepare(Player winner, Player second, Player third, String commentary, int winnerScore, int secondScore, int thirdScore)
     {
         ArrayList<String> lines = new ArrayList<>();
@@ -71,22 +126,63 @@ public class PlayerLeaderboardWinTemplate
             lines.add(ChatUtils.getCenteredText(ChatColor.RED + "3e" + ChatColor.GRAY + " - " + ChatColor.RESET + PlayerUtils.getFullyFormattedPlayerName(third) + ChatColor.GRAY + " (" + secondScore + ")"));
         return lines;
     }
-    
+
+    /**
+     * Send a message to display a leaderboard with
+     * given players
+     *
+     * @param winner Winner in the leaderboard
+     * @param second Second in the leaderboard
+     * @param third Third in the leaderboard (can be null)
+     */
     public void execute(Player winner, Player second, Player third)
     {
         new WinMessageTemplate().execute(this.prepare(winner, second, third));
     }
-    
+
+    /**
+     * Send a message to display a leaderboard with
+     * given players and their respective scores
+     *
+     * @param winner Winner in the leaderboard
+     * @param second Second in the leaderboard
+     * @param third Third in the leaderboard (can be null)
+     * @param winnerScore Winner's score
+     * @param secondScore Second's score
+     * @param thirdScore Third's score
+     */
     public void execute(Player winner, Player second, Player third, int winnerScore, int secondScore, int thirdScore)
     {
         new WinMessageTemplate().execute(this.prepare(winner, second, third, winnerScore, secondScore, thirdScore));
     }
-    
+
+    /**
+     * Send a message to display a leaderboard with
+     * given players and a commentary for the winner
+     *
+     * @param winner Winner in the leaderboard
+     * @param second Second in the leaderboard
+     * @param third Third in the leaderboard (can be null)
+     * @param commentary Commentary
+     */
     public void execute(Player winner, Player second, Player third, String commentary)
     {
         new WinMessageTemplate().execute(this.prepare(winner, second, third, commentary));
     }
-    
+
+    /**
+     * Send a message to display a leaderboard with
+     * given players, their respective scores and a
+     * commentary for the winner
+     *
+     * @param winner Winner in the leaderboard
+     * @param second Second in the leaderboard
+     * @param third Third in the leaderboard (can be null)
+     * @param commentary Commentary
+     * @param winnerScore Winner's score
+     * @param secondScore Second's score
+     * @param thirdScore Third's score
+     */
     public void execute(Player winner, Player second, Player third, String commentary, int winnerScore, int secondScore, int thirdScore)
     {
         new WinMessageTemplate().execute(this.prepare(winner, second, third, commentary, winnerScore, secondScore, thirdScore));

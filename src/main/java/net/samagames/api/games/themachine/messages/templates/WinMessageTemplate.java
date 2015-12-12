@@ -5,8 +5,22 @@ import org.bukkit.ChatColor;
 
 import java.util.ArrayList;
 
+/**
+ * Win message template class
+ *
+ * Copyright (c) for SamaGames
+ * All right reserved
+ */
 public class WinMessageTemplate
 {
+    /**
+     * Prepare a empty win message with spacers and given
+     * content
+     *
+     * @param lines Content of the message
+     *
+     * @return Formatted lines
+     */
     public ArrayList<String> prepare(ArrayList<String> lines)
     {
         ArrayList<String> finalLines = new ArrayList<>();
@@ -17,7 +31,13 @@ public class WinMessageTemplate
         
         return finalLines;
     }
-    
+
+    /**
+     * Send a empty win message with spacers and given
+     * content
+     *
+     * @param lines Content of the message
+     */
     public void execute(ArrayList<String> lines)
     {
         new BasicMessageTemplate().execute(this.prepare(lines));

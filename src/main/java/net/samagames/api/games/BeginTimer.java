@@ -7,6 +7,12 @@ import org.bukkit.ChatColor;
 import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 
+/**
+ * Game's begin timer class
+ *
+ * Copyright (c) for SamaGames
+ * All right reserved
+ */
 public class BeginTimer implements Runnable
 {
     private int timeStart = 30;
@@ -15,6 +21,11 @@ public class BeginTimer implements Runnable
     private int time;
     private boolean ready;
 
+    /**
+     * Constructor
+     *
+     * @param game Game
+     */
     public BeginTimer(Game game)
     {
         this.game = game;
@@ -23,49 +34,59 @@ public class BeginTimer implements Runnable
         this.ready = false;
     }
 
+    /**
+     * Timer loop called every second.
+     *
+     * It calculate the time remaining before the game starts.
+     * Messages and Titles we'll be displayed to the players
+     * depending of the time remaining.
+     *
+     * Also, the XP level of the player we'll be modified with
+     * the number of seconds remaining.
+     */
     @Override
     public void run()
     {
         int nPlayers = this.game.getConnectedPlayers();
 
-        if (nPlayers >= api.getGameManager().getGameProperties().getMinSlots() && !this.ready)
+        if (nPlayers >= this.api.getGameManager().getGameProperties().getMinSlots() && !this.ready)
         {
             this.ready = true;
             this.game.setStatus(Status.READY_TO_START);
-            this.time = timeStart;
+            this.time = this.timeStart;
         }
 
-        if (nPlayers < api.getGameManager().getGameProperties().getMinSlots() && this.ready)
+        if (nPlayers < this.api.getGameManager().getGameProperties().getMinSlots() && this.ready)
         {
             this.ready = false;
             this.game.setStatus(Status.WAITING_FOR_PLAYERS);
 
-            api.getGameManager().getCoherenceMachine().getMessageManager().writeNotEnougthPlayersToStart();
+            this.api.getGameManager().getCoherenceMachine().getMessageManager().writeNotEnougthPlayersToStart();
             
             for (Player p : Bukkit.getOnlinePlayers())
-                p.setLevel(timeStart);
+                p.setLevel(this.timeStart);
         }
 
         if (this.ready)
         {
             this.time--;
 
-            if((time < 5 && time > 0) || (time > 5 && time % 10 == 0))
-                api.getGameManager().getCoherenceMachine().getMessageManager().writeGameStartIn(this.time);
+            if((this.time < 5 && this.time > 0) || (this.time > 5 && this.time % 10 == 0))
+                this.api.getGameManager().getCoherenceMachine().getMessageManager().writeGameStartIn(this.time);
 
-            if(time <= 5 && time > 0)
+            if(this.time <= 5 && this.time > 0)
                 for (Player player : Bukkit.getOnlinePlayers())
-                    Titles.sendTitle(player, 0, 22, 0, ChatColor.RED + "" + ChatColor.BOLD + time, ChatColor.YELLOW + api.getGameManager().getCoherenceMachine().getStartCountdownCatchPhrase());
+                    Titles.sendTitle(player, 0, 22, 0, ChatColor.RED + "" + ChatColor.BOLD + this.time, ChatColor.YELLOW + this.api.getGameManager().getCoherenceMachine().getStartCountdownCatchPhrase());
 
             this.sendSound(this.time);
             
             if(this.time <= 0)
             {
-                Bukkit.getScheduler().runTask(api.getPlugin(), () ->
+                Bukkit.getScheduler().runTask(this.api.getPlugin(), () ->
                 {
                     try
                     {
-                        game.startGame();
+                        this.game.startGame();
                     }
                     catch (Exception e)
                     {
@@ -73,16 +94,26 @@ public class BeginTimer implements Runnable
                     }
                 });
 
-                game.getBeginTimer().cancel();
+                this.game.getBeginTimer().cancel();
             }
         }
     }
 
+    /**
+     *
+     * @param timeStart
+     */
     public void setTimeStart(int timeStart)
     {
         this.timeStart = timeStart;
     }
 
+    /**
+     * Send a piano note to the players if the remaining seconds are
+     * belows or equals 5.
+     *
+     * @param seconds Actual remaining seconds
+     */
     private void sendSound(int seconds)
     {
         boolean ring = false;
@@ -112,7 +143,7 @@ public class BeginTimer implements Runnable
      */
     public int getSecondsLeft()
     {
-        return time;
+        return this.time;
     }
 
     /**
@@ -124,6 +155,6 @@ public class BeginTimer implements Runnable
      */
     public boolean isTimerRunning()
     {
-        return ready && time > 0;
+        return this.ready && this.time > 0;
     }
 }

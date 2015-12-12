@@ -16,7 +16,6 @@ import org.bukkit.scheduler.BukkitTask;
 import java.lang.reflect.InvocationTargetException;
 import java.util.*;
 
-
 /**
  * This class represents the game executed by the plugin using this, if applicable.
  *
@@ -25,6 +24,9 @@ import java.util.*;
  *                    This class must be a subclass of {@link GamePlayer}. If you don't need
  *                    to store specific data about this player, use the {@link GamePlayer}
  *                    class here.
+
+ * Copyright (c) for SamaGames
+ * All right reserved
  */
 public class Game<GAMEPLAYER extends GamePlayer>
 {
@@ -53,6 +55,7 @@ public class Game<GAMEPLAYER extends GamePlayer>
      *                        as the {@link GAMEPLAYER} class. Use {@code GamePlayer.class}
      *                        if you are not using a custom class.
      */
+    @Deprecated
     public Game(String gameCodeName, String gameName, Class<GAMEPLAYER> gamePlayerClass)
     {
         this(gameCodeName, gameName, "", gamePlayerClass);
@@ -106,7 +109,7 @@ public class Game<GAMEPLAYER extends GamePlayer>
     {
         this.coherenceMachine = this.gameManager.getCoherenceMachine();
         this.beginObj = new BeginTimer(this);
-        this.beginTimer = Bukkit.getScheduler().runTaskTimerAsynchronously(SamaGamesAPI.get().getPlugin(), beginObj, 20L, 20L);
+        this.beginTimer = Bukkit.getScheduler().runTaskTimerAsynchronously(SamaGamesAPI.get().getPlugin(), this.beginObj, 20L, 20L);
     }
 
     /**
@@ -225,7 +228,6 @@ public class Game<GAMEPLAYER extends GamePlayer>
     public void handleReconnectTimeOut(OfflinePlayer player, boolean silent)
     {
         this.gamePlayers.get(player.getUniqueId()).handleLogout();
-
         this.gamePlayers.remove(player.getUniqueId());
 
         this.gameManager.refreshArena();
@@ -473,7 +475,7 @@ public class Game<GAMEPLAYER extends GamePlayer>
      */
     public Map<UUID, GAMEPLAYER> getRegisteredGamePlayers()
     {
-        return Collections.unmodifiableMap(gamePlayers);
+        return Collections.unmodifiableMap(this.gamePlayers);
     }
 
     /**
@@ -483,7 +485,7 @@ public class Game<GAMEPLAYER extends GamePlayer>
      */
     public BukkitTask getBeginTimer()
     {
-        return beginTimer;
+        return this.beginTimer;
     }
 
     /**
@@ -508,7 +510,7 @@ public class Game<GAMEPLAYER extends GamePlayer>
     {
         int i = 0;
 
-        for(GamePlayer player : gamePlayers.values())
+        for(GamePlayer player : this.gamePlayers.values())
             if(!player.isSpectator())
                 i++;
 
@@ -524,7 +526,7 @@ public class Game<GAMEPLAYER extends GamePlayer>
      */
     public boolean hasPlayer(Player player)
     {
-        return gamePlayers.containsKey(player.getUniqueId());
+        return this.gamePlayers.containsKey(player.getUniqueId());
     }
 
     /**
@@ -600,10 +602,5 @@ public class Game<GAMEPLAYER extends GamePlayer>
     public boolean isGameStarted()
     {
         return this.status == Status.IN_GAME || this.status == Status.FINISHED || this.status == Status.REBOOTING;
-    }
-
-    public long getStartTime()
-    {
-        return startTime;
     }
 }

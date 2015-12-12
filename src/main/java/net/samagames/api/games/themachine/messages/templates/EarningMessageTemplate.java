@@ -6,8 +6,23 @@ import org.bukkit.entity.Player;
 
 import java.util.ArrayList;
 
+/**
+ * Earning message template class
+ *
+ * Copyright (c) for SamaGames
+ * All right reserved
+ */
 public class EarningMessageTemplate
 {
+    /**
+     * Prepare a message to show how many
+     * coins and stars have been earned
+     *
+     * @param coins Coins earned
+     * @param stars Stars earned
+     *
+     * @return Formatted lines
+     */
     public ArrayList<String> prepare(int coins, int stars)
     {
         ArrayList<String> finalLines = new ArrayList<>();
@@ -20,6 +35,13 @@ public class EarningMessageTemplate
         return finalLines;
     }
 
+    /**
+     * Prepare a message to show how many coins
+     * and stars have been earned to a given player
+     *
+     * @param coins Coins earned
+     * @param stars Stars earned
+     */
     public void execute(Player player, int coins, int stars)
     {
         new BasicMessageTemplate().prepare(this.prepare(coins, stars)).forEach(player::sendMessage);

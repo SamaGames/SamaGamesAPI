@@ -1,16 +1,13 @@
 package net.samagames.api.games;
 
 /**
- * This file is a part of the SamaGames project
- * This code is absolutely confidential.
- * (C) Copyright Elydra Network 2015
- * All rights reserved.
+ * Game status enumeration
  *
- * This enum is provided as it. You can create your own status enum, if you think this one doesn't fit to your needs.
- *
+ * Copyright (c) for SamaGames
+ * All right reserved
  */
-public enum Status {
-
+public enum Status
+{
 	STARTING("starting", false),
 	WAITING_FOR_PLAYERS("waitingForPlayers", true),
 	READY_TO_START("readyToStart", true),
@@ -22,29 +19,41 @@ public enum Status {
 	private final String id;
 	private final boolean allowJoin;
 
-	Status(String id, boolean allowJoin) {
+    /**
+     * Constructor
+     *
+     * @param id Status ID who will be sent
+     * @param allowJoin This status allow player join?
+     */
+	Status(String id, boolean allowJoin)
+    {
 		this.id = id;
 		this.allowJoin = allowJoin;
 	}
 
-	public static Status fromString(String str) {
-		for (Status status : Status.values())
-			if (status.getIdentifier().equals(str))
-				return status;
-
-		return null;
+    /**
+     * Return status's identifier
+     *
+     * @return Identifier
+     */
+	public String getIdentifier()
+    {
+		return this.id;
 	}
 
-	public boolean isAllowJoin() {
-		return allowJoin;
-	}
-
-	public String getIdentifier() {
-		return id;
-	}
+    /**
+     * Return if the status is allowing join
+     *
+     * @return {@code true} if allowing
+     */
+    public boolean isAllowJoin()
+    {
+        return this.allowJoin;
+    }
 
 	@Override
-	public String toString() {
-		return getIdentifier();
+	public String toString()
+    {
+		return this.getIdentifier();
 	}
 }

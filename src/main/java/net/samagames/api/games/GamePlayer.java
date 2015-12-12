@@ -11,6 +11,12 @@ import org.bukkit.entity.Player;
 
 import java.util.UUID;
 
+/**
+ * Game player object
+ *
+ * Copyright (c) for SamaGames
+ * All right reserved
+ */
 public class GamePlayer
 {
     protected final UUID uuid;

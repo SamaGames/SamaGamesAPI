@@ -6,6 +6,12 @@ import org.bukkit.entity.Player;
 
 import java.util.UUID;
 
+/**
+ * Game manager class
+ *
+ * Copyright (c) for SamaGames
+ * All right reserved
+ */
 public interface IGameManager
 {
     /**
@@ -53,9 +59,7 @@ public interface IGameManager
     /**
      * Set the reconnect time for a player.
      *
-     * ==>
-     * DISCLAIMER - TO ENABLE RECONNECT PLEASE USE THIS FUNCTION AND SET A TIME
-     * ==>
+     * <b>DISCLAIMER - TO ENABLE RECONNECT PLEASE USE THIS FUNCTION AND SET A TIME</b>
      *
      * @param minutes Time in minute
      */

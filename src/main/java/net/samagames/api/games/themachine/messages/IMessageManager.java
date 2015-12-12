@@ -2,81 +2,106 @@ package net.samagames.api.games.themachine.messages;
 
 import org.bukkit.entity.Player;
 
+/**
+ * Message manager class
+ *
+ * Copyright (c) for SamaGames
+ * All right reserved
+ */
 public interface IMessageManager
 {
     /**
-     * Envoi un message personnalisé à tout le monde
-     * @param text Le texte
-     * @param gameTag Mettre le tag du jeu devant le message
-     * @return L'objet du message
+     * Send a custom message with a given text
+     *
+     * @param text Text
+     * @param gameTag Show game tag as prefix
+     *
+     * @return Instance of the message {@link Message}
      */
     Message writeCustomMessage(String text, boolean gameTag);
 
     /**
-     * Envoi un message à tout le monde montrant la connexion d'un joueur
-     * @param player Le joueur venant de se connecter
-     * @return L'objet du message
+     * Send a welcome message for the given player
+     * to all players
+     *
+     * @param player Joined player
+     *
+     * @return Instance of the message {@link Message}
      */
     Message writePlayerJoinToAll(Player player);
 
     /**
-     * Envoi un message au joueur pour l'accueillir en jeu
-     * @param player Le joueur venant de se connecter
-     * @return L'objet du message
+     * Send a welcome message to a given player
+     *
+     * @param player Joined player
+     *
+     * @return Instance of the message {@link Message}
      */
     Message writeWelcomeInGameToPlayer(Player player);
 
     /**
-     * Envoi le temps restant avant le début de la partie à tout le monde
-     * @param remainingTime Le temps restant
-     * @return L'objet du message
+     * Send a formatted cooldown message to all players
+     *
+     * @param remainingTime Remaining time in second
+     *
+     * @return Instance of the message {@link Message}
      */
     Message writeGameStartIn(int remainingTime);
 
     /**
-     * Envoi qu'il n'y a plus assez de joueurs pour commencer le jeu à tout le monde
-     * @return L'objet du message
+     * Send a message to all players that there is
+     * no enough players to start the game
+     **
+     * @return Instance of the message {@link Message}
      */
-    Message writeNotEnougthPlayersToStart();
+    Message writeNotEnoughPlayersToStart();
 
     /**
-     * Envoi le message de début de jeu à tout le monde
-     * @return L'objet du message
+     * Send a message to all players that the game starts
+     **
+     * @return Instance of the message {@link Message}
      */
     Message writeGameStart();
 
     /**
-     * Envoi aux joueurs le message de déconnexion d'un joueur
-     * @param player Le joueur déconnecté
-     * @return L'objet du message
+     * Send a the disconnection message of a given players
+     * to all players
+     *
+     * @param player Leaved player
+     *
+     * @return Instance of the message {@link Message}
      */
     Message writePlayerQuited(Player player);
 
     /**
-     * Envoi aux joueurs le message de déconnexion temporaire ou non d'un joueur si cela est possible
-     * @param player Le joueur déconnecté
-     * @param remainingTime Le temps que possède le joueur pour se reconnecté (en minutes)
-     * @return L'objet du message
+     * Send a the disconnection message of a given players
+     * to all players. Also show the time remaining to
+     * rejoin the game
+     *
+     * @param player Leaved player
+     * @param remainingTime Time remaining
+     *
+     * @return Instance of the message {@link Message}
      */
     Message writePlayerDisconnected(Player player, int remainingTime);
 
     /**
-     * Envoi aux joueurs le message de reconnexion d'un joueur au jeu si cela est possible
-     * @param player Le joueur reconnecté
-     * @return L'objet du message
+     * Send a the reconnection message of a given players
+     * to all players
+     *
+     * @param player Rejoined player
+     *
+     * @return Instance of the message {@link Message}
      */
     Message writePlayerReconnected(Player player);
 
     /**
-     * Envoi aux joueurs le message d'expiration de reconnexion d'un joueur
-     * @param player Le joueur concerné
-     * @return L'objet du message
+     * Send a message to all players that a given player
+     * cannot rejoin the game anymore
+     *
+     * @param player Leaved player
+     *
+     * @return Instance of the message {@link Message}
      */
     Message writePlayerReconnectTimeOut(Player player);
-
-    /**
-     * Renvoi le message comme quoi l'arène de jeu est pleine
-     * @return L'objet du message
-     */
-    Message getArenaFull();
 }

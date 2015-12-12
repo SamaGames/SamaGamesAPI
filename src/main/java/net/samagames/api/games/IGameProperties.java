@@ -3,6 +3,12 @@ package net.samagames.api.games;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 
+/**
+ * Game properties manager
+ *
+ * Copyright (c) for SamaGames
+ * All right reserved
+ */
 public interface IGameProperties
 {
     /**
