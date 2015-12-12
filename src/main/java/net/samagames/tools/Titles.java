@@ -10,9 +10,24 @@ import org.bukkit.entity.Player;
 
 import java.lang.reflect.Field;
 
-
+/**
+ * Titles utils class
+ *
+ * Copyright (c) for SamaGames
+ * All right reserved
+ */
 public class Titles
 {
+    /**
+     * Send title
+     *
+     * @param player Player
+     * @param fadeIn Fade in time (in ticks)
+     * @param stay Stay time (in ticks)
+     * @param fadeOut Fade out time (in ticks)
+     * @param title Title text
+     * @param subtitle Subtitle text
+     */
     public static void sendTitle(Player player, Integer fadeIn, Integer stay, Integer fadeOut, String title, String subtitle)
     {
         PlayerConnection connection = ((CraftPlayer) player).getHandle().playerConnection;
@@ -39,6 +54,13 @@ public class Titles
         }
     }
 
+    /**
+     * Send tab title
+     *
+     * @param player Player
+     * @param header Header line
+     * @param footer Footer line
+     */
     public static void sendTabTitle(Player player, String header, String footer)
     {
         if (header == null) header = "";
