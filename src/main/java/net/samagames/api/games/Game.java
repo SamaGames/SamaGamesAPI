@@ -2,7 +2,6 @@ package net.samagames.api.games;
 
 import net.samagames.api.SamaGamesAPI;
 import net.samagames.api.games.themachine.ICoherenceMachine;
-import net.samagames.api.games.themachine.items.PlayerTracker;
 import net.samagames.api.games.themachine.messages.templates.EarningMessageTemplate;
 import net.samagames.tools.Titles;
 import org.apache.commons.lang3.tuple.Pair;
@@ -37,7 +36,6 @@ public class Game<GAMEPLAYER extends GamePlayer>
     protected final String gameDescription;
     protected final Class<GAMEPLAYER> gamePlayerClass;
     protected final HashMap<UUID, GAMEPLAYER> gamePlayers;
-    protected final PlayerTracker playerTracker;
     protected BukkitTask beginTimer;
     protected BeginTimer beginObj;
 
@@ -79,7 +77,6 @@ public class Game<GAMEPLAYER extends GamePlayer>
         this.gameDescription = gameDescription;
         this.gamePlayerClass = gamePlayerClass;
         this.gamePlayers = new HashMap<>();
-        this.playerTracker = new PlayerTracker(this);
 
         this.status = Status.WAITING_FOR_PLAYERS;
     }
@@ -233,7 +230,7 @@ public class Game<GAMEPLAYER extends GamePlayer>
         this.gameManager.refreshArena();
 
         if (!silent)
-            this.gameManager.getCoherenceMachine().getMessageManager().writePlayerReconnectTimeOut(player.getPlayer());
+            this.gameManager.getCoherenceMachine().getMessageManager().writePlayerReconnectTimeOut(player);
     }
 
     /**
@@ -486,16 +483,6 @@ public class Game<GAMEPLAYER extends GamePlayer>
     public BukkitTask getBeginTimer()
     {
         return this.beginTimer;
-    }
-
-    /**
-     * Returns the player tracker to use in this game. Internal use.
-     *
-     * @return The player tracker compass.
-     */
-    public PlayerTracker getPlayerTracker()
-    {
-        return this.playerTracker;
     }
 
     /**

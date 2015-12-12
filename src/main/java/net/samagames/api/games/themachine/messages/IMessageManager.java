@@ -1,5 +1,6 @@
 package net.samagames.api.games.themachine.messages;
 
+import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 
 /**
@@ -99,9 +100,9 @@ public interface IMessageManager
      * Send a message to all players that a given player
      * cannot rejoin the game anymore
      *
-     * @param player Leaved player
+     * @param player Leaved player {@link OfflinePlayer}
      *
      * @return Instance of the message {@link Message}
      */
-    Message writePlayerReconnectTimeOut(Player player);
+    Message writePlayerReconnectTimeOut(OfflinePlayer player);
 }
