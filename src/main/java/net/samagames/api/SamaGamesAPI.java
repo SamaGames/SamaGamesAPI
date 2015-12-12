@@ -15,7 +15,6 @@ import net.samagames.api.pubsub.IPubSubAPI;
 import net.samagames.api.resourcepacks.IResourcePacksManager;
 import net.samagames.api.settings.ISettingsManager;
 import net.samagames.api.shops.AbstractShopsManager;
-import net.samagames.api.stats.AbstractStatsManager;
 import net.samagames.api.stats.IStatsManager;
 import net.samagames.tools.BarAPI.BarAPI;
 import net.samagames.tools.npc.NPCManager;
