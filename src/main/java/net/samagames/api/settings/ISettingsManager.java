@@ -3,53 +3,65 @@ package net.samagames.api.settings;
 import java.util.Map;
 import java.util.UUID;
 
+/**
+ * Settings manager class
+ *
+ * Copyright (c) for SamaGames
+ * All right reserved
+ */
+public interface ISettingsManager
+{
+    /**
+     * Set a setting to a given player
+     *
+     * @param player Player's UUID
+     * @param setting Setting's name
+     * @param value	Setting's value
+     */
+    void setSetting(UUID player, String setting, String value);
 
-public interface ISettingsManager {
-
-	/**
-	 * Renvoie l'ensemble des paramètres du joueur
-	 * @param player Joueur à récupérer
-	 * @return Une map "Paramètre - Valeur" des paramètres du joueur
-	 */
-    public Map<String, String> getSettings(UUID player);
-
-	/**
-	 * Renvoie un paramètre en particulier
-	 * @param player Joueur à récupérer
-	 * @param setting Paramètre à récupérer
-	 * @return Valeur du paramètre pour le joueur (null si non existant)
-	 */
-    public String getSetting(UUID player, String setting);
-
-	/**
-	 * Définit la valeur d'un paramètre pour un joueur
-	 * @param player	Joueur a modifier
-	 * @param setting	Paramètre a modifier
-	 * @param value		Valeur à définir
-	 */
-    public void setSetting(UUID player, String setting, String value);
-
-	/**
-	 * Définit la valeur d'un paramètre pour un joueur
-	 * @param player	Joueur a modifier
-	 * @param setting	Paramètre a modifier
-	 * @param value		Valeur à définir
-	 * @param callback  Callback
-	 */
-	public void setSetting(UUID player, String setting, String value, Runnable callback);
+    /**
+     * Set a setting to a given player
+     *
+     * @param player Player's UUID
+     * @param setting Setting's name
+     * @param value	Setting's value
+     * @param callback Callback fired after operation
+     */
+    void setSetting(UUID player, String setting, String value, Runnable callback);
 
 	/**
-	 * Permet de savoir si une option est activée
-	 * @param player	Joueur a récupérer
-	 * @param option	Option à récupérer
-	 * @param def		Valeur par défaut si l'option n'est pas définir
-	 * @return la valeur de l'option si elle est définie, <code>def</code> sinon.
+	 * Get the given setting's value of a given player
+     *
+	 * @param player Player's UUID
+	 * @param setting Setting
+     *
+	 * @return Setting's value or {@code null} if not found
 	 */
-	public default boolean isEnabled(UUID player, String option, boolean def) {
-		String val = getSetting(player, option);
-		if (val == null)
-			return def;
+    String getSetting(UUID player, String setting);
 
-		return Boolean.valueOf(val);
+    /**
+     * Get the settings of given player
+     *
+     * @param player Player's UUID
+     *
+     * @return A map ordered by key and values
+     */
+    Map<String, String> getSettings(UUID player);
+
+	/**
+	 * Determinate if a given setting is enabled for
+     * a given player
+     *
+	 * @param player Player's UUID
+	 * @param setting Setting key
+	 * @param def Default value of not found
+     *
+	 * @return Setting value or {@code null} if not found
+	 */
+    default boolean isEnabled(UUID player, String setting, boolean def)
+    {
+		String val = getSetting(player, setting);
+        return (val == null ? def : Boolean.valueOf(val));
 	}
 }
