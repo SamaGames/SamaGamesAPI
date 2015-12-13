@@ -1,12 +1,3 @@
-/*
- * *
- *  * <Class description>
- *  *
- *  * Copyright (c) for SamaGames
- *  * All right reserved
- *
- */
-
 package net.samagames.tools;
 
 import org.bukkit.Bukkit;
@@ -67,6 +58,13 @@ public class SkyFactory implements Listener
         this.plugin.getServer().getPluginManager().registerEvents(this, this.plugin);
     }
 
+    /**
+     * Set a given environment "design" to a given
+     * world
+     *
+     * @param w World
+     * @param env Environment
+     */
     public void setDimension(World w, Environment env)
     {
         this.worldEnvironments.put(w.getName(), env);
