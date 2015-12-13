@@ -118,8 +118,6 @@ public final class ActionBarAPI
 	 *
 	 * @param player  The player.
 	 * @param message The message.
-	 *
-	 * @author ConnorLinfoot (https://github.com/ConnorLinfoot/ActionBarAPI/).
 	 */
 	public static void sendMessage(Player player, String message)
 	{

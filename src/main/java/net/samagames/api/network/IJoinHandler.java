@@ -58,7 +58,7 @@ public interface IJoinHandler
     /**
      * Event fired when a moderator login
      *
-     * <b>Override {@link IJoinHandler##onLogin(UUID, String)} and {@link IJoinHandler##finishJoin(Player)}</b>
+     * <b>Override {@link IJoinHandler#onLogin(UUID, String)} and {@link IJoinHandler#finishJoin(Player)}</b>
      *
      * @param player Joined moderator
      */

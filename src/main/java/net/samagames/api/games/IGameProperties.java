@@ -41,6 +41,8 @@ public interface IGameProperties
      * Get a game option
      *
      * @param key Option key
+     * @param defaultValue Default value
+     *
      * @return The value
      */
     JsonElement getOption(String key, JsonElement defaultValue);
@@ -56,6 +58,8 @@ public interface IGameProperties
      * Get a game option
      *
      * @param key Option key
+     * @param defaultValue Default value
+     *
      * @return The value
      */
     JsonElement getConfig(String key, JsonElement defaultValue);

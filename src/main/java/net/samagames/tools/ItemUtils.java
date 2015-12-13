@@ -30,9 +30,9 @@ public class ItemUtils
      * Format a given formatted string into
      * a object {@link ItemStack}
      *
-     * @param string
+     * @param string Formatted string
      *
-     * @return
+     * @return Stack
      */
     public static ItemStack strToStack(String string)
     {
