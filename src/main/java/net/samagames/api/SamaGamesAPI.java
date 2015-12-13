@@ -17,6 +17,7 @@ import net.samagames.api.settings.ISettingsManager;
 import net.samagames.api.shops.AbstractShopsManager;
 import net.samagames.api.stats.IStatsManager;
 import net.samagames.tools.BarAPI.BarAPI;
+import net.samagames.tools.SkyFactory;
 import net.samagames.tools.npc.NPCManager;
 import org.bukkit.plugin.java.JavaPlugin;
 import redis.clients.jedis.Jedis;
@@ -204,6 +205,14 @@ public abstract class SamaGamesAPI
      * @return Instance
      */
 	public abstract BarAPI getBarAPI();
+
+    /**
+     * Get the instance of the Sky Factory who
+     * permits to change the "design" of a world
+     *
+     * @return Instance
+     */
+    public abstract SkyFactory getSkyFactory();
 
     /**
      * Get the root plugin of the API
