@@ -267,6 +267,16 @@ public class Game<GAMEPLAYER extends GamePlayer>
     }
 
     /**
+     * Create fireworks to a given player.
+     *
+     * @param player Player who will receive the fireworks
+     */
+    public void effectsOnWinner(Player player)
+    {
+        Bukkit.getScheduler().scheduleSyncRepeatingTask(SamaGamesAPI.get().getPlugin(), new WinEffect(player), 5L, 5L);
+    }
+
+    /**
      * Credits coins to the given player. Works for offline players.
      *
      * Use {@link GamePlayer#addCoins(int, String)} instead, if possible.
