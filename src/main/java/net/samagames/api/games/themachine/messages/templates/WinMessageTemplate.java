@@ -4,6 +4,7 @@ import net.samagames.tools.chat.ChatUtils;
 import org.bukkit.ChatColor;
 
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Win message template class
@@ -21,9 +22,9 @@ public class WinMessageTemplate
      *
      * @return Formatted lines
      */
-    public ArrayList<String> prepare(ArrayList<String> lines)
+    public List<String> prepare(List<String> lines)
     {
-        ArrayList<String> finalLines = new ArrayList<>();
+        List<String> finalLines = new ArrayList<>();
         finalLines.add(ChatUtils.getCenteredText(ChatColor.WHITE + "•" + ChatColor.BOLD + " Résultats du jeu " + ChatColor.RESET + ChatColor.WHITE + "•"));
         finalLines.add("");
         finalLines.addAll(lines);
@@ -38,7 +39,7 @@ public class WinMessageTemplate
      *
      * @param lines Content of the message
      */
-    public void execute(ArrayList<String> lines)
+    public void execute(List<String> lines)
     {
         new BasicMessageTemplate().execute(this.prepare(lines));
     }

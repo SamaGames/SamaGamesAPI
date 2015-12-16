@@ -6,6 +6,7 @@ import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Player win message template class
@@ -23,9 +24,9 @@ public class PlayerWinTemplate
      *
      * @return Formatted lines
      */
-    public ArrayList<String> prepare(Player player)
+    public List<String> prepare(Player player)
     {
-        ArrayList<String> lines = new ArrayList<>();
+        List<String> lines = new ArrayList<>();
         lines.add(ChatUtils.getCenteredText(ChatColor.GREEN + "Gagnant" + ChatColor.GRAY + " - " + ChatColor.RESET + PlayerUtils.getFullyFormattedPlayerName(player)));
         
         return lines;
@@ -40,9 +41,9 @@ public class PlayerWinTemplate
      *
      * @return Formatted lines
      */
-    public ArrayList<String> prepare(Player player, int score)
+    public List<String> prepare(Player player, int score)
     {
-        ArrayList<String> lines = new ArrayList<>();
+        List<String> lines = new ArrayList<>();
         lines.add(ChatUtils.getCenteredText(ChatColor.GREEN + "Gagnant" + ChatColor.GRAY + " - " + ChatColor.RESET + PlayerUtils.getFullyFormattedPlayerName(player) + ChatColor.GRAY + " (" + score + ")"));
         
         return lines;
@@ -57,9 +58,9 @@ public class PlayerWinTemplate
      *
      * @return Formatted lines
      */
-    public ArrayList<String> prepare(Player player, String commentary)
+    public List<String> prepare(Player player, String commentary)
     {
-        ArrayList<String> lines = new ArrayList<>();
+        List<String> lines = new ArrayList<>();
         lines.add(ChatUtils.getCenteredText(ChatColor.GREEN + "Gagnant" + ChatColor.GRAY + " - " + ChatColor.RESET + PlayerUtils.getFullyFormattedPlayerName(player)));
         lines.add(ChatUtils.getCenteredText(commentary));
         
@@ -76,9 +77,9 @@ public class PlayerWinTemplate
      *
      * @return Formatted lines
      */
-    public ArrayList<String> prepare(Player player, int score, String commentary)
+    public List<String> prepare(Player player, int score, String commentary)
     {
-        ArrayList<String> lines = new ArrayList<>();
+        List<String> lines = new ArrayList<>();
         lines.add(ChatUtils.getCenteredText(ChatColor.GREEN + "Gagnant" + ChatColor.GRAY + " - " + ChatColor.RESET + PlayerUtils.getFullyFormattedPlayerName(player) + ChatColor.GRAY + " (" + score + ")"));
         lines.add(ChatUtils.getCenteredText(commentary));
         

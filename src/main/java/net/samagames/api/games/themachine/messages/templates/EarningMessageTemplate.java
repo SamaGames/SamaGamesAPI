@@ -5,6 +5,7 @@ import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Earning message template class
@@ -23,9 +24,9 @@ public class EarningMessageTemplate
      *
      * @return Formatted lines
      */
-    public ArrayList<String> prepare(int coins, int stars)
+    public List<String> prepare(int coins, int stars)
     {
-        ArrayList<String> finalLines = new ArrayList<>();
+        List<String> finalLines = new ArrayList<>();
         finalLines.add(ChatUtils.getCenteredText(ChatColor.WHITE + "•" + ChatColor.BOLD + " Récompenses " + ChatColor.RESET + ChatColor.WHITE + "•"));
         finalLines.add("");
         finalLines.add(ChatUtils.getCenteredText(ChatColor.GOLD + "Vous avez gagné " + coins + (coins == 1 ? " pièce !" : " pièces !")));

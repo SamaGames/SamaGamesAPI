@@ -4,6 +4,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Basic message template class
@@ -21,9 +22,9 @@ public class BasicMessageTemplate
      *
      * @return Formatted lines
      */
-    public ArrayList<String> prepare(ArrayList<String> lines)
+    public List<String> prepare(List<String> lines)
     {
-        ArrayList<String> finalLines = new ArrayList<>();
+        List<String> finalLines = new ArrayList<>();
         finalLines.add(ChatColor.GOLD + "" + ChatColor.BOLD + "▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬");
         finalLines.addAll(lines);
         finalLines.add(ChatColor.GOLD + "" + ChatColor.BOLD + "▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬");
@@ -37,7 +38,7 @@ public class BasicMessageTemplate
      *
      * @param lines Content of the message
      */
-    public void execute(ArrayList<String> lines)
+    public void execute(List<String> lines)
     {
         this.prepare(lines).forEach(Bukkit::broadcastMessage);
     }

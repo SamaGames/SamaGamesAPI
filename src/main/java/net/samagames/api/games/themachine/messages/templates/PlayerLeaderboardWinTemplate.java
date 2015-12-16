@@ -6,6 +6,7 @@ import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Player leaderboard win message template class
@@ -25,9 +26,9 @@ public class PlayerLeaderboardWinTemplate
      *
      * @return Formatted lines
      */
-    public ArrayList<String> prepare(Player winner, Player second, Player third)
+    public List<String> prepare(Player winner, Player second, Player third)
     {
-        ArrayList<String> lines = new ArrayList<>();
+        List<String> lines = new ArrayList<>();
         lines.add(ChatUtils.getCenteredText(ChatColor.GREEN + "Gagnant" + ChatColor.GRAY + " - " + ChatColor.RESET + PlayerUtils.getFullyFormattedPlayerName(winner)));
         lines.add("");
         lines.add(ChatUtils.getCenteredText(ChatColor.GREEN + "1er" + ChatColor.GRAY + " - " + ChatColor.RESET + PlayerUtils.getFullyFormattedPlayerName(winner)));
@@ -52,9 +53,9 @@ public class PlayerLeaderboardWinTemplate
      *
      * @return Formatted lines
      */
-    public ArrayList<String> prepare(Player winner, Player second, Player third, int winnerScore, int secondScore, int thirdScore)
+    public List<String> prepare(Player winner, Player second, Player third, int winnerScore, int secondScore, int thirdScore)
     {
-        ArrayList<String> lines = new ArrayList<>();
+        List<String> lines = new ArrayList<>();
         lines.add(ChatUtils.getCenteredText(ChatColor.GREEN + "Gagnant" + ChatColor.GRAY + " - " + ChatColor.RESET + PlayerUtils.getFullyFormattedPlayerName(winner) + ChatColor.GRAY + " (" + winnerScore + ")"));
         lines.add("");
         lines.add(ChatUtils.getCenteredText(ChatColor.GREEN + "1er" + ChatColor.GRAY + " - " + ChatColor.RESET + PlayerUtils.getFullyFormattedPlayerName(winner) + ChatColor.GRAY + " (" + winnerScore + ")"));
@@ -77,9 +78,9 @@ public class PlayerLeaderboardWinTemplate
      *
      * @return Formatted lines
      */
-    public ArrayList<String> prepare(Player winner, Player second, Player third, String commentary)
+    public List<String> prepare(Player winner, Player second, Player third, String commentary)
     {
-        ArrayList<String> lines = new ArrayList<>();
+        List<String> lines = new ArrayList<>();
         lines.add(ChatUtils.getCenteredText(ChatColor.GREEN + "Gagnant" + ChatColor.GRAY + " - " + ChatColor.RESET + PlayerUtils.getFullyFormattedPlayerName(winner)));
 
         if(commentary != null)
@@ -110,9 +111,9 @@ public class PlayerLeaderboardWinTemplate
      *
      * @return Formatted lines
      */
-    public ArrayList<String> prepare(Player winner, Player second, Player third, String commentary, int winnerScore, int secondScore, int thirdScore)
+    public List<String> prepare(Player winner, Player second, Player third, String commentary, int winnerScore, int secondScore, int thirdScore)
     {
-        ArrayList<String> lines = new ArrayList<>();
+        List<String> lines = new ArrayList<>();
         lines.add(ChatUtils.getCenteredText(ChatColor.GREEN + "Gagnant" + ChatColor.GRAY + " - " + ChatColor.RESET + PlayerUtils.getFullyFormattedPlayerName(winner) + ChatColor.GRAY + " (" + winnerScore + ")"));
 
         if(commentary != null)
