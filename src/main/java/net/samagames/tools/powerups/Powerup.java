@@ -9,6 +9,8 @@ import org.bukkit.inventory.ItemStack;
  *
  * Copyright (c) for SamaGames
  * All right reserved
+ *
+ * @author Amaury Carrade
  */
 public interface Powerup
 {

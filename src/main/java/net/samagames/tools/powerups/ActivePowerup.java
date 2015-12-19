@@ -22,6 +22,8 @@ import java.util.UUID;
  *
  * Copyright (c) for SamaGames
  * All right reserved
+ *
+ * @author Amaury Carrade
  */
 public class ActivePowerup implements Listener
 {
