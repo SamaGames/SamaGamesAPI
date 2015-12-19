@@ -39,6 +39,8 @@ public class PowerupManager
 
         this.powerups = new ArrayList<>();
         this.locations = new ArrayList<>();
+
+        this.inverseFrequency = 750;
     }
 
     public void start()
