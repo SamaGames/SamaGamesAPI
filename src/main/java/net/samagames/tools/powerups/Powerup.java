@@ -5,22 +5,24 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
 /**
- * Power up object
+ * Power up interface
  *
  * Copyright (c) for SamaGames
  * All right reserved
  */
-public abstract class Powerup
+public interface Powerup
 {
-    public abstract void onPickup(Player player);
+    void onPickup(Player player);
 
-    public abstract String getName();
-    public abstract ItemStack getIcon();
+    String getName();
+    ItemStack getIcon();
 
-    public abstract boolean isSpecial();
+    double getWeight();
 
-    public void spawn(Location location)
+    boolean isSpecial();
+
+    default ActivePowerup spawn(Location location)
     {
-        new ActivePowerup(this, location);
+        return new ActivePowerup(this, location);
     }
 }

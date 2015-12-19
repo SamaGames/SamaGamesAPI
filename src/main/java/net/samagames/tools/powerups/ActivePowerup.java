@@ -121,4 +121,9 @@ public class ActivePowerup implements Listener
             this.parent.onPickup(event.getPlayer());
         }
     }
+
+    public boolean isAlive()
+    {
+        return this.alive;
+    }
 }
