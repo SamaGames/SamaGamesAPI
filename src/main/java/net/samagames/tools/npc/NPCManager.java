@@ -1,124 +1,78 @@
 package net.samagames.tools.npc;
 
+import com.mojang.authlib.GameProfile;
+import net.minecraft.server.v1_8_R3.World;
 import net.samagames.api.SamaGamesAPI;
 import net.samagames.tools.CallBack;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.OfflinePlayer;
-import org.bukkit.entity.Entity;
+import org.bukkit.craftbukkit.v1_8_R3.CraftWorld;
 import org.bukkit.entity.Player;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.Listener;
+import org.bukkit.event.entity.CreatureSpawnEvent;
+import org.bukkit.event.entity.EntityDamageByEntityEvent;
+import org.bukkit.event.player.PlayerInteractEntityEvent;
 
-import javax.security.auth.callback.Callback;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.TimeUnit;
 
 /**
- * NPC manager class
- *
- * Copyright (c) for SamaGames
- * All right reserved
+ * Created by Silva on 20/10/2015.
  */
-public class NPCManager
-{
-    private SamaGamesAPI api;
-    private ScheduledExecutorService scheduler;
-    private List<NPCEntity> entities;
-    private CallBack<NPCEntity> scoreboardRegister;
+public class NPCManager  implements Listener{
 
-    /**
-     * Constructor
-     *
-     * @param api SamaGames API instance
-     */
+    public SamaGamesAPI api;
+
+    private ScheduledExecutorService scheduler;
+
+    private List<CustomNPC> entities = new ArrayList<>();
+
+    protected List<OfflinePlayer> receivers = new ArrayList<>();
+
+    private CallBack<CustomNPC> scoreBoardRegister;
+
     public NPCManager(SamaGamesAPI api)
     {
         this.api = api;
-        this.entities = new ArrayList<>();
+        scheduler = Executors.newScheduledThreadPool(2);
 
-        this.scheduler = Executors.newScheduledThreadPool(2);
-        this.scheduler.scheduleAtFixedRate(this::doCheck, 800, 500, TimeUnit.MILLISECONDS);
+        Bukkit.getPluginManager().registerEvents(this, api.getPlugin());
     }
 
-    /**
-     * Disable NPC handling
-     */
+    public CustomNPC createNPC(Location location, UUID uuid)
+    {
+        final World w = ((CraftWorld) location.getWorld()).getHandle();
+        final CustomNPC npc = new CustomNPC(w, new GameProfile(uuid, "[NPC]"+entities.size()));
+        w.addEntity(npc, CreatureSpawnEvent.SpawnReason.CUSTOM);
+        entities.add(npc);
+
+        if(scoreBoardRegister != null)
+            scoreBoardRegister.done(npc, null);
+
+        return npc;
+    }
+
+    public void removeNPC(String name)
+    {
+        CustomNPC npc = getNPCEntity(name);
+        if(npc != null)
+            npc.getWorld().removeEntity(npc);
+
+    }
+
     public void disable()
     {
-        this.scheduler.shutdown();
+        scheduler.shutdown();
     }
 
-    /**
-     * Register a NPC
-     *
-     * @param uuid NPC UUID
-     * @param location NPC location
-     *
-     * @return Entity instance
-     */
-    public NPCEntity registerNPC(UUID uuid, Location location)
+    public CustomNPC getNPCEntity(String name)
     {
-        NPCEntity entity = new NPCEntity(uuid, ("[NPC]" + this.entities.size()), location);
-        this.entities.add(entity);
-
-        if(this.scoreboardRegister != null)
-            this.scoreboardRegister.done(entity, null);
-
-        return entity;
-    }
-
-    /**
-     * Add NPCs receiver
-     *
-     * @param player Player
-     */
-    public void addReceiver(Player player)
-    {
-        for(NPCEntity entity : this.entities)
-        {
-            entity.addReceiver(player.getUniqueId());
-            entity.spawnEntity(player);
-        }
-    }
-
-    /**
-     * Remove NPCs receiver
-     *
-     * @param player Player
-     */
-    public void removeReceiver(Player player)
-    {
-        for(NPCEntity entity : this.entities)
-        {
-            entity.removeReceiver(player.getUniqueId());
-            entity.destroyEntity(player);
-        }
-    }
-
-    /**
-     * Set scoreboard handling for the TAB managing
-     *
-     * @param scoreBoardRegister Callback
-     */
-    public void setScoreboardRegister(CallBack<NPCEntity> scoreBoardRegister)
-    {
-        this.scoreboardRegister = scoreBoardRegister;
-    }
-
-    /**
-     * Get NPC entity by a given name
-     *
-     * @param name NPC name
-     *
-     * @return Entity instance
-     */
-    public NPCEntity getNPCEntity(String name)
-    {
-        for(NPCEntity entity : entities)
+        for(CustomNPC entity : entities)
         {
             if(entity.getName().equals(name))
             {
@@ -128,34 +82,27 @@ public class NPCManager
         return null;
     }
 
-    /**
-     * Send NPCs to nearby players
-     */
-    private void doCheck()
+    public void setScoreBoardRegister(CallBack<CustomNPC> scoreBoardRegister) {
+        this.scoreBoardRegister = scoreBoardRegister;
+    }
+
+    @EventHandler
+    public void onPlayerHitNPC(EntityDamageByEntityEvent event)
     {
-        for(NPCEntity entity : entities)
+        if(event.getEntity() instanceof CustomNPC && event.getDamager() instanceof Player)
         {
-            Collection<Entity> nearbyEntities = entity.getPosition().getWorld().getNearbyEntities(entity.getPosition(), 30, 30, 30);
-            List<UUID> idInRange = new ArrayList<>();
+            CustomNPC npc = (CustomNPC) event.getEntity();
+            npc.onInteract(false, (Player) event.getDamager());
+        }
+    }
 
-            nearbyEntities.stream().filter(entityW -> entityW instanceof Player).forEach(entityW ->
-            {
-                UUID uniqueId = entityW.getUniqueId();
-
-                if (!entity.isReceiver(uniqueId))
-                {
-                    entity.addReceiver(uniqueId);
-                    entity.spawnEntity((Player) entityW);
-                }
-
-                idInRange.add(uniqueId);
-            });
-
-            entity.getReceivers().stream().filter(uuid -> !idInRange.contains(uuid)).forEach(uuid ->
-            {
-                entity.removeReceiver(uuid);
-                entity.destroyEntity(Bukkit.getPlayer(uuid));
-            });
+    @EventHandler
+    public void onPlayerInteractNPC(PlayerInteractEntityEvent event)
+    {
+        if(event.getRightClicked() instanceof CustomNPC)
+        {
+            CustomNPC npc = (CustomNPC) event.getRightClicked();
+            npc.onInteract(true, event.getPlayer());
         }
     }
 }
