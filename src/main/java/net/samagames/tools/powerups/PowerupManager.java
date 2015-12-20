@@ -45,7 +45,7 @@ public class PowerupManager
 
     public void start()
     {
-        this.spawnTask = this.plugin.getServer().getScheduler().runTaskTimerAsynchronously(this.plugin, () ->
+        this.spawnTask = this.plugin.getServer().getScheduler().runTaskTimer(this.plugin, () ->
         {
             if (this.random.nextInt(this.inverseFrequency) == 0)
                 this.spawnRandomPowerup();
