@@ -113,14 +113,17 @@ public class ActivePowerup implements Listener
     @EventHandler
     private void onPlayerPickupItem(PlayerPickupItemEvent event)
     {
-        if (this.alive && event.getItem().getItemStack().getItemMeta().getDisplayName().equals(this.uuid.toString()))
+        if (event.getItem().getItemStack() != null && event.getItem().getItemStack().getItemMeta() != null && event.getItem().getItemStack().getItemMeta().getDisplayName() != null)
         {
-            event.setCancelled(true);
+            if (this.alive && event.getItem().getItemStack().getItemMeta().getDisplayName().equals(this.uuid.toString()))
+            {
+                event.setCancelled(true);
 
-            HandlerList.unregisterAll(this);
+                HandlerList.unregisterAll(this);
 
-            this.remove(true);
-            this.parent.onPickup(event.getPlayer());
+                this.remove(true);
+                this.parent.onPickup(event.getPlayer());
+            }
         }
     }
 
