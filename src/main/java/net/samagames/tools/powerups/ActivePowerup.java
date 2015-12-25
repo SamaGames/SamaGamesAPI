@@ -56,7 +56,7 @@ public class ActivePowerup implements Listener
 
         Color fwColor = got ? Color.BLUE : Color.RED;
 
-        Firework fw = this.location.getWorld().spawn(this.location.add(0.5, 1, 0.5), Firework.class);
+        Firework fw = this.location.getWorld().spawn(this.location.clone().add(0.5, 1, 0.5), Firework.class);
         FireworkMeta fwm = fw.getFireworkMeta();
         FireworkEffect effect = FireworkEffect.builder().withColor(fwColor).with(this.parent.isSpecial() ? FireworkEffect.Type.STAR : FireworkEffect.Type.BALL).build();
 
