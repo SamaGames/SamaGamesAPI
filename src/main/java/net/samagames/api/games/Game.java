@@ -209,7 +209,7 @@ public class Game<GAMEPLAYER extends GamePlayer>
 
         if (gamePlayer != null && (gamePlayer.isSpectator() && !gamePlayer.isModerator()))
             gamePlayer.setSpectator();
-        else
+        else if (gamePlayer != null)
             gamePlayer.handleLogin(true);
     }
 
