@@ -29,13 +29,13 @@ public interface IJoinHandler
     /**
      * Called when a party wanted to connect, by right clicking a game sign for example.
      *
-     * @param partyLeader Party leader
-     * @param partyMembers Party members
+     * @param party Party uuid
+     * @param player The player who join
      * @param response Response object {@link JoinResponse}
      *
      * @return Filled response
      */
-    default JoinResponse requestPartyJoin(UUID partyLeader, Set<UUID> partyMembers, JoinResponse response)
+    default JoinResponse requestPartyJoin(UUID party, UUID player, JoinResponse response)
     {
         return response;
     }
