@@ -56,7 +56,7 @@ public class ActivePowerup implements Listener
 
         Color fwColor = got ? Color.BLUE : Color.RED;
 
-        Firework fw = this.location.getWorld().spawn(this.location.add(0.5, 1, 0.5), Firework.class);
+        Firework fw = this.location.getWorld().spawn(this.location.clone().add(0.5, 1, 0.5), Firework.class);
         FireworkMeta fwm = fw.getFireworkMeta();
         FireworkEffect effect = FireworkEffect.builder().withColor(fwColor).with(this.parent.isSpecial() ? FireworkEffect.Type.STAR : FireworkEffect.Type.BALL).build();
 
@@ -74,7 +74,7 @@ public class ActivePowerup implements Listener
 
     private void spawn()
     {
-        World world = location.getWorld();
+        World world = this.location.getWorld();
 
         ItemStack powerupItem = this.parent.getIcon().clone();
 
@@ -83,15 +83,15 @@ public class ActivePowerup implements Listener
 
         powerupItem.setItemMeta(powerupItemMeta);
 
-        this.entityBase = world.spawn(location.clone().add(0, -0.5, 0), ArmorStand.class);
+        this.entityBase = world.spawn(this.location.clone().add(0, -0.5, 0), ArmorStand.class);
         this.entityBase.setVisible(false);
         this.entityBase.setSmall(true);
         this.entityBase.setGravity(false);
 
-        this.entityItem = world.dropItem(location, powerupItem);
+        this.entityItem = world.dropItem(this.location, powerupItem);
         this.entityItem.setPickupDelay(0);
 
-        this.entityTitle = world.spawn(location, ArmorStand.class);
+        this.entityTitle = world.spawn(this.location, ArmorStand.class);
         this.entityTitle.setGravity(false);
         this.entityTitle.setVisible(false);
         this.entityTitle.setSmall(true);
@@ -113,14 +113,17 @@ public class ActivePowerup implements Listener
     @EventHandler
     private void onPlayerPickupItem(PlayerPickupItemEvent event)
     {
-        if (this.alive && event.getItem().getItemStack().getItemMeta().getDisplayName().equals(this.uuid.toString()))
+        if (event.getItem().getItemStack() != null && event.getItem().getItemStack().getItemMeta() != null && event.getItem().getItemStack().getItemMeta().getDisplayName() != null)
         {
-            event.setCancelled(true);
+            if (this.alive && event.getItem().getItemStack().getItemMeta().getDisplayName().equals(this.uuid.toString()))
+            {
+                event.setCancelled(true);
 
-            HandlerList.unregisterAll(this);
+                HandlerList.unregisterAll(this);
 
-            this.remove(true);
-            this.parent.onPickup(event.getPlayer());
+                this.remove(true);
+                this.parent.onPickup(event.getPlayer());
+            }
         }
     }
 

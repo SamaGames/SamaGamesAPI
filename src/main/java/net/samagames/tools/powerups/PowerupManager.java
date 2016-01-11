@@ -30,6 +30,7 @@ public class PowerupManager
 
     private BukkitTask spawnTask;
     private int inverseFrequency;
+    private int despawnTime;
     private double totalWeight;
 
     public PowerupManager(JavaPlugin plugin)
@@ -41,6 +42,7 @@ public class PowerupManager
         this.locations = new ArrayList<>();
 
         this.inverseFrequency = 750;
+        this.despawnTime = 20;
     }
 
     public void start()
@@ -71,6 +73,11 @@ public class PowerupManager
     public void setInverseFrequency(int inverseFrequency)
     {
         this.inverseFrequency = inverseFrequency;
+    }
+
+    public void setDespawnTime(int despawnTime)
+    {
+        this.despawnTime = despawnTime;
     }
 
     private void spawnRandomPowerup()
@@ -116,6 +123,6 @@ public class PowerupManager
                 activePowerup.remove(false);
                 this.locations.add(location);
             }
-        }, 20 * 20L);
+        }, this.despawnTime * 20L);
     }
 }
