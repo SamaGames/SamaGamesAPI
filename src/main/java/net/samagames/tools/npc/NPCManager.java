@@ -1,20 +1,33 @@
 package net.samagames.tools.npc;
 
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 import com.mojang.authlib.GameProfile;
+import com.mojang.authlib.properties.Property;
+import net.minecraft.server.v1_8_R3.PacketPlayOutNamedEntitySpawn;
+import net.minecraft.server.v1_8_R3.PacketPlayOutPlayerInfo;
+import net.minecraft.server.v1_8_R3.PlayerInteractManager;
 import net.minecraft.server.v1_8_R3.World;
+import net.samagames.Net;
 import net.samagames.api.SamaGamesAPI;
 import net.samagames.tools.CallBack;
+import net.samagames.tools.npc.nms.CustomNPC;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
-import org.bukkit.OfflinePlayer;
 import org.bukkit.craftbukkit.v1_8_R3.CraftWorld;
+import org.bukkit.craftbukkit.v1_8_R3.entity.CraftPlayer;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.CreatureSpawnEvent;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.player.PlayerInteractEntityEvent;
+import redis.clients.jedis.Jedis;
 
+import java.io.IOException;
+import java.net.MalformedURLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -32,8 +45,6 @@ public class NPCManager  implements Listener{
 
     private List<CustomNPC> entities = new ArrayList<>();
 
-    protected List<OfflinePlayer> receivers = new ArrayList<>();
-
     private CallBack<CustomNPC> scoreBoardRegister;
 
     public NPCManager(SamaGamesAPI api)
@@ -44,16 +55,47 @@ public class NPCManager  implements Listener{
         Bukkit.getPluginManager().registerEvents(this, api.getPlugin());
     }
 
-    public CustomNPC createNPC(Location location, UUID uuid)
+    public void onPlayerConnectionHook(Player p)
+    {
+        for(CustomNPC npc : entities)
+        {
+            updateNPC(p, npc);
+        }
+    }
+
+    public void updateForAllNPC(CustomNPC npc)
+    {
+        List<Player> players = new ArrayList<>();
+        players.addAll(Bukkit.getOnlinePlayers());
+        for(Player p : players)
+        {
+            updateNPC(p, npc);
+        }
+    }
+
+    public void updateNPC(Player p, CustomNPC npc)
+    {
+        ((CraftPlayer)p).getHandle().playerConnection.sendPacket(new PacketPlayOutPlayerInfo(PacketPlayOutPlayerInfo.EnumPlayerInfoAction.ADD_PLAYER, npc));
+        ((CraftPlayer)p).getHandle().playerConnection.sendPacket(new PacketPlayOutNamedEntitySpawn(npc));
+        ((CraftPlayer)p).getHandle().playerConnection.sendPacket(new PacketPlayOutPlayerInfo(PacketPlayOutPlayerInfo.EnumPlayerInfoAction.REMOVE_PLAYER, npc));
+    }
+
+    public CustomNPC createNPC(Location location, UUID skinUUID)
     {
         final World w = ((CraftWorld) location.getWorld()).getHandle();
-        final CustomNPC npc = new CustomNPC(w, new GameProfile(uuid, "[NPC]"+entities.size()));
+
+        GameProfile gameProfile = createGameProfile(skinUUID, "[NPC]" + entities.size(), skinUUID);
+
+        final CustomNPC npc = new CustomNPC(w, gameProfile, new PlayerInteractManager(w));
+        npc.setLocation(location);
+        npc.setCustomName("[NPC]" + entities.size());
+        npc.setCustomNameVisible(true);
         w.addEntity(npc, CreatureSpawnEvent.SpawnReason.CUSTOM);
         entities.add(npc);
-
         if(scoreBoardRegister != null)
             scoreBoardRegister.done(npc, null);
 
+        Bukkit.getScheduler().runTaskLater(api.getPlugin(), () -> updateForAllNPC(npc), 2L);
         return npc;
     }
 
@@ -63,6 +105,68 @@ public class NPCManager  implements Listener{
         if(npc != null)
             npc.getWorld().removeEntity(npc);
 
+    }
+
+    public GameProfile createGameProfile(UUID uuid, String name, UUID skinURL)
+    {
+        GameProfile gameProfile = new GameProfile(uuid, name);
+        String key = "gameprofiles." + skinURL.toString();
+
+        try {
+
+
+            String cache = null;
+
+            Jedis jedis = api.getBungeeResource();
+            if (jedis != null)
+            {
+                if(jedis.exists(key))
+                {
+                    cache = jedis.get(key);
+                }else{
+                    cache = Net.executeGet("https://sessionserver.mojang.com/session/minecraft/profile/" + skinURL.toString().replaceAll("-", "") + "?unsigned=false");
+                }
+                jedis.close();
+            }
+
+            JsonObject jsonObject = new JsonParser().parse(cache).getAsJsonObject();
+            JsonArray properties = jsonObject.getAsJsonArray("properties");
+            for(JsonElement property : properties)
+            {
+                JsonObject oProp = property.getAsJsonObject();
+
+                gameProfile.getProperties().put(oProp.get("name").getAsString(),
+                        new Property(oProp.get("name").getAsString(),
+                                oProp.get("value").getAsString(),
+                                oProp.get("signature").getAsString()
+                        )
+                );
+            }
+
+            jedis = api.getBungeeResource();
+            jedis.set(key, cache);
+            jedis.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+            Jedis jedis = api.getBungeeResource();
+            jedis.del(key);
+            jedis.close();
+        }
+        return gameProfile;
+    }
+
+    public void getSkin(UUID uuid)
+    {
+        try {
+            String result = Net.executeGet("https://sessionserver.mojang.com/session/minecraft/profile/" + uuid.toString().replace("-", ""));
+
+
+
+        } catch (MalformedURLException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     public void disable()
