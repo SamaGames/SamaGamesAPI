@@ -203,13 +203,19 @@ public class Game<GAMEPLAYER extends GamePlayer>
      */
     public void handleReconnect(Player player)
     {
-        this.gameManager.getCoherenceMachine().getMessageManager().writePlayerReconnected(player);
-
         GamePlayer gamePlayer = this.gamePlayers.get(player.getUniqueId());
 
-        if (gamePlayer != null && (gamePlayer.isSpectator() && !gamePlayer.isModerator()))
+        if (gamePlayer == null)
+        {
+            this.handleReconnectTimeOut(player, true);
+            return;
+        }
+
+        this.gameManager.getCoherenceMachine().getMessageManager().writePlayerReconnected(player);
+
+        if (gamePlayer.isSpectator() && !gamePlayer.isModerator())
             gamePlayer.setSpectator();
-        else if (gamePlayer != null)
+        else
             gamePlayer.handleLogin(true);
     }
 
