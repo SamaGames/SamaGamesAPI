@@ -186,7 +186,7 @@ public class Game<GAMEPLAYER extends GamePlayer>
 
             this.gamePlayers.get(player.getUniqueId()).handleLogout();
 
-            if(this.status != Status.IN_GAME)
+            if(this.status != Status.IN_GAME || !this.gameManager.isReconnectAllowed(player))
                 this.gamePlayers.remove(player.getUniqueId());
 
             this.gameManager.refreshArena();
