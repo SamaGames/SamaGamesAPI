@@ -65,11 +65,11 @@ public class AdvertisingObjectiveSign extends ObjectiveSign implements Runnable
             {
                 this.advertisingState = true;
                 this.ticks = 0;
+
+                return;
             }
-            else
-            {
-                this.ticks++;
-            }
+
+            this.ticks++;
         }
         else
         {
