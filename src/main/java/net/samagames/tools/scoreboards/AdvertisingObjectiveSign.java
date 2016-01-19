@@ -6,8 +6,9 @@ import org.bukkit.plugin.java.JavaPlugin;
 public class AdvertisingObjectiveSign extends ObjectiveSign implements Runnable
 {
     private final String originalDisplayName;
+    private final String advertisingText;
     private int ticks;
-    private int designStep;
+    private int advertisingCursor;
     private boolean advertisingState;
 
     /**
@@ -22,9 +23,10 @@ public class AdvertisingObjectiveSign extends ObjectiveSign implements Runnable
         super(name, displayName);
 
         this.originalDisplayName = displayName;
+        this.advertisingText = ChatColor.RED + "" + ChatColor.YELLOW + "Vous jouez sur " + ChatColor.GOLD + ChatColor.BOLD + "mc.samagames.net" + ChatColor.YELLOW + ChatColor.BOLD + " !";
 
         this.ticks = 0;
-        this.designStep = 0;
+        this.advertisingCursor = 0;
         this.advertisingState = false;
 
 
@@ -55,29 +57,14 @@ public class AdvertisingObjectiveSign extends ObjectiveSign implements Runnable
         }
         else
         {
-            if (this.designStep == 0)
-                this.setDisplayName(ChatColor.RED + "" + ChatColor.BOLD + "Vous");
-            else if (this.designStep == 1)
-                this.setDisplayName(ChatColor.RED + "" + ChatColor.BOLD + "jouez");
-            else if (this.designStep == 2)
-                this.setDisplayName(ChatColor.RED + "" + ChatColor.BOLD + "sur");
-            else if (this.designStep == 3)
-                this.setDisplayName(ChatColor.RED + "" + ChatColor.BOLD + "mc.samagames.net");
-            else if (this.designStep == 4)
-                this.setDisplayName(ChatColor.GOLD + "" + ChatColor.BOLD + "mc.samagames.net");
-            else if (this.designStep == 5)
-                this.setDisplayName(ChatColor.YELLOW + "" + ChatColor.BOLD + "mc.samagames.net");
-            else if (this.designStep == 6)
-                this.setDisplayName(ChatColor.GOLD + "" + ChatColor.BOLD + "mc.samagames.net");
-            else if (this.designStep == 7)
-                this.setDisplayName(ChatColor.RED + "" + ChatColor.BOLD + "mc.samagames.net");
+            this.setDisplayName(this.advertisingText.substring(this.advertisingCursor, this.advertisingCursor + 16));
 
-            this.designStep++;
+            this.advertisingCursor++;
 
-            if (this.designStep == 8)
+            if (this.advertisingCursor == this.advertisingText.length() - 16)
             {
+                this.advertisingCursor = 0;
                 this.advertisingState = false;
-                this.designStep = 0;
             }
         }
 
