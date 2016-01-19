@@ -7,6 +7,8 @@ public class AdvertisingObjectiveSign extends ObjectiveSign implements Runnable
 {
     private final String originalDisplayName;
     private final String advertisingText;
+
+    private String finalText;
     private int ticks;
     private int advertisingCursor;
     private boolean advertisingState;
@@ -23,14 +25,22 @@ public class AdvertisingObjectiveSign extends ObjectiveSign implements Runnable
         super(name, displayName);
 
         this.originalDisplayName = displayName;
-        this.advertisingText = "Vous jouez sur mc.samagames.net !";
+        this.advertisingText = "Vous jouez sur mc.samagames.net !          "; // 10 spaces after
 
+        this.finalText = this.advertisingText;
         this.ticks = 0;
         this.advertisingCursor = 0;
         this.advertisingState = false;
 
 
-        plugin.getServer().getScheduler().runTaskTimerAsynchronously(plugin, this, 2L, 2L);
+        plugin.getServer().getScheduler().runTaskTimer(plugin, this, 2L, 2L);
+    }
+
+    @Override
+    public void updateLines()
+    {
+        this.setDisplayName(this.finalText);
+        super.updateLines();
     }
 
     /**
@@ -43,7 +53,7 @@ public class AdvertisingObjectiveSign extends ObjectiveSign implements Runnable
         {
             if (this.ticks == 0)
             {
-                this.setDisplayName(this.originalDisplayName);
+                this.finalText = this.originalDisplayName;
             }
             else if (this.ticks == 100)
             {
@@ -57,11 +67,11 @@ public class AdvertisingObjectiveSign extends ObjectiveSign implements Runnable
         }
         else
         {
-            this.setDisplayName(ChatColor.GOLD + "" + ChatColor.BOLD + this.advertisingText.substring(this.advertisingCursor, this.advertisingCursor + 10));
+            this.finalText = ChatColor.GOLD + "" + ChatColor.BOLD + this.advertisingText.substring(this.advertisingCursor, this.advertisingCursor + 12);
 
             this.advertisingCursor++;
 
-            if (this.advertisingCursor >= this.advertisingText.length() - 10)
+            if (this.advertisingCursor >= this.advertisingText.length() - 12)
             {
                 this.advertisingCursor = 0;
                 this.advertisingState = false;
