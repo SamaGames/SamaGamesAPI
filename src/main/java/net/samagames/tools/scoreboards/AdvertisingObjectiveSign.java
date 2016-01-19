@@ -6,22 +6,9 @@ import org.bukkit.plugin.java.JavaPlugin;
 public class AdvertisingObjectiveSign extends ObjectiveSign implements Runnable
 {
     private final String originalDisplayName;
-
-    private String advertisingBase;
     private int ticks;
-    private int design;
+    private int designStep;
     private boolean advertisingState;
-
-    /*
-        Relative to design 1
-     */
-    private int advertisingCursor;
-
-    /*
-        Relative to design 2
-     */
-    private int times;
-    private boolean uppercase;
 
     /**
      * Constructor
@@ -36,17 +23,12 @@ public class AdvertisingObjectiveSign extends ObjectiveSign implements Runnable
 
         this.originalDisplayName = displayName;
 
-        this.advertisingBase = "mc.samagames.net";
         this.ticks = 0;
-        this.design = 0;
+        this.designStep = 0;
         this.advertisingState = false;
 
-        this.advertisingCursor = 0;
 
-        this.times = 0;
-        this.uppercase = false;
-
-        plugin.getServer().getScheduler().runTaskTimerAsynchronously(plugin, this, 1L, 1L);
+        plugin.getServer().getScheduler().runTaskTimerAsynchronously(plugin, this, 10L, 10L);
     }
 
     /**
@@ -69,56 +51,33 @@ public class AdvertisingObjectiveSign extends ObjectiveSign implements Runnable
                 return;
             }
 
-            this.ticks++;
+            this.ticks += 10;
         }
         else
         {
-            if (this.design == 0 || this.design == 2)
+            if (this.designStep == 0)
+                this.setDisplayName(ChatColor.RED + "" + ChatColor.BOLD + "Vous");
+            else if (this.designStep == 1)
+                this.setDisplayName(ChatColor.RED + "" + ChatColor.BOLD + "jouez");
+            else if (this.designStep == 2)
+                this.setDisplayName(ChatColor.RED + "" + ChatColor.BOLD + "sur");
+            else if (this.designStep == 3)
+                this.setDisplayName(ChatColor.RED + "" + ChatColor.BOLD + "mc.samagames.net");
+            else if (this.designStep == 4)
+                this.setDisplayName(ChatColor.GOLD + "" + ChatColor.BOLD + "mc.samagames.net");
+            else if (this.designStep == 5)
+                this.setDisplayName(ChatColor.YELLOW + "" + ChatColor.BOLD + "mc.samagames.net");
+            else if (this.designStep == 6)
+                this.setDisplayName(ChatColor.GOLD + "" + ChatColor.BOLD + "mc.samagames.net");
+            else if (this.designStep == 7)
+                this.setDisplayName(ChatColor.RED + "" + ChatColor.BOLD + "mc.samagames.net");
+
+            this.designStep++;
+
+            if (this.designStep == 8)
             {
-                String advertisingDisplayName = this.advertisingBase;
-
-                if (this.advertisingCursor < this.advertisingBase.length())
-                {
-                    advertisingDisplayName = ChatColor.YELLOW + advertisingDisplayName.substring(0, this.advertisingCursor) + ChatColor.GOLD + Character.toUpperCase(advertisingDisplayName.charAt(this.advertisingCursor)) + ChatColor.YELLOW + advertisingDisplayName.substring(this.advertisingCursor + 1);
-                    this.advertisingCursor++;
-                }
-
-                if (this.advertisingCursor == this.advertisingBase.length())
-                {
-                    advertisingDisplayName = ChatColor.YELLOW + advertisingDisplayName;
-                    this.advertisingCursor = 0;
-
-                    if (this.design == 0)
-                    {
-                        this.design++;
-                    }
-                    else
-                    {
-                        this.design = 0;
-                        this.advertisingState = false;
-                    }
-                }
-
-                this.setDisplayName(advertisingDisplayName);
-            }
-            else if (this.design == 1)
-            {
-                String advertisingDisplayName;
-
-                if (this.uppercase)
-                    advertisingDisplayName = ChatColor.GOLD + this.advertisingBase.toUpperCase();
-                else
-                    advertisingDisplayName = ChatColor.YELLOW + this.advertisingBase;
-
-                this.uppercase = !this.uppercase;
-
-                this.setDisplayName(advertisingDisplayName);
-
-                if (this.times == 5)
-                {
-                    this.times = 0;
-                    this.design++;
-                }
+                this.advertisingState = false;
+                this.designStep = 0;
             }
         }
 
