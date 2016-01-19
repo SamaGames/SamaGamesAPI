@@ -57,11 +57,11 @@ public class AdvertisingObjectiveSign extends ObjectiveSign implements Runnable
         }
         else
         {
-            this.setDisplayName(ChatColor.GOLD + "" + ChatColor.BOLD + this.advertisingText.substring(this.advertisingCursor, this.advertisingCursor + 12));
+            this.setDisplayName(ChatColor.GOLD + "" + ChatColor.BOLD + this.advertisingText.substring(this.advertisingCursor, this.advertisingCursor + 10));
 
             this.advertisingCursor++;
 
-            if (this.advertisingCursor == this.advertisingText.length() - 12)
+            if (this.advertisingCursor >= this.advertisingText.length() - 10)
             {
                 this.advertisingCursor = 0;
                 this.advertisingState = false;
