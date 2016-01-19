@@ -25,7 +25,7 @@ public class AdvertisingObjectiveSign extends ObjectiveSign implements Runnable
         super(name, displayName);
 
         this.originalDisplayName = displayName;
-        this.advertisingText = "Vous jouez sur mc.samagames.net !          "; // 10 spaces after
+        this.advertisingText = "Vous jouez sur mc.samagames.net !                "; // 16 spaces after
 
         this.finalText = this.advertisingText;
         this.ticks = 0;
@@ -33,7 +33,7 @@ public class AdvertisingObjectiveSign extends ObjectiveSign implements Runnable
         this.advertisingState = false;
 
 
-        plugin.getServer().getScheduler().runTaskTimer(plugin, this, 2L, 2L);
+        plugin.getServer().getScheduler().runTaskTimer(plugin, this, 5L, 5L);
     }
 
     @Override
@@ -55,7 +55,7 @@ public class AdvertisingObjectiveSign extends ObjectiveSign implements Runnable
             {
                 this.finalText = this.originalDisplayName;
             }
-            else if (this.ticks == 100)
+            else if (this.ticks == 150)
             {
                 this.advertisingState = true;
                 this.ticks = 0;
@@ -63,15 +63,15 @@ public class AdvertisingObjectiveSign extends ObjectiveSign implements Runnable
                 return;
             }
 
-            this.ticks += 2;
+            this.ticks += 5;
         }
         else
         {
-            this.finalText = ChatColor.GOLD + "" + ChatColor.BOLD + this.advertisingText.substring(this.advertisingCursor, this.advertisingCursor + 12);
+            this.finalText = ChatColor.GOLD + "" + ChatColor.BOLD + this.advertisingText.substring(this.advertisingCursor, this.advertisingCursor + 18);
 
             this.advertisingCursor++;
 
-            if (this.advertisingCursor >= this.advertisingText.length() - 12)
+            if (this.advertisingCursor >= this.advertisingText.length() - 18)
             {
                 this.advertisingCursor = 0;
                 this.advertisingState = false;
