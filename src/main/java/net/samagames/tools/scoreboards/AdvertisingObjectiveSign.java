@@ -121,5 +121,7 @@ public class AdvertisingObjectiveSign extends ObjectiveSign implements Runnable
                 }
             }
         }
+
+        this.updateLines();
     }
 }
