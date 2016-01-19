@@ -60,7 +60,7 @@ public class VObjective
      *
      * @return Old name
      */
-    public String toggleName()
+    protected String toggleName()
     {
         String old = this.name;
 
@@ -121,7 +121,7 @@ public class VObjective
      *
      * @param receiver Player
      */
-    public void create(Player receiver)
+    protected void create(Player receiver)
     {
         RawObjective.createObjective(receiver, this);
     }
@@ -133,7 +133,7 @@ public class VObjective
      * @param receiver Player
      * @param location Location
      */
-    public void displayTo(Player receiver, int location)
+    protected void displayTo(Player receiver, int location)
     {
         RawObjective.displayObjective(receiver, getName(), location);
     }
@@ -143,7 +143,7 @@ public class VObjective
      *
      * @param receiver Player
      */
-    public void remove(Player receiver)
+    protected void remove(Player receiver)
     {
         RawObjective.removeObjective(receiver, this);
     }
@@ -163,7 +163,7 @@ public class VObjective
      *
      * @param score Score
      */
-    public void updateScore(VScore score)
+    protected void updateScore(VScore score)
     {
         this.receivers.stream().filter(OfflinePlayer::isOnline).forEach(op -> RawObjective.updateScoreObjective(op.getPlayer(), this, score));
     }
@@ -183,7 +183,7 @@ public class VObjective
      *
      * @param p Player
      */
-    public void updateScore(Player p)
+    protected void updateScore(Player p)
     {
         RawObjective.updateScoreObjective(p, this, false);
     }
@@ -194,7 +194,7 @@ public class VObjective
      * @param p Player
      * @param inverse Inverse lines
      */
-    public void updateScore(Player p, boolean inverse)
+    protected void updateScore(Player p, boolean inverse)
     {
         RawObjective.updateScoreObjective(p, this, inverse);
     }
@@ -230,7 +230,7 @@ public class VObjective
     /**
      * Update the objective to all players
      */
-    public void update()
+    protected void update()
     {
         this.receivers.stream().filter(OfflinePlayer::isOnline).forEach(op -> RawObjective.updateObjective(op.getPlayer(), this));
     }
