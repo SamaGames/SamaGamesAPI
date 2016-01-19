@@ -23,14 +23,14 @@ public class AdvertisingObjectiveSign extends ObjectiveSign implements Runnable
         super(name, displayName);
 
         this.originalDisplayName = displayName;
-        this.advertisingText = ChatColor.RED + "" + ChatColor.YELLOW + "Vous jouez sur " + ChatColor.GOLD + ChatColor.BOLD + "mc.samagames.net" + ChatColor.YELLOW + ChatColor.BOLD + " !";
+        this.advertisingText = "Vous jouez sur mc.samagames.net !";
 
         this.ticks = 0;
         this.advertisingCursor = 0;
         this.advertisingState = false;
 
 
-        plugin.getServer().getScheduler().runTaskTimerAsynchronously(plugin, this, 10L, 10L);
+        plugin.getServer().getScheduler().runTaskTimerAsynchronously(plugin, this, 2L, 2L);
     }
 
     /**
@@ -53,15 +53,15 @@ public class AdvertisingObjectiveSign extends ObjectiveSign implements Runnable
                 return;
             }
 
-            this.ticks += 10;
+            this.ticks += 2;
         }
         else
         {
-            this.setDisplayName(this.advertisingText.substring(this.advertisingCursor, this.advertisingCursor + 16));
+            this.setDisplayName(ChatColor.GOLD + "" + ChatColor.BOLD + this.advertisingText.substring(this.advertisingCursor, this.advertisingCursor + 12));
 
             this.advertisingCursor++;
 
-            if (this.advertisingCursor == this.advertisingText.length() - 16)
+            if (this.advertisingCursor == this.advertisingText.length() - 12)
             {
                 this.advertisingCursor = 0;
                 this.advertisingState = false;
