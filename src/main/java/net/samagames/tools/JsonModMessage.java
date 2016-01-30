@@ -30,6 +30,7 @@ public class JsonModMessage
 	public JsonModMessage(String sender, ModChannel modChannel, ChatColor senderPrefix, String message)
     {
 		this.sender = sender;
+        this.modChannel = modChannel;
 		this.senderPrefix = senderPrefix;
 		this.message = message;
 	}

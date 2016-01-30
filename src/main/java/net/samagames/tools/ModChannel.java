@@ -10,10 +10,10 @@ import org.bukkit.ChatColor;
  */
 public enum ModChannel
 {
+    INFORMATION(ChatColor.GREEN, "Information"),
     DISCUSSION(ChatColor.DARK_AQUA, "Discussion"),
     SANCTION(ChatColor.RED, "Sanction"),
     REPORT(ChatColor.GOLD, "Signalement"),
-    INFORMATION(ChatColor.GREEN, "Information"),
     ;
 
     private final ChatColor color;
