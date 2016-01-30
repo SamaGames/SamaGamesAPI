@@ -1,7 +1,7 @@
 package net.samagames.tools;
 
-import net.md_5.bungee.api.ChatColor;
 import net.samagames.api.SamaGamesAPI;
+import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import com.google.gson.Gson;
 import org.bukkit.entity.Player;
