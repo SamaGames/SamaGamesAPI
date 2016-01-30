@@ -15,6 +15,7 @@ import org.bukkit.entity.Player;
 public class JsonModMessage
 {
 	protected String sender;
+    protected ModChannel modChannel;
 	protected ChatColor senderPrefix;
 	protected String message;
 
@@ -22,10 +23,11 @@ public class JsonModMessage
      * Constructor
      *
      * @param sender Sender of the moderator message
+     * @param modChannel Channel of the moderator message
      * @param senderPrefix Prefix color of the sender
      * @param message Message content
      */
-	public JsonModMessage(String sender, ChatColor senderPrefix, String message)
+	public JsonModMessage(String sender, ModChannel modChannel, ChatColor senderPrefix, String message)
     {
 		this.sender = sender;
 		this.senderPrefix = senderPrefix;
@@ -41,20 +43,36 @@ public class JsonModMessage
      *
      * @return New instance
      */
+    @Deprecated
 	public static JsonModMessage build(CommandSender sender, String message)
     {
-		if (sender instanceof Player)
-        {
-			String prefix = SamaGamesAPI.get().getPermissionsManager().getPrefix(SamaGamesAPI.get().getPermissionsManager().getApi().getUser(((Player) sender).getUniqueId()));
-			ChatColor pr = (prefix == null) ? ChatColor.AQUA : ChatColor.getByChar(prefix.charAt(prefix.length() - 1));
+		return build(sender, ModChannel.DISCUSSION, message);
+	}
 
-			return new JsonModMessage(sender.getName(), pr, message);
-		}
+    /**
+     * Create an instance of a message with a given sender
+     * and message
+     *
+     * @param sender Sender of the moderator message
+     * @param modChannel Channel of the moderator message
+     * @param message Prefix color of the sender
+     *
+     * @return New instance
+     */
+    public static JsonModMessage build(CommandSender sender, ModChannel modChannel, String message)
+    {
+        if (sender instanceof Player)
+        {
+            String prefix = SamaGamesAPI.get().getPermissionsManager().getPrefix(SamaGamesAPI.get().getPermissionsManager().getApi().getUser(((Player) sender).getUniqueId()));
+            ChatColor pr = (prefix == null) ? ChatColor.AQUA : ChatColor.getByChar(prefix.charAt(prefix.length() - 1));
+
+            return new JsonModMessage(sender.getName(), modChannel, pr, message);
+        }
         else
         {
-			return new JsonModMessage(sender.getName(), ChatColor.AQUA, message);
-		}
-	}
+            return new JsonModMessage(sender.getName(), modChannel, ChatColor.AQUA, message);
+        }
+    }
 
     /**
      * Send the moderator message
@@ -72,6 +90,16 @@ public class JsonModMessage
     public void setSender(String sender)
     {
         this.sender = sender;
+    }
+
+    /**
+     * Set the channel of the moderator message
+     *
+     * @param modChannel Message's channel
+     */
+    public void setModChannel(ModChannel modChannel)
+    {
+        this.modChannel = modChannel;
     }
 
     /**
@@ -103,6 +131,16 @@ public class JsonModMessage
     {
 		return this.sender;
 	}
+
+    /**
+     * Get the channel of the moderator message
+     *
+     * @return Message's channel
+     */
+    public ModChannel getModChannel()
+    {
+        return this.modChannel;
+    }
 
     /**
      * Get the prefix color of the sender
