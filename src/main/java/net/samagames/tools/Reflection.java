@@ -58,7 +58,7 @@ public class Reflection {
         }
     }
 
-    //Utils
+    //com.samagames.persistanceapi.Utils
     public static Method makeMethod(Class<?> clazz, String methodName, Class<?>... paramaters) {
         try {
             return clazz.getDeclaredMethod(methodName, paramaters);
