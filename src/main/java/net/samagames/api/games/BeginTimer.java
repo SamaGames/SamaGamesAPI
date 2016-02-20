@@ -30,8 +30,14 @@ public class BeginTimer implements Runnable
     {
         this.game = game;
         this.api = SamaGamesAPI.get();
-        this.time = timeStart;
+        this.time = this.timeStart;
         this.ready = false;
+
+        if (this.api.getGameManager().isFreeMode())
+        {
+            this.game.getBeginTimer().cancel();
+            return;
+        }
     }
 
     /**
@@ -47,6 +53,12 @@ public class BeginTimer implements Runnable
     @Override
     public void run()
     {
+        if (this.api.getGameManager().isFreeMode())
+        {
+            this.game.getBeginTimer().cancel();
+            return;
+        }
+
         int nPlayers = this.game.getConnectedPlayers();
 
         if (nPlayers >= this.api.getGameManager().getGameProperties().getMinSlots() && !this.ready)
