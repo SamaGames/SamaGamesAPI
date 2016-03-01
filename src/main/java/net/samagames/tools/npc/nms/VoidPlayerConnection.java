@@ -1,6 +1,6 @@
 package net.samagames.tools.npc.nms;
 
-import net.minecraft.server.v1_8_R3.*;
+import net.minecraft.server.v1_9_R1.*;
 import org.bukkit.Location;
 
 import java.util.Set;
@@ -151,10 +151,5 @@ public class VoidPlayerConnection extends PlayerConnection {
     @Override
     public void a(PacketPlayInCustomPayload packetplayincustompayload) {
 
-    }
-
-    @Override
-    public boolean isDisconnected() {
-        return false;
     }
 }

@@ -134,10 +134,10 @@ public class BeginTimer implements Runnable
             player.setLevel(seconds);
             
             if (ring)
-                player.playSound(player.getLocation(), Sound.NOTE_PIANO, 1, 1);
+                player.playSound(player.getLocation(), Sound.BLOCK_NOTE_HARP, 1, 1);
 
             if (seconds == 0)
-                player.playSound(player.getLocation(), Sound.NOTE_PLING, 1, 1);
+                player.playSound(player.getLocation(), Sound.BLOCK_NOTE_PLING, 1, 1);
         }
     }
 
