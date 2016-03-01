@@ -73,6 +73,13 @@ public interface IGameManager
     void setFreeMode(boolean freeMode);
 
     /**
+     * Enable the Minecraft 1.8 based PvP mechanics to bypass 1.9's
+     *
+     * @param legacyPvP {@code true} if activated
+     */
+    void setLegacyPvP(boolean legacyPvP);
+
+    /**
      * Get the registered game
      *
      * @return The registered game (null if none)
