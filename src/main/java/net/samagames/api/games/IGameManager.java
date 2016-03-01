@@ -137,6 +137,14 @@ public interface IGameManager
     boolean isFreeMode();
 
     /**
+     * Return if the Minecraft 1.8 based PvP mechanics are enabled
+     * to bypass 1.9's
+     *
+     * @return True or False
+     */
+    boolean isLegacyPvP();
+
+    /**
      * Return if the game support the reconnect
      *
      * @param player The player
