@@ -414,9 +414,9 @@ public class TeamHandler
                 Reflection.setValue(packet, "d", team.getSuffix());
                 Reflection.setValue(packet, "e", team.getNameVisible().e);
                 Reflection.setValue(packet, "i", 0);
-                Reflection.setValue(packet, "f", -1);
-                Reflection.setValue(packet, "g", (Collection) news);
-                Reflection.setValue(packet, "h", n);
+                Reflection.setValue(packet, "g", -1);
+                Reflection.setValue(packet, "h", (Collection) news);
+                Reflection.setValue(packet, "j", n);
 
             }
             catch (Exception e)
