@@ -90,6 +90,8 @@ public class Game<GAMEPLAYER extends GamePlayer>
      */
     public void startGame()
     {
+        if (this.gameManager.isFreeMode())
+            return ;
         this.startTime = System.currentTimeMillis();
         this.beginTimer.cancel();
         this.setStatus(Status.IN_GAME);
