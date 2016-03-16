@@ -37,7 +37,7 @@ public class SkyFactory implements Listener
     {
         try
         {
-            packetPlayOutRespawn = getMCClass("PacketPlayOutRespawn").getConstructor(int.class, getMCClass("EnumDifficulty"), getMCClass("WorldType"), net.minecraft.server.v1_8_R3.WorldSettings.EnumGamemode.class);
+            packetPlayOutRespawn = getMCClass("PacketPlayOutRespawn").getConstructor(int.class, getMCClass("EnumDifficulty"), getMCClass("WorldType"), net.minecraft.server.v1_9_R1.WorldSettings.EnumGamemode.class);
             getHandle = getCraftClass("entity.CraftPlayer").getMethod("getHandle");
             playerConnection = getMCClass("EntityPlayer").getDeclaredField("playerConnection");
             sendPacket = getMCClass("PlayerConnection").getMethod("sendPacket", getMCClass("Packet"));
@@ -140,7 +140,7 @@ public class SkyFactory implements Listener
 
     private Object getGameMode(Player p) throws ClassNotFoundException
     {
-        for (Object dif : net.minecraft.server.v1_8_R3.WorldSettings.EnumGamemode.values())
+        for (Object dif : net.minecraft.server.v1_9_R1.WorldSettings.EnumGamemode.values())
             if (dif.toString().equalsIgnoreCase(p.getGameMode().toString()))
                 return dif;
 
