@@ -1,8 +1,8 @@
 package net.samagames.tools.BarAPI.nms;
 
 
-import net.minecraft.server.v1_8_R3.EntityWither;
-import net.minecraft.server.v1_8_R3.World;
+import net.minecraft.server.v1_9_R1.EntityWither;
+import net.minecraft.server.v1_9_R1.World;
 
 /**
  * Fake entity wither class

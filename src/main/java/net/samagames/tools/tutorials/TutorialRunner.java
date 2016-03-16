@@ -60,7 +60,7 @@ public class TutorialRunner implements Runnable
         if (currentText == 0)
         {
             chapter.teleport(player);
-            player.playSound(player.getLocation(), Sound.LEVEL_UP, 1L, 2L);
+            player.playSound(player.getLocation(), Sound.ENTITY_PLAYER_LEVELUP, 1L, 2L);
         }
 
 

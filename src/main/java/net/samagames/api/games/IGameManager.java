@@ -66,6 +66,20 @@ public interface IGameManager
     void setMaxReconnectTime(int minutes);
 
     /**
+     * Disable automatic mechanisms of the game
+     *
+     * @param freeMode {@code true} if activated
+     */
+    void setFreeMode(boolean freeMode);
+
+    /**
+     * Enable the Minecraft 1.8 based PvP mechanics to bypass 1.9's
+     *
+     * @param legacyPvP {@code true} if activated
+     */
+    void setLegacyPvP(boolean legacyPvP);
+
+    /**
      * Get the registered game
      *
      * @return The registered game (null if none)
@@ -114,6 +128,21 @@ public interface IGameManager
      * @return True or False
      */
     boolean isWaited(UUID uuid);
+
+    /**
+     * Return if the game's automatic mechanisms are disabled
+     *
+     * @return True or False
+     */
+    boolean isFreeMode();
+
+    /**
+     * Return if the Minecraft 1.8 based PvP mechanics are enabled
+     * to bypass 1.9's
+     *
+     * @return True or False
+     */
+    boolean isLegacyPvP();
 
     /**
      * Return if the game support the reconnect

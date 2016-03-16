@@ -4,8 +4,8 @@ package net.samagames.tools.npc.nms;
  * Created by Silva on 19/12/2015.
  */
 
-import net.minecraft.server.v1_8_R3.EnumProtocolDirection;
-import net.minecraft.server.v1_8_R3.NetworkManager;
+import net.minecraft.server.v1_9_R1.EnumProtocolDirection;
+import net.minecraft.server.v1_9_R1.NetworkManager;
 import net.samagames.tools.Reflection;
 
 import java.lang.reflect.Field;

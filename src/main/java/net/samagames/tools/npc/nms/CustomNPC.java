@@ -1,7 +1,7 @@
 package net.samagames.tools.npc.nms;
 
 import com.mojang.authlib.GameProfile;
-import net.minecraft.server.v1_8_R3.*;
+import net.minecraft.server.v1_9_R1.*;
 import net.samagames.tools.npc.NPCInteractCallback;
 import org.bukkit.Location;
 import org.bukkit.WeatherType;
@@ -48,12 +48,12 @@ public class CustomNPC extends EntityPlayer {
     }
 
     @Override
-    public void t_() {
+    public void m() {
 
     }
 
     @Override
-    protected void s() {
+    protected void v() {
 
     }
 
@@ -63,7 +63,7 @@ public class CustomNPC extends EntityPlayer {
     }
 
     @Override
-    public String w() {
+    public String A() {
         return "";
     }
 
