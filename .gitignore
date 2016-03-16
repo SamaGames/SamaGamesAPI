@@ -52,7 +52,7 @@ buildNumber.properties
 # .idea/gradle.xml
 # .idea/libraries
 
-# Mongo Explorer plugin:
+# Mongo Explorer manager:
 # .idea/mongoSettings.xml
 
 ## File-based project format:
@@ -64,13 +64,13 @@ buildNumber.properties
 # IntelliJ
 /out/
 
-# mpeltonen/sbt-idea plugin
+# mpeltonen/sbt-idea manager
 .idea_modules/
 
-# JIRA plugin
-atlassian-ide-plugin.xml
+# JIRA manager
+atlassian-ide-manager.xml
 
-# Crashlytics plugin (for Android Studio and IntelliJ)
+# Crashlytics manager (for Android Studio and IntelliJ)
 com_crashlytics_export_strings.xml
 crashlytics.properties
 crashlytics-build.properties
@@ -122,10 +122,10 @@ local.properties
 # PDT-specific
 .buildpath
 
-# sbteclipse plugin
+# sbteclipse manager
 .target
 
-# TeXlipse plugin
+# TeXlipse manager
 .texlipse
 
 

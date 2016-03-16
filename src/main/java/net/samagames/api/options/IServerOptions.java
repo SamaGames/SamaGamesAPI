@@ -6,7 +6,7 @@ package net.samagames.api.options;
  * Copyright (c) for SamaGames
  * All right reserved
  */
-public interface ServerOptions
+public interface IServerOptions
 {
     /**
      * Get if the tab we'll be filled with ranks

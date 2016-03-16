@@ -1,6 +1,5 @@
 package net.samagames.api.permissions;
 
-import net.samagames.api.permissions.permissions.PermissionEntity;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
@@ -14,13 +13,6 @@ import java.util.UUID;
  */
 public interface IPermissionsManager
 {
-	/**
-	 * Returns PermissionsAPI  {@link PermissionsAPI} for
-     * low level permissions operations
-     *
-	 * @return Instance
-	 */
-	PermissionsAPI getApi();
 
 	/**
 	 * Returns the prefix for an entity (player or group). The prefix is the color of the name.
@@ -29,7 +21,7 @@ public interface IPermissionsManager
      *
 	 * @return A ready-to-display prefix
 	 */
-	String getPrefix(PermissionEntity entity);
+	String getPrefix(IPermissionsEntity entity);
 
 	/**
 	 * Returns the suffix for an entity (player or group). The suffix is applied at the end of the name.
@@ -38,7 +30,7 @@ public interface IPermissionsManager
      *
 	 * @return A ready-to-display suffix
 	 */
-	String getSuffix(PermissionEntity entity);
+	String getSuffix(IPermissionsEntity entity);
 
 	/**
 	 * Returns the display tag for an entity (player or group).
@@ -47,7 +39,7 @@ public interface IPermissionsManager
      *
 	 * @return A ready-to-display display tag
 	 */
-	String getDisplay(PermissionEntity entity);
+	String getDisplay(IPermissionsEntity entity);
 
 	/**
 	 * Checks if an entity has a permission
@@ -57,7 +49,7 @@ public interface IPermissionsManager
      *
 	 * @return {@code true} if the entity has the permission
 	 */
-	boolean hasPermission(PermissionEntity entity, String permission);
+	boolean hasPermission(IPermissionsEntity entity, String permission);
 
 	/**
 	 * Checks if a player has a permission

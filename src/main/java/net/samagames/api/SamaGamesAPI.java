@@ -7,7 +7,7 @@ import net.samagames.api.gui.IGuiManager;
 import net.samagames.api.names.IUUIDTranslator;
 import net.samagames.api.network.IJoinManager;
 import net.samagames.api.network.IProxyDataManager;
-import net.samagames.api.options.ServerOptions;
+import net.samagames.api.options.IServerOptions;
 import net.samagames.api.parties.IPartiesManager;
 import net.samagames.api.permissions.IPermissionsManager;
 import net.samagames.api.player.IPlayerDataManager;
@@ -70,7 +70,7 @@ public abstract class SamaGamesAPI
      *
      * @return Server's options
      */
-    public abstract ServerOptions getServerOptions();
+    public abstract IServerOptions getServerOptions();
 
     /**
      * Get an instance of the Redis database

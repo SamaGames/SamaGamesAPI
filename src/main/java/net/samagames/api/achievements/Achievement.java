@@ -44,7 +44,8 @@ public class Achievement
     public void unlock(Player player)
     {
         AbstractPlayerData playerData = SamaGamesAPI.get().getPlayerManager().getPlayerData(player.getUniqueId());
-        playerData.set("achievement:" + this.id, "unlocked");
+        //playerData.set("achievement:" + this.id, "unlocked");
+        //Todo persistance api
 
         this.reward.give(player, this);
     }
