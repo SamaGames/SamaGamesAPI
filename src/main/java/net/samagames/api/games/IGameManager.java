@@ -66,6 +66,13 @@ public interface IGameManager
     void setMaxReconnectTime(int minutes);
 
     /**
+     * Disable automatic mechanisms of the game
+     *
+     * @param freeMode {@code true} if activated
+     */
+    void setFreeMode(boolean freeMode);
+
+    /**
      * Get the registered game
      *
      * @return The registered game (null if none)
@@ -114,6 +121,13 @@ public interface IGameManager
      * @return True or False
      */
     boolean isWaited(UUID uuid);
+
+    /**
+     * Return if the game's automatic mechanisms are disabled
+     *
+     * @return True or False
+     */
+    boolean isFreeMode();
 
     /**
      * Return if the game support the reconnect
