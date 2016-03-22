@@ -10,12 +10,6 @@ import java.util.UUID;
  */
 public interface IPlayerDataManager
 {
-    /**
-     * Unload cached player's data
-     *
-     * @param player Player's UUID
-     */
-    void unload(UUID player);
 
 	/**
 	 * Get given player's data

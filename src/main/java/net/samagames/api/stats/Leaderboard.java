@@ -8,16 +8,16 @@ package net.samagames.api.stats;
  */
 public class Leaderboard
 {
-    private final IPlayerStat first, second, third;
+    private final PlayerStatData first, second, third;
 
     /**
      * Constructor
      *
-     * @param first First player into the leaderboard {@link IPlayerStat}
-     * @param second Second player into the leaderboard {@link IPlayerStat}
-     * @param third Third player into the leaderboard {@link IPlayerStat}
+     * @param first First player into the leaderboard {@link IPlayerStats}
+     * @param second Second player into the leaderboard {@link IPlayerStats}
+     * @param third Third player into the leaderboard {@link IPlayerStats}
      */
-    public Leaderboard(IPlayerStat first, IPlayerStat second, IPlayerStat third)
+    public Leaderboard(PlayerStatData first, PlayerStatData second, PlayerStatData third)
     {
         this.first = first;
         this.second = second;
@@ -29,7 +29,7 @@ public class Leaderboard
      *
      * @return First player
      */
-    public IPlayerStat getFirst()
+    public PlayerStatData getFirst()
     {
         return this.first;
     }
@@ -39,7 +39,7 @@ public class Leaderboard
      *
      * @return Second player
      */
-    public IPlayerStat getSecond()
+    public PlayerStatData getSecond()
     {
         return this.second;
     }
@@ -49,8 +49,26 @@ public class Leaderboard
      *
      * @return Third player
      */
-    public IPlayerStat getThird()
+    public PlayerStatData getThird()
     {
         return this.third;
+    }
+
+    public class PlayerStatData{
+        private String name;
+        private int score;
+        public PlayerStatData(String name, int score)
+        {
+            this.name = name;
+            this.score = score;
+        }
+
+        public String getName() {
+            return name;
+        }
+
+        public int getScore() {
+            return score;
+        }
     }
 }

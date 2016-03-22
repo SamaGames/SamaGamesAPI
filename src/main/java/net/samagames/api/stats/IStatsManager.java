@@ -10,6 +10,28 @@ import java.util.UUID;
  */
 public interface IStatsManager
 {
+
+    enum StatsNames{
+        GLOBAL(0),
+        DIMENSION(1),
+        HEROBATTLE(2),
+        JUKEBOX(3),
+        QUAKE(4),
+        UHCRUN(5),
+        UPPERVOID(6);
+
+        private int value;
+        StatsNames(int value)
+        {
+            this.value = value;
+        }
+
+        public int intValue()
+        {
+            return value;
+        }
+    }
+
     void finish();
     void clearCache();
 
@@ -25,9 +47,10 @@ public interface IStatsManager
     /**
      * Get the leaderboard of a given stat
      *
+     * @param game Select game
      * @param stat Stat
      *
      * @return Leaderboard instance {@link Leaderboard}
      */
-	Leaderboard getLeaderboard(String stat);
+	Leaderboard getLeaderboard(StatsNames game, String stat);
 }
