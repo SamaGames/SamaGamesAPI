@@ -64,7 +64,7 @@ public class JsonModMessage
     {
         if (sender instanceof Player)
         {
-            String prefix = SamaGamesAPI.get().getPermissionsManager().getPrefix(SamaGamesAPI.get().getPermissionsManager().getApi().getUser(((Player) sender).getUniqueId()));
+            String prefix ="";//TODO SamaGamesAPI.get().getPermissionsManager().getPrefix(SamaGamesAPI.get().getPermissionsManager().getApi().getUser(((Player) sender).getUniqueId()));
             ChatColor pr = (prefix == null) ? ChatColor.AQUA : ChatColor.getByChar(prefix.charAt(prefix.length() - 1));
 
             return new JsonModMessage(sender.getName(), modChannel, pr, message);

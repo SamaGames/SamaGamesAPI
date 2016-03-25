@@ -37,7 +37,7 @@ public class IncrementationAchievement extends Achievement
      */
     public void increment(Player player)
     {
-        AbstractPlayerData playerData = SamaGamesAPI.get().getPlayerManager().getPlayerData(player.getUniqueId());
+        /*AbstractPlayerData playerData = SamaGamesAPI.get().getPlayerManager().getPlayerData(player.getUniqueId());
         Integer before = playerData.getInt("achievement:" + this.id);
 
         if(before == null)
@@ -54,7 +54,7 @@ public class IncrementationAchievement extends Achievement
             return;
         }
 
-        this.unlock(player);
+        this.unlock(player);*/
     }
 
     /**
@@ -66,10 +66,11 @@ public class IncrementationAchievement extends Achievement
      */
     public int getActualState(Player player)
     {
-        AbstractPlayerData playerData = SamaGamesAPI.get().getPlayerManager().getPlayerData(player.getUniqueId());
+       /* AbstractPlayerData playerData = SamaGamesAPI.get().getPlayerManager().getPlayerData(player.getUniqueId());
         Integer actual = playerData.getInt("achievement:" + this.id);
 
-        return (actual == null ? 0 : actual);
+        return (actual == null ? 0 : actual);*/
+        return 0;
     }
 
     /**

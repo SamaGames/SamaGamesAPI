@@ -325,7 +325,8 @@ public class Game<GAMEPLAYER extends GamePlayer>
      */
     public void increaseStat(UUID uuid, String statName, int count)
     {
-        SamaGamesAPI.get().getStatsManager(this.gameCodeName).increase(uuid, statName, count);
+        //TODO stat
+       // SamaGamesAPI.get().getStatsManager(this.gameCodeName).increase(uuid, statName, count);
     }
 
     /**
