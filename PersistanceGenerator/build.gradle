@@ -1,0 +1,63 @@
+apply plugin: 'java'
+apply plugin: 'idea'
+apply plugin: 'application'
+
+group = 'net.samagames'
+version = '1.0.0'
+archivesBaseName = 'PersistanceGenerator'
+mainClassName = 'net.samagames.generator.Generator'
+
+sourceCompatibility = 1.8
+targetCompatibility = 1.8
+
+compileJava.options.encoding = 'UTF-8'
+
+repositories {
+    mavenCentral()
+
+    maven { url "http://maven.samagames.net/public/" }
+
+    maven {
+        url "http://maven.samagames.net/developpers/"
+        credentials {
+            username sguser
+            password sgpass
+        }
+    }
+
+    maven {
+        url "http://maven.samagames.net/network/"
+        credentials {
+            username sguser
+            password sgpass
+        }
+    }
+}
+
+jar {
+    manifest {
+        attributes 'Main-Class': 'net.samagames.generator.Generator'
+    }
+
+    from {
+        configurations.compile.collect { it.isDirectory() ? it : zipTree(it) }
+    }
+}
+
+dependencies {
+    compile group: 'net.samagames', name: 'PersistanceAPI', version: '1.0.0'
+    compile group: 'com.squareup', name: 'javapoet', version: '1.6.1'
+}
+
+task executeGenerator(type: Exec) {
+    workingDir 'build/libs'
+    commandLine 'java', '-jar', 'PersistanceGenerator.jar'
+
+    standardOutput = new ByteArrayOutputStream()
+
+    ext.output = {
+        return standardOutput.toString()
+    }
+}
+
+executeGenerator.dependsOn jar
