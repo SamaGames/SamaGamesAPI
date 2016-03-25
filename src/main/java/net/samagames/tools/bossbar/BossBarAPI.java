@@ -89,6 +89,9 @@ public class BossBarAPI
      */
     public static void setBar(Player player, String message, BarColor color, BarStyle style, double progress, boolean darkenSky, boolean playMusic, boolean createFog)
     {
+        //if (bossBars.containsKey(player.getUniqueId()))
+        //    removeBar(player);
+
         CraftBossBar bossBar = new CraftBossBar(message, color, style);
         bossBar.setProgress(progress / 100.0D);
         bossBar.addPlayer(player);
@@ -102,7 +105,7 @@ public class BossBarAPI
         if (createFog)
             bossBar.addFlag(BarFlag.CREATE_FOG);
 
-        bossBars.put(player.getUniqueId(), bossBar);
+        //bossBars.put(player.getUniqueId(), bossBar);
     }
 
     /**
