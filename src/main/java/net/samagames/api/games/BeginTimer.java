@@ -30,7 +30,7 @@ public class BeginTimer implements Runnable
     {
         this.game = game;
         this.api = SamaGamesAPI.get();
-        this.time = timeStart;
+        this.time = this.timeStart;
         this.ready = false;
     }
 
@@ -47,6 +47,12 @@ public class BeginTimer implements Runnable
     @Override
     public void run()
     {
+        if (this.api.getGameManager().isFreeMode())
+        {
+            this.game.getBeginTimer().cancel();
+            return;
+        }
+
         int nPlayers = this.game.getConnectedPlayers();
 
         if (nPlayers >= this.api.getGameManager().getGameProperties().getMinSlots() && !this.ready)
@@ -128,10 +134,10 @@ public class BeginTimer implements Runnable
             player.setLevel(seconds);
             
             if (ring)
-                player.playSound(player.getLocation(), Sound.NOTE_PIANO, 1, 1);
+                player.playSound(player.getLocation(), Sound.BLOCK_NOTE_HARP, 1, 1);
 
             if (seconds == 0)
-                player.playSound(player.getLocation(), Sound.NOTE_PLING, 1, 1);
+                player.playSound(player.getLocation(), Sound.BLOCK_NOTE_PLING, 1, 1);
         }
     }
 
