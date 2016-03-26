@@ -44,7 +44,7 @@ dependencies {
     }
 }
 
-task copyGeneratedClasses(dependsOn: ':PersistanceGenerator:executeGenerator', type: Copy) {
+task copyGeneratedClasses(dependsOn: ':PersistanceGenerator:runSimple', type: Copy) {
     from 'PersistanceGenerator/build/libs/out'
     into 'src/main/java'
     include('**/*.java')
