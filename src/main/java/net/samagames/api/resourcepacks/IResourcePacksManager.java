@@ -29,7 +29,7 @@ public interface IResourcePacksManager
 	 * @param url The url of the pack you want to force the users to use
 	 * @param callback a callback called when the download status changes
 	 */
-	void forceUrlPack(String url, IResourceCallback callback);
+	void forceUrlPack(String url, String hash, IResourceCallback callback);
 
 	/**
 	 * Kicks all the player who didn't totally downloaded the resource pack
