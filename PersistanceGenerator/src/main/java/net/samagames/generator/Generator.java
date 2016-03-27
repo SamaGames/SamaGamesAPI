@@ -30,7 +30,9 @@ public class Generator {
                 .build();
 
         try {
-            javaFile.writeTo(System.out);
+            File file = new File("./Generation");
+            file.delete();
+            javaFile.writeTo(file);
         } catch (IOException e) {
             e.printStackTrace();
         }

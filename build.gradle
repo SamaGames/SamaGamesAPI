@@ -44,9 +44,22 @@ dependencies {
     }
 }
 
-task copyGeneratedClasses(dependsOn: ':PersistanceGenerator:runSimple', type: Copy) {
-    from 'PersistanceGenerator/build/libs/out'
-    into 'src/main/java'
+jar {
+
+    from {
+        configurations.compile.collect { "generated-sources" }
+    }
+}
+
+task copyClasses(dependsOn: ':PersistanceGenerator:runSimple', type: Copy) {
+    from 'src/main/java'
+    into 'generated-sources'
+    include('**/*.java')
+}
+
+task copyGeneratedClasses(dependsOn: 'copyClasses', type: Copy) {
+    from 'PersistanceGenerator/Generation'
+    into 'generated-sources'
     include('**/*.java')
 }
 
