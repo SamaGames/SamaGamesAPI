@@ -49,21 +49,15 @@ dependencies {
     compile group: 'com.squareup', name: 'javapoet', version: '1.6.1'
 }
 
-task(runSimple, dependsOn: 'classes', type: JavaExec) {
+//Remove folder
+task makePretty(dependsOn: 'classes', type: Delete) {
+    delete 'Generation'
+}
+
+//Run program
+task(runSimple, dependsOn: 'makePretty', type: JavaExec) {
     main = 'net.samagames.generator.Generator'
     classpath = sourceSets.main.runtimeClasspath
 }
 
-/*task executeGenerator(type: Exec) {
-    workingDir 'build/libs'
-    commandLine 'java', '-jar', 'PersistanceGenerator.jar'
-
-    standardOutput = new ByteArrayOutputStream()
-
-    ext.output = {
-        return standardOutput.toString()
-    }
-}*/
-
 defaultTasks 'runSimple'
-//executeGenerator.dependsOn jar

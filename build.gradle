@@ -35,6 +35,7 @@ repositories {
 }
 
 dependencies {
+    //compile fileTree(dir: 'PersistanceGenerator/Generation', include: ['*.java'])
     compile group: 'com.google.guava', name: 'guava', version:'18.0'
     compile group: 'redis.clients', name: 'jedis', version:'2.6.2'
     compile group: 'org.apache.commons', name: 'commons-pool2', version:'2.0'
@@ -44,23 +45,12 @@ dependencies {
     }
 }
 
-jar {
-
-    from {
-        configurations.compile.collect { "generated-sources" }
+sourceSets {
+    main {
+        java {
+            srcDir 'PersistanceGenerator/Generation'
+        }
     }
 }
 
-task copyClasses(dependsOn: ':PersistanceGenerator:runSimple', type: Copy) {
-    from 'src/main/java'
-    into 'generated-sources'
-    include('**/*.java')
-}
-
-task copyGeneratedClasses(dependsOn: 'copyClasses', type: Copy) {
-    from 'PersistanceGenerator/Generation'
-    into 'generated-sources'
-    include('**/*.java')
-}
-
-build.dependsOn copyGeneratedClasses
+compileJava.dependsOn(':PersistanceGenerator:runSimple')
