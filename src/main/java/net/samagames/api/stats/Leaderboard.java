@@ -13,9 +13,9 @@ public class Leaderboard
     /**
      * Constructor
      *
-     * @param first First player into the leaderboard {@link IPlayerStats}
-     * @param second Second player into the leaderboard {@link IPlayerStats}
-     * @param third Third player into the leaderboard {@link IPlayerStats}
+     * @param first First player into the leaderboard {@link PlayerStatData}
+     * @param second Second player into the leaderboard {@link PlayerStatData}
+     * @param third Third player into the leaderboard {@link PlayerStatData}
      */
     public Leaderboard(PlayerStatData first, PlayerStatData second, PlayerStatData third)
     {

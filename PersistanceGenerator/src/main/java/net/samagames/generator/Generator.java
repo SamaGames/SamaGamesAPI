@@ -4,6 +4,7 @@ import com.squareup.javapoet.*;
 import net.samagames.persistanceapi.beans.statistics.PlayerStatisticsBean;
 
 import javax.lang.model.element.Modifier;
+import javax.tools.JavaFileManager;
 import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.Field;
@@ -23,7 +24,6 @@ public class Generator {
 
     public static void main(String[] args)
     {
-        //
         loadGameStats();
 
         build();

@@ -4,7 +4,7 @@ apply plugin: 'sonar-runner'
 apply plugin: 'maven'
 
 group = 'net.samagames'
-version = '1.0.0'
+version = '4.0.0'
 archivesBaseName = 'SamaGamesAPI'
 
 sourceCompatibility = 1.8
