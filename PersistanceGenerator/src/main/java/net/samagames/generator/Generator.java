@@ -4,7 +4,6 @@ import com.squareup.javapoet.*;
 import net.samagames.persistanceapi.beans.statistics.PlayerStatisticsBean;
 
 import javax.lang.model.element.Modifier;
-import javax.tools.JavaFileManager;
 import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.Field;
@@ -43,10 +42,13 @@ public class Generator {
         {
             field.setAccessible(true);
             Class workingField = field.getType();
-            String name = "I" + workingField.getSimpleName().replaceAll("Bean", "");
+            String wname = workingField.getSimpleName().replaceAll("Bean", "");
+            String name = "I" + wname;
 
             TypeSpec.Builder object = TypeSpec.interfaceBuilder(name)
                     .addModifiers(Modifier.PUBLIC);
+            object.addMethod(getMethod("update", void.class));
+            object.addMethod(getMethod("refresh", void.class));
             Method[] subDeclaredMethods = workingField.getDeclaredMethods();
             for (Method method : subDeclaredMethods)
             {
@@ -67,7 +69,7 @@ public class Generator {
             ClassName className = ClassName.get(pack, name);
 
             //Create getter in player stat
-            playerStatsBuilder.addMethod(getMethod("get" + name, className));
+            playerStatsBuilder.addMethod(getMethod("get" + wname, className));
 
             toBuild.add(JavaFile.builder("net.samagames.api.stats.games", build).build());
         }
