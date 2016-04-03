@@ -1,7 +1,7 @@
 package net.samagames.api.resourcepacks;
 
-import net.minecraft.server.v1_9_R1.PacketPlayInResourcePackStatus;
 import org.bukkit.entity.Player;
+import org.bukkit.event.player.PlayerResourcePackStatusEvent;
 
 /**
  * Resource packs callback class
@@ -17,7 +17,7 @@ public interface IResourceCallback
 	 * @param player THe player downloading the pack
 	 * @param status The download status
 	 */
-    void callback(Player player, PacketPlayInResourcePackStatus.EnumResourcePackStatus status);
+    void callback(Player player, PlayerResourcePackStatusEvent.Status status);
 
 	/**
 	 * Called when a player is about to be automatically kicked because he doesn't have the pack
