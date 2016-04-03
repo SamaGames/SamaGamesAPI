@@ -16,7 +16,6 @@ import net.samagames.api.resourcepacks.IResourcePacksManager;
 import net.samagames.api.settings.ISettingsManager;
 import net.samagames.api.shops.AbstractShopsManager;
 import net.samagames.api.stats.IStatsManager;
-import net.samagames.tools.BarAPI.BarAPI;
 import net.samagames.tools.SkyFactory;
 import net.samagames.tools.npc.NPCManager;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -197,14 +196,6 @@ public abstract class SamaGamesAPI
      * @return Instance
      */
     public abstract IUUIDTranslator getUUIDTranslator();
-
-    /**
-     * Get the instance of the BarAPI who permits
-     * to add dragon bar based messages
-     *
-     * @return Instance
-     */
-	public abstract BarAPI getBarAPI();
 
     /**
      * Get the instance of the Sky Factory who
