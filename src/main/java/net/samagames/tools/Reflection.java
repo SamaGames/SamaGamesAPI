@@ -534,6 +534,20 @@ public class Reflection {
     }
 
     /**
+     * Set a final static var
+     * @param field The field object
+     * @param value The new value
+     * @throws ReflectiveOperationException
+     */
+    public static void setFinal(Object object, Field field, Object value) throws ReflectiveOperationException {
+        field.setAccessible(true);
+        Field mf = Field.class.getDeclaredField("modifiers");
+        mf.setAccessible(true);
+        mf.setInt(field, field.getModifiers() & ~Modifier.FINAL);
+        field.set(object, value);
+    }
+
+    /**
      * Represents an enumeration of dynamic packages of NMS and CraftBukkit
      * <p/>
      * This class is part of the <b>ReflectionUtils</b> and follows the same usage conditions

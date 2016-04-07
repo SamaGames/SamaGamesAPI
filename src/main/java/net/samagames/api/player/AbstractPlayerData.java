@@ -1,9 +1,9 @@
 package net.samagames.api.player;
 
 import net.md_5.bungee.api.chat.TextComponent;
-import net.samagames.api.SamaGamesAPI;
 
-import java.util.*;
+import java.util.Date;
+import java.util.UUID;
 
 /**
  * PlayerData class
@@ -24,12 +24,7 @@ public abstract class AbstractPlayerData
      *
      * @return Effective name
      */
-    public String getEffectiveName()
-    {
-        String eName = this.getCustomName();
-        return (eName == null) ? SamaGamesAPI.get().getUUIDTranslator().getName(this.getPlayerID()) : eName;
-    }
-
+    public abstract String getEffectiveName();
     /**
      * Get player's UUID
      *
