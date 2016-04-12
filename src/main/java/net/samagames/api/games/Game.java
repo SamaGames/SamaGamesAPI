@@ -583,7 +583,7 @@ public class Game<GAMEPLAYER extends GamePlayer>
      *     </li>
      * </ul>
      */
-    public Pair<Boolean, String> canPartyJoinGame(Set<UUID> partyMembers)
+    public Pair<Boolean, String> canPartyJoinGame(List<UUID> partyMembers)
     {
         return Pair.of(true, "");
     }
