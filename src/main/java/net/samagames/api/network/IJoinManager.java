@@ -1,8 +1,5 @@
 package net.samagames.api.network;
 
-import org.bukkit.event.Listener;
-
-import java.util.HashSet;
 import java.util.List;
 import java.util.UUID;
 
@@ -12,7 +9,7 @@ import java.util.UUID;
  * Copyright (c) for SamaGames
  * All right reserved
  */
-public interface IJoinManager extends Listener
+public interface IJoinManager
 {
     /**
      * Register a JoinHandler which is going to be called by the manager
@@ -34,7 +31,7 @@ public interface IJoinManager extends Listener
      *
      * @return List of UUID
      */
-    HashSet<UUID> getExpectedPlayers();
+    List<UUID> getExpectedPlayers();
 
     /**
      * Get connected moderator as a list of UUID

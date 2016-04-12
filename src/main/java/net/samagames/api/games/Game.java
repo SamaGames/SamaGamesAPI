@@ -36,6 +36,7 @@ public class Game<GAMEPLAYER extends GamePlayer>
     protected final String gameDescription;
     protected final Class<GAMEPLAYER> gamePlayerClass;
     protected final HashMap<UUID, GAMEPLAYER> gamePlayers;
+    protected final HashMap<UUID, GAMEPLAYER> gameSpectators;
     protected BukkitTask beginTimer;
     protected BeginTimer beginObj;
 
@@ -79,6 +80,7 @@ public class Game<GAMEPLAYER extends GamePlayer>
         this.gamePlayers = new HashMap<>();
 
         this.status = Status.WAITING_FOR_PLAYERS;
+        gameSpectators = new HashMap<>();
     }
 
     /**
@@ -255,7 +257,7 @@ public class Game<GAMEPLAYER extends GamePlayer>
             {
                 EarningMessageTemplate earningMessageTemplate = this.coherenceMachine.getTemplateManager().getEarningMessageTemplate();
                 earningMessageTemplate.execute(Bukkit.getPlayer(playerUUID), this.getPlayer(playerUUID).getCoins(), this.getPlayer(playerUUID).getStars());
-                this.increaseStat(playerUUID, "played-games", 1);
+                //TODO stats increase partie
             });
         }, 20L * 3);
 
@@ -323,11 +325,11 @@ public class Game<GAMEPLAYER extends GamePlayer>
      * @param statName The incremented statistic's name.
      * @param count The amount by which this statistic is incremented.
      */
-    public void increaseStat(UUID uuid, String statName, int count)
+    /*public void increaseStat(UUID uuid, String statName, int count)
     {
         //TODO stat
        // SamaGamesAPI.get().getStatsManager(this.gameCodeName).increase(uuid, statName, count);
-    }
+    }*/
 
     /**
      * Marks a player as spectator.

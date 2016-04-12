@@ -2,7 +2,6 @@ package net.samagames.api.network;
 
 import org.bukkit.entity.Player;
 
-import java.util.Set;
 import java.util.UUID;
 
 /**
@@ -15,6 +14,7 @@ public interface IJoinHandler
 {
     /**
      * Called when an user wanted to connect, by right clicking a game sign for example.
+     * (Before player is ont the server)
      *
      * @param player Asking player
      * @param response Response object {@link JoinResponse}
@@ -28,6 +28,7 @@ public interface IJoinHandler
 
     /**
      * Called when a party wanted to connect, by right clicking a game sign for example.
+     * (Before player is on the server)
      *
      * @param party Party uuid
      * @param player The player who join
