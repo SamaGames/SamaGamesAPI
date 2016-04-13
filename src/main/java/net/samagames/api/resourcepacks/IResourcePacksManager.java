@@ -1,5 +1,7 @@
 package net.samagames.api.resourcepacks;
 
+import org.bukkit.entity.Player;
+
 /**
  * Resource packs manager
  *
