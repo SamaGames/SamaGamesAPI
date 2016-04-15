@@ -89,14 +89,11 @@ public abstract class SamaGamesAPI
 	public abstract AbstractShopsManager getShopsManager(String game);
 
     /**
-     * Get a new instance of the stats manager of
-     * a given game code name
+     * Get instance of the stats manager
      *
-     * @param game Game code name
-     *
-     * @return New instance
+     * @return Instance
      */
-    public abstract IStatsManager getStatsManager(String game);
+    public abstract IStatsManager getStatsManager();
 
     /**
      * Get the instance of the GUI manager
