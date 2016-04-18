@@ -1,6 +1,7 @@
 package net.samagames.tools;
 
 import java.sql.Timestamp;
+import java.util.UUID;
 
 /**
  * Created by Silvanosky on 30/03/2016.
@@ -18,6 +19,9 @@ public class TypeConverter {
         }else if (a == long.class)
         {
             return (T)Long.valueOf(value);
+        }else if (a == UUID.class)
+        {
+            return (T) UUID.fromString(value);
         }
 
         return (T)value;
