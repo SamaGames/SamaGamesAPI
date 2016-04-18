@@ -45,6 +45,20 @@ public interface IStatsManager
     IPlayerStats getPlayerStats(UUID player);
 
     /**
+     * Define if a game will be loaded at player join
+     * @param game The game wanted
+     * @param value The value wanted (true to set auto load for the specified games, false to disable autoload)
+     */
+    void setStatsToLoad(StatsNames game, boolean value);
+
+    /**
+     * Know if a game is already loaded by the manager
+     * @param game The wanted game
+     * @return
+     */
+    boolean isStatsLoading(StatsNames game);
+
+    /**
      * Get the leaderboard of a given stat
      *
      * @param game Select game

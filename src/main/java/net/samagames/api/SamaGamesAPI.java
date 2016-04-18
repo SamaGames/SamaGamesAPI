@@ -86,7 +86,7 @@ public abstract class SamaGamesAPI
      *
      * @return New instance
      */
-	public abstract AbstractShopsManager getShopsManager(String game);
+	public abstract AbstractShopsManager getShopsManager();
 
     /**
      * Get instance of the stats manager
