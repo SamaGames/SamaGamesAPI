@@ -269,7 +269,7 @@ public class Game<GAMEPLAYER extends GamePlayer>
 
         Bukkit.getScheduler().runTaskLater(SamaGamesAPI.get().getPlugin(), () ->
         {
-            SamaGamesAPI.get().getStatsManager(this.gameCodeName).finish();
+            SamaGamesAPI.get().getStatsManager().finish();
             Bukkit.shutdown();
         }, 20L * 15);
     }

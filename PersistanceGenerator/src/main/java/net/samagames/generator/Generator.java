@@ -86,9 +86,9 @@ public class Generator {
         return getter.build();
     }
 
-    public static MethodSpec getMethod(String name, Type retur)
+    public static MethodSpec getMethod(String name, Type type)
     {
-        return getMethod(name, TypeName.get(retur));
+        return getMethod(name, TypeName.get(type));
     }
 
     public static TypeSpec createInterfaceOfType(Class type)
@@ -102,7 +102,24 @@ public class Generator {
         Method[] subDeclaredMethods = type.getDeclaredMethods();
         for (Method method : subDeclaredMethods)
         {
-            MethodSpec.Builder builder = MethodSpec.methodBuilder(method.getName());
+            String methodName = method.getName();
+            if (method.getParameters().length > 0)
+            {
+                boolean isIncrementable = false;
+                Class<?> type1 = method.getParameters()[0].getType();
+                if (type1.equals(int.class)
+                        || type1.equals(long.class)
+                        || type1.equals(double.class)
+                        || type1.equals(float.class))
+                    isIncrementable = true;
+
+                if (methodName.startsWith("set") && isIncrementable)
+                {
+                    methodName = "incrBy" + methodName.substring(3);
+                }
+            }
+
+            MethodSpec.Builder builder = MethodSpec.methodBuilder(methodName);
             if (method.getParameterCount() > 0)
             {
                 for (Parameter parameter : method.getParameters())
