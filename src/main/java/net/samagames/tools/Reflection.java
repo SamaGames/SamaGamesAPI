@@ -527,6 +527,7 @@ public class Reflection {
      */
     public static void setFinalStatic(Field field, Object value) throws ReflectiveOperationException {
         field.setAccessible(true);
+        Class.class.getModifiers();
         Field mf = Field.class.getDeclaredField("modifiers");
         mf.setAccessible(true);
         mf.setInt(field, field.getModifiers() & ~Modifier.FINAL);

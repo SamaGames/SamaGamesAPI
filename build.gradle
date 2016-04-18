@@ -42,6 +42,7 @@ dependencies {
     compile(group: 'org.spigotmc', name: 'spigot', version: '1.9-R0.1-SNAPSHOT', changing: true) {
         transitive = false
     }
+    compile group: 'net.samagames', name: 'PersistanceAPI', version: '1.0.0'
 }
 
 sourceSets {
