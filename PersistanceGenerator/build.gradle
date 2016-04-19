@@ -36,16 +36,6 @@ repositories {
     }
 }
 
-jar {
-    manifest {
-        attributes 'Main-Class': 'net.samagames.generator.Generator'
-    }
-
-    from {
-        configurations.compile.collect { it.isDirectory() ? it : zipTree(it) }
-    }
-}
-
 dependencies {
     compile group: 'net.samagames', name: 'PersistanceAPI', version: '1.0.0'
     compile group: 'com.squareup', name: 'javapoet', version: '1.6.1'

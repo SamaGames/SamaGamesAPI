@@ -1,16 +1,10 @@
 package net.samagames.tools.npc;
 
-import com.google.gson.JsonArray;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
 import com.mojang.authlib.GameProfile;
-import com.mojang.authlib.properties.Property;
 import net.minecraft.server.v1_9_R1.PacketPlayOutNamedEntitySpawn;
 import net.minecraft.server.v1_9_R1.PacketPlayOutPlayerInfo;
 import net.minecraft.server.v1_9_R1.PlayerInteractManager;
 import net.minecraft.server.v1_9_R1.World;
-import net.samagames.Net;
 import net.samagames.api.SamaGamesAPI;
 import net.samagames.tools.CallBack;
 import net.samagames.tools.npc.nms.CustomNPC;
@@ -24,10 +18,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.entity.CreatureSpawnEvent;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.player.PlayerInteractEntityEvent;
-import redis.clients.jedis.Jedis;
 
-import java.io.IOException;
-import java.net.MalformedURLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -110,7 +101,7 @@ public class NPCManager  implements Listener{
     public GameProfile createGameProfile(UUID uuid, String name, UUID skinURL)
     {
         GameProfile gameProfile = new GameProfile(uuid, name);
-        String key = "gameprofiles." + skinURL.toString();
+        /*String key = "gameprofiles." + skinURL.toString();
 
         try {
 
@@ -151,13 +142,13 @@ public class NPCManager  implements Listener{
             Jedis jedis = api.getBungeeResource();
             jedis.del(key);
             jedis.close();
-        }
+        }*/
         return gameProfile;
     }
 
     public void getSkin(UUID uuid)
     {
-        try {
+        /*try {
             String result = Net.executeGet("https://sessionserver.mojang.com/session/minecraft/profile/" + uuid.toString().replace("-", ""));
 
 
@@ -166,7 +157,7 @@ public class NPCManager  implements Listener{
             e.printStackTrace();
         } catch (IOException e) {
             e.printStackTrace();
-        }
+        }*/
     }
 
     public void disable()

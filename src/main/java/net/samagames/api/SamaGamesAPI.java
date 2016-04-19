@@ -81,8 +81,6 @@ public abstract class SamaGamesAPI
      * Get a new instance of the shop manager of
      * a given game code name
      *
-     * @param game Game code name
-     *
      * @return New instance
      */
 	public abstract AbstractShopsManager getShopsManager();
