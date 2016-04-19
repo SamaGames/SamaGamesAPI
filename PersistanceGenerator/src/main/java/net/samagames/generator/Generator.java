@@ -1,6 +1,7 @@
 package net.samagames.generator;
 
 import com.squareup.javapoet.*;
+import net.samagames.persistanceapi.beans.players.PlayerSettingsBean;
 import net.samagames.persistanceapi.beans.statistics.PlayerStatisticsBean;
 
 import javax.lang.model.element.Modifier;
@@ -30,7 +31,7 @@ public class Generator {
 
     public static void loadGameStats()
     {
-        Field[] playerStatisticFields = PlayerStatisticsBean.class.getDeclaredFields();
+        // STATISTICS
         TypeSpec.Builder playerStatsBuilder = TypeSpec.interfaceBuilder("IPlayerStats")
                 .addModifiers(Modifier.PUBLIC);
 
@@ -38,42 +39,29 @@ public class Generator {
         playerStatsBuilder.addMethod(getMethod("refreshStats", boolean.class));
         playerStatsBuilder.addMethod(getMethod("getPlayerUUID", UUID.class));
 
+        String package_ = "net.samagames.api.stats";
+        String package_game = package_ + ".games";
+
+        Field[] playerStatisticFields = PlayerStatisticsBean.class.getDeclaredFields();
         for (Field field : playerStatisticFields)
         {
             field.setAccessible(true);
-            Class workingField = field.getType();
-            String wname = workingField.getSimpleName().replaceAll("Bean", "");
-            String name = "I" + wname;
-
-            TypeSpec.Builder object = TypeSpec.interfaceBuilder(name)
-                    .addModifiers(Modifier.PUBLIC);
-            object.addMethod(getMethod("update", void.class));
-            object.addMethod(getMethod("refresh", void.class));
-            Method[] subDeclaredMethods = workingField.getDeclaredMethods();
-            for (Method method : subDeclaredMethods)
-            {
-                MethodSpec.Builder builder = MethodSpec.methodBuilder(method.getName());
-                if (method.getParameterCount() > 0)
-                {
-                    for (Parameter parameter : method.getParameters())
-                    {
-                        builder.addParameter(parameter.getType(), parameter.getName());
-                    }
-                }
-                builder.addModifiers(Modifier.PUBLIC, Modifier.ABSTRACT);
-                builder.returns(method.getReturnType());
-                object.addMethod(builder.build());
-            }
-            TypeSpec build = object.build();
-            String pack = "net.samagames.api.stats.games";
-            ClassName className = ClassName.get(pack, name);
+            TypeSpec statInterface = createInterfaceOfType(field.getType());
 
             //Create getter in player stat
-            playerStatsBuilder.addMethod(getMethod("get" + wname, className));
+            playerStatsBuilder.addMethod(
+                    getMethod("get" + statInterface.name.substring(1), ClassName.get(package_game, statInterface.name)));
 
-            toBuild.add(JavaFile.builder("net.samagames.api.stats.games", build).build());
+            toBuild.add(JavaFile.builder(package_game, statInterface).build());
         }
-        toBuild.add(JavaFile.builder("net.samagames.api.stats", playerStatsBuilder.build()).build());
+
+        toBuild.add(JavaFile.builder(package_, playerStatsBuilder.build()).build());
+        // END STATISTICS
+
+        // SETTINGS
+        TypeSpec playerSettingsBean = createInterfaceOfType(PlayerSettingsBean.class);
+        toBuild.add(JavaFile.builder("net.samagames.api.settings", playerSettingsBean).build());
+        // END SETTINGS
     }
 
     public static void build()
@@ -98,8 +86,51 @@ public class Generator {
         return getter.build();
     }
 
-    public static MethodSpec getMethod(String name, Type retur)
+    public static MethodSpec getMethod(String name, Type type)
     {
-        return getMethod(name, TypeName.get(retur));
+        return getMethod(name, TypeName.get(type));
+    }
+
+    public static TypeSpec createInterfaceOfType(Class type)
+    {
+        String name = "I" +type.getSimpleName().replaceAll("Bean", "");
+
+        TypeSpec.Builder object = TypeSpec.interfaceBuilder(name)
+                .addModifiers(Modifier.PUBLIC);
+        object.addMethod(getMethod("update", void.class));
+        object.addMethod(getMethod("refresh", void.class));
+        Method[] subDeclaredMethods = type.getDeclaredMethods();
+        for (Method method : subDeclaredMethods)
+        {
+            String methodName = method.getName();
+            if (method.getParameters().length > 0)
+            {
+                boolean isIncrementable = false;
+                Class<?> type1 = method.getParameters()[0].getType();
+                if (type1.equals(int.class)
+                        || type1.equals(long.class)
+                        || type1.equals(double.class)
+                        || type1.equals(float.class))
+                    isIncrementable = true;
+
+                if (methodName.startsWith("set") && isIncrementable)
+                {
+                    methodName = "incrBy" + methodName.substring(3);
+                }
+            }
+
+            MethodSpec.Builder builder = MethodSpec.methodBuilder(methodName);
+            if (method.getParameterCount() > 0)
+            {
+                for (Parameter parameter : method.getParameters())
+                {
+                    builder.addParameter(parameter.getType(), parameter.getName());
+                }
+            }
+            builder.addModifiers(Modifier.PUBLIC, Modifier.ABSTRACT);
+            builder.returns(method.getReturnType());
+            object.addMethod(builder.build());
+        }
+        return object.build();
     }
 }

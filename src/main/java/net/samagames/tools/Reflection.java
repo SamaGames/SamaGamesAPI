@@ -527,10 +527,25 @@ public class Reflection {
      */
     public static void setFinalStatic(Field field, Object value) throws ReflectiveOperationException {
         field.setAccessible(true);
+        Class.class.getModifiers();
         Field mf = Field.class.getDeclaredField("modifiers");
         mf.setAccessible(true);
         mf.setInt(field, field.getModifiers() & ~Modifier.FINAL);
         field.set(null, value);
+    }
+
+    /**
+     * Set a final static var
+     * @param field The field object
+     * @param value The new value
+     * @throws ReflectiveOperationException
+     */
+    public static void setFinal(Object object, Field field, Object value) throws ReflectiveOperationException {
+        field.setAccessible(true);
+        Field mf = Field.class.getDeclaredField("modifiers");
+        mf.setAccessible(true);
+        mf.setInt(field, field.getModifiers() & ~Modifier.FINAL);
+        field.set(object, value);
     }
 
     /**

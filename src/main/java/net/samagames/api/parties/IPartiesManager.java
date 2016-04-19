@@ -1,6 +1,7 @@
 package net.samagames.api.parties;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.UUID;
 
 /**
@@ -16,18 +17,20 @@ public interface IPartiesManager
      *
      * @param player Player
      *
-     * @return
+     * @return The party object if one player in it is connected, null otherwise
      */
-	UUID getPlayerParty(UUID player);
+	IParty getPartyForPlayer(UUID player);
+
+    IParty getParty(UUID partie);
 
     /**
      * Get members of the given player's party
      *
      * @param party Party UUID {@link IPartiesManager##getPlayerParty(UUID)}
      *
-     * @return A map with UUID and username
+     * @return A list of UUID
      */
-	HashMap<UUID, String> getPlayersInParty(UUID party);
+	List<UUID> getPlayersInParty(UUID party);
 
     /**
      * Get the server where the party is
@@ -36,6 +39,7 @@ public interface IPartiesManager
      *
      * @return Server name
      */
+    @Deprecated
 	String getCurrentServer(UUID party);
 
     /**
@@ -46,4 +50,10 @@ public interface IPartiesManager
      * @return Leader UUID
      */
 	UUID getLeader(UUID party);
+
+    /**
+     * Get all currently on this server (it's a copy)
+     * @return Copied parties list (Party uuid, party)
+     */
+    HashMap<UUID, IParty> getParties();
 }

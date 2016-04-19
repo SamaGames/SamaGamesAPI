@@ -16,8 +16,6 @@ public interface IPermissionsEntity {
 
     String getSuffix();
 
-    String getPlayerName();
-
     int getRank();
 
     String getTag();

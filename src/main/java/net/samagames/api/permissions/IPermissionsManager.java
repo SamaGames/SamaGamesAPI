@@ -15,6 +15,13 @@ public interface IPermissionsManager
 {
 
 	/**
+	 * Get the permission player with all data
+	 * @param player UUID of the player
+	 * @return
+     */
+	IPermissionsEntity getPlayer(UUID player);
+
+	/**
 	 * Returns the prefix for an entity (player or group). The prefix is the color of the name.
      *
 	 * @param entity The entity you wan't to get the prefix for

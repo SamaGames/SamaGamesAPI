@@ -1,8 +1,9 @@
 package net.samagames.api.player;
 
-import net.samagames.api.SamaGamesAPI;
+import net.md_5.bungee.api.chat.TextComponent;
 
-import java.util.*;
+import java.util.Date;
+import java.util.UUID;
 
 /**
  * PlayerData class
@@ -23,12 +24,7 @@ public abstract class AbstractPlayerData
      *
      * @return Effective name
      */
-    public String getEffectiveName()
-    {
-        String eName = this.getCustomName();
-        return (eName == null) ? SamaGamesAPI.get().getUUIDTranslator().getName(this.getPlayerID()) : eName;
-    }
-
+    public abstract String getEffectiveName();
     /**
      * Get player's UUID
      *
@@ -255,4 +251,29 @@ public abstract class AbstractPlayerData
     {
         return this.getStars() >= amount;
     }
+
+
+    /**
+     * Kick the player from the network (need to add sanction manually)
+     *
+     * @param reason Message to show
+     *
+     */
+    public abstract void kickFromNetwork(TextComponent reason);
+
+    /**
+     * Send a player to a specific server with the name
+     *
+     * @param server Server name
+     *
+     */
+    public abstract void connectToServer(String server);
+
+    /**
+     * Send a message using the proxy (maybe useless ?)
+     *
+     * @param component Message
+     *
+     */
+    public abstract void sendMessage(TextComponent component);
 }
