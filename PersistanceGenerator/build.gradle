@@ -52,4 +52,5 @@ task(runSimple, dependsOn: 'makePretty', type: JavaExec) {
     classpath = sourceSets.main.runtimeClasspath
 }
 
+
 defaultTasks 'runSimple'

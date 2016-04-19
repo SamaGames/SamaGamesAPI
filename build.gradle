@@ -37,6 +37,7 @@ repositories {
     }
 }
 
+
 dependencies {
     provided group: 'redis.clients', name: 'jedis', version:'2.6.2'
     compile(group: 'org.spigotmc', name: 'spigot', version: '1.9.2-R0.1-SNAPSHOT', changing: true) {
