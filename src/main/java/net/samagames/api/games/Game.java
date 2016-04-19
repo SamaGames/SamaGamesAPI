@@ -4,6 +4,7 @@ import net.samagames.api.SamaGamesAPI;
 import net.samagames.api.games.themachine.ICoherenceMachine;
 import net.samagames.api.games.themachine.messages.templates.EarningMessageTemplate;
 import net.samagames.tools.Titles;
+import net.samagames.tools.bossbar.BossBarAPI;
 import org.apache.commons.lang3.tuple.Pair;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -90,6 +91,8 @@ public class Game<GAMEPLAYER extends GamePlayer>
      */
     public void startGame()
     {
+        BossBarAPI.flushBars();
+
         this.startTime = System.currentTimeMillis();
         this.beginTimer.cancel();
         this.setStatus(Status.IN_GAME);

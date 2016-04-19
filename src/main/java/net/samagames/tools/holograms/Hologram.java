@@ -23,7 +23,7 @@ import java.util.List;
  */
 public class Hologram
 {
-    private static final double distance = 0.24;
+    private static final double distance = 0.24D;
 
     private HashMap<OfflinePlayer, Boolean> receivers;
     private HashMap<Integer, Entity> entities;

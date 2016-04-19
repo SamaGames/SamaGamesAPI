@@ -356,7 +356,7 @@ public class VObjective
         SIDEBAR(1),
         BELOWNAME(2);
 
-        private int location;
+        private final int location;
 
         ObjectiveLocation(int location)
         {
@@ -415,7 +415,7 @@ public class VObjective
 
         public static void displayObjective(Player p, String name, int location)
         {
-            sendPacket(makeScoreboardDiplayPacket(name, location), p);
+            sendPacket(makeScoreboardDisplayPacket(name, location), p);
         }
 
         /* Objective Score Management */
@@ -449,9 +449,9 @@ public class VObjective
             sendPacket(makeScoreboardScorePacket(objective.getName(), PacketPlayOutScoreboardScore.EnumScoreboardAction.CHANGE, score.getPlayerName(), score.getScore()), p);
         }
 
-        public static void updateScoreObjective(Player p, VObjective objective, VScore score, int score_int)
+        public static void updateScoreObjective(Player p, VObjective objective, VScore score, int scoreValue)
         {
-            sendPacket(makeScoreboardScorePacket(objective.getName(), PacketPlayOutScoreboardScore.EnumScoreboardAction.CHANGE, score.getPlayerName(), score_int), p);
+            sendPacket(makeScoreboardScorePacket(objective.getName(), PacketPlayOutScoreboardScore.EnumScoreboardAction.CHANGE, score.getPlayerName(), scoreValue), p);
         }
 
         public static void removeScoreObjective(Player p, VObjective objective)
@@ -479,7 +479,7 @@ public class VObjective
                 Reflection.setValue(packet, "c", scoreValue); //Valeur du score
                 Reflection.setValue(packet, "d", action); //Action du packet
             }
-            catch (Exception e)
+            catch (ReflectiveOperationException e)
             {
                 e.printStackTrace();
             }
@@ -487,18 +487,18 @@ public class VObjective
             return packet;
         }
 
-        public static PacketPlayOutScoreboardObjective makeScoreboardObjectivePacket(int action, String objectiveName, String objectiveDispleyName,  EnumScoreboardHealthDisplay format)
+        public static PacketPlayOutScoreboardObjective makeScoreboardObjectivePacket(int action, String objectiveName, String objectiveDisplayName,  EnumScoreboardHealthDisplay format)
         {
             PacketPlayOutScoreboardObjective packet = new PacketPlayOutScoreboardObjective();
 
             try
             {
                 Reflection.setValue(packet, "a", objectiveName); //Nom de l'objective
-                Reflection.setValue(packet, "b", objectiveDispleyName); //Nom affiché de l'objective
+                Reflection.setValue(packet, "b", objectiveDisplayName); //Nom affiché de l'objective
                 Reflection.setValue(packet, "c", format); //Affichage des données Nombre/Coeurs
                 Reflection.setValue(packet, "d", action); //Action à effectuer - 0: Create 1: Remove 2: Update
             }
-            catch (Exception e)
+            catch (ReflectiveOperationException e)
             {
                 e.printStackTrace();
             }
@@ -506,7 +506,7 @@ public class VObjective
             return packet;
         }
 
-        public static PacketPlayOutScoreboardDisplayObjective makeScoreboardDiplayPacket(String objectiveName, int location)
+        public static PacketPlayOutScoreboardDisplayObjective makeScoreboardDisplayPacket(String objectiveName, int location)
         {
             PacketPlayOutScoreboardDisplayObjective packet = new PacketPlayOutScoreboardDisplayObjective();
 
@@ -515,7 +515,7 @@ public class VObjective
                 Reflection.setValue(packet, "a", location); //Emplacement de l'objective - 0 = list, 1 = sidebar, 2 = belowName
                 Reflection.setValue(packet, "b", objectiveName); //Nom de l'objective
             }
-            catch (Exception e)
+            catch (ReflectiveOperationException e)
             {
                 e.printStackTrace();
             }
@@ -531,7 +531,7 @@ public class VObjective
                 Object nms_connection = getPlayerConnection.get(nms_player);
                 sendPacket.invoke(nms_connection, packet);
             }
-            catch (Exception e)
+            catch (ReflectiveOperationException e)
             {
                 e.printStackTrace();
             }
@@ -541,7 +541,7 @@ public class VObjective
 
     public class VScore
     {
-        private String playerName;
+        private final String playerName;
         private int score;
 
         public VScore(String player, int score)

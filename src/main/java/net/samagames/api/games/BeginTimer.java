@@ -68,7 +68,7 @@ public class BeginTimer implements Runnable
             this.game.setStatus(Status.WAITING_FOR_PLAYERS);
 
             this.api.getGameManager().getCoherenceMachine().getMessageManager().writeNotEnoughPlayersToStart();
-            
+
             for (Player p : Bukkit.getOnlinePlayers())
                 p.setLevel(this.timeStart);
         }
@@ -85,7 +85,7 @@ public class BeginTimer implements Runnable
                     Titles.sendTitle(player, 0, 22, 0, ChatColor.RED + "" + ChatColor.BOLD + this.time, ChatColor.YELLOW + this.api.getGameManager().getCoherenceMachine().getStartCountdownCatchPhrase());
 
             this.sendSound(this.time);
-            
+
             if(this.time <= 0)
             {
                 Bukkit.getScheduler().runTask(this.api.getPlugin(), () ->
@@ -123,16 +123,16 @@ public class BeginTimer implements Runnable
     private void sendSound(int seconds)
     {
         boolean ring = false;
-        
+
         if (seconds <= 5 && seconds != 0)
         {
             ring = true;
         }
-        
+
         for(Player player : Bukkit.getOnlinePlayers())
         {
             player.setLevel(seconds);
-            
+
             if (ring)
                 player.playSound(player.getLocation(), Sound.BLOCK_NOTE_HARP, 1, 1);
 

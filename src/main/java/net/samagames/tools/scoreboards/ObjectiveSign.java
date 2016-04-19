@@ -1,6 +1,7 @@
 package net.samagames.tools.scoreboards;
 
 import org.bukkit.OfflinePlayer;
+import org.bukkit.entity.Player;
 
 import java.util.HashMap;
 
@@ -28,6 +29,26 @@ public class ObjectiveSign extends VObjective
 
         for(int i = 0; i < 19; i++)
             this.lines.put(i, null);
+    }
+    
+    /**
+     * Add a receiver to the objective
+     *
+     * @param offlinePlayer Player
+     */
+    public boolean addReceiver(OfflinePlayer offlinePlayer)
+    {
+        if(!offlinePlayer.isOnline())
+            return false;
+
+        this.receivers.add(offlinePlayer);
+
+        Player p = offlinePlayer.getPlayer();
+
+        this.init(p);
+        this.updateScore(p, true);
+
+        return true;
     }
 
     /**
