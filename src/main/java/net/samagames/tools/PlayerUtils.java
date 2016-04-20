@@ -1,6 +1,7 @@
 package net.samagames.tools;
 
 import net.samagames.api.SamaGamesAPI;
+import net.samagames.api.permissions.IPermissionsEntity;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 
@@ -24,9 +25,8 @@ public class PlayerUtils
      */
     public static String getFullyFormattedPlayerName(UUID uuid)
     {
-        //TODO
-        return "";
-        //return SamaGamesAPI.get().getPermissionsManager().getPrefix(SamaGamesAPI.get().getPermissionsManager().getApi().getUser(uuid)) + SamaGamesAPI.get().getPermissionsManager().getDisplay(SamaGamesAPI.get().getPermissionsManager().getApi().getUser(uuid)) + SamaGamesAPI.get().getUUIDTranslator().getName(uuid, true) + ChatColor.RESET;
+        IPermissionsEntity player = SamaGamesAPI.get().getPermissionsManager().getPlayer(uuid);
+        return SamaGamesAPI.get().getPermissionsManager().getPrefix(player) + SamaGamesAPI.get().getPermissionsManager().getDisplay(player) + SamaGamesAPI.get().getUUIDTranslator().getName(uuid, true) + ChatColor.RESET;
     }
 
     /**
@@ -51,9 +51,8 @@ public class PlayerUtils
      */
     public static String getColoredFormattedPlayerName(UUID uuid)
     {
-        return "";
-        //TODO
-        //return SamaGamesAPI.get().getPermissionsManager().getPrefix(SamaGamesAPI.get().getPermissionsManager().getApi().getUser(uuid)) + SamaGamesAPI.get().getUUIDTranslator().getName(uuid, true) + ChatColor.RESET;
+        IPermissionsEntity player = SamaGamesAPI.get().getPermissionsManager().getPlayer(uuid);
+        return SamaGamesAPI.get().getPermissionsManager().getPrefix(player) + SamaGamesAPI.get().getUUIDTranslator().getName(uuid, true) + ChatColor.RESET;
     }
 
     /**
