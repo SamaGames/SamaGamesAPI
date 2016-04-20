@@ -12,7 +12,8 @@ public class TypeConverter {
     {
         if (a == int.class)
         {
-            return (T)Integer.valueOf(value);
+            System.out.print("Convertion int: " + value);
+            return (T) (Integer)Integer.parseInt(value);
         }else if (a == Timestamp.class)
         {
             return (T)Timestamp.valueOf(value);
@@ -22,6 +23,9 @@ public class TypeConverter {
         }else if (a == UUID.class)
         {
             return (T) UUID.fromString(value);
+        }else if (a == double.class)
+        {
+            return (T) (Double)Double.parseDouble(value);
         }
 
         return (T)value;
