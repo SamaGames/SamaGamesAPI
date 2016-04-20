@@ -12,20 +12,22 @@ public class TypeConverter {
     {
         if (a == int.class)
         {
-            System.out.print("Convertion int: " + value);
-            return (T) (Integer)Integer.parseInt(value);
+            return (T) Integer.valueOf(value);
         }else if (a == Timestamp.class)
         {
-            return (T)Timestamp.valueOf(value);
+            return (T) Timestamp.valueOf(value);
         }else if (a == long.class)
         {
-            return (T)Long.valueOf(value);
-        }else if (a == UUID.class)
+            return (T) Long.valueOf(value);
+        }else if (a == java.util.UUID.class)
         {
             return (T) UUID.fromString(value);
         }else if (a == double.class)
         {
-            return (T) (Double)Double.parseDouble(value);
+            return (T) Double.valueOf(value);
+        }else if (a == boolean.class)
+        {
+            return (T) Boolean.valueOf(value);
         }
 
         return (T)value;
