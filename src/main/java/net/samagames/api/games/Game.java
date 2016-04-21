@@ -12,6 +12,7 @@ import org.bukkit.GameMode;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitTask;
+import redis.clients.jedis.Jedis;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.*;
@@ -73,7 +74,6 @@ public class Game<GAMEPLAYER extends GamePlayer>
     public Game(String gameCodeName, String gameName, String gameDescription, Class<GAMEPLAYER> gamePlayerClass)
     {
         this.gameManager = SamaGamesAPI.get().getGameManager();
-
         this.gameCodeName = gameCodeName.toLowerCase();
         this.gameName = gameName;
         this.gameDescription = gameDescription;
@@ -140,6 +140,13 @@ public class Game<GAMEPLAYER extends GamePlayer>
         }
 
         this.coherenceMachine.getMessageManager().writePlayerJoinToAll(player);
+
+        String key = "lastgame." + player.getUniqueId().toString();
+
+        Jedis jedis = SamaGamesAPI.get().getBungeeResource();
+        jedis.set(key, this.gameCodeName);
+        jedis.expire(key, 60 * 3);
+        jedis.close();
     }
 
     /**
