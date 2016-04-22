@@ -12,11 +12,19 @@ public interface IPermissionsEntity {
 
     long getGroupId();
 
+    String getDisplayPrefix();
+
     String getPrefix();
+
+    String getDisplaySuffix();
 
     String getSuffix();
 
+    int getDisplayRank();
+
     int getRank();
+
+    String getDisplayTag();
 
     String getTag();
 
