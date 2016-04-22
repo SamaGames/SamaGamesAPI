@@ -28,6 +28,10 @@ public interface IPermissionsEntity {
 
     String getTag();
 
+    String getDisplayGroupName();
+
+    String getGroupName();
+
     int getMultiplier();
 
     Map<String, Boolean> getPermissions();
