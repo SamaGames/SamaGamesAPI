@@ -1,7 +1,5 @@
 package net.samagames.api.player;
 
-import net.md_5.bungee.api.chat.TextComponent;
-
 import java.util.Date;
 import java.util.UUID;
 
@@ -252,28 +250,4 @@ public abstract class AbstractPlayerData
         return this.getStars() >= amount;
     }
 
-
-    /**
-     * Kick the player from the network (need to add sanction manually)
-     *
-     * @param reason Message to show
-     *
-     */
-    public abstract void kickFromNetwork(TextComponent reason);
-
-    /**
-     * Send a player to a specific server with the name
-     *
-     * @param server Server name
-     *
-     */
-    public abstract void connectToServer(String server);
-
-    /**
-     * Send a message using the proxy (maybe useless ?)
-     *
-     * @param component Message
-     *
-     */
-    public abstract void sendMessage(TextComponent component);
 }
