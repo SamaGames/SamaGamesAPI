@@ -32,6 +32,8 @@ public interface IPermissionsEntity {
 
     String getGroupName();
 
+    long getDisplayGroupId();
+
     int getMultiplier();
 
     Map<String, Boolean> getPermissions();
