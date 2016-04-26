@@ -47,22 +47,6 @@ public class Game<GAMEPLAYER extends GamePlayer>
     protected long startTime = -1;
 
     /**
-     * With this constructor, the players will not see a description of the game when
-     * logging in. Only the game's name in a {@code /title}.
-     *
-     * @param gameCodeName The code name of the game, given by an administrator.
-     * @param gameName The friendly name of the game.
-     * @param gamePlayerClass The class of your custom {@link GamePlayer} object, the same
-     *                        as the {@link GAMEPLAYER} class. Use {@code GamePlayer.class}
-     *                        if you are not using a custom class.
-     */
-    @Deprecated
-    public Game(String gameCodeName, String gameName, Class<GAMEPLAYER> gamePlayerClass)
-    {
-        this(gameCodeName, gameName, "", gamePlayerClass);
-    }
-
-    /**
      * @param gameCodeName The code name of the game, given by an administrator.
      * @param gameName The friendly name of the game.
      * @param gameDescription A short description of the game, displayed to the players
