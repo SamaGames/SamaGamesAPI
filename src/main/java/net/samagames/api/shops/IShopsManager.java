@@ -1,34 +1,17 @@
 package net.samagames.api.shops;
 
-import net.samagames.api.SamaGamesAPI;
-import org.bukkit.entity.Player;
-
 import java.util.List;
 import java.util.UUID;
 
 /**
  * Shops manager class
- *
+ * Created by Silvanosky
  * Copyright (c) for SamaGames
  * All right reserved
  */
-public abstract class AbstractShopsManager
+public interface IShopsManager
 {
-    protected String gameType;
-    protected SamaGamesAPI api;
-
-	/**
-	 * Constructor
-     *
-	 * @param gameType Game code name
-	 * @param api Instance of the API {@link SamaGamesAPI}
-	 */
-    public AbstractShopsManager(String gameType, SamaGamesAPI api)
-    {
-        this.gameType = gameType;
-    	this.api = api;
-	}
-
+//TODO
     /**
      * Gives the item level for a specified item and a specified player
      * The level of an item is, for example "diamond" for the quake "hoe" item
@@ -38,7 +21,7 @@ public abstract class AbstractShopsManager
      *
      * @return The active item level for this player and this item
      */
-    public abstract String getItemLevelForPlayer(UUID player, String item);
+    String getItemLevelForPlayer(UUID player, String item);
 
     /**
      * Lists the owned item levels for a specified item and a specified player
@@ -80,30 +63,6 @@ public abstract class AbstractShopsManager
      */
     public abstract void resetLevel(UUID uuid, String item);
 
-    /**
-     * Add a level to player owned levels for this item
-     * The level of an item is, for example "diamond" for the quake "hoe" item
-     *
-     * @param player The player you are querying
-     * @param item The item you are querying ("hoe" for example)
-     * @param itemLevel the level you want to add ("diamond" for example)
-     */
-    public void addOwnedLevel(Player player, String item, String itemLevel)
-    {
-        this.addOwnedLevel(player.getUniqueId(), item, itemLevel);
-    }
-
-    /**
-     * Reset the current level for this player and item
-     * The level of an item is, for example "diamond" for the quake "hoe" item
-     *
-     * @param player The player you are querying
-     * @param item The item you are querying ("hoe" for example)
-     */
-    public void resetLevel(Player player, String item)
-    {
-        this.resetLevel(player.getUniqueId(), item);
-    }
 
     /**
      * Sets the current level for this player and item
@@ -113,10 +72,6 @@ public abstract class AbstractShopsManager
      * @param item The item you are querying ("hoe" for example)
      * @param level the level you want to add ("diamond" for example)
      */
-    public void setCurrentLevel(Player player, String item, String level)
-    {
-        setCurrentLevel(player.getUniqueId(), item, level);
-    }
 
     /**
      * Gives the item level for a specified item and a specified player
@@ -127,10 +82,7 @@ public abstract class AbstractShopsManager
      *
      * @return The active item level for this player and this item
      */
-    public String getItemLevelForPlayer(Player player, String item)
-    {
-        return this.getItemLevelForPlayer(player.getUniqueId(), item);
-    }
+
 
     /**
      * Lists the owned item levels for a specified item and a specified player
@@ -141,8 +93,4 @@ public abstract class AbstractShopsManager
      *
      * @return All the item levels the user bought for this item
      */
-    public List<String> getOwnedLevels(Player player, String item)
-    {
-        return this.getOwnedLevels(player.getUniqueId(), item);
-    }
 }

@@ -13,7 +13,7 @@ import net.samagames.api.player.IPlayerDataManager;
 import net.samagames.api.pubsub.IPubSubAPI;
 import net.samagames.api.resourcepacks.IResourcePacksManager;
 import net.samagames.api.settings.ISettingsManager;
-import net.samagames.api.shops.AbstractShopsManager;
+import net.samagames.api.shops.IShopsManager;
 import net.samagames.api.stats.IStatsManager;
 import net.samagames.tools.SkyFactory;
 import net.samagames.tools.npc.NPCManager;
@@ -83,7 +83,7 @@ public abstract class SamaGamesAPI
      *
      * @return New instance
      */
-	public abstract AbstractShopsManager getShopsManager();
+	public abstract IShopsManager getShopsManager();
 
     /**
      * Get instance of the stats manager
