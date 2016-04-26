@@ -2,6 +2,7 @@ package net.samagames.generator;
 
 import com.squareup.javapoet.*;
 import net.samagames.persistanceapi.beans.players.PlayerSettingsBean;
+import net.samagames.persistanceapi.beans.shop.TransactionBean;
 import net.samagames.persistanceapi.beans.statistics.PlayerStatisticsBean;
 
 import javax.lang.model.element.Modifier;
@@ -46,7 +47,7 @@ public class Generator {
         for (Field field : playerStatisticFields)
         {
             field.setAccessible(true);
-            TypeSpec statInterface = createInterfaceOfType(field.getType());
+            TypeSpec statInterface = createInterfaceOfType(field.getType(), true);
 
             //Create getter in player stat
             playerStatsBuilder.addMethod(
@@ -59,9 +60,14 @@ public class Generator {
         // END STATISTICS
 
         // SETTINGS
-        TypeSpec playerSettingsBean = createInterfaceOfType(PlayerSettingsBean.class);
+        TypeSpec playerSettingsBean = createInterfaceOfType(PlayerSettingsBean.class, false);
         toBuild.add(JavaFile.builder("net.samagames.api.settings", playerSettingsBean).build());
         // END SETTINGS
+
+        // SHOP ITEM TransactionBean
+        TypeSpec playerTransactionBean = createInterfaceOfType(TransactionBean.class, false);
+        toBuild.add(JavaFile.builder("net.samagames.api.shops", playerTransactionBean).build());
+        //END SHOP ITEM
     }
 
     public static void build()
@@ -91,7 +97,7 @@ public class Generator {
         return getMethod(name, TypeName.get(type));
     }
 
-    public static TypeSpec createInterfaceOfType(Class type)
+    public static TypeSpec createInterfaceOfType(Class type, boolean useIncrement)
     {
         String name = "I" +type.getSimpleName().replaceAll("Bean", "");
 
@@ -105,18 +111,22 @@ public class Generator {
             String methodName = method.getName();
             if (method.getParameters().length > 0)
             {
-                boolean isIncrementable = false;
-                Class<?> type1 = method.getParameters()[0].getType();
-                if (type1.equals(int.class)
-                        || type1.equals(long.class)
-                        || type1.equals(double.class)
-                        || type1.equals(float.class))
-                    isIncrementable = true;
-
-                if (methodName.startsWith("set") && isIncrementable)
+                if (methodName.startsWith("set") && useIncrement)
                 {
-                    methodName = "incrBy" + methodName.substring(3);
+                    boolean isIncrementable = false;
+                    Class<?> type1 = method.getParameters()[0].getType();
+                    if (type1.equals(int.class)
+                            || type1.equals(long.class)
+                            || type1.equals(double.class)
+                            || type1.equals(float.class))
+                        isIncrementable = true;
+
+                    if (isIncrementable)
+                    {
+                        methodName = "incrBy" + methodName.substring(3);
+                    }
                 }
+
             }
 
             MethodSpec.Builder builder = MethodSpec.methodBuilder(methodName);
