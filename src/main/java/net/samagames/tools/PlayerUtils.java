@@ -29,10 +29,7 @@ public class PlayerUtils
         AbstractPlayerData playerData = SamaGamesAPI.get().getPlayerManager().getPlayerData(uuid);
         IPermissionsEntity playerPermissionEntity = SamaGamesAPI.get().getPermissionsManager().getPlayer(uuid);
 
-        if (playerData.hasNickname())
-            return playerPermissionEntity.getDisplayPrefix() + playerPermissionEntity.getDisplayTag() + playerData.getCustomName() + ChatColor.RESET;
-        else
-            return playerPermissionEntity.getPrefix() + playerPermissionEntity.getTag() + SamaGamesAPI.get().getUUIDTranslator().getName(uuid, true) + ChatColor.RESET;
+        return playerPermissionEntity.getDisplayPrefix() + playerPermissionEntity.getDisplayTag() + playerData.getCustomName() + ChatColor.RESET;
     }
 
     /**
@@ -60,10 +57,7 @@ public class PlayerUtils
         AbstractPlayerData playerData = SamaGamesAPI.get().getPlayerManager().getPlayerData(uuid);
         IPermissionsEntity playerPermissionEntity = SamaGamesAPI.get().getPermissionsManager().getPlayer(uuid);
 
-        if (playerData.hasNickname())
-            return playerPermissionEntity.getDisplayPrefix() + playerData.getCustomName() + ChatColor.RESET;
-        else
-            return playerPermissionEntity.getPrefix() + SamaGamesAPI.get().getUUIDTranslator().getName(uuid, true) + ChatColor.RESET;
+        return playerPermissionEntity.getDisplayPrefix() + playerData.getCustomName() + ChatColor.RESET;
     }
 
     /**
