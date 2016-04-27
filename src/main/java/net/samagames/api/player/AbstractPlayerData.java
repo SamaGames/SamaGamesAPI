@@ -250,4 +250,16 @@ public abstract class AbstractPlayerData
         return this.getStars() >= amount;
     }
 
+    /**
+     * Handle the displayname according to nickname or real name
+     * @return
+     */
+    public abstract String getDisplayeName();
+
+    /**
+     * Return true if the player has a nickname
+     * @return
+     */
+    public abstract boolean hasNickname();
+
 }
