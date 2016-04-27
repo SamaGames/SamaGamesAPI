@@ -2,6 +2,7 @@ package net.samagames.tools;
 
 import net.samagames.api.SamaGamesAPI;
 import net.samagames.api.permissions.IPermissionsEntity;
+import net.samagames.api.player.AbstractPlayerData;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 
@@ -25,8 +26,13 @@ public class PlayerUtils
      */
     public static String getFullyFormattedPlayerName(UUID uuid)
     {
-        IPermissionsEntity player = SamaGamesAPI.get().getPermissionsManager().getPlayer(uuid);
-        return SamaGamesAPI.get().getPermissionsManager().getPrefix(player) + SamaGamesAPI.get().getPermissionsManager().getDisplay(player) + SamaGamesAPI.get().getUUIDTranslator().getName(uuid, true) + ChatColor.RESET;
+        AbstractPlayerData playerData = SamaGamesAPI.get().getPlayerManager().getPlayerData(uuid);
+        IPermissionsEntity playerPermissionEntity = SamaGamesAPI.get().getPermissionsManager().getPlayer(uuid);
+
+        if (playerData.hasNickname())
+            return playerPermissionEntity.getDisplayPrefix() + playerPermissionEntity.getDisplayTag() + playerData.getCustomName() + ChatColor.RESET;
+        else
+            return playerPermissionEntity.getPrefix() + playerPermissionEntity.getTag() + SamaGamesAPI.get().getUUIDTranslator().getName(uuid, true) + ChatColor.RESET;
     }
 
     /**
@@ -51,8 +57,13 @@ public class PlayerUtils
      */
     public static String getColoredFormattedPlayerName(UUID uuid)
     {
-        IPermissionsEntity player = SamaGamesAPI.get().getPermissionsManager().getPlayer(uuid);
-        return SamaGamesAPI.get().getPermissionsManager().getPrefix(player) + SamaGamesAPI.get().getUUIDTranslator().getName(uuid, true) + ChatColor.RESET;
+        AbstractPlayerData playerData = SamaGamesAPI.get().getPlayerManager().getPlayerData(uuid);
+        IPermissionsEntity playerPermissionEntity = SamaGamesAPI.get().getPermissionsManager().getPlayer(uuid);
+
+        if (playerData.hasNickname())
+            return playerPermissionEntity.getDisplayPrefix() + playerData.getCustomName() + ChatColor.RESET;
+        else
+            return playerPermissionEntity.getPrefix() + SamaGamesAPI.get().getUUIDTranslator().getName(uuid, true) + ChatColor.RESET;
     }
 
     /**
