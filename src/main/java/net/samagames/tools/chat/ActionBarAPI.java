@@ -1,7 +1,11 @@
 package net.samagames.tools.chat;
 
+import net.minecraft.server.v1_9_R1.EntityPlayer;
+import net.minecraft.server.v1_9_R1.IChatBaseComponent;
+import net.minecraft.server.v1_9_R1.PacketPlayOutChat;
 import net.samagames.api.SamaGamesAPI;
 import org.bukkit.Bukkit;
+import org.bukkit.craftbukkit.v1_9_R1.entity.CraftPlayer;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitTask;
 
@@ -18,15 +22,6 @@ public final class ActionBarAPI
 {
 	private static boolean enabled = true;
 
-	private static String nmsVersion;
-
-	private static Class<?> craftPlayerClass;
-	private static Class<?> packetPlayOutChatClass;
-	private static Class<?> packetClass;
-	private static Class<?> chatSerializerClass;
-	private static Class<?> iChatBaseComponentClass;
-	private static Class<?> chatComponentTextClass;
-
 	private static Map<UUID, String> actionMessages = new ConcurrentHashMap<>();
 
 	private static Runnable actionMessagesUpdater = null;
@@ -35,30 +30,6 @@ public final class ActionBarAPI
 
 	static
 	{
-		nmsVersion = Bukkit.getServer().getClass().getPackage().getName();
-		nmsVersion = nmsVersion.substring(nmsVersion.lastIndexOf(".") + 1);
-
-		try
-		{
-			iChatBaseComponentClass = Class.forName("net.minecraft.server." + nmsVersion + ".IChatBaseComponent");
-			packetPlayOutChatClass = Class.forName("net.minecraft.server." + nmsVersion + ".PacketPlayOutChat");
-			craftPlayerClass = Class.forName("org.bukkit.craftbukkit." + nmsVersion + ".entity.CraftPlayer");
-			packetClass = Class.forName("net.minecraft.server." + nmsVersion + ".Packet");
-
-			if (nmsVersion.equalsIgnoreCase("v1_8_R1") || !nmsVersion.startsWith("v1_8_"))
-			{
-				chatSerializerClass = Class.forName("net.minecraft.server." + nmsVersion + ".ChatSerializer");
-			}
-			else
-			{
-				chatComponentTextClass = Class.forName("net.minecraft.server." + nmsVersion + ".ChatComponentText");
-			}
-		}
-		catch (Exception e)
-		{
-			enabled = false;
-		}
-
 		initActionMessageUpdater();
 	}
 
@@ -121,29 +92,16 @@ public final class ActionBarAPI
 	 */
 	public static void sendMessage(Player player, String message)
 	{
-		if (!enabled || player == null || message == null) return;
+		if (!enabled || player == null || message == null)
+			return;
 
 		try
 		{
-			Object craftPlayer = craftPlayerClass.cast(player);
-			Object chatPacket;
+			EntityPlayer entityPlayer = ((CraftPlayer) player).getHandle();
+			IChatBaseComponent chatComponent = IChatBaseComponent.ChatSerializer.a("{\"text\": \"" + message + "\"}");
+			PacketPlayOutChat packet = new PacketPlayOutChat(chatComponent, (byte) 2);
 
-			if (nmsVersion.equalsIgnoreCase("v1_8_R1") || !nmsVersion.startsWith("v1_8_"))
-			{
-				Method m3 = chatSerializerClass.getDeclaredMethod("a", String.class);
-				Object cbc = iChatBaseComponentClass.cast(m3.invoke(chatSerializerClass, "{\"text\": \"" + message + "\"}"));
-				chatPacket = packetPlayOutChatClass.getConstructor(new Class<?>[]{iChatBaseComponentClass, byte.class}).newInstance(cbc, (byte) 2);
-			}
-			else
-			{
-				Object o = chatComponentTextClass.getConstructor(new Class<?>[]{String.class}).newInstance(message);
-				chatPacket = packetPlayOutChatClass.getConstructor(new Class<?>[]{iChatBaseComponentClass, byte.class}).newInstance(o, (byte) 2);
-			}
-
-			Object handle = craftPlayerClass.getDeclaredMethod("getHandle").invoke(craftPlayer);
-			Object playerConnection = handle.getClass().getDeclaredField("playerConnection").get(handle);
-
-			playerConnection.getClass().getDeclaredMethod("sendPacket", packetClass).invoke(playerConnection, chatPacket);
+			entityPlayer.playerConnection.sendPacket(packet);
 		}
 		catch (Exception e)
 		{
