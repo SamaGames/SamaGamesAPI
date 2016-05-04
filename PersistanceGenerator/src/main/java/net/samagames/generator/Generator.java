@@ -2,6 +2,7 @@ package net.samagames.generator;
 
 import com.squareup.javapoet.*;
 import net.samagames.persistanceapi.beans.players.PlayerSettingsBean;
+import net.samagames.persistanceapi.beans.shop.ItemDescriptionBean;
 import net.samagames.persistanceapi.beans.shop.TransactionBean;
 import net.samagames.persistanceapi.beans.statistics.PlayerStatisticsBean;
 
@@ -23,8 +24,12 @@ public class Generator {
 
     private static List<JavaFile> toBuild = new ArrayList<>();
 
+    private static String header =
+            " Dynamic code generation by Silvanoky";
+
     public static void main(String[] args)
     {
+
         loadGameStats();
 
         build();
@@ -35,6 +40,8 @@ public class Generator {
         // STATISTICS
         TypeSpec.Builder playerStatsBuilder = TypeSpec.interfaceBuilder("IPlayerStats")
                 .addModifiers(Modifier.PUBLIC);
+
+        playerStatsBuilder.addJavadoc(header);
 
         playerStatsBuilder.addMethod(getMethod("updateStats", void.class));
         playerStatsBuilder.addMethod(getMethod("refreshStats", boolean.class));
@@ -65,8 +72,11 @@ public class Generator {
         // END SETTINGS
 
         // SHOP ITEM TransactionBean
-        TypeSpec playerTransactionBean = createInterfaceOfType(TransactionBean.class, false);
+        TypeSpec playerTransactionBean = createInterfaceOfType(TransactionBean.class, false, false);
         toBuild.add(JavaFile.builder("net.samagames.api.shops", playerTransactionBean).build());
+
+        TypeSpec itemDescriptionBean = createInterfaceOfType(ItemDescriptionBean.class, false, false);
+        toBuild.add(JavaFile.builder("net.samagames.api.shops", itemDescriptionBean).build());
         //END SHOP ITEM
     }
 
@@ -97,14 +107,27 @@ public class Generator {
         return getMethod(name, TypeName.get(type));
     }
 
-    public static TypeSpec createInterfaceOfType(Class type, boolean useIncrement)
+    public static TypeSpec createInterfaceOfType(Class type) {
+        return createInterfaceOfType(type, true, true);
+    }
+
+    public static TypeSpec createInterfaceOfType(Class type, boolean useIncrement) {
+        return createInterfaceOfType(type, useIncrement, true);
+    }
+
+    public static TypeSpec createInterfaceOfType(Class type, boolean useIncrement, boolean isUpdatable)
     {
         String name = "I" +type.getSimpleName().replaceAll("Bean", "");
 
         TypeSpec.Builder object = TypeSpec.interfaceBuilder(name)
                 .addModifiers(Modifier.PUBLIC);
-        object.addMethod(getMethod("update", void.class));
-        object.addMethod(getMethod("refresh", void.class));
+        object.addJavadoc(header);
+        if (isUpdatable)
+        {
+            object.addMethod(getMethod("update", void.class));
+            object.addMethod(getMethod("refresh", void.class));
+        }
+
         Method[] subDeclaredMethods = type.getDeclaredMethods();
         for (Method method : subDeclaredMethods)
         {

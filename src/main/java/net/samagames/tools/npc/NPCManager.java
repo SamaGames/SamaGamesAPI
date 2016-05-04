@@ -7,6 +7,7 @@ import net.minecraft.server.v1_9_R1.PlayerInteractManager;
 import net.minecraft.server.v1_9_R1.World;
 import net.samagames.api.SamaGamesAPI;
 import net.samagames.tools.CallBack;
+import net.samagames.tools.gameprofile.ProfileLoader;
 import net.samagames.tools.npc.nms.CustomNPC;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -71,11 +72,18 @@ public class NPCManager  implements Listener{
         ((CraftPlayer)p).getHandle().playerConnection.sendPacket(new PacketPlayOutPlayerInfo(PacketPlayOutPlayerInfo.EnumPlayerInfoAction.REMOVE_PLAYER, npc));
     }
 
+    /**
+     * Need to be called async
+     * @param location
+     * @param skinUUID
+     * @return
+     */
     public CustomNPC createNPC(Location location, UUID skinUUID)
     {
         final World w = ((CraftWorld) location.getWorld()).getHandle();
 
-        GameProfile gameProfile = createGameProfile(skinUUID, "[NPC]" + entities.size(), skinUUID);
+        ProfileLoader profileLoader = new ProfileLoader(UUID.randomUUID().toString(), "[NPC]" + entities.size(), skinUUID.toString());
+        GameProfile gameProfile = profileLoader.loadProfile();
 
         final CustomNPC npc = new CustomNPC(w, gameProfile, new PlayerInteractManager(w));
         npc.setLocation(location);
@@ -96,68 +104,6 @@ public class NPCManager  implements Listener{
         if(npc != null)
             npc.getWorld().removeEntity(npc);
 
-    }
-
-    public GameProfile createGameProfile(UUID uuid, String name, UUID skinURL)
-    {
-        GameProfile gameProfile = new GameProfile(uuid, name);
-        /*String key = "gameprofiles." + skinURL.toString();
-
-        try {
-
-
-            String cache = null;
-
-            Jedis jedis = api.getBungeeResource();
-            if (jedis != null)
-            {
-                if(jedis.exists(key))
-                {
-                    cache = jedis.get(key);
-                }else{
-                    cache = Net.executeGet("https://sessionserver.mojang.com/session/minecraft/profile/" + skinURL.toString().replaceAll("-", "") + "?unsigned=false");
-                }
-                jedis.close();
-            }
-
-            JsonObject jsonObject = new JsonParser().parse(cache).getAsJsonObject();
-            JsonArray properties = jsonObject.getAsJsonArray("properties");
-            for(JsonElement property : properties)
-            {
-                JsonObject oProp = property.getAsJsonObject();
-
-                gameProfile.getProperties().put(oProp.get("name").getAsString(),
-                        new Property(oProp.get("name").getAsString(),
-                                oProp.get("value").getAsString(),
-                                oProp.get("signature").getAsString()
-                        )
-                );
-            }
-
-            jedis = api.getBungeeResource();
-            jedis.set(key, cache);
-            jedis.close();
-        } catch (IOException e) {
-            e.printStackTrace();
-            Jedis jedis = api.getBungeeResource();
-            jedis.del(key);
-            jedis.close();
-        }*/
-        return gameProfile;
-    }
-
-    public void getSkin(UUID uuid)
-    {
-        /*try {
-            String result = Net.executeGet("https://sessionserver.mojang.com/session/minecraft/profile/" + uuid.toString().replace("-", ""));
-
-
-
-        } catch (MalformedURLException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }*/
     }
 
     public void disable()

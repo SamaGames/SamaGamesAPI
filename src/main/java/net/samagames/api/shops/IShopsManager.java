@@ -1,5 +1,7 @@
 package net.samagames.api.shops;
 
+import net.samagames.api.stats.IStatsManager;
+
 import java.util.List;
 import java.util.UUID;
 
@@ -93,4 +95,12 @@ public interface IShopsManager
      *
      * @return All the item levels the user bought for this item
      */
+
+    void setShopToLoad(IStatsManager.StatsNames game, boolean value);
+
+    boolean isShopLoading(IStatsManager.StatsNames game);
+
+    IItemDescription getItemDescription(int itemID) throws Exception;
+
+    IPlayerShop getPlayer(UUID player);
 }
