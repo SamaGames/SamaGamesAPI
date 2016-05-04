@@ -7,9 +7,9 @@ import org.bukkit.inventory.ItemStack;
 
 public class MojangShitUtils
 {
-    public static ItemStack getPotion(String nmsPotionName)
+    public static ItemStack getPotion(String nmsPotionName, boolean splash, boolean lingering)
     {
-        net.minecraft.server.v1_9_R1.ItemStack potion = new net.minecraft.server.v1_9_R1.ItemStack(Items.POTION, 1);
+        net.minecraft.server.v1_9_R1.ItemStack potion = new net.minecraft.server.v1_9_R1.ItemStack(splash ? Items.SPLASH_POTION : lingering ? Items.LINGERING_POTION : Items.POTION, 1);
 
         NBTTagCompound tag = new NBTTagCompound();
         tag.setString("Potion", "minecraft:" + nmsPotionName);

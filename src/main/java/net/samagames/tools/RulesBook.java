@@ -65,6 +65,18 @@ public class RulesBook
     /**
      * Add a page to the book
      * @param title Page's title
+     * @param content Page's content (lines)
+     * @param summary true if the page should be added to Book Summary
+     * @return Current book
+     */
+    public RulesBook addPage(String title, String[] content, boolean summary)
+    {
+        return addPage(title, String.join("\n", content), summary);
+    }
+
+    /**
+     * Add a page to the book
+     * @param title Page's title
      * @param content Page's content
      * @param summary true if the page should be added to Book Summary
      * @return Current book
