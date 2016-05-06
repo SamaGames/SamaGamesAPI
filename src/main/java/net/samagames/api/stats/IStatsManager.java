@@ -1,5 +1,7 @@
 package net.samagames.api.stats;
 
+import net.samagames.api.games.GamesNames;
+
 import java.util.UUID;
 
 /**
@@ -10,27 +12,6 @@ import java.util.UUID;
  */
 public interface IStatsManager
 {
-
-    enum StatsNames{
-        GLOBAL(0),
-        DIMENSION(1),
-        HEROBATTLE(2),
-        JUKEBOX(3),
-        QUAKE(4),
-        UHCRUN(5),
-        UPPERVOID(6);
-
-        private int value;
-        StatsNames(int value)
-        {
-            this.value = value;
-        }
-
-        public int intValue()
-        {
-            return value;
-        }
-    }
 
     void finish();
     void clearCache();
@@ -49,14 +30,14 @@ public interface IStatsManager
      * @param game The game wanted
      * @param value The value wanted (true to set auto load for the specified games, false to disable autoload)
      */
-    void setStatsToLoad(StatsNames game, boolean value);
+    void setStatsToLoad(GamesNames game, boolean value);
 
     /**
      * Know if a game is already loaded by the manager
      * @param game The wanted game
      * @return
      */
-    boolean isStatsLoading(StatsNames game);
+    boolean isStatsLoading(GamesNames game);
 
     /**
      * Get the leaderboard of a given stat
@@ -66,5 +47,5 @@ public interface IStatsManager
      *
      * @return Leaderboard instance {@link Leaderboard}
      */
-	Leaderboard getLeaderboard(StatsNames game, String stat);
+	Leaderboard getLeaderboard(GamesNames game, String stat);
 }
