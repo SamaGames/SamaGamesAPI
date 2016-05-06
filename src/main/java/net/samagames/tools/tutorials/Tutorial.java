@@ -55,7 +55,7 @@ import java.util.concurrent.ConcurrentHashMap;
  *
  * @author Amaury Carrade
  */
-public abstract class Tutorial implements Listener
+public class Tutorial implements Listener
 {
 	private final Plugin p;
 
