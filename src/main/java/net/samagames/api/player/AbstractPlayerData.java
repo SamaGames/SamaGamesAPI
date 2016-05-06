@@ -254,7 +254,7 @@ public abstract class AbstractPlayerData
      * Handle the displayname according to nickname or real name
      * @return
      */
-    public abstract String getDisplayeName();
+    public abstract String getDisplayName();
 
     /**
      * Return true if the player has a nickname
