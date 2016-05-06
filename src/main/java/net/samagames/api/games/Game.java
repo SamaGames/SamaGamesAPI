@@ -124,13 +124,6 @@ public class Game<GAMEPLAYER extends GamePlayer>
         }
 
         this.coherenceMachine.getMessageManager().writePlayerJoinToAll(player);
-
-        String key = "lastgame." + player.getUniqueId().toString();
-
-        Jedis jedis = SamaGamesAPI.get().getBungeeResource();
-        jedis.set(key, this.gameCodeName);
-        jedis.expire(key, 60 * 3);
-        jedis.close();
     }
 
     /**
@@ -249,6 +242,13 @@ public class Game<GAMEPLAYER extends GamePlayer>
         {
             this.gamePlayers.keySet().stream().filter(playerUUID -> Bukkit.getPlayer(playerUUID) != null).forEach(playerUUID ->
             {
+                String key = "lastgame." + playerUUID.toString();
+
+                Jedis jedis = SamaGamesAPI.get().getBungeeResource();
+                jedis.set(key, this.gameCodeName);
+                jedis.expire(key, 60 * 3);
+                jedis.close();
+
                 EarningMessageTemplate earningMessageTemplate = this.coherenceMachine.getTemplateManager().getEarningMessageTemplate();
                 earningMessageTemplate.execute(Bukkit.getPlayer(playerUUID), this.getPlayer(playerUUID).getCoins(), this.getPlayer(playerUUID).getStars());
                 //TODO stats increase partie
