@@ -46,12 +46,20 @@ public interface IPlayerShop {
     void addItem(int itemID, int priceCoins, int priceStars, boolean selected, CallBack<Boolean> callBack);
 
     /**
-     *  Set the item as selected
+     * Set the item as selected
      * @param itemID the id of item to change selected state
      * @param selected the select state
      * @throws Exception If the player don't have this item
      */
     void setSelectedItem(int itemID, boolean selected) throws Exception;
+
+    /**
+     * Get the selected item from a list of ids
+     * @param itemsIDs list of ids
+     * @return the selected ids
+     * @throws Exception If the player don't have any of this items
+     */
+    int getSelectedItem(int[] itemsIDs) throws Exception;
 
     /**
      *  Get the item selection state
