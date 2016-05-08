@@ -54,12 +54,12 @@ public interface IPlayerShop {
     void setSelectedItem(int itemID, boolean selected) throws Exception;
 
     /**
-     * Get the selected item from a list of ids
+     * Get a selected item from a list of item ids
      * @param itemsIDs list of ids
-     * @return the selected ids
+     * @return the id from the list who is selected
      * @throws Exception If the player don't have any of this items
      */
-    int getSelectedItem(int[] itemsIDs) throws Exception;
+    int getSelectedItemFromList(int[] itemsIDs) throws Exception;
 
     /**
      *  Get the item selection state
