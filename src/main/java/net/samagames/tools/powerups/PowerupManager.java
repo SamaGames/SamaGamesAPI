@@ -110,7 +110,7 @@ public class PowerupManager
 
         for (Player player : this.plugin.getServer().getOnlinePlayers())
         {
-            player.playSound(player.getLocation(), Sound.SUCCESSFUL_HIT, 1.0F, 1.0F);
+            player.playSound(player.getLocation(), Sound.ENTITY_ARROW_HIT_PLAYER, 1.0F, 1.0F);
             Titles.sendTitle(player, 5, 30, 5, ChatColor.GOLD + "✯", "");
         }
 

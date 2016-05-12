@@ -1,5 +1,7 @@
 package net.samagames.api.stats;
 
+import net.samagames.api.games.GamesNames;
+
 import java.util.UUID;
 
 /**
@@ -10,57 +12,40 @@ import java.util.UUID;
  */
 public interface IStatsManager
 {
+
     void finish();
     void clearCache();
 
     /**
-     * Increase the count of a given stat of a given
+     * Get the player cached stats instance
      * player
      *
-     * @param player Player's UUID
-     * @param stat Stat to increase
-     * @param amount Amount to increase
+     *
+     * @return IPlayerStats with all stats loaded
      */
-	 void increase(UUID player, String stat, int amount);
+    IPlayerStats getPlayerStats(UUID player);
 
     /**
-     * Set the count of a given stat of a given
-     * player
-     *
-     * @param player Player's UUID
-     * @param stat Stat to modify
-     * @param value Amount to set
+     * Define if a game will be loaded at player join
+     * @param game The game wanted
+     * @param value The value wanted (true to set auto load for the specified games, false to disable autoload)
      */
-	void setValue(UUID player, String stat, int value);
+    void setStatsToLoad(GamesNames game, boolean value);
 
     /**
-     * Get the count of a given stat of a given
-     * player
-     *
-     * @param player Player's UUID
-     * @param stat Stat to get
-     *
-     * @return Stat's value
+     * Know if a game is already loaded by the manager
+     * @param game The wanted game
+     * @return
      */
-	double getStatValue(UUID player, String stat);
-
-    /**
-     * Get the rank of a given stat of a given
-     * player
-     *
-     * @param player Player's UUID
-     * @param stat Stat to compare
-     *
-     * @return Player's rank
-     */
-	double getRankValue(UUID player, String stat);
+    boolean isStatsLoading(GamesNames game);
 
     /**
      * Get the leaderboard of a given stat
      *
+     * @param game Select game
      * @param stat Stat
      *
      * @return Leaderboard instance {@link Leaderboard}
      */
-	Leaderboard getLeaderboard(String stat);
+	Leaderboard getLeaderboard(GamesNames game, String stat);
 }

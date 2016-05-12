@@ -4,6 +4,7 @@ import net.samagames.api.SamaGamesAPI;
 import net.samagames.api.games.themachine.ICoherenceMachine;
 import net.samagames.api.games.themachine.messages.templates.EarningMessageTemplate;
 import net.samagames.tools.Titles;
+import net.samagames.tools.bossbar.BossBarAPI;
 import org.apache.commons.lang3.tuple.Pair;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -11,6 +12,7 @@ import org.bukkit.GameMode;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitTask;
+import redis.clients.jedis.Jedis;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.*;
@@ -36,28 +38,13 @@ public class Game<GAMEPLAYER extends GamePlayer>
     protected final String gameDescription;
     protected final Class<GAMEPLAYER> gamePlayerClass;
     protected final HashMap<UUID, GAMEPLAYER> gamePlayers;
+    protected final HashMap<UUID, GAMEPLAYER> gameSpectators;
     protected BukkitTask beginTimer;
     protected BeginTimer beginObj;
 
     protected ICoherenceMachine coherenceMachine;
     protected Status status;
     protected long startTime = -1;
-
-    /**
-     * With this constructor, the players will not see a description of the game when
-     * logging in. Only the game's name in a {@code /title}.
-     *
-     * @param gameCodeName The code name of the game, given by an administrator.
-     * @param gameName The friendly name of the game.
-     * @param gamePlayerClass The class of your custom {@link GamePlayer} object, the same
-     *                        as the {@link GAMEPLAYER} class. Use {@code GamePlayer.class}
-     *                        if you are not using a custom class.
-     */
-    @Deprecated
-    public Game(String gameCodeName, String gameName, Class<GAMEPLAYER> gamePlayerClass)
-    {
-        this(gameCodeName, gameName, "", gamePlayerClass);
-    }
 
     /**
      * @param gameCodeName The code name of the game, given by an administrator.
@@ -71,7 +58,6 @@ public class Game<GAMEPLAYER extends GamePlayer>
     public Game(String gameCodeName, String gameName, String gameDescription, Class<GAMEPLAYER> gamePlayerClass)
     {
         this.gameManager = SamaGamesAPI.get().getGameManager();
-
         this.gameCodeName = gameCodeName.toLowerCase();
         this.gameName = gameName;
         this.gameDescription = gameDescription;
@@ -79,6 +65,7 @@ public class Game<GAMEPLAYER extends GamePlayer>
         this.gamePlayers = new HashMap<>();
 
         this.status = Status.WAITING_FOR_PLAYERS;
+        gameSpectators = new HashMap<>();
     }
 
     /**
@@ -90,8 +77,8 @@ public class Game<GAMEPLAYER extends GamePlayer>
      */
     public void startGame()
     {
-        if (this.gameManager.isFreeMode())
-            return ;
+        BossBarAPI.flushBars();
+
         this.startTime = System.currentTimeMillis();
         this.beginTimer.cancel();
         this.setStatus(Status.IN_GAME);
@@ -255,9 +242,16 @@ public class Game<GAMEPLAYER extends GamePlayer>
         {
             this.gamePlayers.keySet().stream().filter(playerUUID -> Bukkit.getPlayer(playerUUID) != null).forEach(playerUUID ->
             {
+                String key = "lastgame." + playerUUID.toString();
+
+                Jedis jedis = SamaGamesAPI.get().getBungeeResource();
+                jedis.set(key, this.gameCodeName);
+                jedis.expire(key, 60 * 3);
+                jedis.close();
+
                 EarningMessageTemplate earningMessageTemplate = this.coherenceMachine.getTemplateManager().getEarningMessageTemplate();
                 earningMessageTemplate.execute(Bukkit.getPlayer(playerUUID), this.getPlayer(playerUUID).getCoins(), this.getPlayer(playerUUID).getStars());
-                this.increaseStat(playerUUID, "played-games", 1);
+                //TODO stats increase partie
             });
         }, 20L * 3);
 
@@ -269,7 +263,7 @@ public class Game<GAMEPLAYER extends GamePlayer>
 
         Bukkit.getScheduler().runTaskLater(SamaGamesAPI.get().getPlugin(), () ->
         {
-            SamaGamesAPI.get().getStatsManager(this.gameCodeName).finish();
+            SamaGamesAPI.get().getStatsManager().finish();
             Bukkit.shutdown();
         }, 20L * 15);
     }
@@ -325,10 +319,11 @@ public class Game<GAMEPLAYER extends GamePlayer>
      * @param statName The incremented statistic's name.
      * @param count The amount by which this statistic is incremented.
      */
-    public void increaseStat(UUID uuid, String statName, int count)
+    /*public void increaseStat(UUID uuid, String statName, int count)
     {
-        SamaGamesAPI.get().getStatsManager(this.gameCodeName).increase(uuid, statName, count);
-    }
+        //TODO stat
+       // SamaGamesAPI.get().getStatsManager(this.gameCodeName).increase(uuid, statName, count);
+    }*/
 
     /**
      * Marks a player as spectator.
@@ -582,7 +577,7 @@ public class Game<GAMEPLAYER extends GamePlayer>
      *     </li>
      * </ul>
      */
-    public Pair<Boolean, String> canPartyJoinGame(Set<UUID> partyMembers)
+    public Pair<Boolean, String> canPartyJoinGame(List<UUID> partyMembers)
     {
         return Pair.of(true, "");
     }

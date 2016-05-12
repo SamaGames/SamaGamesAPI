@@ -1,0 +1,55 @@
+apply plugin: 'java'
+apply plugin: 'idea'
+apply plugin: 'application'
+
+group = 'net.samagames'
+version = '1.0.0'
+archivesBaseName = 'PersistanceGenerator'
+mainClassName = 'net.samagames.generator.Generator'
+
+sourceCompatibility = 1.8
+targetCompatibility = 1.8
+
+compileJava.options.encoding = 'UTF-8'
+repositories {
+    mavenCentral()
+
+    mavenLocal()
+
+    maven { url "http://maven.samagames.net/public/" }
+
+    maven {
+        url "http://maven.samagames.net/developpers/"
+        credentials {
+            username sguser
+            password sgpass
+        }
+    }
+
+    maven {
+        url "http://maven.samagames.net/network/"
+        credentials {
+            username sguser
+            password sgpass
+        }
+    }
+}
+
+dependencies {
+    compile group: 'net.samagames', name: 'PersistanceAPI', version: '1.0.0'
+    compile group: 'com.squareup', name: 'javapoet', version: '1.6.1'
+}
+
+//Remove folder
+task makePretty(dependsOn: 'classes', type: Delete) {
+    delete 'Generation'
+}
+
+//Run program
+task(runSimple, dependsOn: 'makePretty', type: JavaExec) {
+    main = 'net.samagames.generator.Generator'
+    classpath = sourceSets.main.runtimeClasspath
+}
+
+
+defaultTasks 'runSimple'

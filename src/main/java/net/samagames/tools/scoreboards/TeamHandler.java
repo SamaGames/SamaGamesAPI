@@ -1,7 +1,7 @@
 package net.samagames.tools.scoreboards;
 
-import net.minecraft.server.v1_8_R3.PacketPlayOutScoreboardTeam;
-import net.minecraft.server.v1_8_R3.ScoreboardTeamBase;
+import net.minecraft.server.v1_9_R1.PacketPlayOutScoreboardTeam;
+import net.minecraft.server.v1_9_R1.ScoreboardTeamBase;
 import net.samagames.tools.Reflection;
 import org.bukkit.ChatColor;
 import org.bukkit.OfflinePlayer;
@@ -408,16 +408,16 @@ public class TeamHandler
 
             try
             {
-                Reflection.setValue(packet, "a", team.getRealName());
-                Reflection.setValue(packet, "b", team.getDisplayName());
-                Reflection.setValue(packet, "c", team.getPrefix());
-                Reflection.setValue(packet, "d", team.getSuffix());
-                Reflection.setValue(packet, "e", team.getNameVisible().e);
-                Reflection.setValue(packet, "i", 0);
-                Reflection.setValue(packet, "f", -1);
-                Reflection.setValue(packet, "g", (Collection) news);
-                Reflection.setValue(packet, "h", n);
-
+                Reflection.setValue(packet, "a", team.getRealName()); // Team display name
+                Reflection.setValue(packet, "i", n); // Action id
+                Reflection.setValue(packet, "b", team.getDisplayName()); // Team display name
+                Reflection.setValue(packet, "c", team.getPrefix()); // Team prefix
+                Reflection.setValue(packet, "d", team.getSuffix()); // Team suffix
+                Reflection.setValue(packet, "j", 0); // Friendly fire
+                Reflection.setValue(packet, "e", team.getNameVisible().e); // Name tag visibility
+                Reflection.setValue(packet, "f", team.getCollisionRule().e); // Collision rule
+                Reflection.setValue(packet, "g", news.size()); // Player count
+                Reflection.setValue(packet, "h", (Collection) news); // Players
             }
             catch (Exception e)
             {
@@ -454,8 +454,8 @@ public class TeamHandler
         private String display = "";
         private String prefix = ChatColor.GRAY + "";
         private String suffix = "";
-
         private ScoreboardTeamBase.EnumNameTagVisibility nameVisible = ScoreboardTeamBase.EnumNameTagVisibility.ALWAYS;
+        private ScoreboardTeamBase.EnumTeamPush collisionRule = ScoreboardTeamBase.EnumTeamPush.NEVER;
 
         private CopyOnWriteArrayList<String> players = new CopyOnWriteArrayList<>();
 
@@ -568,6 +568,16 @@ public class TeamHandler
         public void setNameVisible(ScoreboardTeamBase.EnumNameTagVisibility nameVisible)
         {
             this.nameVisible = nameVisible;
+        }
+
+        public ScoreboardTeamBase.EnumTeamPush getCollisionRule()
+        {
+            return this.collisionRule;
+        }
+
+        public void setCollisionRule(ScoreboardTeamBase.EnumTeamPush collisionRule)
+        {
+            this.collisionRule = collisionRule;
         }
     }
 }

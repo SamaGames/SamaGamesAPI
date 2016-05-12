@@ -6,17 +6,15 @@ import net.samagames.api.games.IGameManager;
 import net.samagames.api.gui.IGuiManager;
 import net.samagames.api.names.IUUIDTranslator;
 import net.samagames.api.network.IJoinManager;
-import net.samagames.api.network.IProxyDataManager;
-import net.samagames.api.options.ServerOptions;
+import net.samagames.api.options.IServerOptions;
 import net.samagames.api.parties.IPartiesManager;
 import net.samagames.api.permissions.IPermissionsManager;
 import net.samagames.api.player.IPlayerDataManager;
 import net.samagames.api.pubsub.IPubSubAPI;
 import net.samagames.api.resourcepacks.IResourcePacksManager;
 import net.samagames.api.settings.ISettingsManager;
-import net.samagames.api.shops.AbstractShopsManager;
+import net.samagames.api.shops.IShopsManager;
 import net.samagames.api.stats.IStatsManager;
-import net.samagames.tools.BarAPI.BarAPI;
 import net.samagames.tools.SkyFactory;
 import net.samagames.tools.npc.NPCManager;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -70,7 +68,7 @@ public abstract class SamaGamesAPI
      *
      * @return Server's options
      */
-    public abstract ServerOptions getServerOptions();
+    public abstract IServerOptions getServerOptions();
 
     /**
      * Get an instance of the Redis database
@@ -83,21 +81,16 @@ public abstract class SamaGamesAPI
      * Get a new instance of the shop manager of
      * a given game code name
      *
-     * @param game Game code name
-     *
      * @return New instance
      */
-	public abstract AbstractShopsManager getShopsManager(String game);
+	public abstract IShopsManager getShopsManager();
 
     /**
-     * Get a new instance of the stats manager of
-     * a given game code name
+     * Get instance of the stats manager
      *
-     * @param game Game code name
-     *
-     * @return New instance
+     * @return Instance
      */
-    public abstract IStatsManager getStatsManager(String game);
+    public abstract IStatsManager getStatsManager();
 
     /**
      * Get the instance of the GUI manager
@@ -171,13 +164,6 @@ public abstract class SamaGamesAPI
     public abstract IJoinManager getJoinManager();
 
     /**
-     * Get the instance of the proxy data manager
-     *
-     * @return Instance
-     */
-	public abstract IProxyDataManager getProxyDataManager();
-
-    /**
      * Get the instance of the parties manager
      *
      * @return Instance
@@ -197,14 +183,6 @@ public abstract class SamaGamesAPI
      * @return Instance
      */
     public abstract IUUIDTranslator getUUIDTranslator();
-
-    /**
-     * Get the instance of the BarAPI who permits
-     * to add dragon bar based messages
-     *
-     * @return Instance
-     */
-	public abstract BarAPI getBarAPI();
 
     /**
      * Get the instance of the Sky Factory who

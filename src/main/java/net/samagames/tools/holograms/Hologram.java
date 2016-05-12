@@ -1,12 +1,12 @@
 package net.samagames.tools.holograms;
 
-import net.minecraft.server.v1_8_R3.*;
+import net.minecraft.server.v1_9_R1.*;
 import net.samagames.api.SamaGamesAPI;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.OfflinePlayer;
-import org.bukkit.craftbukkit.v1_8_R3.CraftWorld;
-import org.bukkit.craftbukkit.v1_8_R3.entity.CraftPlayer;
+import org.bukkit.craftbukkit.v1_9_R1.CraftWorld;
+import org.bukkit.craftbukkit.v1_9_R1.entity.CraftPlayer;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitTask;
 
@@ -23,7 +23,7 @@ import java.util.List;
  */
 public class Hologram
 {
-    private static final double distance = 0.24;
+    private static final double distance = 0.24D;
 
     private HashMap<OfflinePlayer, Boolean> receivers;
     private HashMap<Integer, Entity> entities;

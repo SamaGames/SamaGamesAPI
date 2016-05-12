@@ -2,11 +2,14 @@ package net.samagames.api.games;
 
 import net.samagames.api.SamaGamesAPI;
 import net.samagames.api.player.AbstractPlayerData;
+import net.samagames.tools.bossbar.BossBarAPI;
 import net.samagames.tools.chat.fanciful.FancyMessage;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.GameMode;
 import org.bukkit.OfflinePlayer;
+import org.bukkit.boss.BarColor;
+import org.bukkit.boss.BarStyle;
 import org.bukkit.entity.Player;
 
 import java.util.UUID;
@@ -46,6 +49,7 @@ public class GamePlayer
     public void handleLogin(boolean reconnect)
     {
         SamaGamesAPI.get().getGameManager().getCoherenceMachine().getMessageManager().writeWelcomeInGameToPlayer(this.getPlayerIfOnline());
+        BossBarAPI.setBar(this.getPlayerIfOnline(), ChatColor.YELLOW + "Vous jouez sur " + ChatColor.GOLD + "mc.samagames.net" + ChatColor.YELLOW + " !", BarColor.RED, BarStyle.SOLID, 100.0D);
     }
 
     /**

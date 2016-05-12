@@ -1,0 +1,63 @@
+apply plugin: 'java'
+apply plugin: 'idea'
+apply plugin: 'maven'
+
+group = 'net.samagames'
+version = '4.0.0'
+archivesBaseName = 'SamaGamesAPI'
+
+sourceCompatibility = 1.8
+targetCompatibility = 1.8
+
+configurations {
+    provided
+}
+
+compileJava.options.encoding = 'UTF-8'
+
+repositories {
+    mavenCentral()
+
+    maven { url "http://maven.samagames.net/public/" }
+
+    maven {
+        url "http://maven.samagames.net/developpers/"
+        credentials {
+            username sguser
+            password sgpass
+        }
+    }
+
+    maven {
+        url "http://maven.samagames.net/network/"
+        credentials {
+            username sguser
+            password sgpass
+        }
+    }
+}
+
+
+dependencies {
+    provided group: 'redis.clients', name: 'jedis', version:'2.8.0'
+    compile(group: 'org.spigotmc', name: 'spigot', version: '1.9.2-R0.1-SNAPSHOT', changing: true) {
+        transitive = false
+    }
+}
+
+sourceSets {
+    main {
+        java {
+            srcDir 'PersistanceGenerator/Generation'
+            compileClasspath += configurations.provided
+        }
+    }
+}
+
+jar {
+    from{
+        configurations.provided.collect { it.isDirectory() ? it : zipTree(it) }
+    }
+}
+
+compileJava.dependsOn(':PersistanceGenerator:runSimple')
