@@ -159,4 +159,16 @@ public interface IGameManager
      * @return True or False
      */
     boolean isReconnectAllowed(UUID player);
+
+    /**
+     *  Define if the cache of a player will be deleted att disconnection (playerdata, permission, etc)
+     *  @param keepIt true for keep the cache, false to let it go
+     */
+    void setKeepPlayerCache(boolean keepIt);
+
+    /**
+     * Get if the cache is currently kept after a layer disconnection
+     * @return true to keep it, false to let it go
+     */
+    boolean isKeepingPlayerCache();
 }
