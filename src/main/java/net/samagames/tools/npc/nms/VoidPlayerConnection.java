@@ -1,6 +1,6 @@
 package net.samagames.tools.npc.nms;
 
-import net.minecraft.server.v1_9_R1.*;
+import net.minecraft.server.v1_9_R2.*;
 import org.bukkit.Location;
 
 import java.util.Set;

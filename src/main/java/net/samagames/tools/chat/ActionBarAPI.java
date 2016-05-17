@@ -1,11 +1,11 @@
 package net.samagames.tools.chat;
 
-import net.minecraft.server.v1_9_R1.EntityPlayer;
-import net.minecraft.server.v1_9_R1.IChatBaseComponent;
-import net.minecraft.server.v1_9_R1.PacketPlayOutChat;
+import net.minecraft.server.v1_9_R2.EntityPlayer;
+import net.minecraft.server.v1_9_R2.IChatBaseComponent;
+import net.minecraft.server.v1_9_R2.PacketPlayOutChat;
 import net.samagames.api.SamaGamesAPI;
 import org.bukkit.Bukkit;
-import org.bukkit.craftbukkit.v1_9_R1.entity.CraftPlayer;
+import org.bukkit.craftbukkit.v1_9_R2.entity.CraftPlayer;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitTask;
 

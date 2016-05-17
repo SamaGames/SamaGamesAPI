@@ -1,7 +1,7 @@
 package net.samagames.tools.npc.nms;
 
 import com.mojang.authlib.GameProfile;
-import net.minecraft.server.v1_9_R1.*;
+import net.minecraft.server.v1_9_R2.*;
 import net.samagames.tools.npc.NPCInteractCallback;
 import org.bukkit.Location;
 import org.bukkit.WeatherType;
