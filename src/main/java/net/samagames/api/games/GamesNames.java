@@ -16,12 +16,12 @@ package net.samagames.api.games;
  */
 public enum GamesNames {
     GLOBAL(0),
-    DIMENSION(1),
-    HEROBATTLE(2),
-    JUKEBOX(3),
-    QUAKE(4),
-    UHCRUN(5),
-    UPPERVOID(6);
+    DIMENSION(6),
+    HEROBATTLE(1),
+    JUKEBOX(2),
+    QUAKE(3),
+    UHCRUN(4),
+    UPPERVOID(5);
 
     private int value;
     GamesNames(int value)
