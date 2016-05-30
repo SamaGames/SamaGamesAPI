@@ -59,7 +59,7 @@ class AdvertisingTask extends BukkitRunnable
 
         this.loop++;
 
-        if ((this.style == 0 && this.loop >= 30) || (this.style == 1 || this.style == 2 && this.loop >= 36))
+        if ((this.style == 0 && this.loop >= 30) || ((this.style == 1 || this.style == 2) && this.loop >= 36))
         {
             this.loop = 0;
             this.style++;
