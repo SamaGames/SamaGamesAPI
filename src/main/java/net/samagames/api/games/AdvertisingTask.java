@@ -77,15 +77,6 @@ class AdvertisingTask extends BukkitRunnable
         int charIndex = this.loop - 20;
         String ip = "mc.samagames.net";
 
-        String prefix = ip.substring(0, charIndex);
-        String suffix = ip.substring(charIndex + 1);
-
-        if (charIndex > 0)
-            prefix = prefix.substring(0, charIndex - 1) + ChatColor.YELLOW + prefix.charAt(charIndex - 1);
-
-        if (charIndex < ip.length())
-            suffix = ChatColor.YELLOW + "" + suffix.charAt(0) + ChatColor.GOLD + suffix.substring(1);
-
-        return prefix + ChatColor.RED + ip.charAt(charIndex) + suffix;
+        return ip.substring(0, charIndex) + ChatColor.RED + ip.charAt(charIndex) + ChatColor.GOLD + ip.substring(charIndex + 1);
     }
 }
