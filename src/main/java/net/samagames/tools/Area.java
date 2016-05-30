@@ -1,6 +1,8 @@
 package net.samagames.tools;
 
+import org.bukkit.Bukkit;
 import org.bukkit.Location;
+import org.bukkit.World;
 
 import java.util.List;
 
@@ -157,5 +159,42 @@ public class Area
             return true;
 
         return false;
+    }
+
+    /**
+     * Parse a structured string into a area
+     * {@link Area}
+     *
+     * @param loc Structured string
+     *
+     * @return Area instance
+     */
+    public static Area str2area(String loc)
+    {
+        if (loc == null)
+            return null;
+
+        String[] location = loc.split(", ");
+
+        if(location.length == 7)
+        {
+            World world = Bukkit.getWorld(location[0]);
+            Location first = new Location(world, Double.parseDouble(location[1]), Double.parseDouble(location[2]), Double.parseDouble(location[3]));
+            Location second = new Location(world, Double.parseDouble(location[4]), Double.parseDouble(location[5]), Double.parseDouble(location[6]));
+            return new Area(first, second);
+        }
+        return null;
+    }
+
+    /**
+     * Format a area into a structured string
+     *
+     * @param area Area
+     *
+     * @return Structured string
+     */
+    public static String loc2str(Area area)
+    {
+        return area.getMin().getWorld().getName() + ", " + area.getMin().getX() + ", " + area.getMin().getY() + ", " + area.getMin().getZ() + ", " + area.getMax().getX() + ", " + area.getMax().getY() + ", " + area.getMax().getZ();
     }
 }
