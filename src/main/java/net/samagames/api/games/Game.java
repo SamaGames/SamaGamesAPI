@@ -4,7 +4,6 @@ import net.samagames.api.SamaGamesAPI;
 import net.samagames.api.games.themachine.ICoherenceMachine;
 import net.samagames.api.games.themachine.messages.templates.EarningMessageTemplate;
 import net.samagames.tools.Titles;
-import net.samagames.tools.bossbar.BossBarAPI;
 import org.apache.commons.lang3.tuple.Pair;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -39,6 +38,7 @@ public class Game<GAMEPLAYER extends GamePlayer>
     protected final Class<GAMEPLAYER> gamePlayerClass;
     protected final HashMap<UUID, GAMEPLAYER> gamePlayers;
     protected final HashMap<UUID, GAMEPLAYER> gameSpectators;
+    protected final AdvertisingTask advertisingTask;
     protected BukkitTask beginTimer;
     protected BeginTimer beginObj;
 
@@ -63,9 +63,10 @@ public class Game<GAMEPLAYER extends GamePlayer>
         this.gameDescription = gameDescription;
         this.gamePlayerClass = gamePlayerClass;
         this.gamePlayers = new HashMap<>();
+        this.gameSpectators = new HashMap<>();
+        this.advertisingTask = new AdvertisingTask();
 
         this.status = Status.WAITING_FOR_PLAYERS;
-        gameSpectators = new HashMap<>();
     }
 
     /**
@@ -77,8 +78,6 @@ public class Game<GAMEPLAYER extends GamePlayer>
      */
     public void startGame()
     {
-        BossBarAPI.flushBars();
-
         this.startTime = System.currentTimeMillis();
         this.beginTimer.cancel();
         this.setStatus(Status.IN_GAME);
@@ -117,6 +116,7 @@ public class Game<GAMEPLAYER extends GamePlayer>
             this.gamePlayers.put(player.getUniqueId(), gamePlayerObject);
 
             Titles.sendTitle(player, 20, 20 * 3, 20, ChatColor.DARK_AQUA + "" + ChatColor.BOLD + this.gameName, ChatColor.AQUA + this.gameDescription);
+            this.advertisingTask.addPlayer(player);
         }
         catch (InstantiationException | IllegalAccessException | InvocationTargetException | NoSuchMethodException e)
         {
@@ -174,6 +174,7 @@ public class Game<GAMEPLAYER extends GamePlayer>
             }
 
             this.gamePlayers.get(player.getUniqueId()).handleLogout();
+            this.advertisingTask.removePlayer(player);
 
             if(this.status != Status.IN_GAME || !this.gameManager.isReconnectAllowed(player))
                 this.gamePlayers.remove(player.getUniqueId());
