@@ -81,7 +81,7 @@ class AdvertisingTask extends BukkitRunnable
 
     private String upIpAt(int loop)
     {
-        int charIndex = loop - 18;
+        int charIndex = loop - 21;
         String ip = "mc.samagames.net";
 
         return ip.substring(0, charIndex) + Character.toUpperCase(ip.charAt(charIndex)) + ip.substring(charIndex + 1);
@@ -89,7 +89,7 @@ class AdvertisingTask extends BukkitRunnable
 
     private String colorIpAt(ChatColor color, int loop)
     {
-        int charIndex = loop - 18;
+        int charIndex = loop - 21;
         String ip = "mc.samagames.net";
 
         return ip.substring(0, charIndex) + color + ip.charAt(charIndex) + ChatColor.GOLD + ip.substring(charIndex + 1);
