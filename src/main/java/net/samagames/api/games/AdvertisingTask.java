@@ -46,20 +46,20 @@ class AdvertisingTask extends BukkitRunnable
         {
             if (this.loop < 20)
                 this.advertisingBossBar.setTitle(ChatColor.YELLOW + "Vous jouez sur " + ChatColor.GOLD + "mc.samagames.net" + ChatColor.YELLOW + " !");
-            else if (this.loop < 34)
+            else if (this.loop < 36)
                 this.advertisingBossBar.setTitle(ChatColor.YELLOW + "Vous jouez sur " + ChatColor.GOLD + this.upIpAt(this.loop) + ChatColor.YELLOW + " !");
         }
         else if (this.style == 2)
         {
             if (this.loop < 20)
                 this.advertisingBossBar.setTitle(ChatColor.YELLOW + "Vous jouez sur " + ChatColor.GOLD + "mc.samagames.net" + ChatColor.YELLOW + " !");
-            else if (this.loop < 34)
+            else if (this.loop < 36)
                 this.advertisingBossBar.setTitle(ChatColor.YELLOW + "Vous jouez sur " + ChatColor.GOLD + this.colorIpAt(ChatColor.RED, this.loop) + ChatColor.YELLOW + " !");
         }
 
         this.loop++;
 
-        if ((this.style == 0 && this.loop >= 30) || (this.style == 1 || this.style == 2 && this.loop >= 34))
+        if ((this.style == 0 && this.loop >= 30) || (this.style == 1 || this.style == 2 && this.loop >= 36))
         {
             this.loop = 0;
             this.style++;
@@ -81,7 +81,7 @@ class AdvertisingTask extends BukkitRunnable
 
     private String upIpAt(int loop)
     {
-        int charIndex = loop - 21;
+        int charIndex = loop - 20;
         String ip = "mc.samagames.net";
 
         return ip.substring(0, charIndex) + Character.toUpperCase(ip.charAt(charIndex)) + ip.substring(charIndex + 1);
@@ -89,7 +89,7 @@ class AdvertisingTask extends BukkitRunnable
 
     private String colorIpAt(ChatColor color, int loop)
     {
-        int charIndex = loop - 21;
+        int charIndex = loop - 20;
         String ip = "mc.samagames.net";
 
         return ip.substring(0, charIndex) + color + ip.charAt(charIndex) + ChatColor.GOLD + ip.substring(charIndex + 1);
