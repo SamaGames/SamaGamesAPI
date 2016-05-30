@@ -153,12 +153,14 @@ public class Area
     {
         if (loc == null)
             return false;
-        else if (loc.getX() > this.max.getX() - range || this.min.getX() + range > loc.getX())
-            return true;
-        else if (loc.getZ() > this.max.getZ() - range || this.min.getZ() + range > loc.getZ())
-            return true;
+        else if (loc.getX() > this.max.getX() + range || this.min.getX() - range > loc.getX())
+            return false;
+        else if (loc.getY() > this.max.getY() + range || this.min.getY() - range > loc.getY())
+            return false;
+        else if (loc.getZ() > this.max.getZ() + range || this.min.getZ() - range > loc.getZ())
+            return false;
 
-        return false;
+        return true;
     }
 
     /**
