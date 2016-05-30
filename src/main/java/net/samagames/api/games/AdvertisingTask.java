@@ -21,7 +21,7 @@ class AdvertisingTask extends BukkitRunnable
         this.style = 0;
         this.loop = 0;
 
-        this.runTaskTimer(SamaGamesAPI.get().getPlugin(), 0L, 5L);
+        this.runTaskTimer(SamaGamesAPI.get().getPlugin(), 5L, 5L);
     }
 
     @Override
