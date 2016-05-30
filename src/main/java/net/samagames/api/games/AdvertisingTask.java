@@ -47,24 +47,17 @@ class AdvertisingTask extends BukkitRunnable
             if (this.loop < 20)
                 this.advertisingBossBar.setTitle(ChatColor.YELLOW + "Vous jouez sur " + ChatColor.GOLD + "mc.samagames.net" + ChatColor.YELLOW + " !");
             else if (this.loop < 36)
-                this.advertisingBossBar.setTitle(ChatColor.YELLOW + "Vous jouez sur " + ChatColor.GOLD + this.upIpAt(this.loop) + ChatColor.YELLOW + " !");
-        }
-        else if (this.style == 2)
-        {
-            if (this.loop < 20)
-                this.advertisingBossBar.setTitle(ChatColor.YELLOW + "Vous jouez sur " + ChatColor.GOLD + "mc.samagames.net" + ChatColor.YELLOW + " !");
-            else if (this.loop < 36)
-                this.advertisingBossBar.setTitle(ChatColor.YELLOW + "Vous jouez sur " + ChatColor.GOLD + this.colorIpAt(ChatColor.RED, this.loop) + ChatColor.YELLOW + " !");
+                this.advertisingBossBar.setTitle(ChatColor.YELLOW + "Vous jouez sur " + ChatColor.GOLD + this.colorIpAt() + ChatColor.YELLOW + " !");
         }
 
         this.loop++;
 
-        if ((this.style == 0 && this.loop >= 30) || ((this.style == 1 || this.style == 2) && this.loop >= 36))
+        if ((this.style == 0 && this.loop >= 30) || (this.style == 1 && this.loop >= 36))
         {
             this.loop = 0;
             this.style++;
 
-            if (this.style >= 3)
+            if (this.style >= 2)
                 this.style = 0;
         }
     }
@@ -79,19 +72,20 @@ class AdvertisingTask extends BukkitRunnable
         this.advertisingBossBar.removePlayer(player);
     }
 
-    private String upIpAt(int loop)
+    private String colorIpAt()
     {
-        int charIndex = loop - 20;
+        int charIndex = this.loop - 20;
         String ip = "mc.samagames.net";
 
-        return ip.substring(0, charIndex) + Character.toUpperCase(ip.charAt(charIndex)) + ip.substring(charIndex + 1);
-    }
+        String prefix = ip.substring(0, charIndex);
+        String suffix = ip.substring(charIndex + 1);
 
-    private String colorIpAt(ChatColor color, int loop)
-    {
-        int charIndex = loop - 20;
-        String ip = "mc.samagames.net";
+        if (charIndex > 0)
+            prefix = prefix.substring(0, charIndex - 1) + ChatColor.YELLOW + prefix.charAt(charIndex - 1);
 
-        return ip.substring(0, charIndex) + color + ip.charAt(charIndex) + ChatColor.GOLD + ip.substring(charIndex + 1);
+        if (charIndex < ip.length())
+            suffix = ChatColor.YELLOW + "" + suffix.charAt(0) + ChatColor.GOLD + suffix.substring(1);
+
+        return prefix + ChatColor.RED + ip.charAt(charIndex) + suffix;
     }
 }
