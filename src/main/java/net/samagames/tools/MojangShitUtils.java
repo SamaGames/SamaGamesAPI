@@ -1,6 +1,8 @@
 package net.samagames.tools;
 
 import net.minecraft.server.v1_9_R2.*;
+import org.bukkit.*;
+import org.bukkit.Material;
 import org.bukkit.craftbukkit.v1_9_R2.inventory.CraftItemStack;
 import org.bukkit.entity.EntityType;
 import org.bukkit.inventory.ItemStack;
@@ -33,5 +35,28 @@ public class MojangShitUtils
         egg.setTag(tag);
 
         return CraftItemStack.asBukkitCopy(egg);
+    }
+
+    public static String getEntityByMonsterEgg(ItemStack bukkitEgg)
+    {
+        if (bukkitEgg.getType() != Material.MONSTER_EGG)
+            return null;
+
+        net.minecraft.server.v1_9_R2.ItemStack egg = CraftItemStack.asNMSCopy(bukkitEgg);
+
+        if (!egg.hasTag())
+            return null;
+
+        NBTTagCompound tag = egg.getTag();
+
+        if (!tag.hasKey("EntityTag"))
+            return null;
+
+        NBTTagCompound entityTag = tag.getCompound("EntityTag");
+
+        if (!entityTag.hasKey("id"))
+            return null;
+
+        return entityTag.getString("id");
     }
 }
