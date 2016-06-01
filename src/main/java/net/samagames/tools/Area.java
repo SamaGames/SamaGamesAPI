@@ -1,6 +1,8 @@
 package net.samagames.tools;
 
+import org.bukkit.Bukkit;
 import org.bukkit.Location;
+import org.bukkit.World;
 
 import java.util.List;
 
@@ -151,11 +153,50 @@ public class Area
     {
         if (loc == null)
             return false;
-        else if (loc.getX() > this.max.getX() - range || this.min.getX() + range > loc.getX())
-            return true;
-        else if (loc.getZ() > this.max.getZ() - range || this.min.getZ() + range > loc.getZ())
-            return true;
+        else if (loc.getX() > this.max.getX() + range || this.min.getX() - range > loc.getX())
+            return false;
+        else if (loc.getY() > this.max.getY() + range || this.min.getY() - range > loc.getY())
+            return false;
+        else if (loc.getZ() > this.max.getZ() + range || this.min.getZ() - range > loc.getZ())
+            return false;
 
-        return false;
+        return true;
+    }
+
+    /**
+     * Parse a structured string into a area
+     * {@link Area}
+     *
+     * @param loc Structured string
+     *
+     * @return Area instance
+     */
+    public static Area str2area(String loc)
+    {
+        if (loc == null)
+            return null;
+
+        String[] location = loc.split(", ");
+
+        if(location.length == 7)
+        {
+            World world = Bukkit.getWorld(location[0]);
+            Location first = new Location(world, Double.parseDouble(location[1]), Double.parseDouble(location[2]), Double.parseDouble(location[3]));
+            Location second = new Location(world, Double.parseDouble(location[4]), Double.parseDouble(location[5]), Double.parseDouble(location[6]));
+            return new Area(first, second);
+        }
+        return null;
+    }
+
+    /**
+     * Format a area into a structured string
+     *
+     * @param area Area
+     *
+     * @return Structured string
+     */
+    public static String loc2str(Area area)
+    {
+        return area.getMin().getWorld().getName() + ", " + area.getMin().getX() + ", " + area.getMin().getY() + ", " + area.getMin().getZ() + ", " + area.getMax().getX() + ", " + area.getMax().getY() + ", " + area.getMax().getZ();
     }
 }
