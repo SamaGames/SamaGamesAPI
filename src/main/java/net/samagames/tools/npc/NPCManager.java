@@ -19,6 +19,8 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.entity.CreatureSpawnEvent;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.player.PlayerInteractEntityEvent;
+import org.bukkit.event.player.PlayerJoinEvent;
+import org.bukkit.scheduler.BukkitTask;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -29,11 +31,10 @@ import java.util.concurrent.ScheduledExecutorService;
 /**
  * Created by Silva on 20/10/2015.
  */
-public class NPCManager  implements Listener{
+public class NPCManager implements Listener {
 
     public SamaGamesAPI api;
 
-    private ScheduledExecutorService scheduler;
 
     private List<CustomNPC> entities = new ArrayList<>();
 
@@ -42,17 +43,16 @@ public class NPCManager  implements Listener{
     public NPCManager(SamaGamesAPI api)
     {
         this.api = api;
-        scheduler = Executors.newScheduledThreadPool(2);
 
         Bukkit.getPluginManager().registerEvents(this, api.getPlugin());
+        Bukkit.getScheduler().runTaskTimerAsynchronously(api.getPlugin(), () -> this.entities.forEach(this::updateForAllNPC), 10L, 10L);
     }
 
-    public void onPlayerConnectionHook(Player p)
+    @EventHandler
+    public void onPlayerConnectionHook(PlayerJoinEvent event)
     {
-        for(CustomNPC npc : entities)
-        {
-            updateNPC(p, npc);
-        }
+        for (CustomNPC npc : entities)
+            updateNPC(event.getPlayer(), npc);
     }
 
     public void updateForAllNPC(CustomNPC npc)
@@ -82,7 +82,7 @@ public class NPCManager  implements Listener{
     {
         final World w = ((CraftWorld) location.getWorld()).getHandle();
 
-        ProfileLoader profileLoader = new ProfileLoader(UUID.randomUUID().toString(), "[NPC]" + entities.size(), skinUUID.toString());
+        ProfileLoader profileLoader = new ProfileLoader(UUID.randomUUID().toString(), "[NPC] " + entities.size(), skinUUID.toString());
         GameProfile gameProfile = profileLoader.loadProfile();
 
         final CustomNPC npc = new CustomNPC(w, gameProfile, new PlayerInteractManager(w));
@@ -91,7 +91,7 @@ public class NPCManager  implements Listener{
         npc.setCustomNameVisible(true);
         w.addEntity(npc, CreatureSpawnEvent.SpawnReason.CUSTOM);
         entities.add(npc);
-        if(scoreBoardRegister != null)
+        if (scoreBoardRegister != null)
             scoreBoardRegister.done(npc, null);
 
         Bukkit.getScheduler().runTaskLater(api.getPlugin(), () -> updateForAllNPC(npc), 2L);
@@ -101,25 +101,15 @@ public class NPCManager  implements Listener{
     public void removeNPC(String name)
     {
         CustomNPC npc = getNPCEntity(name);
-        if(npc != null)
+        if (npc != null)
             npc.getWorld().removeEntity(npc);
-
-    }
-
-    public void disable()
-    {
-        scheduler.shutdown();
     }
 
     public CustomNPC getNPCEntity(String name)
     {
-        for(CustomNPC entity : entities)
-        {
-            if(entity.getName().equals(name))
-            {
+        for (CustomNPC entity : entities)
+            if (entity.getName().equals(name))
                 return entity;
-            }
-        }
         return null;
     }
 
@@ -130,7 +120,7 @@ public class NPCManager  implements Listener{
     @EventHandler
     public void onPlayerHitNPC(EntityDamageByEntityEvent event)
     {
-        if(event.getEntity() instanceof CustomNPC && event.getDamager() instanceof Player)
+        if (event.getEntity() instanceof CustomNPC && event.getDamager() instanceof Player)
         {
             CustomNPC npc = (CustomNPC) event.getEntity();
             npc.onInteract(false, (Player) event.getDamager());
@@ -140,7 +130,7 @@ public class NPCManager  implements Listener{
     @EventHandler
     public void onPlayerInteractNPC(PlayerInteractEntityEvent event)
     {
-        if(event.getRightClicked() instanceof CustomNPC)
+        if (event.getRightClicked() instanceof CustomNPC)
         {
             CustomNPC npc = (CustomNPC) event.getRightClicked();
             npc.onInteract(true, event.getPlayer());
