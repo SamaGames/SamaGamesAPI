@@ -12,6 +12,7 @@ import net.samagames.tools.npc.nms.CustomNPC;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.craftbukkit.v1_9_R2.CraftWorld;
+import org.bukkit.craftbukkit.v1_9_R2.entity.CraftEntity;
 import org.bukkit.craftbukkit.v1_9_R2.entity.CraftPlayer;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -35,7 +36,6 @@ public class NPCManager implements Listener {
 
     public SamaGamesAPI api;
 
-
     private List<CustomNPC> entities = new ArrayList<>();
 
     private CallBack<CustomNPC> scoreBoardRegister;
@@ -45,14 +45,17 @@ public class NPCManager implements Listener {
         this.api = api;
 
         Bukkit.getPluginManager().registerEvents(this, api.getPlugin());
-        Bukkit.getScheduler().runTaskTimerAsynchronously(api.getPlugin(), () -> this.entities.forEach(this::updateForAllNPC), 10L, 10L);
+        Bukkit.getScheduler().runTaskTimer(api.getPlugin(), () -> this.entities.forEach(this::updateForAllNPC), 10L, 10L);
     }
 
     @EventHandler
     public void onPlayerConnectionHook(PlayerJoinEvent event)
     {
-        for (CustomNPC npc : entities)
-            updateNPC(event.getPlayer(), npc);
+        Bukkit.getScheduler().runTaskLater(api.getPlugin(), () ->
+        {
+            for (CustomNPC npc : entities)
+                updateNPC(event.getPlayer(), npc);
+        }, 2L);
     }
 
     public void updateForAllNPC(CustomNPC npc)
@@ -120,9 +123,9 @@ public class NPCManager implements Listener {
     @EventHandler
     public void onPlayerHitNPC(EntityDamageByEntityEvent event)
     {
-        if (event.getEntity() instanceof CustomNPC && event.getDamager() instanceof Player)
+        if (((CraftEntity)event.getEntity()).getHandle() instanceof CustomNPC && event.getDamager() instanceof Player)
         {
-            CustomNPC npc = (CustomNPC) event.getEntity();
+            CustomNPC npc = (CustomNPC) ((CraftEntity)event.getEntity()).getHandle();
             npc.onInteract(false, (Player) event.getDamager());
         }
     }
@@ -130,9 +133,9 @@ public class NPCManager implements Listener {
     @EventHandler
     public void onPlayerInteractNPC(PlayerInteractEntityEvent event)
     {
-        if (event.getRightClicked() instanceof CustomNPC)
+        if (((CraftEntity)event.getRightClicked()).getHandle() instanceof CustomNPC)
         {
-            CustomNPC npc = (CustomNPC) event.getRightClicked();
+            CustomNPC npc = (CustomNPC) ((CraftEntity)event.getRightClicked()).getHandle();
             npc.onInteract(true, event.getPlayer());
         }
     }
