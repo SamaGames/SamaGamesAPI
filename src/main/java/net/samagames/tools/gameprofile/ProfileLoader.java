@@ -45,9 +45,15 @@ public class ProfileLoader {
         this.uuid = uuid == null ? null : uuid.replaceAll("-", ""); //We add these later
         String displayName = ChatColor.translateAlternateColorCodes('&', name);
         this.name = ChatColor.stripColor(displayName);
-        this.skinOwner = skinOwner;
+        this.skinOwner = getUUID(skinOwner);
     }
 
+    public ProfileLoader(String uuid, String name, UUID skinOwner) {
+        this.uuid = uuid == null ? null : uuid.replaceAll("-", ""); //We add these later
+        String displayName = ChatColor.translateAlternateColorCodes('&', name);
+        this.name = ChatColor.stripColor(displayName);
+        this.skinOwner = skinOwner.toString().replaceAll("-", "");
+    }
 
     /**
         Need to be called async
@@ -74,7 +80,7 @@ public class ProfileLoader {
     }
 
     private void addProperties(GameProfile profile) {
-        String uuid = getUUID(skinOwner);
+        String uuid = this.skinOwner;
         Jedis jedis = SamaGamesAPI.get().getBungeeResource();
         try {
 
