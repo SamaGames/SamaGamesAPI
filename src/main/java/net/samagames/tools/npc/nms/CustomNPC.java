@@ -86,4 +86,9 @@ public class CustomNPC extends EntityPlayer {
     public void setPlayerWeather(WeatherType type, boolean plugin) {
 
     }
+
+    @Override
+    public boolean damageEntity(DamageSource damagesource, float f) {
+        return true;
+    }
 }

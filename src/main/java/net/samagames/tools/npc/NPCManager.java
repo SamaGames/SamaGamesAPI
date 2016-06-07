@@ -19,6 +19,7 @@ import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.player.PlayerInteractEntityEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerMoveEvent;
+import org.bukkit.event.player.PlayerTeleportEvent;
 import org.bukkit.scheduler.BukkitTask;
 
 import java.util.ArrayList;
@@ -144,6 +145,17 @@ public class NPCManager implements Listener {
 
     @EventHandler
     public void onPlayerMove(PlayerMoveEvent event)
+    {
+        this.entities.forEach(customNPC ->
+        {
+            if (event.getFrom().distanceSquared(customNPC.getBukkitEntity().getLocation()) > 2500
+                    && event.getTo().distanceSquared(customNPC.getBukkitEntity().getLocation()) < 2500)
+                updateNPC(event.getPlayer(), customNPC);
+        });
+    }
+
+    @EventHandler
+    public void onPlayerTeleport(PlayerTeleportEvent event)
     {
         this.entities.forEach(customNPC ->
         {
