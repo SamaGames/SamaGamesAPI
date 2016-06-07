@@ -1,10 +1,7 @@
 package net.samagames.tools.npc;
 
 import com.mojang.authlib.GameProfile;
-import net.minecraft.server.v1_9_R2.PacketPlayOutNamedEntitySpawn;
-import net.minecraft.server.v1_9_R2.PacketPlayOutPlayerInfo;
-import net.minecraft.server.v1_9_R2.PlayerInteractManager;
-import net.minecraft.server.v1_9_R2.World;
+import net.minecraft.server.v1_9_R2.*;
 import net.samagames.api.SamaGamesAPI;
 import net.samagames.tools.CallBack;
 import net.samagames.tools.gameprofile.ProfileLoader;
@@ -83,14 +80,19 @@ public class NPCManager implements Listener {
      */
     public CustomNPC createNPC(Location location, UUID skinUUID)
     {
+        return createNPC(location, skinUUID, "[NPC] " + entities.size());
+    }
+
+    public CustomNPC createNPC(Location location, UUID skinUUID, String displayName)
+    {
         final World w = ((CraftWorld) location.getWorld()).getHandle();
 
-        ProfileLoader profileLoader = new ProfileLoader(UUID.randomUUID().toString(), "[NPC] " + entities.size(), skinUUID.toString());
+        ProfileLoader profileLoader = new ProfileLoader(UUID.randomUUID().toString(), displayName, skinUUID.toString());
         GameProfile gameProfile = profileLoader.loadProfile();
 
         final CustomNPC npc = new CustomNPC(w, gameProfile, new PlayerInteractManager(w));
         npc.setLocation(location);
-        npc.setCustomName("[NPC]" + entities.size());
+        npc.setCustomName(displayName);
         npc.setCustomNameVisible(true);
         w.addEntity(npc, CreatureSpawnEvent.SpawnReason.CUSTOM);
         entities.add(npc);
