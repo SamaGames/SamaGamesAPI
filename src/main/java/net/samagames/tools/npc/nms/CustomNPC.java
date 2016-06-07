@@ -3,9 +3,12 @@ package net.samagames.tools.npc.nms;
 import com.mojang.authlib.GameProfile;
 import net.minecraft.server.v1_9_R2.*;
 import net.samagames.tools.npc.NPCInteractCallback;
+import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.WeatherType;
 import org.bukkit.entity.Player;
+import org.bukkit.event.entity.EntityDamageByEntityEvent;
+import org.bukkit.event.entity.EntityDamageEvent;
 
 /**
  * Created by Silva on 18/12/2015.
@@ -87,8 +90,14 @@ public class CustomNPC extends EntityPlayer {
 
     }
 
+    @SuppressWarnings("deprecation")
     @Override
     public boolean damageEntity(DamageSource damagesource, float f) {
+        if (damagesource.getEntity() == null || !(damagesource.getEntity() instanceof EntityPlayer))
+            return true;
+        EntityDamageByEntityEvent entityDamageByEntityEvent = new EntityDamageByEntityEvent(damagesource.getEntity().getBukkitEntity(), this.getBukkitEntity(), EntityDamageEvent.DamageCause.ENTITY_ATTACK, 0);
+        entityDamageByEntityEvent.setCancelled(true);
+        Bukkit.getPluginManager().callEvent(entityDamageByEntityEvent);
         return true;
     }
 }
