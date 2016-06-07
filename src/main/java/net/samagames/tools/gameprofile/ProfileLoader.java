@@ -78,13 +78,16 @@ public class ProfileLoader {
         Jedis jedis = SamaGamesAPI.get().getBungeeResource();
         try {
 
-            String json = jedis.get("cacheSkin:" + uuid);
+            String json = jedis == null ? null : jedis.get("cacheSkin:" + uuid);
             if (json == null)
             {
                 //Requete
                 json = getData(uuid);
-                jedis.set("cacheSkin:" + uuid, json);
-                jedis.expire("cacheSkin:" + uuid, 172800);//2 jours
+                if (jedis != null)
+                {
+                    jedis.set("cacheSkin:" + uuid, json);
+                    jedis.expire("cacheSkin:" + uuid, 172800);//2 jours
+                }
             }
             JSONParser parser = new JSONParser();
             Object obj = parser.parse(json);
@@ -107,7 +110,8 @@ public class ProfileLoader {
         } catch (Exception e) {
             ; // Failed to load skin
         }finally {
-            jedis.close();
+            if (jedis != null)
+                jedis.close();
         }
     }
 
