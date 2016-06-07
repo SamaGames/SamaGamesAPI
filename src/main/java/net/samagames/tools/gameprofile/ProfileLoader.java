@@ -108,7 +108,7 @@ public class ProfileLoader {
                 }
             }
         } catch (Exception e) {
-            ; // Failed to load skin
+            Bukkit.getLogger().log(Level.SEVERE, "Can't load skin for uuid" + uuid, e);
         }finally {
             if (jedis != null)
                 jedis.close();
