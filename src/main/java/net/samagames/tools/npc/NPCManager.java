@@ -21,6 +21,7 @@ import org.bukkit.event.entity.CreatureSpawnEvent;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.player.PlayerInteractEntityEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
+import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.scheduler.BukkitTask;
 
 import java.util.ArrayList;
@@ -45,7 +46,6 @@ public class NPCManager implements Listener {
         this.api = api;
 
         Bukkit.getPluginManager().registerEvents(this, api.getPlugin());
-        Bukkit.getScheduler().runTaskTimer(api.getPlugin(), () -> this.entities.forEach(this::updateForAllNPC), 10L, 10L);
     }
 
     @EventHandler
@@ -138,5 +138,16 @@ public class NPCManager implements Listener {
             CustomNPC npc = (CustomNPC) ((CraftEntity)event.getRightClicked()).getHandle();
             npc.onInteract(true, event.getPlayer());
         }
+    }
+
+    @EventHandler
+    public void onPlayerMove(PlayerMoveEvent event)
+    {
+        this.entities.forEach(customNPC ->
+        {
+            if (event.getFrom().distanceSquared(customNPC.getBukkitEntity().getLocation()) > 2500
+                    && event.getTo().distanceSquared(customNPC.getBukkitEntity().getLocation()) < 2500)
+                updateNPC(event.getPlayer(), customNPC);
+        });
     }
 }
