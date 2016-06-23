@@ -18,7 +18,7 @@ public class TeamSpeakAPI
 {
     private static final int TIMEOUT = 20000;
     private static int generator = 0;
-    private static Map<Integer, MutablePair<ResultType, Object>> results;
+    private static Map<Integer, MutablePair<ResultType, Object>> results = new HashMap<>();
 
     private TeamSpeakAPI()
     {
@@ -54,9 +54,11 @@ public class TeamSpeakAPI
         MutablePair<ResultType, Object> pair = MutablePair.of(ResultType.INTEGER, -1);
         int id = generator++;
         TeamSpeakAPI.results.put(id, pair);
-        final String[] msg = {"createchannel"};
-        channelProperties.forEach(((channelProperty, s) -> msg[0] += ":" + channelProperties.toString().toUpperCase() + "=" + s));
-        permissions.forEach(((channelPermission, integer) -> msg[0] += ":" + channelPermission.toString().toLowerCase() + "-" + integer));
+        final String[] msg = {"createchannel:" + name};
+        if (channelProperties != null)
+            channelProperties.forEach(((channelProperty, s) -> msg[0] += ":" + channelProperties.toString().toUpperCase() + "=" + s));
+        if (permissions != null)
+            permissions.forEach(((channelPermission, integer) -> msg[0] += ":" + channelPermission.toString().toLowerCase() + "-" + integer));
         TeamSpeakAPI.publish(id, msg[0]);
         try
         {
@@ -89,7 +91,7 @@ public class TeamSpeakAPI
         MutablePair<ResultType, Object> pair = MutablePair.of(ResultType.UUID_LIST, new ArrayList<>());
         int id = generator++;
         TeamSpeakAPI.results.put(id, pair);
-        final String[] msg = {"move"};
+        final String[] msg = {"move:" + channelId};
         uuids.forEach(uuid -> msg[0] += ":" + uuid);
         TeamSpeakAPI.publish(id, msg[0]);
         try
