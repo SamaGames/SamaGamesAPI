@@ -8,7 +8,7 @@ import org.bukkit.boss.BarStyle;
 import org.bukkit.boss.BossBar;
 import org.bukkit.entity.Player;
 
-import java.util.UUID;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
@@ -86,11 +86,13 @@ public class BossBarAPI
      */
     public static void removeBar(Player player)
     {
-        if (bossBars.containsKey(player.getUniqueId()))
+        Map<UUID, BossBar> list = new HashMap<>(bossBars);
+        list.forEach((uuid, bossBar) ->
         {
-            bossBars.get(player.getUniqueId()).removePlayer(player);
-            bossBars.remove(player.getUniqueId());
-        }
+            bossBar.removePlayer(player);
+            if (bossBar.getPlayers().isEmpty())
+                bossBars.remove(uuid);
+        });
     }
 
     /**
