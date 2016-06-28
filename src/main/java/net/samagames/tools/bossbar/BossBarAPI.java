@@ -62,7 +62,7 @@ public class BossBarAPI
     public static Pair<UUID, BossBar> getBar(String message, BarColor color, BarStyle style, double progress, boolean darkenSky, boolean playMusic, boolean createFog)
     {
         BossBar bossBar = Bukkit.createBossBar(message, color, style);
-        bossBar.setProgress(progress / 100.0D);
+        bossBar.setProgress(progress < 0 ? 0D : progress / 100.0D);
 
         if (darkenSky)
             bossBar.addFlag(BarFlag.DARKEN_SKY);
