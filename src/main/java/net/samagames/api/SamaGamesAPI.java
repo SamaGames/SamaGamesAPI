@@ -4,6 +4,7 @@ import net.samagames.api.achievements.IAchievementManager;
 import net.samagames.api.friends.IFriendsManager;
 import net.samagames.api.games.IGameManager;
 import net.samagames.api.gui.IGuiManager;
+import net.samagames.api.i18n.I18n;
 import net.samagames.api.names.IUUIDTranslator;
 import net.samagames.api.network.IJoinManager;
 import net.samagames.api.options.IServerOptions;
@@ -191,6 +192,14 @@ public abstract class SamaGamesAPI
      * @return Instance
      */
     public abstract SkyFactory getSkyFactory();
+
+    /**
+     * Get the instance of the internationalization
+     * manager
+     *
+     * @return Instance
+     */
+    public abstract I18n getI18n();
 
     /**
      * Get the root plugin of the API
