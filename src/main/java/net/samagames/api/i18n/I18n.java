@@ -12,13 +12,6 @@ public interface I18n
     void setLanguagesToLoad(ProjectNames project, boolean value);
 
     /**
-     * Know if the project is actually loading at player join
-     * @param project The project to know about
-     * @return
-     */
-    boolean isLanguagesLoading(ProjectNames project);
-
-    /**
      * Get a string localized with the given player language
      * @return Localized string
      */
