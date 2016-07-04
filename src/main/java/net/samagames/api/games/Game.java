@@ -3,8 +3,6 @@ package net.samagames.api.games;
 import net.samagames.api.SamaGamesAPI;
 import net.samagames.api.games.themachine.ICoherenceMachine;
 import net.samagames.api.games.themachine.messages.templates.EarningMessageTemplate;
-import net.samagames.api.i18n.I18n;
-import net.samagames.api.i18n.ProjectNames;
 import net.samagames.tools.Titles;
 import org.apache.commons.lang3.tuple.Pair;
 import org.bukkit.Bukkit;
@@ -38,7 +36,6 @@ public class Game<GAMEPLAYER extends GamePlayer>
     protected final String gameName;
     protected final String gameDescription;
     protected final Class<GAMEPLAYER> gamePlayerClass;
-    protected final I18n i18n;
     protected final HashMap<UUID, GAMEPLAYER> gamePlayers;
     protected final HashMap<UUID, GAMEPLAYER> gameSpectators;
     protected final AdvertisingTask advertisingTask;
@@ -57,25 +54,19 @@ public class Game<GAMEPLAYER extends GamePlayer>
      * @param gamePlayerClass The class of your custom {@link GamePlayer} object, the same
      *                        as the {@link GAMEPLAYER} class. Use {@code GamePlayer.class}
      *                        if you are not using a custom class.
-     * @param internationalizationName The enumeration entry of your project to load the sentences
-     *                                 related to your project for the internationalization.
      */
-    public Game(String gameCodeName, String gameName, String gameDescription, Class<GAMEPLAYER> gamePlayerClass, ProjectNames internationalizationName)
+    public Game(String gameCodeName, String gameName, String gameDescription, Class<GAMEPLAYER> gamePlayerClass)
     {
         this.gameManager = SamaGamesAPI.get().getGameManager();
         this.gameCodeName = gameCodeName.toLowerCase();
         this.gameName = gameName;
         this.gameDescription = gameDescription;
         this.gamePlayerClass = gamePlayerClass;
-        this.i18n = SamaGamesAPI.get().getI18n();
         this.gamePlayers = new HashMap<>();
         this.gameSpectators = new HashMap<>();
         this.advertisingTask = new AdvertisingTask();
 
         this.status = Status.WAITING_FOR_PLAYERS;
-
-        if (internationalizationName != null)
-            SamaGamesAPI.get().getI18n().setLanguagesToLoad(internationalizationName, true);
     }
 
     /**
