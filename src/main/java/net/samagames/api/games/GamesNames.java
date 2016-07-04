@@ -22,9 +22,7 @@ public enum GamesNames {
     UHCRUN(4),
     UPPERVOID(5),
     DIMENSION(6),
-    BOWLING(7),
-    CHUNKWARS(8),
-    ;
+    BOWLING(7);
 
     private int value;
     GamesNames(int value)
