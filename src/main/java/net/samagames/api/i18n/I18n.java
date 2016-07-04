@@ -15,5 +15,5 @@ public interface I18n
      * Get a string localized with the given player language
      * @return Localized string
      */
-    String localize(int sentenceId, UUID player, Object... params);
+    String localize(int sentenceId, UUID player, Object... params) throws Exception;
 }
