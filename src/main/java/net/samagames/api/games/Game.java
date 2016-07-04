@@ -79,22 +79,6 @@ public class Game<GAMEPLAYER extends GamePlayer>
     }
 
     /**
-     * Added for compatibility with outdated games.
-     *
-     * @param gameCodeName The code name of the game, given by an administrator.
-     * @param gameName The friendly name of the game.
-     * @param gameDescription A short description of the game, displayed to the players
-     *                        when they join the game through a /title.
-     * @param gamePlayerClass The class of your custom {@link GamePlayer} object, the same
-     *                        as the {@link GAMEPLAYER} class. Use {@code GamePlayer.class}
-     *                        if you are not using a custom class.
-     */
-    public Game(String gameCodeName, String gameName, String gameDescription, Class<GAMEPLAYER> gamePlayerClass)
-    {
-        this(gameCodeName, gameName, gameDescription, gamePlayerClass, null);
-    }
-
-    /**
      * Starts the game.
      *
      * Override this command to execute something when the game starts.
