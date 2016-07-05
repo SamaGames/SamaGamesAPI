@@ -246,9 +246,12 @@ public class Game<GAMEPLAYER extends GamePlayer>
                 String key = "lastgame." + playerUUID.toString();
 
                 Jedis jedis = SamaGamesAPI.get().getBungeeResource();
-                jedis.set(key, this.gameCodeName);
-                jedis.expire(key, 60 * 3);
-                jedis.close();
+                if (jedis != null)
+                {
+                    jedis.set(key, this.gameCodeName);
+                    jedis.expire(key, 60 * 3);
+                    jedis.close();
+                }
 
                 EarningMessageTemplate earningMessageTemplate = this.coherenceMachine.getTemplateManager().getEarningMessageTemplate();
                 earningMessageTemplate.execute(Bukkit.getPlayer(playerUUID), this.getPlayer(playerUUID).getCoins(), this.getPlayer(playerUUID).getStars());
