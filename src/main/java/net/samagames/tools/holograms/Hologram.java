@@ -162,7 +162,9 @@ public class Hologram
 
         this.clearEntities();
         this.clearLines();
-        this.lines = Arrays.asList(lines);
+
+        this.lines.addAll(Arrays.asList(lines));
+        
         this.generateLines(this.location);
     }
 
