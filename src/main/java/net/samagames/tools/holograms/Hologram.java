@@ -31,6 +31,7 @@ public class Hologram
     private Location location;
     private BukkitTask taskID;
     private double rangeView = 60;
+    private boolean linesChanged = false;
 
     /**
      * Constructor
@@ -44,6 +45,8 @@ public class Hologram
 
         this.lines = new ArrayList<>();
         this.lines.addAll(Arrays.asList(lines));
+
+        this.linesChanged = true;
 
         this.taskID = Bukkit.getScheduler().runTaskTimerAsynchronously(SamaGamesAPI.get().getPlugin(), this::sendLinesForPlayers, 10L, 10L);
     }
@@ -165,6 +168,8 @@ public class Hologram
 
         this.lines.addAll(Arrays.asList(lines));
 
+        this.linesChanged = true;
+
         this.generateLines(this.location);
     }
 
@@ -222,8 +227,16 @@ public class Hologram
             if(p.getLocation().getWorld() == this.location.getWorld() && p.getLocation().distance(this.location) <= this.rangeView)
                 inRange = true;
 
-            if(wasInRange == inRange)
+            if(wasInRange == inRange || this.linesChanged)
+            {
+                if (this.linesChanged)
+                {
+                    this.sendLines(p);
+                    this.linesChanged = false;
+                }
+
                 continue;
+            }
 
             if(wasInRange && !inRange)
                 this.removeLines(p);
