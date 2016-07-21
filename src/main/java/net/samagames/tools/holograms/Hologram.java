@@ -167,7 +167,6 @@ public class Hologram
         this.clearLines();
 
         this.lines.addAll(Arrays.asList(lines));
-
         this.linesChanged = true;
 
         this.generateLines(this.location);
