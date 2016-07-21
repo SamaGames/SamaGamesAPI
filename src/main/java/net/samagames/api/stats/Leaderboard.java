@@ -54,7 +54,7 @@ public class Leaderboard
         return this.third;
     }
 
-    public class PlayerStatData{
+    public static class PlayerStatData{
         private String name;
         private int score;
         public PlayerStatData(String name, int score)
