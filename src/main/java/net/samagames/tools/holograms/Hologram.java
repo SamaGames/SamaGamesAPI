@@ -226,22 +226,23 @@ public class Hologram
             if(p.getLocation().getWorld() == this.location.getWorld() && p.getLocation().distance(this.location) <= this.rangeView)
                 inRange = true;
 
-            if(wasInRange == inRange || this.linesChanged)
+            if(this.linesChanged && inRange)
             {
-                if (this.linesChanged)
-                {
-                    this.sendLines(p);
-                    this.linesChanged = false;
-                }
-
+                this.sendLines(p);
+                this.linesChanged = false;
+            }
+            else if(wasInRange == inRange)
+            {
                 continue;
             }
-
-            if(wasInRange && !inRange)
+            else if(wasInRange && !inRange)
+            {
                 this.removeLines(p);
-
-            if(!wasInRange && inRange)
+            }
+            else if(!wasInRange && inRange)
+            {
                 this.sendLines(p);
+            }
 
             this.receivers.put(offlinePlayer, inRange);
         }
