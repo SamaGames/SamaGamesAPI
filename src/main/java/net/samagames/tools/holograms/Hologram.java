@@ -166,6 +166,7 @@ public class Hologram
         this.clearEntities();
         this.clearLines();
 
+        this.lines = new ArrayList<>();
         this.lines.addAll(Arrays.asList(lines));
         this.linesChanged = true;
 
@@ -235,11 +236,11 @@ public class Hologram
             {
                 continue;
             }
-            else if(wasInRange && !inRange)
+            else if(wasInRange)
             {
                 this.removeLines(p);
             }
-            else if(!wasInRange && inRange)
+            else
             {
                 this.sendLines(p);
             }
