@@ -80,6 +80,14 @@ public interface IGameManager
     void setLegacyPvP(boolean legacyPvP);
 
     /**
+     * Set an optional statistics helper to never forget the statistics
+     * to increase
+     *
+     * @param gameStatisticsHelper Statistics helper instance
+     */
+    void setGameStatisticsHelper(IGameStatisticsHelper gameStatisticsHelper);
+
+    /**
      * Get the registered game
      *
      * @return The registered game (null if none)
@@ -113,6 +121,13 @@ public interface IGameManager
      * @return The implementation
      */
     GameGuiManager getGameGuiManager();
+
+    /**
+     * Get the game statistics helper
+     *
+     * @return The implementation
+     */
+    IGameStatisticsHelper getGameStatisticsHelper();
 
     /**
      * Get the max reconnect time in minutes

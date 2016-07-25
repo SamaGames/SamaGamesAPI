@@ -15,6 +15,7 @@ import redis.clients.jedis.Jedis;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.*;
+import java.util.concurrent.TimeUnit;
 
 /**
  * This class represents the game executed by the plugin using this, if applicable.
@@ -81,6 +82,10 @@ public class Game<GAMEPLAYER extends GamePlayer>
         this.startTime = System.currentTimeMillis();
         this.beginTimer.cancel();
         this.setStatus(Status.IN_GAME);
+
+        if (this.gameManager.getGameStatisticsHelper() != null)
+            for (UUID uuid : this.gamePlayers.keySet())
+                this.gameManager.getGameStatisticsHelper().setPlayedGames(uuid, this.gameManager.getGameStatisticsHelper().getPlayedGames(uuid) + 1);
 
         this.coherenceMachine.getMessageManager().writeGameStart();
     }
@@ -239,11 +244,13 @@ public class Game<GAMEPLAYER extends GamePlayer>
     {
         this.setStatus(Status.FINISHED);
 
+        long gameTime = (System.currentTimeMillis() - this.startTime) / 1000;
+
         Bukkit.getScheduler().runTaskLater(SamaGamesAPI.get().getPlugin(), () ->
         {
             this.gamePlayers.keySet().stream().filter(playerUUID -> Bukkit.getPlayer(playerUUID) != null).forEach(playerUUID ->
             {
-                String key = "lastgame." + playerUUID.toString();
+                String key = "lastgame:" + playerUUID.toString();
 
                 Jedis jedis = SamaGamesAPI.get().getBungeeResource();
                 if (jedis != null)
@@ -255,7 +262,9 @@ public class Game<GAMEPLAYER extends GamePlayer>
 
                 EarningMessageTemplate earningMessageTemplate = this.coherenceMachine.getTemplateManager().getEarningMessageTemplate();
                 earningMessageTemplate.execute(Bukkit.getPlayer(playerUUID), this.getPlayer(playerUUID).getCoins(), this.getPlayer(playerUUID).getStars());
-                //TODO stats increase partie
+
+                if (this.gameManager.getGameStatisticsHelper() != null)
+                    this.gameManager.getGameStatisticsHelper().setPlayedTime(playerUUID, this.gameManager.getGameStatisticsHelper().getPlayedTime(playerUUID) + gameTime);
             });
         }, 20L * 3);
 
