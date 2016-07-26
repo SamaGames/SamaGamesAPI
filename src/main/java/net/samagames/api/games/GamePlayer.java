@@ -29,7 +29,7 @@ public class GamePlayer
     protected boolean spectator;
     protected boolean moderator;
 
-    protected long loginTime;
+    protected long startTime;
     protected long playedTime;
 
     public GamePlayer(Player player)
@@ -41,6 +41,7 @@ public class GamePlayer
         this.spectator = false;
         this.moderator = false;
 
+        this.startTime = -1;
         this.playedTime = 0;
     }
 
@@ -53,7 +54,6 @@ public class GamePlayer
      */
     public void handleLogin(boolean reconnect)
     {
-        this.loginTime = System.currentTimeMillis();
         SamaGamesAPI.get().getGameManager().getCoherenceMachine().getMessageManager().writeWelcomeInGameToPlayer(this.getPlayerIfOnline());
     }
 
@@ -91,13 +91,25 @@ public class GamePlayer
     }
 
     /**
+     * Ìnit the first bound of the played time counter
+     * to the current time in milliseconds.
+     */
+    public void initPlayedTimeCounter()
+    {
+        this.startTime = System.currentTimeMillis();
+    }
+
+    /**
      * Compute the played time since this player login to a
      * global variable in seconds.
      */
     public void stepPlayedTimeCounter()
     {
-        long stayedTime = (System.currentTimeMillis() - this.loginTime) / 1000;
-        this.playedTime += stayedTime;
+        if (this.startTime != -1)
+        {
+            long stayedTime = (System.currentTimeMillis() - this.startTime) / 1000;
+            this.playedTime += stayedTime;
+        }
     }
 
     /**

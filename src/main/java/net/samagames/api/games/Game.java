@@ -83,6 +83,8 @@ public class Game<GAMEPLAYER extends GamePlayer>
         this.beginTimer.cancel();
         this.setStatus(Status.IN_GAME);
 
+        this.gamePlayers.values().forEach(GamePlayer::initPlayedTimeCounter);
+
         if (this.gameManager.getGameStatisticsHelper() != null)
             for (UUID uuid : this.gamePlayers.keySet())
                 this.gameManager.getGameStatisticsHelper().increasePlayedGames(uuid);
