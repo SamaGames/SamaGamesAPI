@@ -85,7 +85,7 @@ public class Game<GAMEPLAYER extends GamePlayer>
 
         if (this.gameManager.getGameStatisticsHelper() != null)
             for (UUID uuid : this.gamePlayers.keySet())
-                this.gameManager.getGameStatisticsHelper().setPlayedGames(uuid, this.gameManager.getGameStatisticsHelper().getPlayedGames(uuid) + 1);
+                this.gameManager.getGameStatisticsHelper().increasePlayedGames(uuid);
 
         this.coherenceMachine.getMessageManager().writeGameStart();
     }
@@ -235,6 +235,18 @@ public class Game<GAMEPLAYER extends GamePlayer>
     }
 
     /**
+     * Call this method to modify the statistics of the
+     * given winner.
+     *
+     * @param uuid UUID of the winner
+     */
+    public void handleWinner(UUID uuid)
+    {
+        if (this.gameManager.getGameStatisticsHelper() != null)
+            this.gameManager.getGameStatisticsHelper().increaseWins(uuid);
+    }
+
+    /**
      * Call this method when the game is finished.
      *
      * If for some reasons you want to override this method, you will need to call the
@@ -264,7 +276,7 @@ public class Game<GAMEPLAYER extends GamePlayer>
                 earningMessageTemplate.execute(Bukkit.getPlayer(playerUUID), this.getPlayer(playerUUID).getCoins(), this.getPlayer(playerUUID).getStars());
 
                 if (this.gameManager.getGameStatisticsHelper() != null)
-                    this.gameManager.getGameStatisticsHelper().setPlayedTime(playerUUID, this.gameManager.getGameStatisticsHelper().getPlayedTime(playerUUID) + gameTime);
+                    this.gameManager.getGameStatisticsHelper().increasePlayedTime(playerUUID, gameTime);
             });
         }, 20L * 3);
 
