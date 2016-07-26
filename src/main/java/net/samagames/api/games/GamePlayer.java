@@ -29,6 +29,9 @@ public class GamePlayer
     protected boolean spectator;
     protected boolean moderator;
 
+    protected long loginTime;
+    protected long playedTime;
+
     public GamePlayer(Player player)
     {
         this.uuid = player.getUniqueId();
@@ -37,6 +40,8 @@ public class GamePlayer
         this.stars = 0;
         this.spectator = false;
         this.moderator = false;
+
+        this.playedTime = 0;
     }
 
     /**
@@ -48,6 +53,7 @@ public class GamePlayer
      */
     public void handleLogin(boolean reconnect)
     {
+        this.loginTime = System.currentTimeMillis();
         SamaGamesAPI.get().getGameManager().getCoherenceMachine().getMessageManager().writeWelcomeInGameToPlayer(this.getPlayerIfOnline());
     }
 
@@ -56,7 +62,11 @@ public class GamePlayer
      *
      * Please call the {@code super} method at the beginning of your own one.
      */
-    public void handleLogout() {}
+    public void handleLogout()
+    {
+        if (!this.spectator)
+            this.stepPlayedTimeCounter();
+    }
 
     /**
      * Credits coins to this player.
@@ -81,11 +91,22 @@ public class GamePlayer
     }
 
     /**
+     * Compute the played time since this player login to a
+     * global variable in seconds.
+     */
+    public void stepPlayedTimeCounter()
+    {
+        long stayedTime = (System.currentTimeMillis() - this.loginTime) / 1000;
+        this.playedTime += stayedTime;
+    }
+
+    /**
      * Puts this player into spectator mode.
      */
     public void setSpectator()
     {
         this.spectator = true;
+        this.stepPlayedTimeCounter();
 
         Bukkit.getScheduler().runTask(SamaGamesAPI.get().getPlugin(), () ->
         {
@@ -177,6 +198,17 @@ public class GamePlayer
     public int getStars()
     {
         return this.stars;
+    }
+
+    /**
+     * Returns the time this player played <b>during this game</b>
+     * in seconds.
+     *
+     * @return The played time.
+     */
+    public long getPlayedTime()
+    {
+        return this.playedTime;
     }
 
     /**

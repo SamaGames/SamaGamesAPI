@@ -256,7 +256,12 @@ public class Game<GAMEPLAYER extends GamePlayer>
     {
         this.setStatus(Status.FINISHED);
 
-        long gameTime = (System.currentTimeMillis() - this.startTime) / 1000;
+        for (GamePlayer player : this.getInGamePlayers().values())
+            player.stepPlayedTimeCounter();
+
+        if (this.gameManager.getGameStatisticsHelper() != null)
+            for (GamePlayer player : this.getRegisteredGamePlayers().values())
+                this.gameManager.getGameStatisticsHelper().increasePlayedTime(player.getUUID(), player.getPlayedTime());
 
         Bukkit.getScheduler().runTaskLater(SamaGamesAPI.get().getPlugin(), () ->
         {
@@ -274,9 +279,6 @@ public class Game<GAMEPLAYER extends GamePlayer>
 
                 EarningMessageTemplate earningMessageTemplate = this.coherenceMachine.getTemplateManager().getEarningMessageTemplate();
                 earningMessageTemplate.execute(Bukkit.getPlayer(playerUUID), this.getPlayer(playerUUID).getCoins(), this.getPlayer(playerUUID).getStars());
-
-                if (this.gameManager.getGameStatisticsHelper() != null)
-                    this.gameManager.getGameStatisticsHelper().increasePlayedTime(playerUUID, gameTime);
             });
         }, 20L * 3);
 
