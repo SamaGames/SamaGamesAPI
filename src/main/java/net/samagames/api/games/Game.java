@@ -102,6 +102,9 @@ public class Game<GAMEPLAYER extends GamePlayer>
         this.coherenceMachine = this.gameManager.getCoherenceMachine();
         this.beginObj = new BeginTimer(this);
         this.beginTimer = Bukkit.getScheduler().runTaskTimerAsynchronously(SamaGamesAPI.get().getPlugin(), this.beginObj, 20L, 20L);
+
+        if (this.gameManager.getGameStatisticsHelper() == null)
+            Bukkit.getLogger().severe("NO STATISTICS HELPER REGISTERED, PLAYERS WILL LOST THEIR STATISTICS DURING THIS GAME.");
     }
 
     /**
