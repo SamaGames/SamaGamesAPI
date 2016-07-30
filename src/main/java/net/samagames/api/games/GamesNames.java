@@ -23,7 +23,7 @@ public enum GamesNames {
     UPPERVOID(5),
     DIMENSION(6),
     BOWLING(7),
-    UHC(8),
+    UHCORIGINAL(8),
     DOUBLERUNNER(9),
     UHCRANDOM(10),
     RANDOMRUN(11),
