@@ -247,8 +247,12 @@ public class Game<GAMEPLAYER extends GamePlayer>
      */
     public void handleWinner(UUID uuid)
     {
-        if (this.gameManager.getGameStatisticsHelper() != null)
-            this.gameManager.getGameStatisticsHelper().increaseWins(uuid);
+        try
+        {
+            if (this.gameManager.getGameStatisticsHelper() != null)
+                this.gameManager.getGameStatisticsHelper().increaseWins(uuid);
+        }
+        catch (Exception ignored){}
     }
 
     /**
