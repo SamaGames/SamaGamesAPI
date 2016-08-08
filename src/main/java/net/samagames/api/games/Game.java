@@ -15,7 +15,6 @@ import redis.clients.jedis.Jedis;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.*;
-import java.util.concurrent.TimeUnit;
 
 /**
  * This class represents the game executed by the plugin using this, if applicable.
@@ -265,12 +264,15 @@ public class Game<GAMEPLAYER extends GamePlayer>
     {
         this.setStatus(Status.FINISHED);
 
-        for (GamePlayer player : this.getInGamePlayers().values())
-            player.stepPlayedTimeCounter();
+        this.getInGamePlayers().values().forEach(GamePlayer::stepPlayedTimeCounter);
 
         if (this.gameManager.getGameStatisticsHelper() != null)
             for (GamePlayer player : this.getRegisteredGamePlayers().values())
-                this.gameManager.getGameStatisticsHelper().increasePlayedTime(player.getUUID(), player.getPlayedTime());
+                try
+                {
+                    this.gameManager.getGameStatisticsHelper().increasePlayedTime(player.getUUID(), player.getPlayedTime());
+                }
+                catch (Exception ignored) {}
 
         Bukkit.getScheduler().runTaskLater(SamaGamesAPI.get().getPlugin(), () ->
         {
