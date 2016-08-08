@@ -186,4 +186,14 @@ public interface IGameManager
      * @return true to keep it, false to let it go
      */
     boolean isKeepingPlayerCache();
+
+    /**
+     * Network use to set the timestamp of the start of the game
+     */
+    void startTimer();
+
+    /**
+     * Network use to stop the game and save the server info to database for stats
+     */
+    void stopTimer();
 }
