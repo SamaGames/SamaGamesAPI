@@ -35,10 +35,10 @@ public class AchievementReward
      */
     public void give(Player player, Achievement achievement)
     {
-        if(this.coinsMessage != null && this.coins > 0)
+        if (this.coinsMessage != null && this.coins > 0)
             SamaGamesAPI.get().getPlayerManager().getPlayerData(player.getUniqueId()).creditCoins(this.coins, this.coinsMessage, false);
 
-        if(this.starsMessage != null && this.stars > 0)
+        if (this.starsMessage != null && this.stars > 0)
             SamaGamesAPI.get().getPlayerManager().getPlayerData(player.getUniqueId()).creditStars(this.stars, this.starsMessage, false);
 
         player.playSound(player.getLocation(), Sound.ENTITY_PLAYER_LEVELUP, 1.0F, 1.0F);

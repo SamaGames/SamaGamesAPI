@@ -2,7 +2,8 @@ package net.samagames.api.achievements;
 
 import org.bukkit.entity.Player;
 
-import java.util.ArrayList;
+import java.util.List;
+import java.util.UUID;
 
 /**
  * Achievement manager class
@@ -20,10 +21,34 @@ public interface IAchievementManager
     /**
      * Increase the progress of a given achievement to a given player
      *
-     * @param player Player
      * @param achievement Achievement
+     * @param uuid Player uuid
      */
-    void incrementAchievement(Player player, IncrementationAchievement achievement);
+    void incrementAchievement(Achievement achievement, UUID uuid, int amount);
+
+    /**
+     * Increase the progress of a given achievement to a given player
+     *
+     * @param id Achievement id
+     * @param uuid Player uuid
+     */
+    void incrementAchievement(int id, UUID uuid, int amount);
+
+    /**
+     * Unlock achievement for a player
+     *
+     * @param achievement Achievement
+     * @param uuid Player uuid
+     */
+    void unlockAchievement(Achievement achievement, UUID uuid);
+
+    /**
+     * Unlock achievement for a player
+     *
+     * @param id Achievement id
+     * @param uuid Player uuid
+     */
+    void unlockAchievement(int id, UUID uuid);
 
     /**
      * Get the achievement with the given ID
@@ -32,7 +57,7 @@ public interface IAchievementManager
      *
      * @return Achievement
      */
-    Achievement getAchievementByID(String id);
+    Achievement getAchievementByID(int id);
 
     /**
      * Get the achievement category with the given ID
@@ -41,21 +66,21 @@ public interface IAchievementManager
      *
      * @return Achievement category
      */
-    AchievementCategory getAchievementCategoryByID(String id);
+    AchievementCategory getAchievementCategoryByID(int id);
 
     /**
      * Get all the achievements of the database
      *
      * @return Achievements
      */
-    ArrayList<Achievement> getAchievements();
+    List<Achievement> getAchievements();
 
     /**
      * Get all the achievement categories of the database
      *
      * @return Achievement categories
      */
-    ArrayList<AchievementCategory> getAchievementsCategories();
+    List<AchievementCategory> getAchievementsCategories();
 
     /**
      * Return if the given player has unlocked the given achievement
@@ -75,5 +100,5 @@ public interface IAchievementManager
      *
      * @return {@code true} if unlocked
      */
-    boolean isUnlocked(Player player, String id);
+    boolean isUnlocked(Player player, int id);
 }

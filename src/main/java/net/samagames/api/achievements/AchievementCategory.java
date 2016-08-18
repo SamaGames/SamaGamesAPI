@@ -1,6 +1,5 @@
 package net.samagames.api.achievements;
 
-import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 
 /**
@@ -11,10 +10,11 @@ import org.bukkit.inventory.ItemStack;
  */
 public class AchievementCategory
 {
-    private final String id;
+    private final int id;
     private final String displayName;
     private final ItemStack icon;
     private final String[] description;
+    private final AchievementCategory parent;
 
     /**
      * Constructor
@@ -24,25 +24,13 @@ public class AchievementCategory
      * @param icon Achievement category's icon {@link ItemStack} in GUIs
      * @param description Achievement category's description in GUIs
      */
-    public AchievementCategory(String id, String displayName, ItemStack icon, String[] description)
+    public AchievementCategory(int id, String displayName, ItemStack icon, String[] description, AchievementCategory parent)
     {
         this.id = id;
         this.displayName = displayName;
         this.icon = icon;
         this.description = description;
-    }
-
-    /**
-     * Constructor
-     *
-     * @param id Achievement category's ID
-     * @param displayName Achievement category's display name in GUIs
-     * @param material Achievement category's icon {@link Material} in GUIs
-     * @param description Achievement category's description in GUIs
-     */
-    public AchievementCategory(String id, String displayName, Material material, String[] description)
-    {
-        this(id, displayName, new ItemStack(material, 1), description);
+        this.parent = parent;
     }
 
     /**
@@ -50,7 +38,7 @@ public class AchievementCategory
      *
      * @return ID
      */
-    public String getID()
+    public int getID()
     {
         return this.id;
     }
@@ -83,5 +71,15 @@ public class AchievementCategory
     public String[] getDescription()
     {
         return this.description;
+    }
+
+    /**
+     * Get the achievement category's parent category, or null if root
+     *
+     * @return Category
+     */
+    public AchievementCategory getParent()
+    {
+        return this.parent;
     }
 }

@@ -1,9 +1,5 @@
 package net.samagames.api.achievements;
 
-import net.samagames.api.SamaGamesAPI;
-import net.samagames.api.player.AbstractPlayerData;
-import org.bukkit.entity.Player;
-
 /**
  * Achievement object
  *
@@ -12,11 +8,12 @@ import org.bukkit.entity.Player;
  */
 public class Achievement
 {
-    protected final String id;
-    protected final String displayName;
-    protected final String parentCategory;
-    protected final String[] description;
-    protected final AchievementReward reward;
+    private final int id;
+    private final String displayName;
+    private final AchievementCategory parentCategory;
+    private final String[] description;
+    private final AchievementReward reward;
+    private final int objective;
 
     /**
      * Constructor
@@ -27,27 +24,14 @@ public class Achievement
      * @param description Achievement's description in GUIs
      * @param reward Achievement's reward
      */
-    public Achievement(String id, String displayName, String parentCategory, String[] description, AchievementReward reward)
+    Achievement(int id, String displayName, AchievementCategory parentCategory, String[] description, AchievementReward reward, int objective)
     {
         this.id = id;
         this.displayName = displayName;
         this.parentCategory = parentCategory;
         this.description = description;
         this.reward = reward;
-    }
-
-    /**
-     * Unlock this achievement for a given player
-     *
-     * @param player Player
-     */
-    public void unlock(Player player)
-    {
-        AbstractPlayerData playerData = SamaGamesAPI.get().getPlayerManager().getPlayerData(player.getUniqueId());
-        //playerData.set("achievement:" + this.id, "unlocked");
-        //Todo persistance api
-
-        this.reward.give(player, this);
+        this.objective = objective;
     }
 
     /**
@@ -55,7 +39,7 @@ public class Achievement
      *
      * @return ID
      */
-    public String getID()
+    public int getID()
     {
         return this.id;
     }
@@ -75,7 +59,7 @@ public class Achievement
      *
      * @return Parent category ID
      */
-    public String getParentCategoryID()
+    public AchievementCategory getParentCategoryID()
     {
         return this.parentCategory;
     }
@@ -98,5 +82,15 @@ public class Achievement
     public AchievementReward getReward()
     {
         return this.reward;
+    }
+
+    /**
+     * Get the goal to reach to unlock the achievement
+     *
+     * @return Goal
+     */
+    public int getObjective()
+    {
+        return this.objective;
     }
 }
