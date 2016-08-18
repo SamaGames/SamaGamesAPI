@@ -12,7 +12,6 @@ public class Achievement
     private final String displayName;
     private final AchievementCategory parentCategory;
     private final String[] description;
-    private final AchievementReward reward;
     private final int objective;
 
     /**
@@ -22,15 +21,13 @@ public class Achievement
      * @param displayName Achievement's display name in GUIs
      * @param parentCategory Achievement's parent category ID
      * @param description Achievement's description in GUIs
-     * @param reward Achievement's reward
      */
-    Achievement(int id, String displayName, AchievementCategory parentCategory, String[] description, AchievementReward reward, int objective)
+    Achievement(int id, String displayName, AchievementCategory parentCategory, String[] description, int objective)
     {
         this.id = id;
         this.displayName = displayName;
         this.parentCategory = parentCategory;
         this.description = description;
-        this.reward = reward;
         this.objective = objective;
     }
 
@@ -72,16 +69,6 @@ public class Achievement
     public String[] getDescription()
     {
         return this.description;
-    }
-
-    /**
-     * Get the achievement's reward
-     *
-     * @return Reward object
-     */
-    public AchievementReward getReward()
-    {
-        return this.reward;
     }
 
     /**
