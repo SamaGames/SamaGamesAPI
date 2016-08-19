@@ -22,15 +22,15 @@ public interface IAchievementManager
      * Increase the progress of a given achievement to a given player
      *
      * @param achievement Achievement
-     * @param uuid Player uuid
+     * @param uuid Player's uuid
      */
     void incrementAchievement(Achievement achievement, UUID uuid, int amount);
 
     /**
      * Increase the progress of a given achievement to a given player
      *
-     * @param id Achievement id
-     * @param uuid Player uuid
+     * @param id Achievement's id
+     * @param uuid Player's uuid
      */
     void incrementAchievement(int id, UUID uuid, int amount);
 
@@ -38,15 +38,15 @@ public interface IAchievementManager
      * Unlock achievement for a player
      *
      * @param achievement Achievement
-     * @param uuid Player uuid
+     * @param uuid Player's uuid
      */
     void unlockAchievement(Achievement achievement, UUID uuid);
 
     /**
      * Unlock achievement for a player
      *
-     * @param id Achievement id
-     * @param uuid Player uuid
+     * @param id Achievement's id
+     * @param uuid Player's uuid
      */
     void unlockAchievement(int id, UUID uuid);
 
@@ -85,20 +85,20 @@ public interface IAchievementManager
     /**
      * Return if the given player has unlocked the given achievement
      *
-     * @param player Player
+     * @param uuid Player's uuid
      * @param achievement Achievement
      *
      * @return {@code true} if unlocked
      */
-    boolean isUnlocked(Player player, Achievement achievement);
+    boolean isUnlocked(UUID uuid, Achievement achievement);
 
     /**
      * Return if the given player has unlocked the given achievement ID
      *
-     * @param player Player
+     * @param uuid Player's uuid
      * @param id Achievement's ID
      *
      * @return {@code true} if unlocked
      */
-    boolean isUnlocked(Player player, int id);
+    boolean isUnlocked(UUID uuid, int id);
 }
