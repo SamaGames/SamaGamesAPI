@@ -1,7 +1,5 @@
 package net.samagames.api.achievements;
 
-import org.bukkit.entity.Player;
-
 import java.util.List;
 import java.util.UUID;
 
@@ -14,41 +12,22 @@ import java.util.UUID;
 public interface IAchievementManager
 {
     /**
-     * Reload achievement list locally
+     * Increase the progress of a given achievement to a given player
+     *
+     * @param player Player
+     * @param achievement Achievement
+     * @param amount Amount
      */
-    void reloadList();
+    void incrementAchievement(UUID player, IncrementationAchievement achievement, int amount);
 
     /**
      * Increase the progress of a given achievement to a given player
      *
+     * @param player Player
      * @param achievement Achievement
-     * @param uuid Player's uuid
+     * @param amount Amount
      */
-    void incrementAchievement(Achievement achievement, UUID uuid, int amount);
-
-    /**
-     * Increase the progress of a given achievement to a given player
-     *
-     * @param id Achievement's id
-     * @param uuid Player's uuid
-     */
-    void incrementAchievement(int id, UUID uuid, int amount);
-
-    /**
-     * Unlock achievement for a player
-     *
-     * @param achievement Achievement
-     * @param uuid Player's uuid
-     */
-    void unlockAchievement(Achievement achievement, UUID uuid);
-
-    /**
-     * Unlock achievement for a player
-     *
-     * @param id Achievement's id
-     * @param uuid Player's uuid
-     */
-    void unlockAchievement(int id, UUID uuid);
+    void incrementAchievement(UUID player, int achievement, int amount);
 
     /**
      * Get the achievement with the given ID
@@ -85,20 +64,20 @@ public interface IAchievementManager
     /**
      * Return if the given player has unlocked the given achievement
      *
-     * @param uuid Player's uuid
+     * @param player Player
      * @param achievement Achievement
      *
      * @return {@code true} if unlocked
      */
-    boolean isUnlocked(UUID uuid, Achievement achievement);
+    boolean isUnlocked(UUID player, Achievement achievement);
 
     /**
      * Return if the given player has unlocked the given achievement ID
      *
-     * @param uuid Player's uuid
+     * @param player Player
      * @param id Achievement's ID
      *
      * @return {@code true} if unlocked
      */
-    boolean isUnlocked(UUID uuid, int id);
+    boolean isUnlocked(UUID player, int id);
 }

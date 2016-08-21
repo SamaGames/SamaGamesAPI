@@ -1,5 +1,6 @@
 package net.samagames.api.achievements;
 
+import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 
 /**
@@ -31,6 +32,19 @@ public class AchievementCategory
         this.icon = icon;
         this.description = description;
         this.parent = parent;
+    }
+
+    /**
+     * Constructor
+     *
+     * @param id Achievement category's ID
+     * @param displayName Achievement category's display name in GUIs
+     * @param material Achievement category's icon {@link Material} in GUIs
+     * @param description Achievement category's description in GUIs
+     */
+    public AchievementCategory(int id, String displayName, Material material, String[] description, AchievementCategory parent)
+    {
+        this(id, displayName, new ItemStack(material, 1), description, parent);
     }
 
     /**
@@ -74,9 +88,9 @@ public class AchievementCategory
     }
 
     /**
-     * Get the achievement category's parent category, or null if root
+     * Get the achievement category's parent category
      *
-     * @return Category
+     * @return Parent category
      */
     public AchievementCategory getParent()
     {

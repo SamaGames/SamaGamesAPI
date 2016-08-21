@@ -1,5 +1,11 @@
 package net.samagames.api.achievements;
 
+import java.sql.Timestamp;
+import java.time.Instant;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.UUID;
+
 /**
  * Achievement object
  *
@@ -8,11 +14,11 @@ package net.samagames.api.achievements;
  */
 public class Achievement
 {
-    private final int id;
-    private final String displayName;
-    private final AchievementCategory parentCategory;
-    private final String[] description;
-    private final int objective;
+    protected final int id;
+    protected final String displayName;
+    protected final AchievementCategory parentCategory;
+    protected final String[] description;
+    protected Map<UUID, AchievementProgress> progress;
 
     /**
      * Constructor
@@ -22,13 +28,32 @@ public class Achievement
      * @param parentCategory Achievement's parent category ID
      * @param description Achievement's description in GUIs
      */
-    Achievement(int id, String displayName, AchievementCategory parentCategory, String[] description, int objective)
+    public Achievement(int id, String displayName, AchievementCategory parentCategory, String[] description)
     {
         this.id = id;
         this.displayName = displayName;
         this.parentCategory = parentCategory;
         this.description = description;
-        this.objective = objective;
+        this.progress = new HashMap<>();
+    }
+
+    /**
+     * Unlock this achievement for a given player
+     *
+     * @param player Player
+     */
+    public void unlock(UUID player)
+    {
+        if (this instanceof IncrementationAchievement)
+            throw new IllegalStateException("Try to unlock incrementation achievement");
+        AchievementProgress progress = this.progress.get(player);
+        if (progress == null)
+        {
+            progress = new AchievementProgress(-1, 0, Timestamp.from(Instant.now()), null);
+            this.progress.put(player, progress);
+        }
+        progress.unlock();
+        progress.setProgress(1);
     }
 
     /**
@@ -72,12 +97,49 @@ public class Achievement
     }
 
     /**
-     * Get the goal to reach to unlock the achievement
+     * Get if this achievement is unlocked for a given player
      *
-     * @return Goal
+     * @param player Player
+     * @return {@code true} if unlocked
      */
-    public int getObjective()
+    public boolean isUnlocked(UUID player)
     {
-        return this.objective;
+        AchievementProgress progress = this.progress.get(player);
+        return progress != null && progress.getUnlockTime() != null;
+    }
+
+    /**
+     * Internal function, should only be used by API
+     *
+     * @param uuid Player
+     * @param progressId Progress id
+     * @param progress Progress
+     * @param startTime Start time
+     * @param unlockTime Unlock time
+     */
+    public void addProgress(UUID uuid, long progressId, int progress, Timestamp startTime, Timestamp unlockTime)
+    {
+        this.progress.put(uuid, new AchievementProgress(progressId, progress, startTime, unlockTime));
+    }
+
+    /**
+     * Internal function, should only be used by API
+     *
+     * @param uuid Player
+     */
+    public void removeProgress(UUID uuid)
+    {
+        this.progress.remove(uuid);
+    }
+
+    /**
+     * Internal function, should only be used by API
+     *
+     * @param uuid Player
+     * @return Progress
+     */
+    public AchievementProgress getProgress(UUID uuid)
+    {
+        return this.progress.get(uuid);
     }
 }
