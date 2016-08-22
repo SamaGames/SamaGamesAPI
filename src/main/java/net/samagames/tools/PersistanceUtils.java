@@ -15,6 +15,14 @@ import java.util.List;
 public class PersistanceUtils
 {
     /**
+     * @see @code{PersistanceUtils.makeStack(plugin, itemId, itemName, itemDescription)}
+     */
+    public static ItemStack makeStack(JavaPlugin plugin, IItemDescription itemDescription)
+    {
+        return makeStack(plugin, itemDescription.getItemMinecraftId(), itemDescription.getItemName(), itemDescription.getItemDesc());
+    }
+
+    /**
      * Create an ItemStack via the database data.
      *
      * The first character sets the type :
@@ -32,13 +40,15 @@ public class PersistanceUtils
      *
      * For a monster egg: E:OCELOT
      *
-     * @param itemDescription The item description from the database
+     * @param itemId The item's id
+     * @param itemName The item's name
+     * @param itemDescription The item's description
      *
      * @return An ItemStack
      */
-    public static ItemStack makeStack(JavaPlugin plugin, IItemDescription itemDescription)
+    public static ItemStack makeStack(JavaPlugin plugin, String itemId, String itemName, String itemDescription)
     {
-        String[] itemData = itemDescription.getItemMinecraftId().split(":");
+        String[] itemData = itemId.split(":");
         ItemStack stack;
 
         if (itemData[0].equalsIgnoreCase("B"))
@@ -80,14 +90,14 @@ public class PersistanceUtils
         }
 
         ItemMeta meta = stack.getItemMeta();
-        meta.setDisplayName(ChatColor.RESET + "" + ChatColor.translateAlternateColorCodes('&', itemDescription.getItemName()));
+        meta.setDisplayName(ChatColor.RESET + "" + ChatColor.translateAlternateColorCodes('&', itemName));
         meta.addItemFlags(ItemFlag.HIDE_ATTRIBUTES);
 
         List<String> lore = new ArrayList<>();
 
-        if (itemDescription.getItemDesc() != null)
+        if (itemDescription != null)
         {
-            String[] lines = itemDescription.getItemDesc().split("/n");
+            String[] lines = itemDescription.split("/n");
 
             for (String line : lines)
                 lore.add(ChatColor.GRAY + ChatColor.translateAlternateColorCodes('&', line));
