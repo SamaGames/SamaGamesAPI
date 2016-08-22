@@ -48,7 +48,7 @@ public class IncrementationAchievement extends Achievement
             progress.unlock();
             progress.setProgress(this.objective);
         }
-        else
+        else if (progress.getUnlockTime() == null)
             progress.setProgress(progress.getProgress() + amount);
     }
 

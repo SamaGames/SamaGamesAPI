@@ -47,6 +47,8 @@ public class Achievement
         if (this instanceof IncrementationAchievement)
             throw new IllegalStateException("Try to unlock incrementation achievement");
         AchievementProgress progress = this.progress.get(player);
+        if (progress != null && progress.getUnlockTime() != null)
+            return ;
         if (progress == null)
         {
             progress = new AchievementProgress(-1, 0, Timestamp.from(Instant.now()), null);

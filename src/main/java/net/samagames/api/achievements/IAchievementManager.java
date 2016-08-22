@@ -30,6 +30,15 @@ public interface IAchievementManager
     void incrementAchievement(UUID player, int achievement, int amount);
 
     /**
+     * Increase achievements progress, usefull for linked achievements
+     *
+     * @param player Player
+     * @param achievements Achievement id array
+     * @param amount Amount
+     */
+    void incrementAchievements(UUID player, int[] achievements, int amount);
+
+    /**
      * Get the achievement with the given ID
      *
      * @param id ID
