@@ -23,7 +23,7 @@ public class AchievementProgress
      *
      * @return progress
      */
-    int getProgress()
+    public int getProgress()
     {
         return this.progress;
     }
@@ -33,7 +33,7 @@ public class AchievementProgress
      *
      * @param amount Amount to increase
      */
-    void setProgress(int amount)
+    public void setProgress(int amount)
     {
         this.progress = amount;
     }
