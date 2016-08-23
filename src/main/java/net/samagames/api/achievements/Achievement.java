@@ -76,11 +76,11 @@ public class Achievement
         if (player == null)
             return ;
         player.playSound(player.getLocation(), Sound.ENTITY_PLAYER_LEVELUP, 1.0F, 1.0F);
-        List<String> list = new ArrayList<>();
-        list.add(ChatColor.DARK_PURPLE + this.getDisplayName());
-        list.add("");
-        Collections.addAll(list, this.getDescription());
-        new FancyMessage(ChatColor.DARK_AQUA + "♦ " + ChatColor.AQUA + "Objectif débloqué : " + ChatColor.GOLD + ChatColor.BOLD).then(this.getDisplayName()).tooltip(list).then(ChatColor.DARK_AQUA + " ♦").send(player);
+        String[] array = new String[this.description.length + 2];
+        array[0] = ChatColor.DARK_PURPLE + this.displayName;
+        array[1] = "";
+        System.arraycopy(this.description, 0, array, 2, this.description.length);
+        new FancyMessage(ChatColor.DARK_AQUA + "♦ " + ChatColor.AQUA + "Objectif débloqué : " + ChatColor.GOLD + ChatColor.BOLD).then(this.getDisplayName()).tooltip(array).then(ChatColor.DARK_AQUA + " ♦").send(player);
     }
 
     /**
