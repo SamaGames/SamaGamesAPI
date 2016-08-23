@@ -1,5 +1,6 @@
 package net.samagames.api.achievements;
 
+import net.samagames.tools.chat.FancyMessage;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Sound;
@@ -7,9 +8,7 @@ import org.bukkit.entity.Player;
 
 import java.sql.Timestamp;
 import java.time.Instant;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 
 /**
  * Achievement object
@@ -38,7 +37,9 @@ public class Achievement
         this.id = id;
         this.displayName = displayName;
         this.parentCategory = parentCategory;
-        this.description = description;
+        this.description = new String[description.length];
+        for (int i = 0; i < description.length; i++)
+            this.description[i] = ChatColor.translateAlternateColorCodes('&', description[i]);
         this.progress = new HashMap<>();
     }
 
@@ -75,7 +76,11 @@ public class Achievement
         if (player == null)
             return ;
         player.playSound(player.getLocation(), Sound.ENTITY_PLAYER_LEVELUP, 1.0F, 1.0F);
-        player.sendMessage(ChatColor.DARK_AQUA + "♦ " + ChatColor.RESET + ChatColor.AQUA + "Objectif débloqué : " + ChatColor.RESET + ChatColor.GOLD + ChatColor.BOLD + this.getDisplayName() + ChatColor.RESET + ChatColor.DARK_AQUA + " ♦");
+        List<String> list = new ArrayList<>();
+        list.add(ChatColor.DARK_PURPLE + this.getDisplayName());
+        list.add("");
+        Collections.addAll(list, this.getDescription());
+        new FancyMessage(ChatColor.DARK_AQUA + "♦ " + ChatColor.AQUA + "Objectif débloqué : " + ChatColor.GOLD + ChatColor.BOLD).then(this.getDisplayName()).tooltip(list).then(ChatColor.DARK_AQUA + " ♦").send(player);
     }
 
     /**
