@@ -1,5 +1,10 @@
 package net.samagames.api.achievements;
 
+import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
+import org.bukkit.Sound;
+import org.bukkit.entity.Player;
+
 import java.sql.Timestamp;
 import java.time.Instant;
 import java.util.HashMap;
@@ -56,6 +61,21 @@ public class Achievement
         }
         progress.unlock();
         progress.setProgress(1);
+        this.sendRewardMessage(player);
+    }
+
+    /**
+     * Send reward message to player
+     *
+     * @param uuid Player
+     */
+    protected void sendRewardMessage(UUID uuid)
+    {
+        Player player = Bukkit.getPlayer(uuid);
+        if (player == null)
+            return ;
+        player.playSound(player.getLocation(), Sound.ENTITY_PLAYER_LEVELUP, 1.0F, 1.0F);
+        player.sendMessage(ChatColor.DARK_AQUA + "♦ " + ChatColor.RESET + ChatColor.AQUA + "Objectif débloqué : " + ChatColor.RESET + ChatColor.GOLD + ChatColor.BOLD + this.getDisplayName() + ChatColor.RESET + ChatColor.DARK_AQUA + " ♦");
     }
 
     /**
