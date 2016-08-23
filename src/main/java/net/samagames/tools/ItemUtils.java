@@ -1,9 +1,15 @@
 package net.samagames.tools;
 
+import com.mojang.authlib.GameProfile;
+import com.mojang.authlib.properties.Property;
+import com.mojang.authlib.properties.PropertyMap;
 import org.bukkit.Material;
 import org.bukkit.SkullType;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.SkullMeta;
+
+import java.util.UUID;
 
 /**
  * ItemUtils
@@ -54,6 +60,32 @@ public class ItemUtils
         meta.setOwner(player);
         head.setItemMeta(meta);
 
+        return head;
+    }
+
+    public static ItemStack getCustomHead(String url)
+    {
+        GameProfile profile = new GameProfile(UUID.randomUUID(), null);
+        PropertyMap propertyMap = profile.getProperties();
+
+        if (propertyMap == null)
+            throw new IllegalStateException("Profile doesn't contain a property map");
+
+        byte[] encodedData = url.getBytes();
+        propertyMap.put("textures", new Property("textures", new String(encodedData)));
+        ItemStack head = new ItemStack(Material.SKULL_ITEM, 1, (short) 3);
+        ItemMeta headMeta = head.getItemMeta();
+
+        try
+        {
+            Reflection.setValue(headMeta, "profile", profile);
+        }
+        catch (NoSuchFieldException | IllegalAccessException e)
+        {
+            e.printStackTrace();
+        }
+
+        head.setItemMeta(headMeta);
         return head;
     }
 }
