@@ -63,7 +63,14 @@ public class ItemUtils
         return head;
     }
 
-    public static ItemStack getCustomHead(String url)
+    /**
+     * Create a player head with a base64 encoded texture
+     *
+     * @param texture Base64 texture
+     *
+     * @return A custom head with your texture
+     */
+    public static ItemStack getCustomHead(String texture)
     {
         GameProfile profile = new GameProfile(UUID.randomUUID(), null);
         PropertyMap propertyMap = profile.getProperties();
@@ -71,7 +78,7 @@ public class ItemUtils
         if (propertyMap == null)
             throw new IllegalStateException("Profile doesn't contain a property map");
 
-        byte[] encodedData = url.getBytes();
+        byte[] encodedData = texture.getBytes();
         propertyMap.put("textures", new Property("textures", new String(encodedData)));
         ItemStack head = new ItemStack(Material.SKULL_ITEM, 1, (short) 3);
         ItemMeta headMeta = head.getItemMeta();
