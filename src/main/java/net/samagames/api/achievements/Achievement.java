@@ -80,7 +80,7 @@ public class Achievement
         array[0] = ChatColor.GOLD + this.displayName;
         array[1] = "";
         for (int i = 0; i < this.description.length; i++)
-            array[i + 2] = ChatColor.DARK_GRAY + ChatColor.BOLD.toString() + this.description[i];
+            array[i + 2] = ChatColor.DARK_GRAY + ChatColor.ITALIC.toString() + this.description[i];
         new FancyMessage(ChatColor.DARK_AQUA + "♦ " + ChatColor.AQUA + "Objectif débloqué : ").then(ChatColor.GOLD + this.getDisplayName()).tooltip(array).then(ChatColor.DARK_AQUA + " ♦").send(player);
     }
 
