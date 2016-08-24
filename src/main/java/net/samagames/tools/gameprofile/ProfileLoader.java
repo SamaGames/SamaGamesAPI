@@ -118,11 +118,11 @@ public class ProfileLoader
         properties.forEach(property ->
         {
             JsonObject jsonProperty = new JsonObject();
-            jsonProperty.addProperty("name", property.getName());
-            jsonProperty.addProperty("value", property.getValue());
+            jsonProperty.addProperty("name", property.getName().replaceAll("\\u003d", "="));
+            jsonProperty.addProperty("value", property.getValue().replaceAll("\\u003d", "="));
 
             if (property.hasSignature())
-                jsonProperty.addProperty("signature", property.getSignature());
+                jsonProperty.addProperty("signature", property.getSignature().replaceAll("\\u003d", "="));
         });
 
         return jsonRoot;
@@ -135,7 +135,7 @@ public class ProfileLoader
         for (int i = 0; i < jsonElement.getAsJsonArray().size(); i++)
         {
             JsonObject jsonProperty = jsonElement.getAsJsonArray().get(i).getAsJsonObject();
-            properties.add(new Property(jsonProperty.get("name").getAsString(), jsonProperty.get("value").getAsString(), (jsonProperty.has("signature") ? jsonProperty.get("signature").getAsString() : null)));
+            properties.add(new Property(jsonProperty.get("name").getAsString().replaceAll("\\u003d", "="), jsonProperty.get("value").getAsString().replaceAll("\\u003d", "="), (jsonProperty.has("signature") ? jsonProperty.get("signature").getAsString().replaceAll("\\u003d", "=") : null)));
         }
 
         return properties;
