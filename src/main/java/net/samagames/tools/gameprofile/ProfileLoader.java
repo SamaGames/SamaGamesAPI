@@ -21,16 +21,8 @@ import com.mojang.authlib.properties.Property;
 import net.minecraft.server.v1_9_R2.MinecraftServer;
 import net.samagames.api.SamaGamesAPI;
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
-import org.json.simple.JSONArray;
-import org.json.simple.JSONObject;
-import org.json.simple.parser.JSONParser;
 import redis.clients.jedis.Jedis;
 
-import java.io.IOException;
-import java.lang.reflect.Type;
-import java.net.URL;
-import java.net.URLConnection;
 import java.util.*;
 import java.util.logging.Level;
 
@@ -41,8 +33,12 @@ public class ProfileLoader
      */
     public static GameProfile loadProfile(UUID profileOwner, String name, UUID skinOwner)
     {
+        Bukkit.getLogger().info("Loading profile of " + skinOwner.toString() + " to load his skin...");
+
         UUID id = profileOwner == null ? UUID.randomUUID() : profileOwner;
         GameProfile profile = new GameProfile(id, name);
+
+        Bukkit.getLogger().info("Adding properties...");
 
         addProperties(profile, skinOwner);
 
@@ -59,10 +55,18 @@ public class ProfileLoader
 
             if (textures == null)
             {
+                Bukkit.getLogger().info("Fetching properties using MinecraftServer");
+
                 GameProfile skinOwnerProfile = MinecraftServer.getServer().ay().fillProfileProperties(new GameProfile(skinOwner, null), true);
                 textures = skinOwnerProfile.getProperties().get("textures");
                 putSkinInCache(jedis, skinOwner, textures);
             }
+            else
+            {
+                Bukkit.getLogger().info("Textures found in cache...");
+            }
+
+            Bukkit.getLogger().info("Properties: " + SERIALIZER.toJson(textures));
 
             if (profile.getProperties().containsKey("textures"))
                 profile.getProperties().removeAll("textures");
