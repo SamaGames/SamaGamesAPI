@@ -1,10 +1,7 @@
 package net.samagames.tools.npc;
 
 import com.mojang.authlib.GameProfile;
-import net.minecraft.server.v1_9_R2.PacketPlayOutNamedEntitySpawn;
-import net.minecraft.server.v1_9_R2.PacketPlayOutPlayerInfo;
-import net.minecraft.server.v1_9_R2.PlayerInteractManager;
-import net.minecraft.server.v1_9_R2.World;
+import net.minecraft.server.v1_9_R2.*;
 import net.samagames.api.SamaGamesAPI;
 import net.samagames.tools.CallBack;
 import net.samagames.tools.gameprofile.ProfileLoader;
@@ -18,12 +15,8 @@ import org.bukkit.craftbukkit.v1_9_R2.entity.CraftPlayer;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
-import org.bukkit.event.entity.CreatureSpawnEvent;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
-import org.bukkit.event.player.PlayerInteractEntityEvent;
-import org.bukkit.event.player.PlayerJoinEvent;
-import org.bukkit.event.player.PlayerMoveEvent;
-import org.bukkit.event.player.PlayerTeleportEvent;
+import org.bukkit.event.player.*;
 
 import java.util.*;
 
@@ -45,33 +38,26 @@ public class NPCManager implements Listener {
         Bukkit.getPluginManager().registerEvents(this, api.getPlugin());
     }
 
-    @EventHandler
-    public void onPlayerConnectionHook(PlayerJoinEvent event)
-    {
-        Bukkit.getScheduler().runTaskLater(api.getPlugin(), () ->
-        {
-            for (CustomNPC npc : entities.keySet())
-                updateNPC(event.getPlayer(), npc);
-        }, 2L);
-    }
-
-    public void updateForAllNPC(CustomNPC npc)
+    private void updateForAllNPC(CustomNPC npc)
     {
         List<Player> players = new ArrayList<>();
         players.addAll(Bukkit.getOnlinePlayers());
         for(Player p : players)
         {
-            updateNPC(p, npc);
+            sendNPC(p, npc);
         }
     }
 
-    public void updateNPC(Player p, CustomNPC npc)
+    private void sendNPC(Player p, CustomNPC npc)
     {
         ((CraftPlayer)p).getHandle().playerConnection.sendPacket(new PacketPlayOutPlayerInfo(PacketPlayOutPlayerInfo.EnumPlayerInfoAction.ADD_PLAYER, npc));
         ((CraftPlayer)p).getHandle().playerConnection.sendPacket(new PacketPlayOutNamedEntitySpawn(npc));
         ((CraftPlayer)p).getHandle().playerConnection.sendPacket(new PacketPlayOutPlayerInfo(PacketPlayOutPlayerInfo.EnumPlayerInfoAction.REMOVE_PLAYER, npc));
+    }
 
-        entities.get(npc).addReceiver(p);
+    private void removeNPC(Player p, CustomNPC npc)
+    {
+        ((CraftPlayer)p).getHandle().playerConnection.sendPacket(new PacketPlayOutEntityDestroy(npc.getId()));
     }
 
     /**
@@ -97,7 +83,7 @@ public class NPCManager implements Listener {
         Hologram hologram = new Hologram(hologramLines);
         hologram.generateLines(location.clone().add(0.0D, 2.0D, 0.0D));
 
-        w.addEntity(npc, CreatureSpawnEvent.SpawnReason.CUSTOM);
+        //w.addEntity(npc, CreatureSpawnEvent.SpawnReason.CUSTOM);
 
         entities.put(npc, hologram);
 
@@ -155,7 +141,11 @@ public class NPCManager implements Listener {
         {
             if (event.getFrom().distanceSquared(customNPC.getBukkitEntity().getLocation()) > 2500
                     && event.getTo().distanceSquared(customNPC.getBukkitEntity().getLocation()) < 2500)
-                updateNPC(event.getPlayer(), customNPC);
+                sendNPC(event.getPlayer(), customNPC);
+
+            if (event.getFrom().distanceSquared(customNPC.getBukkitEntity().getLocation()) < 2500
+                    && event.getTo().distanceSquared(customNPC.getBukkitEntity().getLocation()) > 2500)
+                removeNPC(event.getPlayer(), customNPC);
         });
     }
 
@@ -166,7 +156,41 @@ public class NPCManager implements Listener {
         {
             if (event.getFrom().distanceSquared(customNPC.getBukkitEntity().getLocation()) > 2500
                     && event.getTo().distanceSquared(customNPC.getBukkitEntity().getLocation()) < 2500)
-                updateNPC(event.getPlayer(), customNPC);
+                sendNPC(event.getPlayer(), customNPC);
+
+            if (event.getFrom().distanceSquared(customNPC.getBukkitEntity().getLocation()) < 2500
+                    && event.getTo().distanceSquared(customNPC.getBukkitEntity().getLocation()) > 2500)
+                removeNPC(event.getPlayer(), customNPC);
+        });
+    }
+
+    @EventHandler
+    public void onPlayerJoin(PlayerJoinEvent event)
+    {
+        this.entities.keySet().forEach(customNPC ->
+        {
+            sendNPC(event.getPlayer(), customNPC);
+            entities.get(customNPC).addReceiver(event.getPlayer());
+        });
+    }
+
+    @EventHandler
+    public void onPlayerLeave(PlayerKickEvent event)
+    {
+        this.entities.entrySet().forEach(customNPC ->
+        {
+            removeNPC(event.getPlayer(), customNPC.getKey());
+            customNPC.getValue().removeReceiver(event.getPlayer());
+        });
+    }
+
+    @EventHandler
+    public void onPlayerLeave(PlayerQuitEvent event)
+    {
+        this.entities.entrySet().forEach(customNPC ->
+        {
+            removeNPC(event.getPlayer(), customNPC.getKey());
+            customNPC.getValue().removeReceiver(event.getPlayer());
         });
     }
 }
