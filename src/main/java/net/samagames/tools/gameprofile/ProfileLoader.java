@@ -57,7 +57,7 @@ public class ProfileLoader
             {
                 Bukkit.getLogger().info("Fetching properties using MinecraftServer");
 
-                GameProfile skinOwnerProfile = MinecraftServer.getServer().ay().fillProfileProperties(new GameProfile(skinOwner, null), false);
+                GameProfile skinOwnerProfile = MinecraftServer.getServer().ay().fillProfileProperties(new GameProfile(skinOwner, null), true);
                 textures = skinOwnerProfile.getProperties().get("textures");
                 putSkinInCache(jedis, skinOwner, textures);
             }
