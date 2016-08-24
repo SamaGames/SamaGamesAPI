@@ -1,12 +1,15 @@
 package net.samagames.api.achievements;
 
 import net.samagames.tools.chat.fanciful.FancyMessage;
+import org.apache.commons.lang.WordUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 
 import java.sql.Timestamp;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.time.Instant;
 import java.util.*;
 
@@ -23,6 +26,9 @@ public class Achievement
     protected final AchievementCategory parentCategory;
     protected final String[] description;
     protected Map<UUID, AchievementProgress> progress;
+
+    private static final DateFormat DATE_FORMATTER = new SimpleDateFormat("EEEE d MMMM yyyy à HH:mm", Locale.FRENCH);
+
 
     /**
      * Constructor
@@ -62,7 +68,7 @@ public class Achievement
         }
         progress.unlock();
         progress.setProgress(1);
-        this.sendRewardMessage(player);
+        this.sendRewardMessage(player, progress);
     }
 
     /**
@@ -70,17 +76,22 @@ public class Achievement
      *
      * @param uuid Player
      */
-    protected void sendRewardMessage(UUID uuid)
+    protected void sendRewardMessage(UUID uuid, AchievementProgress progress)
     {
         Player player = Bukkit.getPlayer(uuid);
         if (player == null)
             return ;
         player.playSound(player.getLocation(), Sound.ENTITY_PLAYER_LEVELUP, 1.0F, 1.0F);
-        String[] array = new String[this.description.length + 2];
+        String[] array = new String[this.description.length + 5];
         array[0] = ChatColor.GOLD + this.displayName;
         array[1] = "";
         for (int i = 0; i < this.description.length; i++)
-            array[i + 2] = ChatColor.DARK_GRAY + ChatColor.ITALIC.toString() + this.description[i];
+            array[i + 2] = ChatColor.GRAY + this.description[i];
+        Date unlockDate = new Date();
+        unlockDate.setTime(progress.getUnlockTime().getTime());
+        array[array.length - 3] = "";
+        array[array.length - 2] = ChatColor.DARK_GRAY + "Vous avez débloqué cet objectif";
+        array[array.length - 1] = ChatColor.DARK_GRAY + "le : " + ChatColor.GRAY + WordUtils.capitalize(DATE_FORMATTER.format(unlockDate)) + ChatColor.DARK_GRAY + ".";
         new FancyMessage(ChatColor.AQUA + " ♦ " + ChatColor.AQUA + "Objectif débloqué : ").then(ChatColor.GOLD + this.getDisplayName()).tooltip(array).then(ChatColor.AQUA + " ♦").send(player);
     }
 
