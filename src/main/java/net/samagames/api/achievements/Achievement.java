@@ -86,7 +86,7 @@ public class Achievement
         array[0] = ChatColor.GOLD + this.displayName;
         array[1] = "";
         for (int i = 0; i < this.description.length; i++)
-            array[i + 2] = ChatColor.DARK_GRAY + ChatColor.ITALIC.toString() + this.description[i];
+            array[i + 2] = ChatColor.GRAY + this.description[i];
         Date unlockDate = new Date();
         unlockDate.setTime(progress.getUnlockTime().getTime());
         array[array.length - 3] = "";
