@@ -42,17 +42,6 @@ public class ProfileLoader
 
         addProperties(profile, skinOwner);
 
-        Bukkit.broadcastMessage("NPC handling (" + profile.getName() + ")");
-
-        for (String key : profile.getProperties().keySet())
-        {
-            for (Property property : profile.getProperties().get(key))
-            {
-                Bukkit.broadcastMessage(key + ":" + property.getName() + ":" + property.getValue() + ":" + property.getSignature());
-                Bukkit.getLogger().info(key + ":" + property.getName() + ":" + property.getValue() + ":" + property.getSignature());
-            }
-        }
-
         return profile;
     }
 
@@ -68,7 +57,7 @@ public class ProfileLoader
             {
                 Bukkit.getLogger().info("Fetching properties using MinecraftServer");
 
-                GameProfile skinOwnerProfile = MinecraftServer.getServer().ay().fillProfileProperties(new GameProfile(skinOwner, null), true);
+                GameProfile skinOwnerProfile = MinecraftServer.getServer().ay().fillProfileProperties(new GameProfile(skinOwner, null), false);
                 textures = skinOwnerProfile.getProperties().get("textures");
                 putSkinInCache(jedis, skinOwner, textures);
             }
