@@ -111,31 +111,31 @@ public class ProfileLoader
         return DESERIALIZER.fromJson(jedis.get(key), Collection.class);
     }
 
-    private static final Gson SERIALIZER = new GsonBuilder().registerTypeAdapter(Collection.class, (JsonSerializer<Collection<Property>>) (properties, type, jsonSerializationContext) ->
+    private static final Gson SERIALIZER = new GsonBuilder().disableHtmlEscaping().registerTypeAdapter(Collection.class, (JsonSerializer<Collection<Property>>) (properties, type, jsonSerializationContext) ->
     {
         JsonArray jsonRoot = new JsonArray();
 
         properties.forEach(property ->
         {
             JsonObject jsonProperty = new JsonObject();
-            jsonProperty.addProperty("name", property.getName().replaceAll("\u003d", "="));
-            jsonProperty.addProperty("value", property.getValue().replaceAll("\u003d", "="));
+            jsonProperty.addProperty("name", property.getName());
+            jsonProperty.addProperty("value", property.getValue());
 
             if (property.hasSignature())
-                jsonProperty.addProperty("signature", property.getSignature().replaceAll("\u003d", "="));
+                jsonProperty.addProperty("signature", property.getSignature());
         });
 
         return jsonRoot;
     }).create();
 
-    private static final Gson DESERIALIZER = new GsonBuilder().registerTypeAdapter(Collection.class, (JsonDeserializer<Collection<Property>>) (jsonElement, type, jsonDeserializationContext) ->
+    private static final Gson DESERIALIZER = new GsonBuilder().disableHtmlEscaping().registerTypeAdapter(Collection.class, (JsonDeserializer<Collection<Property>>) (jsonElement, type, jsonDeserializationContext) ->
     {
         Collection<Property> properties = new ArrayList<>();
 
         for (int i = 0; i < jsonElement.getAsJsonArray().size(); i++)
         {
             JsonObject jsonProperty = jsonElement.getAsJsonArray().get(i).getAsJsonObject();
-            properties.add(new Property(jsonProperty.get("name").getAsString().replaceAll("\u003d", "="), jsonProperty.get("value").getAsString().replaceAll("\u003d", "="), (jsonProperty.has("signature") ? jsonProperty.get("signature").getAsString().replaceAll("\u003d", "=") : null)));
+            properties.add(new Property(jsonProperty.get("name").getAsString(), jsonProperty.get("value").getAsString(), (jsonProperty.has("signature") ? jsonProperty.get("signature").getAsString() : null)));
         }
 
         return properties;
