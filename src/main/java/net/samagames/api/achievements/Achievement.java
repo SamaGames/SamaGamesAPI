@@ -89,7 +89,7 @@ public class Achievement
             array[i + 2] = ChatColor.DARK_GRAY + ChatColor.ITALIC.toString() + this.description[i];
         Date unlockDate = new Date();
         unlockDate.setTime(progress.getUnlockTime().getTime());
-
+        array[array.length - 3] = "";
         array[array.length - 2] = ChatColor.DARK_GRAY + "Vous avez débloqué cet objectif";
         array[array.length - 1] = ChatColor.DARK_GRAY + "le : " + ChatColor.GRAY + WordUtils.capitalize(DATE_FORMATTER.format(unlockDate)) + ChatColor.DARK_GRAY + ".";
         new FancyMessage(ChatColor.AQUA + " ♦ " + ChatColor.AQUA + "Objectif débloqué : ").then(ChatColor.GOLD + this.getDisplayName()).tooltip(array).then(ChatColor.AQUA + " ♦").send(player);
