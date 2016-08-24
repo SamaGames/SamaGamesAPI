@@ -15,6 +15,7 @@ import org.bukkit.craftbukkit.v1_9_R2.entity.CraftPlayer;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.event.entity.CreatureSpawnEvent;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.player.*;
 
@@ -50,14 +51,10 @@ public class NPCManager implements Listener {
 
     private void sendNPC(Player p, CustomNPC npc)
     {
+        ((CraftPlayer)p).getHandle().playerConnection.sendPacket(new PacketPlayOutEntityDestroy(npc.getId()));
         ((CraftPlayer)p).getHandle().playerConnection.sendPacket(new PacketPlayOutPlayerInfo(PacketPlayOutPlayerInfo.EnumPlayerInfoAction.ADD_PLAYER, npc));
         ((CraftPlayer)p).getHandle().playerConnection.sendPacket(new PacketPlayOutNamedEntitySpawn(npc));
         ((CraftPlayer)p).getHandle().playerConnection.sendPacket(new PacketPlayOutPlayerInfo(PacketPlayOutPlayerInfo.EnumPlayerInfoAction.REMOVE_PLAYER, npc));
-    }
-
-    private void removeNPC(Player p, CustomNPC npc)
-    {
-        ((CraftPlayer)p).getHandle().playerConnection.sendPacket(new PacketPlayOutEntityDestroy(npc.getId()));
     }
 
     /**
@@ -83,7 +80,7 @@ public class NPCManager implements Listener {
         Hologram hologram = new Hologram(hologramLines);
         hologram.generateLines(location.clone().add(0.0D, 2.0D, 0.0D));
 
-        //w.addEntity(npc, CreatureSpawnEvent.SpawnReason.CUSTOM);
+        w.addEntity(npc, CreatureSpawnEvent.SpawnReason.CUSTOM);
 
         entities.put(npc, hologram);
 
@@ -142,10 +139,6 @@ public class NPCManager implements Listener {
             if (event.getFrom().distanceSquared(customNPC.getBukkitEntity().getLocation()) > 2500
                     && event.getTo().distanceSquared(customNPC.getBukkitEntity().getLocation()) < 2500)
                 sendNPC(event.getPlayer(), customNPC);
-
-            if (event.getFrom().distanceSquared(customNPC.getBukkitEntity().getLocation()) < 2500
-                    && event.getTo().distanceSquared(customNPC.getBukkitEntity().getLocation()) > 2500)
-                removeNPC(event.getPlayer(), customNPC);
         });
     }
 
@@ -157,10 +150,6 @@ public class NPCManager implements Listener {
             if (event.getFrom().distanceSquared(customNPC.getBukkitEntity().getLocation()) > 2500
                     && event.getTo().distanceSquared(customNPC.getBukkitEntity().getLocation()) < 2500)
                 sendNPC(event.getPlayer(), customNPC);
-
-            if (event.getFrom().distanceSquared(customNPC.getBukkitEntity().getLocation()) < 2500
-                    && event.getTo().distanceSquared(customNPC.getBukkitEntity().getLocation()) > 2500)
-                removeNPC(event.getPlayer(), customNPC);
         });
     }
 
@@ -179,19 +168,12 @@ public class NPCManager implements Listener {
     public void onPlayerLeave(PlayerKickEvent event)
     {
         this.entities.entrySet().forEach(customNPC ->
-        {
-            removeNPC(event.getPlayer(), customNPC.getKey());
-            customNPC.getValue().removeReceiver(event.getPlayer());
-        });
+                customNPC.getValue().removeReceiver(event.getPlayer()));
     }
 
     @EventHandler
     public void onPlayerLeave(PlayerQuitEvent event)
     {
-        this.entities.entrySet().forEach(customNPC ->
-        {
-            removeNPC(event.getPlayer(), customNPC.getKey());
-            customNPC.getValue().removeReceiver(event.getPlayer());
-        });
+        this.entities.entrySet().forEach(customNPC -> customNPC.getValue().removeReceiver(event.getPlayer()));
     }
 }
