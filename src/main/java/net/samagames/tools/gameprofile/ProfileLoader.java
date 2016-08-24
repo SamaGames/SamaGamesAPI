@@ -15,129 +15,133 @@ package net.samagames.tools.gameprofile;
  * ＿＿▔▔＿＿▔▔＿＿
  */
 
-import com.google.gson.*;
 import com.mojang.authlib.GameProfile;
 import com.mojang.authlib.properties.Property;
-import net.minecraft.server.v1_9_R2.MinecraftServer;
 import net.samagames.api.SamaGamesAPI;
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
+import org.json.simple.JSONArray;
+import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
 import redis.clients.jedis.Jedis;
 
-import java.util.*;
+import java.io.IOException;
+import java.net.URL;
+import java.net.URLConnection;
+import java.util.Scanner;
+import java.util.UUID;
 import java.util.logging.Level;
 
-public class ProfileLoader
-{
+public class ProfileLoader {
+    private final String uuid;
+    private final String name;
+    private final String skinOwner;
+
+    public ProfileLoader(String uuid, String name) {
+        this(uuid, name, name);
+    }
+
+    public ProfileLoader(String uuid, String name, String skinOwner) {
+        this.uuid = uuid == null ? null : uuid.replaceAll("-", ""); //We add these later
+        String displayName = ChatColor.translateAlternateColorCodes('&', name);
+        this.name = ChatColor.stripColor(displayName);
+        this.skinOwner = getUUID(skinOwner);
+    }
+
+    public ProfileLoader(String uuid, String name, UUID skinOwner) {
+        this.uuid = uuid == null ? null : uuid.replaceAll("-", ""); //We add these later
+        String displayName = ChatColor.translateAlternateColorCodes('&', name);
+        this.name = ChatColor.stripColor(displayName);
+        this.skinOwner = skinOwner.toString().replaceAll("-", "");
+    }
+
     /**
-        Need to be called async
+     Need to be called async
      */
-    public static GameProfile loadProfile(UUID profileOwner, String name, UUID skinOwner)
-    {
-        Bukkit.getLogger().info("Loading profile of " + skinOwner.toString() + " to load his skin...");
-
-        UUID id = profileOwner == null ? UUID.randomUUID() : profileOwner;
+    public GameProfile loadProfile() {
+        UUID id = uuid == null ? parseUUID(getUUID(name)) : parseUUID(uuid);
         GameProfile profile = new GameProfile(id, name);
-
-        Bukkit.getLogger().info("Adding properties...");
-
-        addProperties(profile, skinOwner);
-
+        addProperties(profile);
         return profile;
     }
 
-    private static void addProperties(GameProfile profile, UUID skinOwner)
-    {
+    private String getData(String uuid) throws IOException {
+        // Get the name from SwordPVP
+        URL url = new URL("https://sessionserver.mojang.com/session/minecraft/profile/" + uuid + "?unsigned=false");
+        URLConnection uc = url.openConnection();
+        uc.setUseCaches(false);
+        uc.setDefaultUseCaches(false);
+        uc.addRequestProperty("User-Agent", "Mozilla/5.0");
+        uc.addRequestProperty("Cache-Control", "no-cache, no-store, must-revalidate");
+        uc.addRequestProperty("Pragma", "no-cache");
+
+        // Parse it
+        return new Scanner(uc.getInputStream(), "UTF-8").useDelimiter("\\A").next();
+    }
+
+    private void addProperties(GameProfile profile) {
+        String uuid = this.skinOwner;
         Jedis jedis = SamaGamesAPI.get().getBungeeResource();
+        try {
 
-        try
-        {
-            Collection<Property> textures = getSkinFromCache(jedis, skinOwner);
-
-            if (textures == null)
+            String json = jedis == null ? null : jedis.get("cacheSkin:" + uuid);
+            if (json == null)
             {
-                Bukkit.getLogger().info("Fetching properties using MinecraftServer");
-
-                GameProfile skinOwnerProfile = MinecraftServer.getServer().ay().fillProfileProperties(new GameProfile(skinOwner, null), true);
-                textures = skinOwnerProfile.getProperties().get("textures");
-                putSkinInCache(jedis, skinOwner, textures);
+                //Requete
+                json = getData(uuid);
+                if (jedis != null)
+                {
+                    jedis.set("cacheSkin:" + uuid, json);
+                    jedis.expire("cacheSkin:" + uuid, 172800);//2 jours
+                }
             }
-            else
-            {
-                Bukkit.getLogger().info("Textures found in cache...");
+            JSONParser parser = new JSONParser();
+            Object obj = parser.parse(json);
+            JSONArray properties = (JSONArray) ((JSONObject) obj).get("properties");
+            for (int i = 0; i < properties.size(); i++) {
+                try {
+                    JSONObject property = (JSONObject) properties.get(i);
+                    String name = (String) property.get("name");
+                    String value = (String) property.get("value");
+                    String signature = property.containsKey("signature") ? (String) property.get("signature") : null;
+                    if (signature != null) {
+                        profile.getProperties().put(name, new Property(name, value, signature));
+                    } else {
+                        profile.getProperties().put(name, new Property(value, name));
+                    }
+                } catch (Exception e) {
+                    Bukkit.getLogger().log(Level.WARNING, "Failed to apply auth property", e);
+                }
             }
-
-            Bukkit.getLogger().info("Properties: " + SERIALIZER.toJson(textures));
-
-            if (profile.getProperties().containsKey("textures"))
-                profile.getProperties().removeAll("textures");
-
-            profile.getProperties().putAll("textures", textures);
-        }
-        catch (Exception ex)
-        {
-            Bukkit.getLogger().log(Level.SEVERE, "Can't load the skin of the owner " + skinOwner.toString(), ex);
-        }
-        finally
-        {
+        } catch (Exception e) {
+            Bukkit.getLogger().log(Level.SEVERE, "Can't load skin for uuid" + uuid, e);
+        }finally {
             if (jedis != null)
                 jedis.close();
         }
     }
 
-    private static void putSkinInCache(Jedis jedis, UUID skinOwner, Collection<Property> properties)
-    {
-        if (jedis == null)
-            return;
-
-        String key = "cacheskin:" + skinOwner.toString();
-
-        if (jedis.get(key) != null)
-            jedis.del(key);
-
-        jedis.set(key, SERIALIZER.toJson(properties));
-        jedis.expire(key, 172800); // 2 days
+    @SuppressWarnings("deprecation")
+    private String getUUID(String name) {
+        return Bukkit.getOfflinePlayer(name).getUniqueId().toString().replaceAll("-", "");
     }
 
-    private static Collection<Property> getSkinFromCache(Jedis jedis, UUID skinOwner)
-    {
-        if (jedis == null)
-            return null;
+    private UUID parseUUID(String uuidStr) {
+        // Split uuid in to 5 components
+        String[] uuidComponents = new String[] { uuidStr.substring(0, 8),
+                uuidStr.substring(8, 12), uuidStr.substring(12, 16),
+                uuidStr.substring(16, 20),
+                uuidStr.substring(20, uuidStr.length())
+        };
 
-        String key = "cacheskin:" + skinOwner.toString();
-
-        if (jedis.get(key) == null)
-            return null;
-
-        return DESERIALIZER.fromJson(jedis.get(key), Collection.class);
-    }
-
-    public static final Gson SERIALIZER = new GsonBuilder().disableHtmlEscaping().registerTypeAdapter(Collection.class, (JsonSerializer<Collection<Property>>) (properties, type, jsonSerializationContext) ->
-    {
-        JsonArray jsonRoot = new JsonArray();
-
-        properties.forEach(property ->
-        {
-            JsonObject jsonProperty = new JsonObject();
-            jsonProperty.addProperty("name", property.getName());
-            jsonProperty.addProperty("value", property.getValue());
-
-            if (property.hasSignature())
-                jsonProperty.addProperty("signature", property.getSignature());
-        });
-
-        return jsonRoot;
-    }).create();
-
-    public static final Gson DESERIALIZER = new GsonBuilder().disableHtmlEscaping().registerTypeAdapter(Collection.class, (JsonDeserializer<Collection<Property>>) (jsonElement, type, jsonDeserializationContext) ->
-    {
-        Collection<Property> properties = new ArrayList<>();
-
-        for (int i = 0; i < jsonElement.getAsJsonArray().size(); i++)
-        {
-            JsonObject jsonProperty = jsonElement.getAsJsonArray().get(i).getAsJsonObject();
-            properties.add(new Property(jsonProperty.get("name").getAsString(), jsonProperty.get("value").getAsString(), (jsonProperty.has("signature") ? jsonProperty.get("signature").getAsString() : null)));
+        // Combine components with a dash
+        StringBuilder builder = new StringBuilder();
+        for (String component : uuidComponents) {
+            builder.append(component).append('-');
         }
 
-        return properties;
-    }).create();
+        // Correct uuid length, remove last dash
+        builder.setLength(builder.length() - 1);
+        return UUID.fromString(builder.toString());
+    }
 }

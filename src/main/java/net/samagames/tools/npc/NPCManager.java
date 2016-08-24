@@ -1,7 +1,10 @@
 package net.samagames.tools.npc;
 
 import com.mojang.authlib.GameProfile;
-import net.minecraft.server.v1_9_R2.*;
+import net.minecraft.server.v1_9_R2.PacketPlayOutNamedEntitySpawn;
+import net.minecraft.server.v1_9_R2.PacketPlayOutPlayerInfo;
+import net.minecraft.server.v1_9_R2.PlayerInteractManager;
+import net.minecraft.server.v1_9_R2.World;
 import net.samagames.api.SamaGamesAPI;
 import net.samagames.tools.CallBack;
 import net.samagames.tools.gameprofile.ProfileLoader;
@@ -21,11 +24,8 @@ import org.bukkit.event.player.PlayerInteractEntityEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.event.player.PlayerTeleportEvent;
-import org.bukkit.scheduler.BukkitTask;
 
 import java.util.*;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
 
 /**
  * Created by Silva on 20/10/2015.
@@ -89,7 +89,7 @@ public class NPCManager implements Listener {
     {
         final World w = ((CraftWorld) location.getWorld()).getHandle();
 
-        GameProfile gameProfile = ProfileLoader.loadProfile(null, "[NPC] " + entities.size(), skinUUID);
+        GameProfile gameProfile = new ProfileLoader(UUID.randomUUID().toString(), "[NPC] " + entities.size(), skinUUID).loadProfile();
 
         final CustomNPC npc = new CustomNPC(w, gameProfile, new PlayerInteractManager(w));
         npc.setLocation(location);
