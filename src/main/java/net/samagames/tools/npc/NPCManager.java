@@ -5,6 +5,7 @@ import net.minecraft.server.v1_9_R2.*;
 import net.samagames.api.SamaGamesAPI;
 import net.samagames.tools.CallBack;
 import net.samagames.tools.gameprofile.ProfileLoader;
+import net.samagames.tools.holograms.Hologram;
 import net.samagames.tools.npc.nms.CustomNPC;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -22,9 +23,7 @@ import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.event.player.PlayerTeleportEvent;
 import org.bukkit.scheduler.BukkitTask;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 
@@ -35,7 +34,7 @@ public class NPCManager implements Listener {
 
     public SamaGamesAPI api;
 
-    private List<CustomNPC> entities = new ArrayList<>();
+    private Map<CustomNPC, Hologram> entities = new HashMap<>();
 
     private CallBack<CustomNPC> scoreBoardRegister;
 
@@ -51,7 +50,7 @@ public class NPCManager implements Listener {
     {
         Bukkit.getScheduler().runTaskLater(api.getPlugin(), () ->
         {
-            for (CustomNPC npc : entities)
+            for (CustomNPC npc : entities.keySet())
                 updateNPC(event.getPlayer(), npc);
         }, 2L);
     }
@@ -71,6 +70,8 @@ public class NPCManager implements Listener {
         ((CraftPlayer)p).getHandle().playerConnection.sendPacket(new PacketPlayOutPlayerInfo(PacketPlayOutPlayerInfo.EnumPlayerInfoAction.ADD_PLAYER, npc));
         ((CraftPlayer)p).getHandle().playerConnection.sendPacket(new PacketPlayOutNamedEntitySpawn(npc));
         ((CraftPlayer)p).getHandle().playerConnection.sendPacket(new PacketPlayOutPlayerInfo(PacketPlayOutPlayerInfo.EnumPlayerInfoAction.REMOVE_PLAYER, npc));
+
+        entities.get(npc).addReceiver(p);
     }
 
     /**
@@ -81,25 +82,30 @@ public class NPCManager implements Listener {
      */
     public CustomNPC createNPC(Location location, UUID skinUUID)
     {
-        return createNPC(location, skinUUID, "[NPC] " + entities.size());
+        return createNPC(location, skinUUID, new String[] { "[NPC] " + entities.size() });
     }
 
-    public CustomNPC createNPC(Location location, UUID skinUUID, String displayName)
+    public CustomNPC createNPC(Location location, UUID skinUUID, String[] hologramLines)
     {
         final World w = ((CraftWorld) location.getWorld()).getHandle();
 
-        GameProfile gameProfile = ProfileLoader.loadProfile(null, displayName, skinUUID);
+        GameProfile gameProfile = ProfileLoader.loadProfile(null, "[NPC] " + entities.size(), skinUUID);
 
         final CustomNPC npc = new CustomNPC(w, gameProfile, new PlayerInteractManager(w));
         npc.setLocation(location);
-        npc.setCustomName(displayName);
-        npc.setCustomNameVisible(true);
+
+        Hologram hologram = new Hologram(hologramLines);
+        hologram.generateLines(location.clone().add(0.0D, 2.0D, 0.0D));
+
         w.addEntity(npc, CreatureSpawnEvent.SpawnReason.CUSTOM);
-        entities.add(npc);
+
+        entities.put(npc, hologram);
+
         if (scoreBoardRegister != null)
             scoreBoardRegister.done(npc, null);
 
         Bukkit.getScheduler().runTaskLater(api.getPlugin(), () -> updateForAllNPC(npc), 2L);
+
         return npc;
     }
 
@@ -112,7 +118,7 @@ public class NPCManager implements Listener {
 
     public CustomNPC getNPCEntity(String name)
     {
-        for (CustomNPC entity : entities)
+        for (CustomNPC entity : entities.keySet())
             if (entity.getName().equals(name))
                 return entity;
         return null;
@@ -145,7 +151,7 @@ public class NPCManager implements Listener {
     @EventHandler
     public void onPlayerMove(PlayerMoveEvent event)
     {
-        this.entities.forEach(customNPC ->
+        this.entities.keySet().forEach(customNPC ->
         {
             if (event.getFrom().distanceSquared(customNPC.getBukkitEntity().getLocation()) > 2500
                     && event.getTo().distanceSquared(customNPC.getBukkitEntity().getLocation()) < 2500)
@@ -156,7 +162,7 @@ public class NPCManager implements Listener {
     @EventHandler
     public void onPlayerTeleport(PlayerTeleportEvent event)
     {
-        this.entities.forEach(customNPC ->
+        this.entities.keySet().forEach(customNPC ->
         {
             if (event.getFrom().distanceSquared(customNPC.getBukkitEntity().getLocation()) > 2500
                     && event.getTo().distanceSquared(customNPC.getBukkitEntity().getLocation()) < 2500)
