@@ -76,7 +76,7 @@ public class NPCManager implements Listener {
         final World w = ((CraftWorld) location.getWorld()).getHandle();
 
         GameProfile gameProfile = new GameProfile(UUID.randomUUID(), "[NPC] " + entities.size());
-        gameProfile.getProperties().putAll(new ProfileLoader(skinUUID.toString(), "").loadProfile().getProperties());
+        gameProfile.getProperties().putAll(new ProfileLoader(skinUUID.toString(), "[NPC] " + entities.size(), skinUUID).loadProfile().getProperties());
         // gameProfile = new ProfileLoader(UUID.randomUUID().toString(), "[NPC] " + entities.size(), skinUUID).loadProfile();
 
         final CustomNPC npc = new CustomNPC(w, gameProfile, new PlayerInteractManager(w));
