@@ -30,9 +30,10 @@ public class CustomNPC extends EntityPlayer {
             callback.done(rightClick, damager);
     }
 
-    public void setCallback(NPCInteractCallback callback)
+    public CustomNPC setCallback(NPCInteractCallback callback)
     {
         this.callback = callback;
+        return this;
     }
 
     public NPCInteractCallback getCallback()
