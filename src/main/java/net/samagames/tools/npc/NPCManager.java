@@ -1,10 +1,7 @@
 package net.samagames.tools.npc;
 
 import com.mojang.authlib.GameProfile;
-import net.minecraft.server.v1_9_R2.PacketPlayOutNamedEntitySpawn;
-import net.minecraft.server.v1_9_R2.PacketPlayOutPlayerInfo;
-import net.minecraft.server.v1_9_R2.PlayerInteractManager;
-import net.minecraft.server.v1_9_R2.World;
+import net.minecraft.server.v1_9_R2.*;
 import net.samagames.api.SamaGamesAPI;
 import net.samagames.tools.CallBack;
 import net.samagames.tools.gameprofile.ProfileLoader;
@@ -46,15 +43,15 @@ public class NPCManager implements Listener {
     {
         List<Player> players = new ArrayList<>();
         players.addAll(Bukkit.getOnlinePlayers());
-        for(Player p : players)
+        /*for(Player p : players)
         {
             sendNPC(p, npc);
-        }
+        }*/
     }
 
     private void sendNPC(Player p, CustomNPC npc)
     {
-
+        ((CraftPlayer)p).getHandle().playerConnection.sendPacket(new PacketPlayOutPlayerInfo(PacketPlayOutPlayerInfo.EnumPlayerInfoAction.REMOVE_PLAYER, npc));
         ((CraftPlayer)p).getHandle().playerConnection.sendPacket(new PacketPlayOutPlayerInfo(PacketPlayOutPlayerInfo.EnumPlayerInfoAction.ADD_PLAYER, npc));
         ((CraftPlayer)p).getHandle().playerConnection.sendPacket(new PacketPlayOutNamedEntitySpawn(npc));
         ((CraftPlayer)p).getHandle().playerConnection.sendPacket(new PacketPlayOutPlayerInfo(PacketPlayOutPlayerInfo.EnumPlayerInfoAction.REMOVE_PLAYER, npc));
@@ -75,9 +72,7 @@ public class NPCManager implements Listener {
     {
         final World w = ((CraftWorld) location.getWorld()).getHandle();
 
-        GameProfile gameProfile = new GameProfile(UUID.randomUUID(), "[NPC] " + entities.size());
-        gameProfile.getProperties().putAll(new ProfileLoader(skinUUID.toString(), "[NPC] " + entities.size(), skinUUID).loadProfile().getProperties());
-        // gameProfile = new ProfileLoader(UUID.randomUUID().toString(), "[NPC] " + entities.size(), skinUUID).loadProfile();
+        GameProfile gameProfile = new ProfileLoader(skinUUID.toString(), "[NPC] " + entities.size(), skinUUID).loadProfile();
 
         final CustomNPC npc = new CustomNPC(w, gameProfile, new PlayerInteractManager(w));
         npc.setLocation(location);
