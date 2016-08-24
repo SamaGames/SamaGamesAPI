@@ -111,7 +111,7 @@ public class ProfileLoader
         return DESERIALIZER.fromJson(jedis.get(key), Collection.class);
     }
 
-    private static final Gson SERIALIZER = new GsonBuilder().disableHtmlEscaping().registerTypeAdapter(Collection.class, (JsonSerializer<Collection<Property>>) (properties, type, jsonSerializationContext) ->
+    public static final Gson SERIALIZER = new GsonBuilder().disableHtmlEscaping().registerTypeAdapter(Collection.class, (JsonSerializer<Collection<Property>>) (properties, type, jsonSerializationContext) ->
     {
         JsonArray jsonRoot = new JsonArray();
 
@@ -128,7 +128,7 @@ public class ProfileLoader
         return jsonRoot;
     }).create();
 
-    private static final Gson DESERIALIZER = new GsonBuilder().disableHtmlEscaping().registerTypeAdapter(Collection.class, (JsonDeserializer<Collection<Property>>) (jsonElement, type, jsonDeserializationContext) ->
+    public static final Gson DESERIALIZER = new GsonBuilder().disableHtmlEscaping().registerTypeAdapter(Collection.class, (JsonDeserializer<Collection<Property>>) (jsonElement, type, jsonDeserializationContext) ->
     {
         Collection<Property> properties = new ArrayList<>();
 
