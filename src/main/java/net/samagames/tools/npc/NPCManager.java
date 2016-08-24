@@ -22,6 +22,7 @@ import org.bukkit.event.entity.CreatureSpawnEvent;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.player.*;
 
+import java.io.IOException;
 import java.util.*;
 
 /**
@@ -75,7 +76,14 @@ public class NPCManager implements Listener {
     {
         final World w = ((CraftWorld) location.getWorld()).getHandle();
 
-        GameProfile gameProfile = GameProfileBuilder.getProfile(skinUUID, "[NPC] " + entities.size(), "https://i.blueslime.fr/skin_2013080700432195735.png");
+        GameProfile profile = null;
+        try {
+            profile = GameProfileBuilder.fetch(skinUUID);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        GameProfile gameProfile = new GameProfile(UUID.randomUUID(), "[NPC] " + entities.size());
+        gameProfile.getProperties().putAll(profile.getProperties());
         // gameProfile = new ProfileLoader(UUID.randomUUID().toString(), "[NPC] " + entities.size(), skinUUID).loadProfile();
 
         final CustomNPC npc = new CustomNPC(w, gameProfile, new PlayerInteractManager(w));
