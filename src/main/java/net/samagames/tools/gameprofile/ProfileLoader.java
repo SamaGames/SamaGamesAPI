@@ -42,6 +42,17 @@ public class ProfileLoader
 
         addProperties(profile, skinOwner);
 
+        Bukkit.broadcastMessage("NPC handling (" + profile.getName() + ")");
+
+        for (String key : profile.getProperties().keySet())
+        {
+            for (Property property : profile.getProperties().get(key))
+            {
+                Bukkit.broadcastMessage(key + ":" + property.getName() + ":" + property.getValue() + ":" + property.getSignature());
+                Bukkit.getLogger().info(key + ":" + property.getName() + ":" + property.getValue() + ":" + property.getSignature());
+            }
+        }
+
         return profile;
     }
 
