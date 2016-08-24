@@ -1,10 +1,13 @@
 package net.samagames.tools.npc;
 
 import com.mojang.authlib.GameProfile;
-import net.minecraft.server.v1_9_R2.*;
+import net.minecraft.server.v1_9_R2.PacketPlayOutNamedEntitySpawn;
+import net.minecraft.server.v1_9_R2.PacketPlayOutPlayerInfo;
+import net.minecraft.server.v1_9_R2.PlayerInteractManager;
+import net.minecraft.server.v1_9_R2.World;
 import net.samagames.api.SamaGamesAPI;
 import net.samagames.tools.CallBack;
-import net.samagames.tools.gameprofile.ProfileLoader;
+import net.samagames.tools.gameprofile.GameProfileBuilder;
 import net.samagames.tools.holograms.Hologram;
 import net.samagames.tools.npc.nms.CustomNPC;
 import org.bukkit.Bukkit;
@@ -72,7 +75,8 @@ public class NPCManager implements Listener {
     {
         final World w = ((CraftWorld) location.getWorld()).getHandle();
 
-        GameProfile gameProfile = new ProfileLoader(UUID.randomUUID().toString(), "[NPC] " + entities.size(), skinUUID).loadProfile();
+        GameProfile gameProfile = GameProfileBuilder.getProfile(skinUUID, "[NPC] " + entities.size(), "https://i.blueslime.fr/skin_2013080700432195735.png");
+        // gameProfile = new ProfileLoader(UUID.randomUUID().toString(), "[NPC] " + entities.size(), skinUUID).loadProfile();
 
         final CustomNPC npc = new CustomNPC(w, gameProfile, new PlayerInteractManager(w));
         npc.setLocation(location);
