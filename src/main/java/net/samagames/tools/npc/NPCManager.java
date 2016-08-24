@@ -7,7 +7,7 @@ import net.minecraft.server.v1_9_R2.PlayerInteractManager;
 import net.minecraft.server.v1_9_R2.World;
 import net.samagames.api.SamaGamesAPI;
 import net.samagames.tools.CallBack;
-import net.samagames.tools.gameprofile.GameProfileBuilder;
+import net.samagames.tools.gameprofile.ProfileLoader;
 import net.samagames.tools.holograms.Hologram;
 import net.samagames.tools.npc.nms.CustomNPC;
 import org.bukkit.Bukkit;
@@ -22,7 +22,6 @@ import org.bukkit.event.entity.CreatureSpawnEvent;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.player.*;
 
-import java.io.IOException;
 import java.util.*;
 
 /**
@@ -76,14 +75,8 @@ public class NPCManager implements Listener {
     {
         final World w = ((CraftWorld) location.getWorld()).getHandle();
 
-        GameProfile profile = null;
-        try {
-            profile = GameProfileBuilder.fetch(skinUUID);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
         GameProfile gameProfile = new GameProfile(UUID.randomUUID(), "[NPC] " + entities.size());
-        gameProfile.getProperties().putAll(profile.getProperties());
+        gameProfile.getProperties().putAll(new ProfileLoader(skinUUID.toString(), "").loadProfile().getProperties());
         // gameProfile = new ProfileLoader(UUID.randomUUID().toString(), "[NPC] " + entities.size(), skinUUID).loadProfile();
 
         final CustomNPC npc = new CustomNPC(w, gameProfile, new PlayerInteractManager(w));
