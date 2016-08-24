@@ -167,11 +167,12 @@ public class NPCManager implements Listener {
     @EventHandler
     public void onPlayerJoin(PlayerJoinEvent event)
     {
-        this.entities.keySet().forEach(customNPC ->
+        Bukkit.getScheduler().runTaskLater(api.getPlugin(),
+                () -> entities.keySet().forEach(customNPC ->
         {
             sendNPC(event.getPlayer(), customNPC);
             entities.get(customNPC).addReceiver(event.getPlayer());
-        });
+        }), 2L);
     }
 
     @EventHandler
