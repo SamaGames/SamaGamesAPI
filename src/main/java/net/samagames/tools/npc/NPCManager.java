@@ -123,7 +123,7 @@ public class NPCManager implements Listener {
         entity.hideTag(npc.getBukkitEntity());
 
         Hologram hologram = new Hologram(hologramLines);
-        hologram.generateLines(location.clone().add(0.0D, 2.0D, 0.0D));
+        hologram.generateLines(location.clone().add(0.0D, 1.8D, 0.0D));
 
         w.addEntity(npc, CreatureSpawnEvent.SpawnReason.CUSTOM);
 
