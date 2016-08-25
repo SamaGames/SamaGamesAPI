@@ -61,9 +61,8 @@ public class ProfileLoader {
      */
     public GameProfile loadProfile() {
         UUID id = uuid == null ? parseUUID(getUUID(name)) : parseUUID(uuid);
-        GameProfile skinProfile = MinecraftServer.getServer().ay().fillProfileProperties(new GameProfile(id, null), true);
         //addProperties(profile);
-        return skinProfile;
+        return MinecraftServer.getServer().ay().fillProfileProperties(new GameProfile(id, null), true);
     }
 
     private String getData(String uuid) throws IOException {
