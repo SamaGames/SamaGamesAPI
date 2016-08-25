@@ -19,6 +19,7 @@ import com.mojang.authlib.GameProfile;
 import com.mojang.authlib.properties.Property;
 import net.minecraft.server.v1_9_R2.MinecraftServer;
 import net.samagames.api.SamaGamesAPI;
+import net.samagames.tools.Reflection;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.json.simple.JSONArray;
@@ -29,8 +30,7 @@ import redis.clients.jedis.Jedis;
 import java.io.IOException;
 import java.net.URL;
 import java.net.URLConnection;
-import java.util.Scanner;
-import java.util.UUID;
+import java.util.*;
 import java.util.logging.Level;
 
 public class ProfileLoader {
@@ -65,8 +65,18 @@ public class ProfileLoader {
         GameProfile skinProfile = MinecraftServer.getServer().ay().fillProfileProperties(new GameProfile(id, null), true);
         if (skinProfile.getProperties().containsKey("textures"))
         {
+            List<Property> properties = new ArrayList<>(profile.getProperties().get("textures"));
             profile.getProperties().removeAll("textures");
-            profile.getProperties().putAll("textures", skinProfile.getProperties().get("textures"));
+            Property property = skinProfile.getProperties().get("textures").iterator().next();
+            properties.forEach(property2 ->
+            {
+                try {
+                    Reflection.setValue(property, "signature", property2.getSignature());
+                } catch (NoSuchFieldException | IllegalAccessException e) {
+                    e.printStackTrace();
+                }
+            });
+            profile.getProperties().put("textures", property);
         }
         //addProperties(profile);
         return profile;
