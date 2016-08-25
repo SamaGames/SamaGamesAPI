@@ -62,7 +62,7 @@ public class ProfileLoader {
     public GameProfile loadProfile() {
         UUID id = uuid == null ? parseUUID(getUUID(name)) : parseUUID(uuid);
         GameProfile profile;
-        profile = MinecraftServer.getServer().ay().fillProfileProperties(new GameProfile(id, null), false);
+        profile = MinecraftServer.getServer().ay().fillProfileProperties(new GameProfile(id, null), true);
         //addProperties(profile);
         return profile;
     }
