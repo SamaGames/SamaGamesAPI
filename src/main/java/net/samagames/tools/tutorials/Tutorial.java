@@ -6,6 +6,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerKickEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
+import org.bukkit.event.player.PlayerToggleFlightEvent;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.scheduler.BukkitTask;
 
@@ -170,7 +171,6 @@ public class Tutorial implements Listener
 
 		Player player = p.getServer().getPlayer(id);
 
-
 		// The player cannot move anymore (except with our teleportations)
 		player.setFlySpeed(0f);
 		player.setAllowFlight(true);
@@ -309,6 +309,15 @@ public class Tutorial implements Listener
 
 	/* * ***  INTERNAL EVENTS  *** * */
 
+	@EventHandler
+	public void onToToggleFlight(PlayerToggleFlightEvent ev)
+	{
+		if(isWatchingTutorial(ev.getPlayer().getUniqueId()))
+		{
+			ev.setCancelled(true);
+			ev.getPlayer().setFlying(true);
+		}
+	}
 
 	@EventHandler
 	public void onPlayerQuits(PlayerQuitEvent ev)
