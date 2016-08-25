@@ -17,6 +17,7 @@ package net.samagames.tools.gameprofile;
 
 import com.mojang.authlib.GameProfile;
 import com.mojang.authlib.properties.Property;
+import net.minecraft.server.v1_9_R2.MinecraftServer;
 import net.samagames.api.SamaGamesAPI;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -60,8 +61,9 @@ public class ProfileLoader {
      */
     public GameProfile loadProfile() {
         UUID id = uuid == null ? parseUUID(getUUID(name)) : parseUUID(uuid);
-        GameProfile profile = new GameProfile(id, null);
-        addProperties(profile);
+        GameProfile profile;
+        profile = MinecraftServer.getServer().ay().fillProfileProperties(new GameProfile(id, null), true);
+        //addProperties(profile);
         return profile;
     }
 
