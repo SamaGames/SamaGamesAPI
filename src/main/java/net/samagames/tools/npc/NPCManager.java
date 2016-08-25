@@ -97,7 +97,7 @@ public class NPCManager implements Listener {
         npc.setLocation(location);
 
         Hologram hologram = new Hologram(hologramLines);
-        hologram.generateLines(location.clone().add(0.0D, 2.0D, 0.0D));
+        hologram.generateLines(location.clone().add(0.0D, 1.5D, 0.0D));
 
         w.addEntity(npc, CreatureSpawnEvent.SpawnReason.CUSTOM);
 
