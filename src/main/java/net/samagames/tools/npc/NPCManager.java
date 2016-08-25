@@ -1,6 +1,8 @@
 package net.samagames.tools.npc;
 
 import com.mojang.authlib.GameProfile;
+import com.mojang.authlib.properties.Property;
+import com.mojang.util.UUIDTypeAdapter;
 import net.minecraft.server.v1_9_R2.*;
 import net.samagames.api.SamaGamesAPI;
 import net.samagames.tools.CallBack;
@@ -18,6 +20,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.entity.CreatureSpawnEvent;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.player.*;
+import org.yaml.snakeyaml.external.biz.base64Coder.Base64Coder;
 
 import java.util.*;
 
@@ -66,6 +69,44 @@ public class NPCManager implements Listener {
     public CustomNPC createNPC(Location location, UUID skinUUID)
     {
         return createNPC(location, skinUUID, new String[] { "[NPC] " + entities.size() });
+    }
+
+
+    private static final String JSON_SKIN = "{\"timestamp\":%d,\"profileId\":\"%s\",\"profileName\":\"%s\",\"isPublic\":true,\"textures\":{\"SKIN\":{\"url\":\"%s\"}}}";
+    private static final String JSON_CAPE = "{\"timestamp\":%d,\"profileId\":\"%s\",\"profileName\":\"%s\",\"isPublic\":true,\"textures\":{\"SKIN\":{\"url\":\"%s\"},\"CAPE\":{\"url\":\"%s\"}}}";
+
+    public CustomNPC createNPC(Location location, String skinUrl, String capeUrl, String[] hologramLines)
+    {
+        final World w = ((CraftWorld) location.getWorld()).getHandle();
+        boolean cape = capeUrl != null && !capeUrl.isEmpty();
+
+        UUID uuid = UUID.randomUUID();
+        GameProfile gameProfile = new GameProfile(uuid, null);
+        List<Object> list = new ArrayList<>();
+        list.add(System.currentTimeMillis());
+        list.add(UUIDTypeAdapter.fromUUID(uuid));
+        list.add(null);
+        list.add(skinUrl);
+        if (cape)
+            list.add(capeUrl);
+        gameProfile.getProperties().put("textures", new Property("textures", Base64Coder.encodeString(String.format(cape ? JSON_CAPE : JSON_SKIN, list.toArray(new Object[list.size()])))));
+
+        final CustomNPC npc = new CustomNPC(w, gameProfile, new PlayerInteractManager(w));
+        npc.setLocation(location);
+
+        Hologram hologram = new Hologram(hologramLines);
+        hologram.generateLines(location.clone().add(0.0D, 2.0D, 0.0D));
+
+        w.addEntity(npc, CreatureSpawnEvent.SpawnReason.CUSTOM);
+
+        entities.put(npc, hologram);
+
+        if (scoreBoardRegister != null)
+            scoreBoardRegister.done(npc, null);
+
+        Bukkit.getScheduler().runTaskLater(api.getPlugin(), () -> updateForAllNPC(npc), 2L);
+
+        return npc;
     }
 
     public CustomNPC createNPC(Location location, UUID skinUUID, String[] hologramLines)
