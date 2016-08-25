@@ -9,6 +9,7 @@ import net.samagames.tools.CallBack;
 import net.samagames.tools.gameprofile.ProfileLoader;
 import net.samagames.tools.holograms.Hologram;
 import net.samagames.tools.npc.nms.CustomNPC;
+import net.samagames.tools.npc.nms.NametagEntity;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.craftbukkit.v1_9_R2.CraftWorld;
@@ -118,6 +119,8 @@ public class NPCManager implements Listener {
 
         final CustomNPC npc = new CustomNPC(w, gameProfile, new PlayerInteractManager(w));
         npc.setLocation(location);
+        NametagEntity entity = new NametagEntity(npc.getBukkitEntity());
+        entity.hideTag(npc.getBukkitEntity());
 
         Hologram hologram = new Hologram(hologramLines);
         hologram.generateLines(location.clone().add(0.0D, 2.0D, 0.0D));
