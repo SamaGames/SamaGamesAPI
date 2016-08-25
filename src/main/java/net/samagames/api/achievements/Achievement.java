@@ -88,23 +88,29 @@ public class Achievement
 
         Firework firework = player.getWorld().spawn(player.getLocation(), Firework.class);
         FireworkMeta fireworkMeta = firework.getFireworkMeta();
+        fireworkMeta.setPower(2);
         fireworkMeta.addEffect(FIREWORK_EFFECT);
         firework.setFireworkMeta(fireworkMeta);
 
-        String[] array = new String[this.description.length + 5];
+        String[] array = new String[this.description.length + 2];
         array[0] = ChatColor.GOLD + this.displayName;
         array[1] = "";
 
         for (int i = 0; i < this.description.length; i++)
             array[i + 2] = ChatColor.GRAY + this.description[i];
 
-        FancyMessage message = new FancyMessage(ChatColor.GOLD + " \u25A0 ")
-                .then(ChatColor.GOLD + player.getName())
-                .then(ChatColor.YELLOW + " a débloqué l'objectif : ")
-                .then(ChatColor.GOLD + this.getDisplayName())
+        String finalDisplayName = "";
+
+        for (char letter : this.getDisplayName().toCharArray())
+            finalDisplayName += ChatColor.LIGHT_PURPLE + "" + letter;
+
+        FancyMessage message = new FancyMessage(ChatColor.DARK_PURPLE + "\u25A0 ")
+                .then(ChatColor.LIGHT_PURPLE + player.getName())
+                .then(ChatColor.WHITE + " a débloqué l'objectif : ")
+                .then(finalDisplayName)
                     .tooltip(array)
-                .then(ChatColor.YELLOW + " !")
-                .then(ChatColor.GOLD + " \u25A0");
+                .then(ChatColor.WHITE + " !")
+                .then(ChatColor.DARK_PURPLE + " \u25A0");
 
         Bukkit.getOnlinePlayers().forEach(message::send);
     }
