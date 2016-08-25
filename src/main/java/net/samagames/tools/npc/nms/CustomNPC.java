@@ -22,6 +22,7 @@ public class CustomNPC extends EntityPlayer {
         super(world.getServer().getServer(), (WorldServer) world, gameprofile, playerInteractManager);
         playerInteractManager.b(WorldSettings.EnumGamemode.SURVIVAL);
         this.playerConnection = new VoidPlayerConnection(world.getServer().getServer(), this);
+        this.getDataWatcher().set(bq, Byte.MAX_VALUE);
     }
 
     public void onInteract(boolean rightClick, Player damager)
