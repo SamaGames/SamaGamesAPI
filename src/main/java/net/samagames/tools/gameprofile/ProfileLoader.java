@@ -61,25 +61,9 @@ public class ProfileLoader {
      */
     public GameProfile loadProfile() {
         UUID id = uuid == null ? parseUUID(getUUID(name)) : parseUUID(uuid);
-        GameProfile profile = MinecraftServer.getServer().ay().fillProfileProperties(new GameProfile(id, null), false);
         GameProfile skinProfile = MinecraftServer.getServer().ay().fillProfileProperties(new GameProfile(id, null), true);
-        if (skinProfile.getProperties().containsKey("textures"))
-        {
-            List<Property> properties = new ArrayList<>(profile.getProperties().get("textures"));
-            profile.getProperties().removeAll("textures");
-            Property property = skinProfile.getProperties().get("textures").iterator().next();
-            properties.forEach(property2 ->
-            {
-                try {
-                    Reflection.setValue(property, "signature", property2.getSignature());
-                } catch (NoSuchFieldException | IllegalAccessException e) {
-                    e.printStackTrace();
-                }
-            });
-            profile.getProperties().put("textures", property);
-        }
         //addProperties(profile);
-        return profile;
+        return skinProfile;
     }
 
     private String getData(String uuid) throws IOException {
