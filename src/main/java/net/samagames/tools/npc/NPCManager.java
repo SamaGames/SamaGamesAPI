@@ -117,7 +117,7 @@ public class NPCManager implements Listener {
         GameProfile gameProfile = new ProfileLoader(skinUUID.toString(), "[NPC] " + entities.size(), skinUUID).loadProfile();
 
         final CustomNPC npc = new CustomNPC(w, gameProfile, new PlayerInteractManager(w));
-        npc.getBukkitEntity().setDisplayName("");
+        npc.listName = IChatBaseComponent.ChatSerializer.a("");
         npc.setLocation(location);
 
         Hologram hologram = new Hologram(hologramLines);
