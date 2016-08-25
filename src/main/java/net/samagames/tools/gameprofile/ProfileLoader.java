@@ -108,7 +108,7 @@ public class ProfileLoader {
                     if (signature != null) {
                         profile.getProperties().put(name, new Property(name, value, signature));
                     } else {
-                        profile.getProperties().put(name, new Property(value, name));
+                        profile.getProperties().put(name, new Property(name, value));
                     }
                 } catch (Exception e) {
                     Bukkit.getLogger().log(Level.WARNING, "Failed to apply auth property", e);
