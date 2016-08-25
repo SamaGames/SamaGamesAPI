@@ -60,7 +60,7 @@ public class ProfileLoader {
      */
     public GameProfile loadProfile() {
         UUID id = uuid == null ? parseUUID(getUUID(name)) : parseUUID(uuid);
-        GameProfile profile = new GameProfile(id, name);
+        GameProfile profile = new GameProfile(id, null);
         addProperties(profile);
         return profile;
     }
