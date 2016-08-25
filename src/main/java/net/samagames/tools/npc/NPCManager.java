@@ -132,8 +132,7 @@ public class NPCManager implements Listener {
         if (scoreBoardRegister != null)
             scoreBoardRegister.done(npc, null);
 
-        Bukkit.getScheduler().runTaskLater(api.getPlugin(), () -> updateForAllNPC(npc), 2L);
-
+        //Bukkit.getScheduler().runTaskLater(api.getPlugin(), () -> updateForAllNPC(npc), 2L);
         return npc;
     }
 
