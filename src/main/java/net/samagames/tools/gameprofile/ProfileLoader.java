@@ -61,8 +61,8 @@ public class ProfileLoader {
      */
     public GameProfile loadProfile() {
         UUID id = uuid == null ? parseUUID(getUUID(name)) : parseUUID(uuid);
-        GameProfile profile = MinecraftServer.getServer().ay().fillProfileProperties(new GameProfile(id, null), true);
-        GameProfile skinProfile = MinecraftServer.getServer().ay().fillProfileProperties(new GameProfile(id, null), false);
+        GameProfile profile = MinecraftServer.getServer().ay().fillProfileProperties(new GameProfile(id, null), false);
+        GameProfile skinProfile = MinecraftServer.getServer().ay().fillProfileProperties(new GameProfile(id, null), true);
         if (skinProfile.getProperties().containsKey("textures"))
         {
             profile.getProperties().removeAll("textures");
