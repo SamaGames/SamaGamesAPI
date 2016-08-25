@@ -67,7 +67,7 @@ public class ProfileLoader {
 
     private String getData(String uuid) throws IOException {
         // Get the name from SwordPVP
-        URL url = new URL("https://sessionserver.mojang.com/session/minecraft/profile/" + uuid + "?unsigned=false");
+        URL url = new URL("https://sessionserver.mojang.com/session/minecraft/profile/" + uuid + "?unsigned=true");
         URLConnection uc = url.openConnection();
         uc.setUseCaches(false);
         uc.setDefaultUseCaches(false);

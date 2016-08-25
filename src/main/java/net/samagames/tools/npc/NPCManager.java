@@ -81,11 +81,11 @@ public class NPCManager implements Listener {
         boolean cape = capeUrl != null && !capeUrl.isEmpty();
 
         UUID uuid = UUID.randomUUID();
-        GameProfile gameProfile = new GameProfile(uuid, "Test");
+        GameProfile gameProfile = new GameProfile(uuid, "");
         List<Object> list = new ArrayList<>();
         list.add(System.currentTimeMillis());
         list.add(UUIDTypeAdapter.fromUUID(uuid));
-        list.add("Test");
+        list.add("");
         list.add(skinUrl);
         if (cape)
             list.add(capeUrl);
