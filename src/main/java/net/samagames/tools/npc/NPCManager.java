@@ -75,6 +75,7 @@ public class NPCManager implements Listener {
     private static final String JSON_SKIN = "{\"timestamp\":%d,\"profileId\":\"%s\",\"profileName\":\"%s\",\"isPublic\":true,\"textures\":{\"SKIN\":{\"url\":\"%s\"}}}";
     private static final String JSON_CAPE = "{\"timestamp\":%d,\"profileId\":\"%s\",\"profileName\":\"%s\",\"isPublic\":true,\"textures\":{\"SKIN\":{\"url\":\"%s\"},\"CAPE\":{\"url\":\"%s\"}}}";
 
+    //TODO
     public CustomNPC createNPC(Location location, String skinUrl, String capeUrl, String[] hologramLines)
     {
         final World w = ((CraftWorld) location.getWorld()).getHandle();
@@ -116,6 +117,7 @@ public class NPCManager implements Listener {
         GameProfile gameProfile = new ProfileLoader(skinUUID.toString(), "[NPC] " + entities.size(), skinUUID).loadProfile();
 
         final CustomNPC npc = new CustomNPC(w, gameProfile, new PlayerInteractManager(w));
+        npc.setCustomName("[NPC] " + entities.size());
         npc.setLocation(location);
 
         Hologram hologram = new Hologram(hologramLines);
