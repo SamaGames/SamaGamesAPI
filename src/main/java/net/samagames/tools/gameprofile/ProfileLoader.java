@@ -95,6 +95,7 @@ public class ProfileLoader {
                     jedis.expire("cacheSkin:" + uuid, 172800);//2 jours
                 }
             }
+            Bukkit.getLogger().info(json);
             JSONParser parser = new JSONParser();
             Object obj = parser.parse(json);
             JSONArray properties = (JSONArray) ((JSONObject) obj).get("properties");
