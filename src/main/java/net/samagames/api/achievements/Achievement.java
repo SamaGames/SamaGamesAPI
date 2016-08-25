@@ -102,15 +102,15 @@ public class Achievement
         String finalDisplayName = "";
 
         for (char letter : this.getDisplayName().toCharArray())
-            finalDisplayName += ChatColor.LIGHT_PURPLE + "" + letter;
+            finalDisplayName += ChatColor.AQUA + "" + letter;
 
-        FancyMessage message = new FancyMessage(ChatColor.DARK_PURPLE + "\u25A0 ")
-                .then(ChatColor.LIGHT_PURPLE + player.getName())
+        FancyMessage message = new FancyMessage(ChatColor.DARK_AQUA + "\u25A0 ")
+                .then(ChatColor.AQUA + player.getName())
                 .then(ChatColor.WHITE + " a débloqué l'objectif : ")
                 .then(finalDisplayName)
                     .tooltip(array)
                 .then(ChatColor.WHITE + " !")
-                .then(ChatColor.DARK_PURPLE + " \u25A0");
+                .then(ChatColor.DARK_AQUA + " \u25A0");
 
         Bukkit.getOnlinePlayers().forEach(message::send);
     }
