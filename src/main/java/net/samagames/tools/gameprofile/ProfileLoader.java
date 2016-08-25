@@ -61,8 +61,13 @@ public class ProfileLoader {
      */
     public GameProfile loadProfile() {
         UUID id = uuid == null ? parseUUID(getUUID(name)) : parseUUID(uuid);
-        GameProfile profile;
-        profile = MinecraftServer.getServer().ay().fillProfileProperties(new GameProfile(id, null), true);
+        GameProfile profile = MinecraftServer.getServer().ay().fillProfileProperties(new GameProfile(id, null), true);
+        GameProfile skinProfile = MinecraftServer.getServer().ay().fillProfileProperties(new GameProfile(id, null), false);
+        if (skinProfile.getProperties().containsKey("textures"))
+        {
+            profile.getProperties().removeAll("textures");
+            profile.getProperties().putAll("textures", skinProfile.getProperties().get("textures"));
+        }
         //addProperties(profile);
         return profile;
     }
