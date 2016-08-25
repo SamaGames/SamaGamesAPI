@@ -1,15 +1,12 @@
 package net.samagames.api.achievements;
 
 import net.samagames.tools.chat.fanciful.FancyMessage;
-import org.apache.commons.lang.WordUtils;
-import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
-import org.bukkit.Sound;
+import org.bukkit.*;
+import org.bukkit.entity.Firework;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.meta.FireworkMeta;
 
 import java.sql.Timestamp;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 import java.time.Instant;
 import java.util.*;
 
@@ -21,14 +18,13 @@ import java.util.*;
  */
 public class Achievement
 {
+    private static final FireworkEffect FIREWORK_EFFECT;
+
     protected final int id;
     protected final String displayName;
     protected final AchievementCategory parentCategory;
     protected final String[] description;
     protected Map<UUID, AchievementProgress> progress;
-
-    private static final DateFormat DATE_FORMATTER = new SimpleDateFormat("EEEE d MMMM yyyy à HH:mm", Locale.FRENCH);
-
 
     /**
      * Constructor
@@ -58,17 +54,22 @@ public class Achievement
     {
         if (this instanceof IncrementationAchievement)
             throw new IllegalStateException("Try to unlock incrementation achievement");
+
         AchievementProgress progress = this.progress.get(player);
+
         if (progress != null && progress.getUnlockTime() != null)
-            return ;
+            return;
+
         if (progress == null)
         {
             progress = new AchievementProgress(-1, 0, Timestamp.from(Instant.now()), null);
             this.progress.put(player, progress);
         }
+
         progress.unlock();
         progress.setProgress(1);
-        this.sendRewardMessage(player, progress);
+
+        this.sendRewardMessage(player);
     }
 
     /**
@@ -76,23 +77,36 @@ public class Achievement
      *
      * @param uuid Player
      */
-    protected void sendRewardMessage(UUID uuid, AchievementProgress progress)
+    protected void sendRewardMessage(UUID uuid)
     {
         Player player = Bukkit.getPlayer(uuid);
+
         if (player == null)
-            return ;
+            return;
+
         player.playSound(player.getLocation(), Sound.ENTITY_PLAYER_LEVELUP, 1.0F, 1.0F);
+
+        Firework firework = player.getWorld().spawn(player.getLocation(), Firework.class);
+        FireworkMeta fireworkMeta = firework.getFireworkMeta();
+        fireworkMeta.addEffect(FIREWORK_EFFECT);
+        firework.setFireworkMeta(fireworkMeta);
+
         String[] array = new String[this.description.length + 5];
         array[0] = ChatColor.GOLD + this.displayName;
         array[1] = "";
+
         for (int i = 0; i < this.description.length; i++)
             array[i + 2] = ChatColor.GRAY + this.description[i];
-        Date unlockDate = new Date();
-        unlockDate.setTime(progress.getUnlockTime().getTime());
-        array[array.length - 3] = "";
-        array[array.length - 2] = ChatColor.DARK_GRAY + "Vous avez débloqué cet objectif";
-        array[array.length - 1] = ChatColor.DARK_GRAY + "le : " + ChatColor.GRAY + WordUtils.capitalize(DATE_FORMATTER.format(unlockDate)) + ChatColor.DARK_GRAY + ".";
-        new FancyMessage(ChatColor.AQUA + " ♦ " + ChatColor.AQUA + "Objectif débloqué : ").then(ChatColor.GOLD + this.getDisplayName()).tooltip(array).then(ChatColor.AQUA + " ♦").send(player);
+
+        FancyMessage message = new FancyMessage(ChatColor.GOLD + " \u25A0 ")
+                .then(ChatColor.GOLD + player.getName())
+                .then(ChatColor.YELLOW + " a débloqué l'objectif : ")
+                .then(ChatColor.GOLD + this.getDisplayName())
+                    .tooltip(array)
+                .then(ChatColor.YELLOW + " !")
+                .then(ChatColor.GOLD + " \u25A0");
+
+        Bukkit.getOnlinePlayers().forEach(message::send);
     }
 
     /**
@@ -180,5 +194,10 @@ public class Achievement
     public AchievementProgress getProgress(UUID uuid)
     {
         return this.progress.get(uuid);
+    }
+
+    static
+    {
+        FIREWORK_EFFECT = FireworkEffect.builder().with(FireworkEffect.Type.STAR).withColor(Color.BLUE).withColor(Color.AQUA).withColor(Color.WHITE).build();
     }
 }
