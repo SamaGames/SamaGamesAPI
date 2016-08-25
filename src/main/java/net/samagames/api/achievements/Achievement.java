@@ -93,7 +93,7 @@ public class Achievement
         firework.setFireworkMeta(fireworkMeta);
 
         String[] array = new String[this.description.length + 2];
-        array[0] = ChatColor.GOLD + this.displayName;
+        array[0] = ChatColor.AQUA + this.displayName;
         array[1] = "";
 
         for (int i = 0; i < this.description.length; i++)
