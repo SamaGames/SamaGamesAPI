@@ -19,7 +19,6 @@ import com.mojang.authlib.GameProfile;
 import com.mojang.authlib.properties.Property;
 import net.minecraft.server.v1_9_R2.MinecraftServer;
 import net.samagames.api.SamaGamesAPI;
-import net.samagames.tools.Reflection;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.json.simple.JSONArray;
@@ -30,7 +29,8 @@ import redis.clients.jedis.Jedis;
 import java.io.IOException;
 import java.net.URL;
 import java.net.URLConnection;
-import java.util.*;
+import java.util.Scanner;
+import java.util.UUID;
 import java.util.logging.Level;
 
 public class ProfileLoader {
@@ -62,7 +62,10 @@ public class ProfileLoader {
     public GameProfile loadProfile() {
         UUID id = uuid == null ? parseUUID(getUUID(name)) : parseUUID(uuid);
         //addProperties(profile);
-        return MinecraftServer.getServer().ay().fillProfileProperties(new GameProfile(id, null), true);
+        GameProfile profile = MinecraftServer.getServer().ay().fillProfileProperties(new GameProfile(id, null), true);
+        GameProfile skinProfile = new GameProfile(UUID.randomUUID(), name);
+        skinProfile.getProperties().putAll(profile.getProperties());
+        return skinProfile;
     }
 
     private String getData(String uuid) throws IOException {
