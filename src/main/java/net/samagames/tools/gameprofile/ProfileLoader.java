@@ -15,8 +15,9 @@ package net.samagames.tools.gameprofile;
  * ＿＿▔▔＿＿▔▔＿＿
  */
 
-import com.google.gson.Gson;
+import com.google.gson.*;
 import com.mojang.authlib.GameProfile;
+import com.mojang.authlib.properties.Property;
 import net.minecraft.server.v1_9_R2.MinecraftServer;
 import net.samagames.api.SamaGamesAPI;
 import org.bukkit.Bukkit;
@@ -62,18 +63,27 @@ public class ProfileLoader {
             {
                 //Requete
                 profile = MinecraftServer.getServer().ay().fillProfileProperties(new GameProfile(id, null), true);
-                json = new Gson().toJson(profile);
+
                 if (jedis != null && profile.getName() != null)//Don't save if didn't got data from mojang
                 {
-                    jedis.set("cacheSkin:" + uuid, json);
+                    JsonArray jsonArray = new JsonArray();
+                    for (Property property : profile.getProperties().values())
+                    {
+                        jsonArray.add(new Gson().toJsonTree(property));
+                    }
+                    jedis.set("cacheSkin:" + uuid, jsonArray.toString());
                     jedis.expire("cacheSkin:" + uuid, 172800);//2 jours
                 }
+                skinProfile.getProperties().putAll(profile.getProperties());
             }else
             {
-                profile = new Gson().fromJson(json, GameProfile.class);
+                JsonArray parse = new JsonParser().parse(json).getAsJsonArray();
+                for (JsonElement object : parse)
+                {
+                    Property property = new Gson().fromJson(object.toString(), Property.class);
+                    skinProfile.getProperties().put(property.getName(), property);
+                }
             }
-
-            skinProfile.getProperties().putAll(profile.getProperties());
         }catch (Exception e)
         {
             e.printStackTrace();
