@@ -15,23 +15,15 @@ package net.samagames.tools.gameprofile;
  * ＿＿▔▔＿＿▔▔＿＿
  */
 
+import com.google.gson.Gson;
 import com.mojang.authlib.GameProfile;
-import com.mojang.authlib.properties.Property;
 import net.minecraft.server.v1_9_R2.MinecraftServer;
 import net.samagames.api.SamaGamesAPI;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
-import org.json.simple.JSONArray;
-import org.json.simple.JSONObject;
-import org.json.simple.parser.JSONParser;
 import redis.clients.jedis.Jedis;
 
-import java.io.IOException;
-import java.net.URL;
-import java.net.URLConnection;
-import java.util.Scanner;
 import java.util.UUID;
-import java.util.logging.Level;
 
 public class ProfileLoader {
     private final String uuid;
@@ -61,68 +53,33 @@ public class ProfileLoader {
      */
     public GameProfile loadProfile() {
         UUID id = uuid == null ? parseUUID(getUUID(name)) : parseUUID(uuid);
-        //addProperties(profile);
-        GameProfile profile = MinecraftServer.getServer().ay().fillProfileProperties(new GameProfile(id, null), true);
         GameProfile skinProfile = new GameProfile(UUID.randomUUID(), name);
-        skinProfile.getProperties().putAll(profile.getProperties());
-        return skinProfile;
-    }
 
-    private String getData(String uuid) throws IOException {
-        // Get the name from SwordPVP
-        URL url = new URL("https://sessionserver.mojang.com/session/minecraft/profile/" + uuid + "?unsigned=true");
-        URLConnection uc = url.openConnection();
-        uc.setUseCaches(false);
-        uc.setDefaultUseCaches(false);
-        uc.addRequestProperty("User-Agent", "Mozilla/5.0");
-        uc.addRequestProperty("Cache-Control", "no-cache, no-store, must-revalidate");
-        uc.addRequestProperty("Pragma", "no-cache");
-
-        // Parse it
-        return new Scanner(uc.getInputStream(), "UTF-8").useDelimiter("\\A").next();
-    }
-
-    private void addProperties(GameProfile profile) {
-        String uuid = this.skinOwner;
-        Jedis jedis = SamaGamesAPI.get().getBungeeResource();
-        try {
-
+        try(Jedis jedis = SamaGamesAPI.get().getBungeeResource()) {
             String json = jedis == null ? null : jedis.get("cacheSkin:" + uuid);
+            GameProfile profile;
             if (json == null)
             {
                 //Requete
-                json = getData(uuid);
+                profile = MinecraftServer.getServer().ay().fillProfileProperties(new GameProfile(id, null), true);
+                json = new Gson().toJson(profile);
                 if (jedis != null)
                 {
                     jedis.set("cacheSkin:" + uuid, json);
                     jedis.expire("cacheSkin:" + uuid, 172800);//2 jours
                 }
+            }else
+            {
+                profile = new Gson().fromJson(json, GameProfile.class);
             }
-            Bukkit.getLogger().info(json);
-            JSONParser parser = new JSONParser();
-            Object obj = parser.parse(json);
-            JSONArray properties = (JSONArray) ((JSONObject) obj).get("properties");
-            for (int i = 0; i < properties.size(); i++) {
-                try {
-                    JSONObject property = (JSONObject) properties.get(i);
-                    String name = (String) property.get("name");
-                    String value = (String) property.get("value");
-                    String signature = property.containsKey("signature") ? (String) property.get("signature") : null;
-                    if (signature != null) {
-                        profile.getProperties().put(name, new Property(name, value, signature));
-                    } else {
-                        profile.getProperties().put(name, new Property(name, value));
-                    }
-                } catch (Exception e) {
-                    Bukkit.getLogger().log(Level.WARNING, "Failed to apply auth property", e);
-                }
-            }
-        } catch (Exception e) {
-            Bukkit.getLogger().log(Level.SEVERE, "Can't load skin for uuid" + uuid, e);
-        }finally {
-            if (jedis != null)
-                jedis.close();
+
+            skinProfile.getProperties().putAll(profile.getProperties());
+        }catch (Exception e)
+        {
+            e.printStackTrace();
         }
+
+        return skinProfile;
     }
 
     @SuppressWarnings("deprecation")
