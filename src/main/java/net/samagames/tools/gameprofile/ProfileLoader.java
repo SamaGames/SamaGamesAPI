@@ -17,6 +17,7 @@ package net.samagames.tools.gameprofile;
 
 import com.google.gson.Gson;
 import com.mojang.authlib.GameProfile;
+import com.mojang.authlib.properties.PropertyMap;
 import net.minecraft.server.v1_9_R2.MinecraftServer;
 import net.samagames.api.SamaGamesAPI;
 import org.bukkit.Bukkit;
@@ -57,23 +58,23 @@ public class ProfileLoader {
 
         try(Jedis jedis = SamaGamesAPI.get().getBungeeResource()) {
             String json = jedis == null ? null : jedis.get("cacheSkin:" + uuid);
-            GameProfile profile;
             if (json == null)
             {
                 //Requete
-                profile = MinecraftServer.getServer().ay().fillProfileProperties(new GameProfile(id, null), true);
-                json = new Gson().toJson(profile);
+                GameProfile profile = MinecraftServer.getServer().ay().fillProfileProperties(new GameProfile(id, null), true);
+                json = new Gson().toJson(profile.getProperties());
                 if (jedis != null)
                 {
                     jedis.set("cacheSkin:" + uuid, json);
                     jedis.expire("cacheSkin:" + uuid, 172800);//2 jours
                 }
+                skinProfile.getProperties().putAll(profile.getProperties());
             }else
             {
-                profile = new Gson().fromJson(json, GameProfile.class);
+                skinProfile.getProperties().putAll(new Gson().fromJson(json, PropertyMap.class));
             }
 
-            skinProfile.getProperties().putAll(profile.getProperties());
+            //
         }catch (Exception e)
         {
             e.printStackTrace();
