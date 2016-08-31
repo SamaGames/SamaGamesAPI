@@ -112,8 +112,8 @@ public class Achievement
                     .then(ChatColor.WHITE + " a débloqué l'objectif : ")
                     .then(finalDisplayName)
                     .tooltip(array)
-                    .then(ChatColor.WHITE + " !")
-                    .then(ChatColor.DARK_AQUA + " \u25A0");
+                    .then(ChatColor.WHITE + " ! ")
+                    .then(ChatColor.DARK_AQUA + "\u25A0");
 
             Bukkit.getOnlinePlayers().forEach(message::send);
         });
