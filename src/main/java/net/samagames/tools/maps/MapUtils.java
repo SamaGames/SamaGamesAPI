@@ -12,11 +12,22 @@ public class MapUtils
 {
     private static int IDS = Short.MAX_VALUE;
 
+    /**
+     * Create a new map
+     *
+     * @return Map
+     */
     public CustomMap createMap()
     {
         return new CustomMap(MapUtils.IDS--, 128, 128);
     }
 
+    /**
+     * Create a new map from an image
+     *
+     * @param image Image
+     * @return Map
+     */
     @SuppressWarnings("deprecation")
     public CustomMap fromImage(Image image)
     {

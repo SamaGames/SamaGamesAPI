@@ -27,6 +27,13 @@ public class CustomMap
         this.bytes = new byte[xSize * ySize];
     }
 
+    /**
+     * Set a pixel color
+     *
+     * @param x x Coordinate
+     * @param y y Coordinate
+     * @param color Color as Byte, @<a href="http://minecraft.gamepedia.com/Map_item_format#1.8.1_Color_Table">http://minecraft.gamepedia.com/Map_item_format#1.8.1_Color_Table</a>
+     */
     public void setPixel(int x, int y, byte color)
     {
         if (x < 0 || x >= this.xSize)
@@ -37,11 +44,21 @@ public class CustomMap
         this.bytes[y * this.xSize + x] = color;
     }
 
+    /**
+     * Sends the map to a player, needed to draw it
+     *
+     * @param player Player
+     */
     public void sendToPlayer(Player player)
     {
         ((CraftPlayer)player).getHandle().playerConnection.sendPacket(new PacketPlayOutMap(this.id, (byte)0, false, new ArrayList<>(), this.bytes, 0, 0, this.xSize, this.ySize));
     }
 
+    /**
+     * Get this map as ItemStack
+     *
+     * @return ItemStack
+     */
     public ItemStack toItemStack()
     {
         return new ItemStack(Material.MAP, 1, (short)this.id);
