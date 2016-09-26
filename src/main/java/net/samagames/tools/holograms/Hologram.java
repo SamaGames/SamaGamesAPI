@@ -1,12 +1,12 @@
 package net.samagames.tools.holograms;
 
-import net.minecraft.server.v1_9_R2.*;
+import net.minecraft.server.v1_10_R1.*;
 import net.samagames.api.SamaGamesAPI;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.OfflinePlayer;
-import org.bukkit.craftbukkit.v1_9_R2.CraftWorld;
-import org.bukkit.craftbukkit.v1_9_R2.entity.CraftPlayer;
+import org.bukkit.craftbukkit.v1_10_R1.CraftWorld;
+import org.bukkit.craftbukkit.v1_10_R1.entity.CraftPlayer;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitTask;
 
@@ -304,7 +304,7 @@ public class Hologram
         EntityArmorStand armorStand = new EntityArmorStand(world);
         armorStand.setSize(0.00001F, 0.00001F);
         armorStand.setInvisible(true);
-        armorStand.setGravity(false);
+        armorStand.setNoGravity(true);
         armorStand.setCustomName(text);
         armorStand.setCustomNameVisible(true);
         armorStand.setLocation(loc.getX(), loc.getY() - 2, loc.getZ(), 0, 0);

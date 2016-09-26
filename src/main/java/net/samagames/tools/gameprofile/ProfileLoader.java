@@ -18,7 +18,7 @@ package net.samagames.tools.gameprofile;
 import com.google.gson.*;
 import com.mojang.authlib.GameProfile;
 import com.mojang.authlib.properties.Property;
-import net.minecraft.server.v1_9_R2.MinecraftServer;
+import net.minecraft.server.v1_10_R1.MinecraftServer;
 import net.samagames.api.SamaGamesAPI;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;

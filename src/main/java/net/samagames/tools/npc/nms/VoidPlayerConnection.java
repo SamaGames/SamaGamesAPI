@@ -1,6 +1,6 @@
 package net.samagames.tools.npc.nms;
 
-import net.minecraft.server.v1_9_R2.*;
+import net.minecraft.server.v1_10_R1.*;
 import org.bukkit.Location;
 
 import java.util.Set;
@@ -15,7 +15,7 @@ public class VoidPlayerConnection extends PlayerConnection {
     }
 
     @Override
-    public void c() {
+    public void E_() {
 
     }
 

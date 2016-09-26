@@ -1,9 +1,9 @@
 package net.samagames.tools;
 
-import net.minecraft.server.v1_9_R2.*;
+import net.minecraft.server.v1_10_R1.*;
 import org.bukkit.*;
 import org.bukkit.Material;
-import org.bukkit.craftbukkit.v1_9_R2.inventory.CraftItemStack;
+import org.bukkit.craftbukkit.v1_10_R1.inventory.CraftItemStack;
 import org.bukkit.entity.EntityType;
 import org.bukkit.inventory.ItemStack;
 
@@ -11,7 +11,7 @@ public class MojangShitUtils
 {
     public static ItemStack getPotion(String nmsPotionName, boolean splash, boolean lingering)
     {
-        net.minecraft.server.v1_9_R2.ItemStack potion = new net.minecraft.server.v1_9_R2.ItemStack(splash ? Items.SPLASH_POTION : lingering ? Items.LINGERING_POTION : Items.POTION, 1);
+        net.minecraft.server.v1_10_R1.ItemStack potion = new net.minecraft.server.v1_10_R1.ItemStack(splash ? Items.SPLASH_POTION : lingering ? Items.LINGERING_POTION : Items.POTION, 1);
 
         NBTTagCompound tag = new NBTTagCompound();
         tag.setString("Potion", "minecraft:" + nmsPotionName);
@@ -23,7 +23,7 @@ public class MojangShitUtils
 
     public static ItemStack getMonsterEgg(EntityType entityType)
     {
-        net.minecraft.server.v1_9_R2.ItemStack egg = new net.minecraft.server.v1_9_R2.ItemStack(Items.SPAWN_EGG, 1);
+        net.minecraft.server.v1_10_R1.ItemStack egg = new net.minecraft.server.v1_10_R1.ItemStack(Items.SPAWN_EGG, 1);
 
         NBTTagCompound tag = new NBTTagCompound();
 
@@ -42,7 +42,7 @@ public class MojangShitUtils
         if (bukkitEgg.getType() != Material.MONSTER_EGG)
             return null;
 
-        net.minecraft.server.v1_9_R2.ItemStack egg = CraftItemStack.asNMSCopy(bukkitEgg);
+        net.minecraft.server.v1_10_R1.ItemStack egg = CraftItemStack.asNMSCopy(bukkitEgg);
 
         if (!egg.hasTag())
             return null;

@@ -1,7 +1,7 @@
 package net.samagames.tools.npc.nms;
 
 import com.mojang.authlib.GameProfile;
-import net.minecraft.server.v1_9_R2.*;
+import net.minecraft.server.v1_10_R1.*;
 import net.samagames.tools.npc.NPCInteractCallback;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -20,9 +20,9 @@ public class CustomNPC extends EntityPlayer {
     public CustomNPC(World world, GameProfile gameprofile, PlayerInteractManager playerInteractManager)
     {
         super(world.getServer().getServer(), (WorldServer) world, gameprofile, playerInteractManager);
-        playerInteractManager.b(WorldSettings.EnumGamemode.SURVIVAL);
+        playerInteractManager.b(EnumGamemode.SURVIVAL);
         this.playerConnection = new VoidPlayerConnection(world.getServer().getServer(), this);
-        this.getDataWatcher().set(bq, Byte.MAX_VALUE);
+        this.getDataWatcher().set(br, Byte.MAX_VALUE);
     }
 
     public void onInteract(boolean rightClick, Player damager)
