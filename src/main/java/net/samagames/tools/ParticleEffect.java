@@ -1356,7 +1356,6 @@ public enum ParticleEffect {
          * @param longDistance Indicates whether the maximum distance is increased from 256 to 65536
          * @param data         Data of the effect
          * @throws IllegalArgumentException If the speed is lower than 0
-         * @see #ParticleEffect(ParticleEffect, float, float, float, float, int, boolean, ParticleData)
          */
         public ParticlePacket(ParticleEffect effect, Vector direction, float speed, boolean longDistance, ParticleData data) throws IllegalArgumentException {
             this(effect, (float) direction.getX(), (float) direction.getY(), (float) direction.getZ(), speed, 0, longDistance, data);
@@ -1368,7 +1367,6 @@ public enum ParticleEffect {
          * @param effect       Particle effect
          * @param color        Color of the particle
          * @param longDistance Indicates whether the maximum distance is increased from 256 to 65536
-         * @see #ParticleEffect(ParticleEffect, float, float, float, float, int, boolean, ParticleData)
          */
         public ParticlePacket(ParticleEffect effect, ParticleColor color, boolean longDistance) {
             this(effect, color.getValueX(), color.getValueY(), color.getValueZ(), 1, 0, longDistance, null);
@@ -1386,7 +1384,7 @@ public enum ParticleEffect {
                 return;
             }
             try {
-                version = Integer.parseInt(Character.toString(Reflection.PackageType.getServerVersion().charAt(3)));
+                version = Integer.parseInt(Reflection.PackageType.getServerVersion().split("_")[1]);
                 if (version > 7) {
                     enumParticle = Reflection.PackageType.MINECRAFT_SERVER.getClass("EnumParticle");
                 }
