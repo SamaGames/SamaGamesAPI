@@ -3,7 +3,7 @@ apply plugin: 'idea'
 apply plugin: 'maven'
 
 group = 'net.samagames'
-version = '4.0.0'
+version = '4.1.0'
 archivesBaseName = 'SamaGamesAPI'
 
 sourceCompatibility = 1.8
