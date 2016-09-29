@@ -12,12 +12,16 @@ public class MapUtils
 {
     private static int IDS = Short.MAX_VALUE;
 
+    private MapUtils()
+    {
+    }
+
     /**
      * Create a new map
      *
      * @return Map
      */
-    public CustomMap createMap()
+    public static CustomMap createMap()
     {
         return new CustomMap(MapUtils.IDS--, 128, 128);
     }
@@ -29,7 +33,7 @@ public class MapUtils
      * @return Map
      */
     @SuppressWarnings("deprecation")
-    public CustomMap fromImage(Image image)
+    public static CustomMap fromImage(Image image)
     {
         CustomMap customMap = new CustomMap(MapUtils.IDS--, image.getWidth(null), image.getHeight(null));
         customMap.bytes = MapPalette.imageToBytes(image);

@@ -63,7 +63,7 @@ public class Achievement
 
         if (progress == null)
         {
-            progress = new AchievementProgress(-1, 0, Timestamp.from(Instant.now()), null);
+            progress = new AchievementProgress(-1, 0, Timestamp.from(Instant.now()), null, true);
             this.progress.put(player, progress);
         }
 
@@ -182,7 +182,7 @@ public class Achievement
      */
     public void addProgress(UUID uuid, long progressId, int progress, Timestamp startTime, Timestamp unlockTime)
     {
-        this.progress.put(uuid, new AchievementProgress(progressId, progress, startTime, unlockTime));
+        this.progress.put(uuid, new AchievementProgress(progressId, progress, startTime, unlockTime, false));
     }
 
     /**

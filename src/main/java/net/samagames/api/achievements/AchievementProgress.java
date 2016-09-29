@@ -9,13 +9,15 @@ public class AchievementProgress
     private int progress;
     private Timestamp startTime;
     private Timestamp unlockTime;
+    private boolean changed;
 
-    AchievementProgress(long progressId, int progress, Timestamp startTime, Timestamp unlockTime)
+    AchievementProgress(long progressId, int progress, Timestamp startTime, Timestamp unlockTime, boolean changed)
     {
         this.progressId = progressId;
         this.progress = progress;
         this.startTime = startTime;
         this.unlockTime = unlockTime;
+        this.changed = changed;
     }
 
     /**
@@ -36,6 +38,7 @@ public class AchievementProgress
     public void setProgress(int amount)
     {
         this.progress = amount;
+        this.changed = true;
     }
 
     /**
@@ -75,5 +78,16 @@ public class AchievementProgress
     void unlock()
     {
         this.unlockTime = Timestamp.from(Instant.now());
+        this.changed = true;
+    }
+
+    /**
+     * Internal
+     *
+     * @return Check if this achievements progress as changed and must be updated
+     */
+    public boolean isChanged()
+    {
+        return this.changed;
     }
 }
