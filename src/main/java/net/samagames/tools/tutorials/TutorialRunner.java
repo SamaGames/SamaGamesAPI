@@ -9,7 +9,6 @@ import org.bukkit.plugin.Plugin;
 
 import java.util.UUID;
 
-
 public class TutorialRunner implements Runnable
 {
     private Plugin p;
@@ -21,7 +20,7 @@ public class TutorialRunner implements Runnable
 
     private int currentChapter = 0;
     private int currentText = 0;
-
+    private boolean lastWasNewTitle = false;
 
     public TutorialRunner(Tutorial tutorial, UUID playerId)
     {
@@ -47,6 +46,11 @@ public class TutorialRunner implements Runnable
             return;
         }
 
+        if (lastWasNewTitle)
+        {
+            lastWasNewTitle = false;
+            return;
+        }
 
         TutorialChapter chapter = tutorial.getContent().get(currentChapter);
 
@@ -61,13 +65,15 @@ public class TutorialRunner implements Runnable
         {
             chapter.teleport(player);
             player.playSound(player.getLocation(), Sound.ENTITY_PLAYER_LEVELUP, 1L, 2L);
+
+            lastWasNewTitle = true;
         }
 
 
         // Title version
         Titles.sendTitle(
                 player,
-                fadeIn, readingTime, fadeOut,
+                fadeIn, readingTime * (lastWasNewTitle ? 2 : 1), fadeOut,
                 chapter.getTitle(),
                 chapter.getContent().get(currentText)
         );
