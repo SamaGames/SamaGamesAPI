@@ -1,6 +1,7 @@
 package net.samagames.tools.tutorials;
 
 import net.samagames.api.SamaGamesAPI;
+import org.apache.commons.lang3.tuple.Pair;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -96,10 +97,10 @@ public class Tutorial implements Listener
 	{
 		content.add(chapter);
 
-		int readingTime = 0;
+		long readingTime = 0;
 
-		for (Object[] line : chapter.getContent())
-			readingTime += (int) line[1];
+		for (Pair<String, Long> line : chapter.getContent())
+			readingTime += line.getRight();
 
 		timeNeededToPlayThisTutorial += readingTime;
 	}
