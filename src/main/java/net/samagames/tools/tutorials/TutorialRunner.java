@@ -64,7 +64,7 @@ public class TutorialRunner implements Runnable
         // Delays of fade-in, fade-out and display
         int fadeIn = (currentText == 0) ? 10 : 0;
         int fadeOut = (currentText == chapter.getContent().size() - 1) ? 10 : 0;
-        int readingTime = chapter.getContent().get(currentText).getRight().intValue() + (fadeOut == 10 ? -10 : 5);
+        int readingTime = chapter.getContent().get(currentText).getRight().intValue() + (fadeOut == 10 ? -10 : 10);
 
 
         // New chapter, new location
@@ -93,6 +93,8 @@ public class TutorialRunner implements Runnable
             player.sendMessage(tutorialInChatPrefix + chapter.getContent().get(currentText).getLeft());
         }
 
+        // Cooldown
+        currentTimer = chapter.getContent().get(currentText).getRight();
 
         // Next one?
         currentText++;
@@ -101,10 +103,6 @@ public class TutorialRunner implements Runnable
         {
             currentChapter++;
             currentText = 0;
-        }
-        else
-        {
-            currentTimer = chapter.getContent().get(currentText).getRight();
         }
     }
 }
