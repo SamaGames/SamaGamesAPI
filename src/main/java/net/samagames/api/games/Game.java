@@ -36,6 +36,7 @@ public class Game<GAMEPLAYER extends GamePlayer>
     protected final String gameName;
     protected final String gameDescription;
     protected final Class<GAMEPLAYER> gamePlayerClass;
+    protected final List<UUID> gameCreators;
     protected final HashMap<UUID, GAMEPLAYER> gamePlayers;
     protected final HashMap<UUID, GAMEPLAYER> gameSpectators;
     protected final AdvertisingTask advertisingTask;
@@ -54,19 +55,36 @@ public class Game<GAMEPLAYER extends GamePlayer>
      * @param gamePlayerClass The class of your custom {@link GamePlayer} object, the same
      *                        as the {@link GAMEPLAYER} class. Use {@code GamePlayer.class}
      *                        if you are not using a custom class.
+     * @param gameCreators An array of the UUID of the creators of this game (used for
+     *                     the achievement 'Play with the creator').
      */
-    public Game(String gameCodeName, String gameName, String gameDescription, Class<GAMEPLAYER> gamePlayerClass)
+    public Game(String gameCodeName, String gameName, String gameDescription, Class<GAMEPLAYER> gamePlayerClass, UUID[] gameCreators)
     {
         this.gameManager = SamaGamesAPI.get().getGameManager();
         this.gameCodeName = gameCodeName.toLowerCase();
         this.gameName = gameName;
         this.gameDescription = gameDescription;
         this.gamePlayerClass = gamePlayerClass;
+        this.gameCreators = Arrays.asList(gameCreators);
         this.gamePlayers = new HashMap<>();
         this.gameSpectators = new HashMap<>();
         this.advertisingTask = new AdvertisingTask();
 
         this.status = Status.WAITING_FOR_PLAYERS;
+    }
+
+    /**
+     * @param gameCodeName The code name of the game, given by an administrator.
+     * @param gameName The friendly name of the game.
+     * @param gameDescription A short description of the game, displayed to the players
+     *                        when they join the game through a /title.
+     * @param gamePlayerClass The class of your custom {@link GamePlayer} object, the same
+     *                        as the {@link GAMEPLAYER} class. Use {@code GamePlayer.class}
+     *                        if you are not using a custom class.
+     */
+    public Game(String gameCodeName, String gameName, String gameDescription, Class<GAMEPLAYER> gamePlayerClass)
+    {
+        this(gameCodeName, gameName, gameDescription, gamePlayerClass, null);
     }
 
     /**
@@ -268,17 +286,82 @@ public class Game<GAMEPLAYER extends GamePlayer>
     {
         this.setStatus(Status.FINISHED);
 
-        //Network hook don't touch
+        // Network hook don't touch
         this.gameManager.stopTimer();
         this.getInGamePlayers().values().forEach(GamePlayer::stepPlayedTimeCounter);
 
         if (this.gameManager.getGameStatisticsHelper() != null)
+        {
             for (GamePlayer player : this.getRegisteredGamePlayers().values())
+            {
                 try
                 {
                     this.gameManager.getGameStatisticsHelper().increasePlayedTime(player.getUUID(), player.getPlayedTime());
                 }
                 catch (Exception ignored) {}
+            }
+        }
+
+        boolean wasAStaffMember = false;
+        boolean wasAGameCreator = false;
+        boolean wasACoupaingInGame = false;
+        boolean wasASamAllieInGame = false;
+        boolean wasAnHidden = false;
+
+        for (GamePlayer player : this.gamePlayers.values())
+        {
+            if (SamaGamesAPI.get().getPermissionsManager().hasPermission(player.getUUID(), "network.staff"))
+            {
+                wasAStaffMember = true;
+
+                if (this.gameCreators.contains(player.getUUID()))
+                    wasAGameCreator = true;
+            }
+            else if (SamaGamesAPI.get().getPermissionsManager().getPlayer(player.getUUID()).getGroupId() == 4)
+            {
+                wasACoupaingInGame = true;
+
+                if (SamaGamesAPI.get().getPlayerManager().getPlayerData(player.getUUID()).hasNickname())
+                    wasAnHidden = true;
+            }
+            else if (SamaGamesAPI.get().getPermissionsManager().getPlayer(player.getUUID()).getGroupId() == 5)
+            {
+                wasASamAllieInGame = true;
+
+                if (SamaGamesAPI.get().getPlayerManager().getPlayerData(player.getUUID()).hasNickname())
+                    wasAnHidden = true;
+            }
+        }
+
+        for (GamePlayer player : this.gamePlayers.values())
+        {
+            if (player.isOnline())
+            {
+                boolean finalWasAStaffMember = wasAStaffMember;
+                boolean finalWasAGameCreator = wasAGameCreator;
+                boolean finalWasACoupaingInGame = wasACoupaingInGame;
+                boolean finalWasASamAllieInGame = wasASamAllieInGame;
+                boolean finalWasAnHidden = wasAnHidden;
+
+                Bukkit.getScheduler().runTask(SamaGamesAPI.get().getPlugin(), () ->
+                {
+                   if (finalWasAStaffMember)
+                       SamaGamesAPI.get().getAchievementManager().getAchievementByID(15).unlock(player.getUUID());
+
+                    if (finalWasAGameCreator)
+                        SamaGamesAPI.get().getAchievementManager().getAchievementByID(16).unlock(player.getUUID());
+
+                    if (finalWasACoupaingInGame)
+                        SamaGamesAPI.get().getAchievementManager().getAchievementByID(13).unlock(player.getUUID());
+
+                    if (finalWasASamAllieInGame)
+                        SamaGamesAPI.get().getAchievementManager().getAchievementByID(14).unlock(player.getUUID());
+
+                    if (finalWasAnHidden)
+                        SamaGamesAPI.get().getAchievementManager().getAchievementByID(17).unlock(player.getUUID());
+                });
+            }
+        }
 
         Bukkit.getScheduler().runTaskLater(SamaGamesAPI.get().getPlugin(), () ->
         {
