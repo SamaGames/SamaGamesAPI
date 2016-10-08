@@ -5,6 +5,7 @@ import com.mojang.authlib.properties.Property;
 import com.mojang.authlib.properties.PropertyMap;
 import org.bukkit.Material;
 import org.bukkit.SkullType;
+import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.SkullMeta;
@@ -44,6 +45,26 @@ public class ItemUtils
     {
         String[] data = string.split(", ");
         return new ItemStack(Material.matchMaterial(data[0]), 1, Short.valueOf(data[1]));
+    }
+
+    /**
+     * Hide all the special attributes of an
+     * {@link ItemStack}
+     *
+     * @param itemStack The stack
+     * @return Cleaned stack
+     */
+    public static ItemStack hideAllAttributes(ItemStack itemStack)
+    {
+        ItemMeta meta = itemStack.getItemMeta();
+
+        for (ItemFlag itemFlag : ItemFlag.values())
+            if (itemFlag.name().startsWith("HIDE_"))
+                meta.addItemFlags(itemFlag);
+
+        itemStack.setItemMeta(meta);
+
+        return itemStack;
     }
 
     /**
