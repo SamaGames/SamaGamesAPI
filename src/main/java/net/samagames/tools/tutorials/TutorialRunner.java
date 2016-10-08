@@ -96,12 +96,15 @@ public class TutorialRunner implements Runnable
 
         // Next one?
         currentText++;
-        currentTimer = chapter.getContent().get(currentText).getRight();
 
         if (currentText == chapter.getContent().size())
         {
             currentChapter++;
             currentText = 0;
+        }
+        else
+        {
+            currentTimer = chapter.getContent().get(currentText).getRight();
         }
     }
 }
