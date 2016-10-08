@@ -23,10 +23,34 @@ public class TutorialChapter
     private Location location;
 
     private String title;
-    private List<String> content = new LinkedList<>();
+    private Object[][] content;
 
     private boolean displayInChat = true;
 
+
+    /**
+     * @param location The watching point of the chapter.
+     * @param title    The title of this chapter.
+     * @param content  The content of this chapter.
+     */
+    public TutorialChapter(Location location, String title, Object[][] content)
+    {
+        this.location = location;
+        this.title = title;
+        this.content = content;
+    }
+
+    /**
+     * @param location The watching point of the chapter.
+     * @param title    The title of this chapter.
+     * @param content  The content of this chapter.
+     */
+    public TutorialChapter(Location location, String title, Object[][] content, boolean displayInChat)
+    {
+        this(location, title, content);
+
+        this.displayInChat = displayInChat;
+    }
 
     /**
      * @param location The watching point of the chapter.
@@ -37,7 +61,15 @@ public class TutorialChapter
     {
         this.location = location;
         this.title = title;
-        this.content = content;
+        this.content = new Object[content.size()][];
+
+        for (int i = 0; i < content.size(); i++)
+        {
+            this.content[i] = new Object[] {
+                    content.get(i),
+                    50L
+            };
+        }
     }
 
     /**
@@ -88,7 +120,7 @@ public class TutorialChapter
      *
      * @return The content.
      */
-    public List<String> getContent()
+    public Object[][] getContent()
     {
         return content;
     }
