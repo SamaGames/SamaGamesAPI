@@ -21,7 +21,6 @@ public class TutorialRunner implements Runnable
     private int currentChapter = 0;
     private int currentText = 0;
     private long currentTimer = 0;
-    private boolean lastWasNewTitle = false;
 
     public TutorialRunner(Tutorial tutorial, UUID playerId)
     {
@@ -47,12 +46,6 @@ public class TutorialRunner implements Runnable
             return;
         }
 
-        if (lastWasNewTitle)
-        {
-            lastWasNewTitle = false;
-            return;
-        }
-
         if (currentTimer > 0)
         {
             currentTimer -= 10;
@@ -72,15 +65,13 @@ public class TutorialRunner implements Runnable
         {
             chapter.teleport(player);
             player.playSound(player.getLocation(), Sound.ENTITY_PLAYER_LEVELUP, 1L, 2L);
-
-            lastWasNewTitle = true;
         }
 
 
         // Title version
         Titles.sendTitle(
                 player,
-                fadeIn, lastWasNewTitle ? 100 : readingTime, fadeOut,
+                fadeIn, readingTime, fadeOut,
                 chapter.getTitle(),
                 chapter.getContent().get(currentText).getLeft()
         );
@@ -94,7 +85,7 @@ public class TutorialRunner implements Runnable
         }
 
         // Cooldown
-        currentTimer = chapter.getContent().get(currentText).getRight();
+        currentTimer = chapter.getContent().get(currentText).getRight() - 10;
 
         // Next one?
         currentText++;
