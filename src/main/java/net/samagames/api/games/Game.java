@@ -440,19 +440,6 @@ public class Game<GAMEPLAYER extends GamePlayer>
     }
 
     /**
-     * Increases the named statistic of the given player by {@code count}.
-     *
-     * @param uuid The incremented player's UUID.
-     * @param statName The incremented statistic's name.
-     * @param count The amount by which this statistic is incremented.
-     */
-    /*public void increaseStat(UUID uuid, String statName, int count)
-    {
-        //TODO stat
-       // SamaGamesAPI.get().getStatsManager(this.gameCodeName).increase(uuid, statName, count);
-    }*/
-
-    /**
      * Marks a player as spectator.
      *
      * @param player The player to mark as spectator.
