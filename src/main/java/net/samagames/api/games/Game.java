@@ -273,8 +273,7 @@ public class Game<GAMEPLAYER extends GamePlayer>
             if (this.gameManager.getGameStatisticsHelper() != null)
                 this.gameManager.getGameStatisticsHelper().increaseWins(uuid);
 
-            Arrays.asList(25, 26, 27, 28, 29).forEach(id ->
-                    SamaGamesAPI.get().getAchievementManager().incrementAchievement(uuid, id, 1));
+            Arrays.asList(25, 26, 27, 28, 29).forEach(id -> SamaGamesAPI.get().getAchievementManager().incrementAchievement(uuid, id, 1));
         }
         catch (Exception ignored){}
     }
@@ -363,8 +362,7 @@ public class Game<GAMEPLAYER extends GamePlayer>
                     if (finalWasAnHidden)
                         SamaGamesAPI.get().getAchievementManager().getAchievementByID(17).unlock(player.getUUID());
 
-                    Arrays.asList(30, 31, 32, 33, 34).forEach(id ->
-                            SamaGamesAPI.get().getAchievementManager().incrementAchievement(player.getUUID(), id, player.getCoins()));
+                    Arrays.asList(30, 31, 32, 33, 34).forEach(id -> SamaGamesAPI.get().getAchievementManager().incrementAchievement(player.getUUID(), id, player.getCoins()));
                 });
             }
         }
