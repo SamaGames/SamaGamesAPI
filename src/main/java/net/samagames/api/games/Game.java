@@ -1,7 +1,6 @@
 package net.samagames.api.games;
 
 import net.samagames.api.SamaGamesAPI;
-import net.samagames.api.achievements.IncrementationAchievement;
 import net.samagames.api.games.themachine.ICoherenceMachine;
 import net.samagames.api.games.themachine.messages.templates.EarningMessageTemplate;
 import net.samagames.tools.Titles;
@@ -361,13 +360,8 @@ public class Game<GAMEPLAYER extends GamePlayer>
                     if (finalWasAnHidden)
                         SamaGamesAPI.get().getAchievementManager().getAchievementByID(17).unlock(player.getUUID());
 
-                    Arrays.asList(new IncrementationAchievement[] {
-                            (IncrementationAchievement) SamaGamesAPI.get().getAchievementManager().getAchievementByID(30),
-                            (IncrementationAchievement) SamaGamesAPI.get().getAchievementManager().getAchievementByID(31),
-                            (IncrementationAchievement) SamaGamesAPI.get().getAchievementManager().getAchievementByID(32),
-                            (IncrementationAchievement) SamaGamesAPI.get().getAchievementManager().getAchievementByID(33),
-                            (IncrementationAchievement) SamaGamesAPI.get().getAchievementManager().getAchievementByID(34)
-                    }).forEach(achievement -> achievement.increment(player.getUUID(), player.getCoins()));
+                    Arrays.asList(30, 31, 32, 33, 34).forEach(id ->
+                            SamaGamesAPI.get().getAchievementManager().incrementAchievement(player.getUUID(), id, player.getCoins()));
                 });
             }
         }
