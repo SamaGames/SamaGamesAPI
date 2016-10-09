@@ -379,11 +379,11 @@ public enum ParticleEffect {
      * </ul>
      */
     MOB_APPEARANCE("mobappearance", 41, 8),
- 	DRAGONBREATH("dragonbreath", 42, 9),
- 	ENDROD("endrod", 43, 9),
- 	DAMAGEINDICATOR("damageindicator", 44, 9),
- 	SWEEPATTACK("sweepattack", 45, 9),
- 	FALLINGDUST("fallingdust", 46, 10, ParticleProperty.REQUIRES_DATA);
+ 	DRAGON_BREATH("dragonbreath", 42, 9),
+ 	END_ROD("endrod", 43, 9),
+ 	DAMAGE_INDICATOR("damageindicator", 44, 9),
+ 	SWEEP_ATTACK("sweepattack", 45, 9),
+ 	FALLING_DUST("fallingdust", 46, 10, ParticleProperty.REQUIRES_DATA);
 
     private static final Map<String, ParticleEffect> NAME_MAP = new HashMap<>();
     private static final Map<Integer, ParticleEffect> ID_MAP = new HashMap<>();
@@ -482,7 +482,7 @@ public enum ParticleEffect {
      * @return Whether the data type is correct or not
      */
     private static boolean isDataCorrect(ParticleEffect effect, ParticleData data) {
-        return ((effect == BLOCK_CRACK || effect == BLOCK_DUST || effect == FALLINGDUST) && data instanceof BlockData) || (effect == ITEM_CRACK && data instanceof ItemData);
+        return ((effect == BLOCK_CRACK || effect == BLOCK_DUST || effect == FALLING_DUST) && data instanceof BlockData) || (effect == ITEM_CRACK && data instanceof ItemData);
     }
 
     /**
