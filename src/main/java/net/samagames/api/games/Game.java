@@ -65,7 +65,7 @@ public class Game<GAMEPLAYER extends GamePlayer>
         this.gameName = gameName;
         this.gameDescription = gameDescription;
         this.gamePlayerClass = gamePlayerClass;
-        this.gameCreators = Arrays.asList(gameCreators);
+        this.gameCreators = gameCreators != null ? Arrays.asList(gameCreators) : null;
         this.gamePlayers = new HashMap<>();
         this.gameSpectators = new HashMap<>();
         this.advertisingTask = new AdvertisingTask();
@@ -316,7 +316,7 @@ public class Game<GAMEPLAYER extends GamePlayer>
             {
                 wasAStaffMember = true;
 
-                if (this.gameCreators.contains(player.getUUID()))
+                if (this.gameCreators != null && this.gameCreators.contains(player.getUUID()))
                     wasAGameCreator = true;
             }
             else if (SamaGamesAPI.get().getPermissionsManager().getPlayer(player.getUUID()).getGroupId() == 4)
