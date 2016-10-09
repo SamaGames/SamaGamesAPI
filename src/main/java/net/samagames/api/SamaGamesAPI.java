@@ -146,7 +146,6 @@ public abstract class SamaGamesAPI
      *
      * @return Instance
      */
-    @Deprecated
     public abstract IFriendsManager getFriendsManager();
 
     /**
