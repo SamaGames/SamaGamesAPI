@@ -93,20 +93,12 @@ public class ItemUtils
      */
     public static ItemStack getCustomHead(String texture)
     {
-        GameProfile profile = new GameProfile(UUID.randomUUID(), null);
-        PropertyMap propertyMap = profile.getProperties();
-
-        if (propertyMap == null)
-            throw new IllegalStateException("Profile doesn't contain a property map");
-
-        byte[] encodedData = texture.getBytes();
-        propertyMap.put("textures", new Property("textures", new String(encodedData)));
         ItemStack head = new ItemStack(Material.SKULL_ITEM, 1, (short) 3);
         ItemMeta headMeta = head.getItemMeta();
 
         try
         {
-            Reflection.setValue(headMeta, "profile", profile);
+            Reflection.setValue(headMeta, "profile", getHeadCustomizedGameProfile(texture));
         }
         catch (NoSuchFieldException | IllegalAccessException e)
         {
@@ -115,5 +107,26 @@ public class ItemUtils
 
         head.setItemMeta(headMeta);
         return head;
+    }
+
+    /**
+     * Create a {@link GameProfile} instance with a base64 encoded texture
+     *
+     * @param texture Base64 texture
+     *
+     * @return A custom {@link GameProfile} instance with your texture
+     */
+    public static GameProfile getHeadCustomizedGameProfile(String texture)
+    {
+        GameProfile profile = new GameProfile(UUID.randomUUID(), null);
+        PropertyMap propertyMap = profile.getProperties();
+
+        if (propertyMap == null)
+            throw new IllegalStateException("Profile doesn't contain a property map");
+
+        byte[] encodedData = texture.getBytes();
+        propertyMap.put("textures", new Property("textures", new String(encodedData)));
+
+        return profile;
     }
 }
