@@ -85,7 +85,7 @@ public class TutorialRunner implements Runnable
         }
 
         // Cooldown
-        currentTimer = chapter.getContent().get(currentText).getRight() - 10;
+        currentTimer = chapter.getContent().get(currentText).getRight();
 
         // Next one?
         currentText++;
