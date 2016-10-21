@@ -15,6 +15,7 @@ import redis.clients.jedis.Jedis;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.*;
+import java.util.concurrent.TimeUnit;
 
 /**
  * This class represents the game executed by the plugin using this, if applicable.
@@ -296,13 +297,11 @@ public class Game<GAMEPLAYER extends GamePlayer>
         this.gameManager.stopTimer();
         this.getInGamePlayers().values().forEach(GamePlayer::stepPlayedTimeCounter);
 
-        int gameTime = this.gameManager.getGameTime();
-
         for (GamePlayer player : this.getRegisteredGamePlayers().values())
         {
             try
             {
-                this.gameManager.getPearlManager().runGiveAlgorythm(player.getPlayerIfOnline(), gameTime, this.gameWinners.contains(player.getUUID()));
+                this.gameManager.getPearlManager().runGiveAlgorythm(player.getPlayerIfOnline(), (int) TimeUnit.MILLISECONDS.toSeconds(this.gameManager.getGameTime()), this.gameWinners.contains(player.getUUID()));
 
                 if (this.gameManager.getGameStatisticsHelper() != null)
                     this.gameManager.getGameStatisticsHelper().increasePlayedTime(player.getUUID(), player.getPlayedTime());

@@ -159,7 +159,7 @@ public interface IGameManager
      *
      * @return The time
      */
-    int getGameTime();
+    long getGameTime();
 
     /**
      * Return if a player is waited for a reconnect
