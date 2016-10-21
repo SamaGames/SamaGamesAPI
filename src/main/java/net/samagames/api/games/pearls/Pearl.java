@@ -2,6 +2,7 @@ package net.samagames.api.games.pearls;
 
 import java.sql.Timestamp;
 import java.util.UUID;
+import java.util.concurrent.TimeUnit;
 
 /**
  *                )\._.,--....,'``.
@@ -14,9 +15,9 @@ public class Pearl
 {
     private final UUID uuid;
     private final int stars;
-    private final Timestamp expiration;
+    private final long expiration;
 
-    public Pearl(UUID uuid, int stars, Timestamp expiration)
+    public Pearl(UUID uuid, int stars, long expiration)
     {
         this.uuid = uuid;
         this.stars = stars;
@@ -33,8 +34,13 @@ public class Pearl
         return this.stars;
     }
 
-    public Timestamp getExpiration()
+    public long getExpiration()
     {
         return this.expiration;
+    }
+
+    public long getExpirationInDays()
+    {
+        return TimeUnit.MILLISECONDS.toDays(this.expiration - System.currentTimeMillis());
     }
 }
