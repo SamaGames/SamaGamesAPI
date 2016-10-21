@@ -1,4 +1,4 @@
-package net.samagames.api.games;
+package net.samagames.api.games.pearls;
 
 import org.bukkit.entity.Player;
 

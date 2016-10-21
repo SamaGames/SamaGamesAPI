@@ -1,5 +1,6 @@
 package net.samagames.api.games;
 
+import net.samagames.api.games.pearls.IPearlManager;
 import net.samagames.api.games.themachine.ICoherenceMachine;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
