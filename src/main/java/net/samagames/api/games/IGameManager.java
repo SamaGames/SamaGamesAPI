@@ -57,6 +57,16 @@ public interface IGameManager
     void refreshArena();
 
     /**
+     * Network use to set the timestamp of the start of the game
+     */
+    void startTimer();
+
+    /**
+     * Network use to stop the game and save the server info to database for stats
+     */
+    void stopTimer();
+
+    /**
      * Set the reconnect time for a player.
      *
      * <b>DISCLAIMER - TO ENABLE RECONNECT PLEASE USE THIS FUNCTION AND SET A TIME</b>
@@ -116,9 +126,17 @@ public interface IGameManager
     IGameProperties getGameProperties();
 
     /**
-     * Get the game implemented gui manager
+     * Get the pearl manager who manage to give or not
+     * a cosmetic pearl (for Graou in the Hub)
      *
      * @return The implementation
+     */
+    IPearlManager getPearlManager();
+
+    /**
+     * Get the game implemented gui manager
+     *
+     * @return The instance
      */
     GameGuiManager getGameGuiManager();
 
@@ -135,6 +153,13 @@ public interface IGameManager
      * @return The time
      */
     int getMaxReconnectTime();
+
+    /**
+     * Get the time of the game
+     *
+     * @return The time
+     */
+    int getGameTime();
 
     /**
      * Return if a player is waited for a reconnect
@@ -186,14 +211,4 @@ public interface IGameManager
      * @return true to keep it, false to let it go
      */
     boolean isKeepingPlayerCache();
-
-    /**
-     * Network use to set the timestamp of the start of the game
-     */
-    void startTimer();
-
-    /**
-     * Network use to stop the game and save the server info to database for stats
-     */
-    void stopTimer();
 }

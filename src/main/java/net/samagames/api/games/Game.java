@@ -37,6 +37,7 @@ public class Game<GAMEPLAYER extends GamePlayer>
     protected final String gameDescription;
     protected final Class<GAMEPLAYER> gamePlayerClass;
     protected final List<UUID> gameCreators;
+    protected final List<UUID> gameWinners;
     protected final HashMap<UUID, GAMEPLAYER> gamePlayers;
     protected final HashMap<UUID, GAMEPLAYER> gameSpectators;
     protected final AdvertisingTask advertisingTask;
@@ -66,6 +67,7 @@ public class Game<GAMEPLAYER extends GamePlayer>
         this.gameDescription = gameDescription;
         this.gamePlayerClass = gamePlayerClass;
         this.gameCreators = gameCreators != null ? Arrays.asList(gameCreators) : null;
+        this.gameWinners = new ArrayList<>();
         this.gamePlayers = new HashMap<>();
         this.gameSpectators = new HashMap<>();
         this.advertisingTask = new AdvertisingTask();
@@ -270,6 +272,8 @@ public class Game<GAMEPLAYER extends GamePlayer>
     {
         try
         {
+            this.gameWinners.add(uuid);
+
             if (this.gameManager.getGameStatisticsHelper() != null)
                 this.gameManager.getGameStatisticsHelper().increaseWins(uuid);
 
@@ -292,16 +296,18 @@ public class Game<GAMEPLAYER extends GamePlayer>
         this.gameManager.stopTimer();
         this.getInGamePlayers().values().forEach(GamePlayer::stepPlayedTimeCounter);
 
-        if (this.gameManager.getGameStatisticsHelper() != null)
+        int gameTime = this.gameManager.getGameTime();
+
+        for (GamePlayer player : this.getRegisteredGamePlayers().values())
         {
-            for (GamePlayer player : this.getRegisteredGamePlayers().values())
+            try
             {
-                try
-                {
+                this.gameManager.getPearlManager().runGiveAlgorythm(player.getPlayerIfOnline(), gameTime, this.gameWinners.contains(player.getUUID()));
+
+                if (this.gameManager.getGameStatisticsHelper() != null)
                     this.gameManager.getGameStatisticsHelper().increasePlayedTime(player.getUUID(), player.getPlayedTime());
-                }
-                catch (Exception ignored) {}
             }
+            catch (Exception ignored) {}
         }
 
         boolean wasAStaffMember = false;
