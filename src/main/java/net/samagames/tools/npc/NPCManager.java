@@ -84,6 +84,7 @@ public class NPCManager implements Listener {
 
         w.addEntity(npc, CreatureSpawnEvent.SpawnReason.CUSTOM);
 
+        npc.setHologram(hologram);
         entities.put(npc, hologram);
 
         if (scoreBoardRegister != null)
