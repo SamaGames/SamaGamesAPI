@@ -1,5 +1,6 @@
 package net.samagames.api.games;
 
+import net.samagames.api.games.pearls.IPearlManager;
 import net.samagames.api.games.themachine.ICoherenceMachine;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
@@ -55,6 +56,16 @@ public interface IGameManager
      * Refresh the arena to the hubs
      */
     void refreshArena();
+
+    /**
+     * Network use to set the timestamp of the start of the game
+     */
+    void startTimer();
+
+    /**
+     * Network use to stop the game and save the server info to database for stats
+     */
+    void stopTimer();
 
     /**
      * Set the reconnect time for a player.
@@ -116,9 +127,17 @@ public interface IGameManager
     IGameProperties getGameProperties();
 
     /**
-     * Get the game implemented gui manager
+     * Get the pearl manager who manage to give or not
+     * a cosmetic pearl (for Graou in the Hub)
      *
      * @return The implementation
+     */
+    IPearlManager getPearlManager();
+
+    /**
+     * Get the game implemented gui manager
+     *
+     * @return The instance
      */
     GameGuiManager getGameGuiManager();
 
@@ -135,6 +154,13 @@ public interface IGameManager
      * @return The time
      */
     int getMaxReconnectTime();
+
+    /**
+     * Get the time of the game
+     *
+     * @return The time
+     */
+    long getGameTime();
 
     /**
      * Return if a player is waited for a reconnect
@@ -186,14 +212,4 @@ public interface IGameManager
      * @return true to keep it, false to let it go
      */
     boolean isKeepingPlayerCache();
-
-    /**
-     * Network use to set the timestamp of the start of the game
-     */
-    void startTimer();
-
-    /**
-     * Network use to stop the game and save the server info to database for stats
-     */
-    void stopTimer();
 }

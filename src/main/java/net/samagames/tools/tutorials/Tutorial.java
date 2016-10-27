@@ -1,6 +1,7 @@
 package net.samagames.tools.tutorials;
 
 import net.samagames.api.SamaGamesAPI;
+import org.apache.commons.lang3.tuple.Pair;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -72,7 +73,6 @@ public class Tutorial implements Listener
 
 
 	private long timeNeededToPlayThisTutorial = 0l;
-	private long readingTime = 50l;
 	private Long tutorialHour = null;
 
 
@@ -96,19 +96,13 @@ public class Tutorial implements Listener
 	public void addChapter(TutorialChapter chapter)
 	{
 		content.add(chapter);
-		timeNeededToPlayThisTutorial += readingTime * chapter.getContent().size();
-	}
 
-	/**
-	 * Sets the amount of ticks each content of the tutorial is displayed.
-	 *
-	 * By default, 50 ticks (2.5 seconds).
-	 *
-	 * @param readingTime The ticks.
-	 */
-	public void setReadingTime(final long readingTime)
-	{
-		this.readingTime = readingTime;
+		long readingTime = 0;
+
+		for (Pair<String, Long> line : chapter.getContent())
+			readingTime += line.getRight();
+
+		timeNeededToPlayThisTutorial += readingTime;
 	}
 
 	/**
@@ -192,7 +186,7 @@ public class Tutorial implements Listener
 
 		// The tutorial is started
 		viewers.put(
-				id, p.getServer().getScheduler().runTaskTimer(p, new TutorialRunner(this, id), 20l, readingTime)
+				id, p.getServer().getScheduler().runTaskTimer(p, new TutorialRunner(this, id), 10L, 10L)
 		);
 	}
 
@@ -280,16 +274,6 @@ public class Tutorial implements Listener
 	List<TutorialChapter> getContent()
 	{
 		return content;
-	}
-
-	/**
-	 * Returns the amount of ticks each content of the tutorial is displayed.
-	 *
-	 * @return the amount of ticks each content of the tutorial is displayed.
-	 */
-	long getReadingTime()
-	{
-		return readingTime;
 	}
 
 	/**

@@ -711,10 +711,11 @@ public class FancyMessage implements JsonRepresentedObject, Cloneable, Iterable<
 			Class<?> chatSerializerClazz;
 
 			String version = Reflection.getVersion();
-			double majorVersion = Double.parseDouble(version.replace('_', '.').substring(1, 4));
-			int lesserVersion = Integer.parseInt(version.substring(6, 7));
+			String[] split = version.split("_");
+			double majorVersion = Double.parseDouble(split[0].substring(1, 2)) + Double.parseDouble(split[1]) / Math.pow(10, split[1].length());
+			int lesserVersion = Integer.parseInt(split[2].substring(1, 2));
 
-			if (majorVersion < 1.8 || (majorVersion == 1.8 && lesserVersion == 1)) {
+			if (majorVersion > 1.2 && (majorVersion < 1.8 || (majorVersion == 1.8 && lesserVersion == 1))) { //This api will never run on 1.1 / 1.2, so i can use this check to run 1.10
 				chatSerializerClazz = Reflection.getNMSClass("ChatSerializer");
 			} else {
 				chatSerializerClazz = Reflection.getNMSClass("IChatBaseComponent$ChatSerializer");

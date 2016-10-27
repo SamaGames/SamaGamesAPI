@@ -378,7 +378,12 @@ public enum ParticleEffect {
      * <li>The offset values have no influence on this particle effect
      * </ul>
      */
-    MOB_APPEARANCE("mobappearance", 41, 8);
+    MOB_APPEARANCE("mobappearance", 41, 8),
+ 	DRAGON_BREATH("dragonbreath", 42, 9),
+ 	END_ROD("endrod", 43, 9),
+ 	DAMAGE_INDICATOR("damageindicator", 44, 9),
+ 	SWEEP_ATTACK("sweepattack", 45, 9),
+ 	FALLING_DUST("fallingdust", 46, 10, ParticleProperty.REQUIRES_DATA);
 
     private static final Map<String, ParticleEffect> NAME_MAP = new HashMap<>();
     private static final Map<Integer, ParticleEffect> ID_MAP = new HashMap<>();
@@ -477,7 +482,7 @@ public enum ParticleEffect {
      * @return Whether the data type is correct or not
      */
     private static boolean isDataCorrect(ParticleEffect effect, ParticleData data) {
-        return ((effect == BLOCK_CRACK || effect == BLOCK_DUST) && data instanceof BlockData) || (effect == ITEM_CRACK && data instanceof ItemData);
+        return ((effect == BLOCK_CRACK || effect == BLOCK_DUST || effect == FALLING_DUST) && data instanceof BlockData) || (effect == ITEM_CRACK && data instanceof ItemData);
     }
 
     /**
@@ -1356,7 +1361,6 @@ public enum ParticleEffect {
          * @param longDistance Indicates whether the maximum distance is increased from 256 to 65536
          * @param data         Data of the effect
          * @throws IllegalArgumentException If the speed is lower than 0
-         * @see #ParticleEffect(ParticleEffect, float, float, float, float, int, boolean, ParticleData)
          */
         public ParticlePacket(ParticleEffect effect, Vector direction, float speed, boolean longDistance, ParticleData data) throws IllegalArgumentException {
             this(effect, (float) direction.getX(), (float) direction.getY(), (float) direction.getZ(), speed, 0, longDistance, data);
@@ -1368,7 +1372,6 @@ public enum ParticleEffect {
          * @param effect       Particle effect
          * @param color        Color of the particle
          * @param longDistance Indicates whether the maximum distance is increased from 256 to 65536
-         * @see #ParticleEffect(ParticleEffect, float, float, float, float, int, boolean, ParticleData)
          */
         public ParticlePacket(ParticleEffect effect, ParticleColor color, boolean longDistance) {
             this(effect, color.getValueX(), color.getValueY(), color.getValueZ(), 1, 0, longDistance, null);
@@ -1385,8 +1388,12 @@ public enum ParticleEffect {
             if (initialized) {
                 return;
             }
+
             try {
-                version = Integer.parseInt(Character.toString(Reflection.PackageType.getServerVersion().charAt(3)));
+                String ver = Reflection.PackageType.getServerVersion();
+                int un1 = ver.indexOf("_") + 1;
+                int un2 = ver.lastIndexOf("_");
+                version = Integer.parseInt(ver.substring(un1, un2));
                 if (version > 7) {
                     enumParticle = Reflection.PackageType.MINECRAFT_SERVER.getClass("EnumParticle");
                 }
@@ -1395,9 +1402,9 @@ public enum ParticleEffect {
                 getHandle = Reflection.getMethod("CraftPlayer", Reflection.PackageType.CRAFTBUKKIT_ENTITY, "getHandle");
                 playerConnection = Reflection.getField("EntityPlayer", Reflection.PackageType.MINECRAFT_SERVER, false, "playerConnection");
                 sendPacket = Reflection.getMethod(playerConnection.getType(), "sendPacket", Reflection.PackageType.MINECRAFT_SERVER.getClass("Packet"));
-            } catch (Exception exception) {
-                throw new VersionIncompatibleException("Your current bukkit version seems to be incompatible with this library", exception);
-            }
+                } catch (Exception exception) {
+                    throw new VersionIncompatibleException("Your current bukkit version seems to be incompatible with this library", exception);
+                }
             initialized = true;
         }
 

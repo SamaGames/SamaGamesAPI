@@ -1,5 +1,6 @@
 package net.samagames.tools.tutorials;
 
+import org.apache.commons.lang3.tuple.Pair;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
@@ -23,7 +24,7 @@ public class TutorialChapter
     private Location location;
 
     private String title;
-    private List<String> content = new LinkedList<>();
+    private List<Pair<String, Long>> content;
 
     private boolean displayInChat = true;
 
@@ -33,7 +34,7 @@ public class TutorialChapter
      * @param title    The title of this chapter.
      * @param content  The content of this chapter.
      */
-    public TutorialChapter(Location location, String title, List<String> content)
+    public TutorialChapter(Location location, String title, List<Pair<String, Long>> content)
     {
         this.location = location;
         this.title = title;
@@ -45,7 +46,7 @@ public class TutorialChapter
      * @param title    The title of this chapter.
      * @param content  The content of this chapter.
      */
-    public TutorialChapter(Location location, String title, List<String> content, boolean displayInChat)
+    public TutorialChapter(Location location, String title, List<Pair<String, Long>> content, boolean displayInChat)
     {
         this(location, title, content);
 
@@ -88,7 +89,7 @@ public class TutorialChapter
      *
      * @return The content.
      */
-    public List<String> getContent()
+    public List<Pair<String, Long>> getContent()
     {
         return content;
     }

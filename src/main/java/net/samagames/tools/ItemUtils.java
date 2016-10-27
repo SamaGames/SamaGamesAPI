@@ -3,8 +3,15 @@ package net.samagames.tools;
 import com.mojang.authlib.GameProfile;
 import com.mojang.authlib.properties.Property;
 import com.mojang.authlib.properties.PropertyMap;
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
+import net.minecraft.server.v1_10_R1.PacketDataSerializer;
+import net.minecraft.server.v1_10_R1.PacketPlayOutCustomPayload;
 import org.bukkit.Material;
 import org.bukkit.SkullType;
+import org.bukkit.craftbukkit.v1_10_R1.entity.CraftPlayer;
+import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.SkullMeta;
@@ -19,6 +26,30 @@ import java.util.UUID;
  */
 public class ItemUtils
 {
+    /**
+     * Open the given written book
+     *
+     * @param book Written book
+     * @param player Player
+     */
+    public static void openWrittenBook(ItemStack book, Player player)
+    {
+        if (book.getType() != Material.WRITTEN_BOOK)
+            return;
+
+        ItemStack previous = player.getInventory().getItemInOffHand();
+        player.getInventory().setItemInOffHand(book);
+
+        ByteBuf buffer = Unpooled.buffer(256);
+        buffer.setByte(0, (byte) 1);
+        buffer.writerIndex(1);
+
+        PacketPlayOutCustomPayload packet = new PacketPlayOutCustomPayload("MC|BOpen", new PacketDataSerializer(buffer));
+        ((CraftPlayer) player).getHandle().playerConnection.sendPacket(packet);
+
+        player.getInventory().setItemInOffHand(previous);
+    }
+
     /**
      * Format a given object into a formatted
      * string
@@ -47,6 +78,26 @@ public class ItemUtils
     }
 
     /**
+     * Hide all the special attributes of an
+     * {@link ItemStack}
+     *
+     * @param itemStack The stack
+     * @return Cleaned stack
+     */
+    public static ItemStack hideAllAttributes(ItemStack itemStack)
+    {
+        ItemMeta meta = itemStack.getItemMeta();
+
+        for (ItemFlag itemFlag : ItemFlag.values())
+            if (itemFlag.name().startsWith("HIDE_"))
+                meta.addItemFlags(itemFlag);
+
+        itemStack.setItemMeta(meta);
+
+        return itemStack;
+    }
+
+    /**
      * Get the given player's username head
      *
      * @param player Player's username
@@ -72,20 +123,12 @@ public class ItemUtils
      */
     public static ItemStack getCustomHead(String texture)
     {
-        GameProfile profile = new GameProfile(UUID.randomUUID(), null);
-        PropertyMap propertyMap = profile.getProperties();
-
-        if (propertyMap == null)
-            throw new IllegalStateException("Profile doesn't contain a property map");
-
-        byte[] encodedData = texture.getBytes();
-        propertyMap.put("textures", new Property("textures", new String(encodedData)));
         ItemStack head = new ItemStack(Material.SKULL_ITEM, 1, (short) 3);
         ItemMeta headMeta = head.getItemMeta();
 
         try
         {
-            Reflection.setValue(headMeta, "profile", profile);
+            Reflection.setValue(headMeta, "profile", getHeadCustomizedGameProfile(texture));
         }
         catch (NoSuchFieldException | IllegalAccessException e)
         {
@@ -94,5 +137,26 @@ public class ItemUtils
 
         head.setItemMeta(headMeta);
         return head;
+    }
+
+    /**
+     * Create a {@link GameProfile} instance with a base64 encoded texture
+     *
+     * @param texture Base64 texture
+     *
+     * @return A custom {@link GameProfile} instance with your texture
+     */
+    public static GameProfile getHeadCustomizedGameProfile(String texture)
+    {
+        GameProfile profile = new GameProfile(UUID.randomUUID(), null);
+        PropertyMap propertyMap = profile.getProperties();
+
+        if (propertyMap == null)
+            throw new IllegalStateException("Profile doesn't contain a property map");
+
+        byte[] encodedData = texture.getBytes();
+        propertyMap.put("textures", new Property("textures", new String(encodedData)));
+
+        return profile;
     }
 }

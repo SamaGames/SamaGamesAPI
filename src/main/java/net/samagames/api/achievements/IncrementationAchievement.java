@@ -40,7 +40,7 @@ public class IncrementationAchievement extends Achievement
         AchievementProgress progress = this.progress.get(player);
         if (progress == null)
         {
-            progress = new AchievementProgress(-1, 0, Timestamp.from(Instant.now()), null);
+            progress = new AchievementProgress(-1, 0, Timestamp.from(Instant.now()), null, true);
             this.progress.put(player, progress);
         }
         if (progress.getProgress() + amount > this.objective && progress.getUnlockTime() == null)

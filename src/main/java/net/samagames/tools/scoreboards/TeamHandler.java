@@ -1,7 +1,7 @@
 package net.samagames.tools.scoreboards;
 
-import net.minecraft.server.v1_9_R2.PacketPlayOutScoreboardTeam;
-import net.minecraft.server.v1_9_R2.ScoreboardTeamBase;
+import net.minecraft.server.v1_10_R1.PacketPlayOutScoreboardTeam;
+import net.minecraft.server.v1_10_R1.ScoreboardTeamBase;
 import net.samagames.tools.Reflection;
 import org.bukkit.ChatColor;
 import org.bukkit.OfflinePlayer;

@@ -9,7 +9,6 @@ import org.bukkit.plugin.Plugin;
 
 import java.util.UUID;
 
-
 public class TutorialRunner implements Runnable
 {
     private Plugin p;
@@ -21,7 +20,7 @@ public class TutorialRunner implements Runnable
 
     private int currentChapter = 0;
     private int currentText = 0;
-
+    private long currentTimer = 0;
 
     public TutorialRunner(Tutorial tutorial, UUID playerId)
     {
@@ -47,13 +46,18 @@ public class TutorialRunner implements Runnable
             return;
         }
 
+        if (currentTimer > 0)
+        {
+            currentTimer -= 10;
+            return;
+        }
 
         TutorialChapter chapter = tutorial.getContent().get(currentChapter);
 
         // Delays of fade-in, fade-out and display
         int fadeIn = (currentText == 0) ? 10 : 0;
         int fadeOut = (currentText == chapter.getContent().size() - 1) ? 10 : 0;
-        int readingTime = (int) (fadeOut == 10 ? tutorial.getReadingTime() - 10 : tutorial.getReadingTime() + 5);
+        int readingTime = chapter.getContent().get(currentText).getRight().intValue() + (fadeOut == 10 ? -10 : 10);
 
 
         // New chapter, new location
@@ -69,7 +73,7 @@ public class TutorialRunner implements Runnable
                 player,
                 fadeIn, readingTime, fadeOut,
                 chapter.getTitle(),
-                chapter.getContent().get(currentText)
+                chapter.getContent().get(currentText).getLeft()
         );
 
 
@@ -77,12 +81,15 @@ public class TutorialRunner implements Runnable
         if (chapter.isDisplayedInChat())
         {
             if (currentText == 0) player.sendMessage(tutorialInChatPrefix + chapter.getTitle());
-            player.sendMessage(tutorialInChatPrefix + chapter.getContent().get(currentText));
+            player.sendMessage(tutorialInChatPrefix + chapter.getContent().get(currentText).getLeft());
         }
 
+        // Cooldown
+        currentTimer = chapter.getContent().get(currentText).getRight() - 10;
 
         // Next one?
         currentText++;
+
         if (currentText == chapter.getContent().size())
         {
             currentChapter++;
