@@ -51,7 +51,9 @@ public class JsonConfiguration
             if(!this.configurationFile.exists())
                 return null;
 
-            BufferedReader br = new BufferedReader(new InputStreamReader(new FileInputStream(this.configurationFile), "utf-8"));
+            FileInputStream fileInputStream = new FileInputStream(this.configurationFile);
+            InputStreamReader inputStreamReader = new InputStreamReader(fileInputStream, "utf-8");
+            BufferedReader br = new BufferedReader(inputStreamReader);
             StringBuilder builder = new StringBuilder();
             String currentLine;
 
@@ -61,6 +63,8 @@ public class JsonConfiguration
             }
 
             br.close();
+            inputStreamReader.close();
+            fileInputStream.close();
 
             return new JsonParser().parse(builder.toString()).getAsJsonObject();
         }

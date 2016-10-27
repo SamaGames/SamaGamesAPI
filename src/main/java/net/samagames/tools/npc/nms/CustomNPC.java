@@ -2,6 +2,7 @@ package net.samagames.tools.npc.nms;
 
 import com.mojang.authlib.GameProfile;
 import net.minecraft.server.v1_9_R2.*;
+import net.samagames.tools.holograms.Hologram;
 import net.samagames.tools.npc.NPCInteractCallback;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -16,6 +17,8 @@ import org.bukkit.event.entity.EntityDamageEvent;
 public class CustomNPC extends EntityPlayer {
 
     private NPCInteractCallback callback;
+
+    private Hologram hologram;
 
     public CustomNPC(World world, GameProfile gameprofile, PlayerInteractManager playerInteractManager)
     {
@@ -101,5 +104,13 @@ public class CustomNPC extends EntityPlayer {
         entityDamageByEntityEvent.setCancelled(true);
         Bukkit.getPluginManager().callEvent(entityDamageByEntityEvent);
         return true;
+    }
+
+    public Hologram getHologram() {
+        return hologram;
+    }
+
+    public void setHologram(Hologram hologram) {
+        this.hologram = hologram;
     }
 }
