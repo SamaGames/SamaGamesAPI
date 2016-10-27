@@ -15,13 +15,15 @@ public class Pearl
 {
     private final UUID uuid;
     private final int stars;
-    private final long expiration;
+    private final long expireAt;
+    private final long createdAt;
 
-    public Pearl(UUID uuid, int stars, long expiration)
+    public Pearl(UUID uuid, int stars, long expireAt, long createdAt)
     {
         this.uuid = uuid;
         this.stars = stars;
-        this.expiration = expiration;
+        this.expireAt = expireAt;
+        this.createdAt = createdAt;
     }
 
     public UUID getUUID()
@@ -36,11 +38,21 @@ public class Pearl
 
     public long getExpiration()
     {
-        return this.expiration;
+        return this.expireAt;
+    }
+
+    public long getCreation()
+    {
+        return this.createdAt;
     }
 
     public long getExpirationInDays()
     {
-        return TimeUnit.MILLISECONDS.toDays(this.expiration - System.currentTimeMillis());
+        return TimeUnit.MILLISECONDS.toDays(this.expireAt - System.currentTimeMillis());
+    }
+
+    public long getCreationInMinutes()
+    {
+        return TimeUnit.MILLISECONDS.toMinutes(this.createdAt - System.currentTimeMillis());
     }
 }
