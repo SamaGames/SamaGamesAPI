@@ -1,5 +1,6 @@
 package net.samagames.api.achievements;
 
+import net.samagames.api.SamaGamesAPI;
 import net.samagames.tools.chat.fanciful.FancyMessage;
 import org.bukkit.*;
 import org.bukkit.entity.Firework;
@@ -79,40 +80,43 @@ public class Achievement
      */
     protected void sendRewardMessage(UUID uuid)
     {
-        Player player = Bukkit.getPlayer(uuid);
+        Bukkit.getScheduler().runTask(SamaGamesAPI.get().getPlugin(), () ->
+        {
+            Player player = Bukkit.getPlayer(uuid);
 
-        if (player == null)
-            return;
+            if (player == null)
+                return;
 
-        player.playSound(player.getLocation(), Sound.ENTITY_PLAYER_LEVELUP, 1.0F, 1.0F);
+            player.playSound(player.getLocation(), Sound.ENTITY_PLAYER_LEVELUP, 1.0F, 1.0F);
 
-        Firework firework = player.getWorld().spawn(player.getLocation(), Firework.class);
-        FireworkMeta fireworkMeta = firework.getFireworkMeta();
-        fireworkMeta.setPower(2);
-        fireworkMeta.addEffect(FIREWORK_EFFECT);
-        firework.setFireworkMeta(fireworkMeta);
+            Firework firework = player.getWorld().spawn(player.getLocation(), Firework.class);
+            FireworkMeta fireworkMeta = firework.getFireworkMeta();
+            fireworkMeta.setPower(2);
+            fireworkMeta.addEffect(FIREWORK_EFFECT);
+            firework.setFireworkMeta(fireworkMeta);
 
-        String[] array = new String[this.description.length + 2];
-        array[0] = ChatColor.AQUA + this.displayName;
-        array[1] = "";
+            String[] array = new String[this.description.length + 2];
+            array[0] = ChatColor.AQUA + this.displayName;
+            array[1] = "";
 
-        for (int i = 0; i < this.description.length; i++)
-            array[i + 2] = ChatColor.GRAY + this.description[i];
+            for (int i = 0; i < this.description.length; i++)
+                array[i + 2] = ChatColor.GRAY + this.description[i];
 
-        String finalDisplayName = "";
+            String finalDisplayName = "";
 
-        for (char letter : this.getDisplayName().toCharArray())
-            finalDisplayName += ChatColor.AQUA + "" + letter;
+            for (char letter : this.getDisplayName().toCharArray())
+                finalDisplayName += ChatColor.AQUA + "" + letter;
 
-        FancyMessage message = new FancyMessage(ChatColor.DARK_AQUA + "\u25A0 ")
-                .then(ChatColor.AQUA + player.getName())
-                .then(ChatColor.WHITE + " a débloqué l'objectif : ")
-                .then(finalDisplayName)
+            FancyMessage message = new FancyMessage(ChatColor.DARK_AQUA + "\u25A0 ")
+                    .then(ChatColor.AQUA + player.getName())
+                    .then(ChatColor.WHITE + " a débloqué l'objectif : ")
+                    .then(finalDisplayName)
                     .tooltip(array)
-                .then(ChatColor.WHITE + " !")
-                .then(ChatColor.DARK_AQUA + " \u25A0");
+                    .then(ChatColor.WHITE + " ! ")
+                    .then(ChatColor.DARK_AQUA + "\u25A0");
 
-        Bukkit.getOnlinePlayers().forEach(message::send);
+            Bukkit.getOnlinePlayers().forEach(message::send);
+        });
     }
 
     /**
