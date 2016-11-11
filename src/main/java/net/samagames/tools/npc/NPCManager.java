@@ -59,6 +59,11 @@ public class NPCManager implements Listener {
         this.api.getPlugin().getServer().getScheduler().runTaskLater(this.api.getPlugin(), () -> ((CraftPlayer)p).getHandle().playerConnection.sendPacket(new PacketPlayOutPlayerInfo(PacketPlayOutPlayerInfo.EnumPlayerInfoAction.REMOVE_PLAYER, npc)), 60L);
     }
 
+    private void removeNPC(Player p, CustomNPC npc)
+    {
+        p.hidePlayer(npc.getBukkitEntity());
+    }
+
     /**
      * Need to be called async
      * @param location
@@ -84,6 +89,7 @@ public class NPCManager implements Listener {
 
         w.addEntity(npc, CreatureSpawnEvent.SpawnReason.CUSTOM);
 
+        npc.setHologram(hologram);
         entities.put(npc, hologram);
 
         if (scoreBoardRegister != null)
@@ -96,8 +102,21 @@ public class NPCManager implements Listener {
     public void removeNPC(String name)
     {
         CustomNPC npc = getNPCEntity(name);
+
+        removeNPC(npc);
+    }
+
+    public void removeNPC(CustomNPC npc)
+    {
         if (npc != null)
+        {
+            npc.getHologram().destroy();
+            for (Player p : Bukkit.getOnlinePlayers())
+            {
+                removeNPC(p, npc);
+            }
             npc.getWorld().removeEntity(npc);
+        }
     }
 
     public CustomNPC getNPCEntity(String name)
