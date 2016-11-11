@@ -158,6 +158,7 @@ public abstract class AbstractPlayerData
      * @param applyMultiplier Have to apply multiplier
      * @param financialCallback Callback fired after the process
      */
+    @Deprecated
     public abstract void creditStars(long amount, String reason, boolean applyMultiplier, IFinancialCallback financialCallback);
 
     /**
@@ -166,6 +167,7 @@ public abstract class AbstractPlayerData
      * @param amount Amount to withdraw
      * @param financialCallback Callback fired after the process
      */
+    @Deprecated
     public abstract void withdrawStars(long amount, IFinancialCallback financialCallback);
 
     /**
@@ -175,6 +177,7 @@ public abstract class AbstractPlayerData
      *
      * @return The new count
      */
+    @Deprecated
     public abstract long increaseStars(long incrBy);
 
     /**
@@ -184,6 +187,7 @@ public abstract class AbstractPlayerData
      *
      * @return The new count
      */
+    @Deprecated
     public abstract long decreaseStars(long decrBy);
 
     /**
@@ -192,6 +196,7 @@ public abstract class AbstractPlayerData
      * @param amount Amount to credit
      * @param reason Credit's reason
      */
+    @Deprecated
     public void creditStars(long amount, String reason)
     {
         this.creditStars(amount, reason, true, null);
@@ -204,6 +209,7 @@ public abstract class AbstractPlayerData
      * @param reason Credit's reason
      * @param applyMultiplier Have to apply multiplier
      */
+    @Deprecated
     public void creditStars(long amount, String reason, boolean applyMultiplier)
     {
         this.creditStars(amount, reason, applyMultiplier, null);
@@ -216,6 +222,7 @@ public abstract class AbstractPlayerData
      * @param reason Credit's reason
      * @param financialCallback Callback fired after the process
      */
+    @Deprecated
     public void creditStars(long amount, String reason, IFinancialCallback financialCallback)
     {
         this.creditStars(amount, reason, true, financialCallback);
@@ -226,6 +233,7 @@ public abstract class AbstractPlayerData
      *
      * @param amount Amount to withdraw
      */
+    @Deprecated
     public void withdrawStars(long amount)
     {
         this.withdrawStars(amount, null);
@@ -236,7 +244,60 @@ public abstract class AbstractPlayerData
      *
      * @return Number of stars
      */
+    @Deprecated
     public abstract long getStars();
+
+
+    /**
+     * ========================
+     * > Powders management
+     * ========================
+     */
+
+    /**
+     * Credit the powders number of the player
+     *
+     * @param amount Amount to credit
+     * @param financialCallback Callback fired after the process
+     */
+    @Deprecated
+    public abstract void creditPowders(long amount, IFinancialCallback financialCallback);
+
+    /**
+     * Withdraw the powders number of the player
+     *
+     * @param amount Amount to withdraw
+     * @param financialCallback Callback fired after the process
+     */
+    @Deprecated
+    public abstract void withdrawPowders(long amount, IFinancialCallback financialCallback);
+
+    /**
+     * Credit the powders number of the player
+     *
+     * @param incrBy Amount to credit
+     *
+     * @return The new count
+     */
+    @Deprecated
+    public abstract long increasePowders(long incrBy);
+
+    /**
+     * Withdraw the powders number of the player
+     *
+     * @param decrBy Amount to withdraw
+     *
+     * @return The new count
+     */
+    @Deprecated
+    public abstract long decreasePowders(long decrBy);
+
+    /**
+     * Get current powders number of the player
+     *
+     * @return Number of powders
+     */
+    public abstract long getPowders();
 
     /**
      * Is the player has current stars
@@ -245,6 +306,7 @@ public abstract class AbstractPlayerData
      *
      * @return {@code true} is has enough
      */
+    @Deprecated
     public boolean hasEnoughStars(long amount)
     {
         return this.getStars() >= amount;
