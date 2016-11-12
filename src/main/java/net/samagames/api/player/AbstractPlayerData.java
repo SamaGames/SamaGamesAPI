@@ -260,7 +260,6 @@ public abstract class AbstractPlayerData
      * @param amount Amount to credit
      * @param financialCallback Callback fired after the process
      */
-    @Deprecated
     public abstract void creditPowders(long amount, IFinancialCallback financialCallback);
 
     /**
@@ -269,7 +268,6 @@ public abstract class AbstractPlayerData
      * @param amount Amount to withdraw
      * @param financialCallback Callback fired after the process
      */
-    @Deprecated
     public abstract void withdrawPowders(long amount, IFinancialCallback financialCallback);
 
     /**
@@ -279,7 +277,6 @@ public abstract class AbstractPlayerData
      *
      * @return The new count
      */
-    @Deprecated
     public abstract long increasePowders(long incrBy);
 
     /**
@@ -289,7 +286,6 @@ public abstract class AbstractPlayerData
      *
      * @return The new count
      */
-    @Deprecated
     public abstract long decreasePowders(long decrBy);
 
     /**
