@@ -11,5 +11,5 @@ import org.bukkit.entity.Player;
  */
 public interface IPearlManager
 {
-    void runGiveAlgorythm(Player player, int gameTime, boolean win);
+    Pearl runGiveAlgorythm(Player player, int gameTime, boolean win);
 }
