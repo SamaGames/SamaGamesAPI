@@ -125,9 +125,10 @@ public class Achievement
                         .then(finalDisplayName)
                         .tooltip(array)
                         .then(ChatColor.WHITE + " ! ")
-                        .then(ChatColor.AQUA + "[Partager sur Twitter]")
+                        .then(ChatColor.DARK_AQUA + "[\u2708]")
+                        .tooltip(ChatColor.AQUA + "Partager sur Twitter")
                         .link("https://twitter.com/intent/tweet?text=Je+viens+de+d%C3%A9bloquer+l%27objectif+%27" + URLEncoder.encode(this.getDisplayName(), "UTF-8") + "%27+sur+%40SamaGames_Mc+%21")
-                        .then(ChatColor.DARK_AQUA + "\u25A0");
+                        .then(ChatColor.DARK_AQUA + " \u25A0");
 
                 personalMessage.send(player);
                 Bukkit.getOnlinePlayers().stream().filter(p -> p.getUniqueId() != uuid).forEach(message::send);
