@@ -7,6 +7,8 @@ import org.bukkit.entity.Firework;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.meta.FireworkMeta;
 
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
 import java.sql.Timestamp;
 import java.time.Instant;
 import java.util.*;
@@ -115,7 +117,26 @@ public class Achievement
                     .then(ChatColor.WHITE + " ! ")
                     .then(ChatColor.DARK_AQUA + "\u25A0");
 
-            Bukkit.getOnlinePlayers().forEach(message::send);
+            try
+            {
+                FancyMessage personalMessage = new FancyMessage(ChatColor.DARK_AQUA + "\u25A0 ")
+                        .then(ChatColor.AQUA + player.getName())
+                        .then(ChatColor.WHITE + " a débloqué l'objectif : ")
+                        .then(finalDisplayName)
+                        .tooltip(array)
+                        .then(ChatColor.WHITE + " ! ")
+                        .then(ChatColor.AQUA + "[Partager sur Twitter]")
+                        .link("https://twitter.com/intent/tweet?text=Je+viens+de+d%C3%A9bloquer+l%27objectif+%27" + URLEncoder.encode(this.getDisplayName(), "UTF-8") + "%27+sur+%40SamaGames_Mc+%21")
+                        .then(ChatColor.DARK_AQUA + "\u25A0");
+
+                personalMessage.send(player);
+                Bukkit.getOnlinePlayers().stream().filter(p -> p.getUniqueId() != uuid).forEach(message::send);
+            }
+            catch (UnsupportedEncodingException e)
+            {
+                e.printStackTrace();
+                Bukkit.getOnlinePlayers().forEach(message::send);
+            }
         });
     }
 
