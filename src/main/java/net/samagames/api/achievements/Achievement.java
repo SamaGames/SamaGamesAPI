@@ -125,7 +125,7 @@ public class Achievement
                         .then(finalDisplayName)
                         .tooltip(array)
                         .then(ChatColor.WHITE + " ! ")
-                        .then(ChatColor.DARK_AQUA + "[\u2708]")
+                        .then(ChatColor.DARK_AQUA + "[Tweeter]")
                         .tooltip(ChatColor.AQUA + "Partager sur Twitter")
                         .link("https://twitter.com/intent/tweet?text=Je+viens+de+d%C3%A9bloquer+l%27objectif+%27" + URLEncoder.encode(this.getDisplayName(), "UTF-8") + "%27+sur+%40SamaGames_Mc+%21")
                         .then(ChatColor.DARK_AQUA + " \u25A0");
