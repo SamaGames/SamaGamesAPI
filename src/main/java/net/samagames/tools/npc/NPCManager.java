@@ -95,6 +95,12 @@ public class NPCManager implements Listener {
         if (scoreBoardRegister != null)
             scoreBoardRegister.done(npc, null);
 
+        for(Player player : Bukkit.getOnlinePlayers())
+        {
+            sendNPC(player, npc);
+            hologram.addReceiver(player);
+        }
+
         //Bukkit.getScheduler().runTaskLater(api.getPlugin(), () -> updateForAllNPC(npc), 2L);
         return npc;
     }
