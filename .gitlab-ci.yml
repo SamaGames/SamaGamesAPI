@@ -1,0 +1,37 @@
+stages:
+  - build
+  - deploy
+
+variables:
+  HAS_TO_BE_PUT_IN_THE_DATA: "true"
+  HAS_TO_BE_PUBLISHED_INTO_ARTIFACTORY: "true"
+  ARTIFACTORY_REPOSITORY: "developpers"
+  ARTIFACTORY_ARTIFACT_GROUP: "net.samagames"
+  ARTIFACTORY_ARTIFACT_NAME: "SamaGamesAPI"
+  ARTIFACTORY_ARTIFACT_VERSION: "4.1.0"
+
+build:
+  stage: build
+  script:
+    - 'if [ -f "build.gradle" ]; then gradle build --refresh-dependencies; else mvn install; fi'
+  artifacts:
+    paths:
+      - build/libs/*.jar
+      - target/*.jar
+    expire_in: 1 day
+
+deploy-developement:
+  stage: deploy
+  only:
+    - develop
+    - "1.10"
+  script:
+    - 'if [ "$HAS_TO_BE_PUT_IN_THE_DATA" == "true" ]; then if [ -f "build.gradle" ]; then cp -f build/libs/*.jar /home/www/static/templates/dependencies/; else cp -f target/*.jar /home/www/static/templates/dependencies/; fi; fi'
+    - 'if [ "$HAS_TO_BE_PUBLISHED_INTO_ARTIFACTORY" == "true" ]; then if [ -f "build.gradle" ]; then artifactory-publish build/libs/${ARTIFACTORY_ARTIFACT_NAME}-${ARTIFACTORY_ARTIFACT_VERSION}.jar $ARTIFACTORY_REPOSITORY $ARTIFACTORY_ARTIFACT_GROUP $ARTIFACTORY_ARTIFACT_NAME $ARTIFACTORY_ARTIFACT_VERSION; else artifactory-publish target/${ARTIFACTORY_ARTIFACT_NAME}-${ARTIFACTORY_ARTIFACT_VERSION}.jar $ARTIFACTORY_REPOSITORY $ARTIFACTORY_ARTIFACT_GROUP $ARTIFACTORY_ARTIFACT_NAME $ARTIFACTORY_ARTIFACT_VERSION; fi ; fi'
+
+deploy-production:
+  stage: deploy
+  only:
+    - master
+  script:
+    - 'if [ "$HAS_TO_BE_PUT_IN_THE_DATA" == "true" ]; then if [ -f "build.gradle" ]; then scp -prq build/libs/*.jar root@94.23.20.180:/var/www/static/templates/dependencies/; else scp -prq target/*.jar root@94.23.20.180:/var/www/static/templates/dependencies/; fi; fi'
