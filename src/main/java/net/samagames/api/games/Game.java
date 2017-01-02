@@ -1,6 +1,7 @@
 package net.samagames.api.games;
 
 import net.samagames.api.SamaGamesAPI;
+import net.samagames.api.games.pearls.Pearl;
 import net.samagames.api.games.themachine.ICoherenceMachine;
 import net.samagames.api.games.themachine.messages.templates.EarningMessageTemplate;
 import net.samagames.tools.Titles;
@@ -301,8 +302,6 @@ public class Game<GAMEPLAYER extends GamePlayer>
         {
             try
             {
-                this.gameManager.getPearlManager().runGiveAlgorythm(player.getPlayerIfOnline(), (int) TimeUnit.MILLISECONDS.toSeconds(this.gameManager.getGameTime()), this.gameWinners.contains(player.getUUID()));
-
                 if (this.gameManager.getGameStatisticsHelper() != null)
                     this.gameManager.getGameStatisticsHelper().increasePlayedTime(player.getUUID(), player.getPlayedTime());
             }
@@ -376,9 +375,12 @@ public class Game<GAMEPLAYER extends GamePlayer>
         {
             this.gamePlayers.keySet().stream().filter(playerUUID -> Bukkit.getPlayer(playerUUID) != null).forEach(playerUUID ->
             {
+                Pearl pearl = this.gameManager.getPearlManager().runGiveAlgorythm(Bukkit.getPlayer(playerUUID), (int) TimeUnit.MILLISECONDS.toSeconds(this.gameManager.getGameTime()), this.gameWinners.contains(playerUUID));
+
                 String key = "lastgame:" + playerUUID.toString();
 
                 Jedis jedis = SamaGamesAPI.get().getBungeeResource();
+
                 if (jedis != null)
                 {
                     jedis.set(key, this.gameCodeName);
@@ -387,7 +389,7 @@ public class Game<GAMEPLAYER extends GamePlayer>
                 }
 
                 EarningMessageTemplate earningMessageTemplate = this.coherenceMachine.getTemplateManager().getEarningMessageTemplate();
-                earningMessageTemplate.execute(Bukkit.getPlayer(playerUUID), this.getPlayer(playerUUID).getCoins(), this.getPlayer(playerUUID).getStars());
+                earningMessageTemplate.execute(Bukkit.getPlayer(playerUUID), this.getPlayer(playerUUID).getCoins(), this.getPlayer(playerUUID).getStars(), pearl);
             });
         }, 20L * 3);
 

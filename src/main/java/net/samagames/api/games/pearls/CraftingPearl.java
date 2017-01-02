@@ -8,19 +8,19 @@ import java.util.concurrent.TimeUnit;
  * .b--.        /;   _.. \   _\  (`._ ,.
  * `=,-,-'~~~   `----(,_..'--(,_..'`-.;.'
  *
- * Created by Jérémy L. (BlueSlime) on 21/10/2016
+ * Created by Jérémy L. (BlueSlime) on 12/11/2016
  */
-public class Pearl
+public class CraftingPearl
 {
     private final UUID uuid;
     private final int stars;
-    private final long expireAt;
+    private final long createdAt;
 
-    public Pearl(UUID uuid, int stars, long expireAt)
+    public CraftingPearl(UUID uuid, int stars, long createdAt)
     {
         this.uuid = uuid;
         this.stars = stars;
-        this.expireAt = expireAt;
+        this.createdAt = createdAt;
     }
 
     public UUID getUUID()
@@ -33,13 +33,13 @@ public class Pearl
         return this.stars;
     }
 
-    public long getExpiration()
+    public long getCreation()
     {
-        return this.expireAt;
+        return this.createdAt;
     }
 
-    public long getExpirationInDays()
+    public long getCreationInMinutes()
     {
-        return TimeUnit.MILLISECONDS.toDays(this.expireAt - System.currentTimeMillis());
+        return TimeUnit.MILLISECONDS.toMinutes(this.createdAt - System.currentTimeMillis());
     }
 }
