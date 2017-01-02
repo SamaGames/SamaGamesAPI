@@ -27,7 +27,8 @@ public enum GamesNames {
     DOUBLERUNNER(9),
     UHCRANDOM(10),
     RANDOMRUN(11),
-    ULTRAFLAGKEEPER(12);
+    ULTRAFLAGKEEPER(12),
+    CHUNKWARS(13);
 
     private int value;
     GamesNames(int value)
