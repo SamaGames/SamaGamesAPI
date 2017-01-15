@@ -26,10 +26,11 @@ public interface IMessageManager
      * to all players
      *
      * @param player Joined player
+     * @param playerCount Show the player count
      *
      * @return Instance of the message {@link Message}
      */
-    Message writePlayerJoinToAll(Player player);
+    Message writePlayerJoinToAll(Player player, boolean playerCount);
 
     /**
      * Send a welcome message to a given player

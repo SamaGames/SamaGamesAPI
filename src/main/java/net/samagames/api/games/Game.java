@@ -100,6 +100,9 @@ public class Game<GAMEPLAYER extends GamePlayer>
      */
     public void startGame()
     {
+        if (this.gameManager.isFreeMode())
+            throw new UnsupportedOperationException("You can't use this method while using the free mode!");
+
         //Network hook don't touch
         this.gameManager.startTimer();
 
@@ -126,7 +129,9 @@ public class Game<GAMEPLAYER extends GamePlayer>
     {
         this.coherenceMachine = this.gameManager.getCoherenceMachine();
         this.beginObj = new BeginTimer(this);
-        this.beginTimer = Bukkit.getScheduler().runTaskTimerAsynchronously(SamaGamesAPI.get().getPlugin(), this.beginObj, 20L, 20L);
+
+        if (!this.gameManager.isFreeMode())
+            this.beginTimer = Bukkit.getScheduler().runTaskTimerAsynchronously(SamaGamesAPI.get().getPlugin(), this.beginObj, 20L, 20L);
 
         if (this.gameManager.getGameStatisticsHelper() == null)
             Bukkit.getLogger().severe("NO STATISTICS HELPER REGISTERED, PLAYERS WILL LOST THEIR STATISTICS DURING THIS GAME.");
@@ -158,7 +163,7 @@ public class Game<GAMEPLAYER extends GamePlayer>
             e.printStackTrace();
         }
 
-        this.coherenceMachine.getMessageManager().writePlayerJoinToAll(player);
+        this.coherenceMachine.getMessageManager().writePlayerJoinToAll(player, !this.gameManager.isFreeMode());
     }
 
     /**
@@ -191,6 +196,17 @@ public class Game<GAMEPLAYER extends GamePlayer>
      */
     public void handleLogout(Player player)
     {
+        String key = "lastgame:" + player.getPlayer().toString();
+
+        Jedis jedis = SamaGamesAPI.get().getBungeeResource();
+
+        if (jedis != null)
+        {
+            jedis.set(key, this.gameCodeName);
+            jedis.expire(key, 60 * 3);
+            jedis.close();
+        }
+
         if(this.status == Status.FINISHED)
             return;
 
@@ -228,6 +244,9 @@ public class Game<GAMEPLAYER extends GamePlayer>
      */
     public void handleReconnect(Player player)
     {
+        if (this.gameManager.isFreeMode())
+            throw new UnsupportedOperationException("You can't use this method while using the free mode!");
+
         GamePlayer gamePlayer = this.gamePlayers.get(player.getUniqueId());
 
         if (gamePlayer == null)
@@ -255,6 +274,9 @@ public class Game<GAMEPLAYER extends GamePlayer>
      */
     public void handleReconnectTimeOut(OfflinePlayer player, boolean silent)
     {
+        if (this.gameManager.isFreeMode())
+            throw new UnsupportedOperationException("You can't use this method while using the free mode!");
+
         if (this.gamePlayers.containsKey(player.getUniqueId()))
             this.gamePlayers.remove(player.getUniqueId());
 
@@ -272,6 +294,9 @@ public class Game<GAMEPLAYER extends GamePlayer>
      */
     public void handleWinner(UUID uuid)
     {
+        if (this.gameManager.isFreeMode())
+            throw new UnsupportedOperationException("You can't use this method while using the free mode!");
+
         try
         {
             this.gameWinners.add(uuid);
@@ -281,7 +306,7 @@ public class Game<GAMEPLAYER extends GamePlayer>
 
             Arrays.asList(25, 26, 27, 28, 29).forEach(id -> SamaGamesAPI.get().getAchievementManager().incrementAchievement(uuid, id, 1));
         }
-        catch (Exception ignored){}
+        catch (Exception ignored) {}
     }
 
     /**
@@ -292,6 +317,9 @@ public class Game<GAMEPLAYER extends GamePlayer>
      */
     public void handleGameEnd()
     {
+        if (this.gameManager.isFreeMode())
+            throw new UnsupportedOperationException("You can't use this method while using the free mode!");
+
         this.setStatus(Status.FINISHED);
 
         // Network hook don't touch
@@ -376,17 +404,6 @@ public class Game<GAMEPLAYER extends GamePlayer>
             this.gamePlayers.keySet().stream().filter(playerUUID -> Bukkit.getPlayer(playerUUID) != null).forEach(playerUUID ->
             {
                 Pearl pearl = this.gameManager.getPearlManager().runGiveAlgorythm(Bukkit.getPlayer(playerUUID), (int) TimeUnit.MILLISECONDS.toSeconds(this.gameManager.getGameTime()), this.gameWinners.contains(playerUUID));
-
-                String key = "lastgame:" + playerUUID.toString();
-
-                Jedis jedis = SamaGamesAPI.get().getBungeeResource();
-
-                if (jedis != null)
-                {
-                    jedis.set(key, this.gameCodeName);
-                    jedis.expire(key, 60 * 3);
-                    jedis.close();
-                }
 
                 EarningMessageTemplate earningMessageTemplate = this.coherenceMachine.getTemplateManager().getEarningMessageTemplate();
                 earningMessageTemplate.execute(Bukkit.getPlayer(playerUUID), this.getPlayer(playerUUID).getCoins(), this.getPlayer(playerUUID).getStars(), pearl);
