@@ -14,7 +14,7 @@ variables:
 build:
   stage: build
   script:
-    - 'if [ -f "build.gradle" ]; then gradle build --refresh-dependencies; else mvn install; fi'
+    - 'if [ -f "build.gradle" ]; then gradle build install --refresh-dependencies; else mvn install; fi'
   artifacts:
     paths:
       - build/libs/*.jar
