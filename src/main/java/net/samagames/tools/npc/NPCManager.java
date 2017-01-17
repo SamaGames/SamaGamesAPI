@@ -51,7 +51,7 @@ public class NPCManager implements Listener {
         }*/
     }
 
-    private void sendNPC(Player p, CustomNPC npc)
+    public void sendNPC(Player p, CustomNPC npc)
     {
         ((CraftPlayer)p).getHandle().playerConnection.sendPacket(new PacketPlayOutPlayerInfo(PacketPlayOutPlayerInfo.EnumPlayerInfoAction.ADD_PLAYER, npc));
         p.hidePlayer(npc.getBukkitEntity());
@@ -59,7 +59,7 @@ public class NPCManager implements Listener {
         this.api.getPlugin().getServer().getScheduler().runTaskLater(this.api.getPlugin(), () -> ((CraftPlayer)p).getHandle().playerConnection.sendPacket(new PacketPlayOutPlayerInfo(PacketPlayOutPlayerInfo.EnumPlayerInfoAction.REMOVE_PLAYER, npc)), 60L);
     }
 
-    private void removeNPC(Player p, CustomNPC npc)
+    public void removeNPC(Player p, CustomNPC npc)
     {
         p.hidePlayer(npc.getBukkitEntity());
     }
@@ -77,6 +77,11 @@ public class NPCManager implements Listener {
 
     public CustomNPC createNPC(Location location, UUID skinUUID, String[] hologramLines)
     {
+        return createNPC(location, skinUUID, hologramLines, true);
+    }
+
+    public CustomNPC createNPC(Location location, UUID skinUUID, String[] hologramLines, boolean showByDefault)
+    {
         final World w = ((CraftWorld) location.getWorld()).getHandle();
 
         GameProfile gameProfile = new ProfileLoader(skinUUID.toString(), "[NPC] " + entities.size(), skinUUID).loadProfile();
@@ -84,8 +89,13 @@ public class NPCManager implements Listener {
         final CustomNPC npc = new CustomNPC(w, gameProfile, new PlayerInteractManager(w));
         npc.setLocation(location);
 
-        Hologram hologram = new Hologram(hologramLines);
-        hologram.generateLines(location.clone().add(0.0D, 1.8D, 0.0D));
+        Hologram hologram = null;
+
+        if (hologramLines != null)
+        {
+            hologram = new Hologram(hologramLines);
+            hologram.generateLines(location.clone().add(0.0D, 1.8D, 0.0D));
+        }
 
         w.addEntity(npc, CreatureSpawnEvent.SpawnReason.CUSTOM);
 
@@ -95,10 +105,15 @@ public class NPCManager implements Listener {
         if (scoreBoardRegister != null)
             scoreBoardRegister.done(npc, null);
 
-        for(Player player : Bukkit.getOnlinePlayers())
+        if (showByDefault)
         {
-            sendNPC(player, npc);
-            hologram.addReceiver(player);
+            for(Player player : Bukkit.getOnlinePlayers())
+            {
+                sendNPC(player, npc);
+
+                if (hologram != null)
+                    hologram.addReceiver(player);
+            }
         }
 
         //Bukkit.getScheduler().runTaskLater(api.getPlugin(), () -> updateForAllNPC(npc), 2L);
@@ -116,7 +131,9 @@ public class NPCManager implements Listener {
     {
         if (npc != null)
         {
-            npc.getHologram().destroy();
+            if (npc.getHologram() != null)
+                npc.getHologram().destroy();
+
             for (Player p : Bukkit.getOnlinePlayers())
             {
                 removeNPC(p, npc);
