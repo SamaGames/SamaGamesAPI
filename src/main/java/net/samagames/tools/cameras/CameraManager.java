@@ -30,6 +30,15 @@ public class CameraManager implements Listener
         Bukkit.getPluginManager().registerEvents(this, api.getPlugin());
     }
 
+    /**
+     * Create a fake camera
+     *
+     * @param initialPosition The position where the camera has
+     *                        to spawn
+     * @param fixed Has the player to be fixed into the camera
+     *
+     * @return The camera instance
+     */
     public Camera createCamera(Location initialPosition, boolean fixed)
     {
         Camera camera = new Camera(initialPosition, fixed);
@@ -38,6 +47,11 @@ public class CameraManager implements Listener
         return camera;
     }
 
+    /**
+     * Remove the camera from the world
+     *
+     * @param camera The camera instance
+     */
     public void removeCamera(Camera camera)
     {
         camera.remove();
@@ -53,6 +67,13 @@ public class CameraManager implements Listener
             event.setCancelled(true);
     }
 
+    /**
+     * Get the camera the player is viewing into
+     *
+     * @param player The player
+     *
+     * @return The camera instance
+     */
     public Camera getPlayerCamera(Player player)
     {
         for (Camera camera : this.cameras)
