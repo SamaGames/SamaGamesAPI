@@ -16,6 +16,7 @@ import net.samagames.api.settings.ISettingsManager;
 import net.samagames.api.shops.IShopsManager;
 import net.samagames.api.stats.IStatsManager;
 import net.samagames.tools.SkyFactory;
+import net.samagames.tools.cameras.CameraManager;
 import net.samagames.tools.npc.NPCManager;
 import org.bukkit.plugin.java.JavaPlugin;
 import redis.clients.jedis.Jedis;
@@ -190,6 +191,15 @@ public abstract class SamaGamesAPI
      * @return Instance
      */
     public abstract SkyFactory getSkyFactory();
+
+    /**
+     * Get the instance of the Camera Manager who
+     * permits to create fake camera for the
+     * players
+     *
+     * @return Instance
+     */
+    public abstract CameraManager getCameraManager();
 
     /**
      * Get the root plugin of the API
