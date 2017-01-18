@@ -1,5 +1,6 @@
 package net.samagames.tools.cameras;
 
+import net.minecraft.server.v1_10_R1.EntityGuardian;
 import net.samagames.api.SamaGamesAPI;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -24,6 +25,8 @@ public class CameraManager implements Listener
     public CameraManager(SamaGamesAPI api)
     {
         this.cameras = new ArrayList<>();
+
+        EntityRegistrar.registerEntity("FakeCamera", 68, EntityGuardian.class, EntityCamera.class);
         Bukkit.getPluginManager().registerEvents(this, api.getPlugin());
     }
 
