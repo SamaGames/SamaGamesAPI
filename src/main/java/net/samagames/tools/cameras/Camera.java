@@ -69,6 +69,11 @@ public class Camera
         this.viewers.remove(player.getUniqueId());
     }
 
+    public EntityCamera getEntityCamera()
+    {
+        return this.entityCamera;
+    }
+
     public boolean isPlayerViewing(Player player)
     {
         return this.viewers.containsKey(player.getUniqueId());
