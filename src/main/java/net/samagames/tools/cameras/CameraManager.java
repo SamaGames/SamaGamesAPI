@@ -54,7 +54,20 @@ public class CameraManager implements Listener
      */
     public void removeCamera(Camera camera)
     {
-        camera.remove();
+        this.removeCamera(camera, null);
+    }
+
+    /**
+     * Remove the camera from the world
+     *
+     * @param camera The camera instance
+     * @param backPosition The position the player has to
+     *                     be teleported after the camera is
+     *                     removed
+     */
+    public void removeCamera(Camera camera, Location backPosition)
+    {
+        camera.remove(backPosition);
         this.cameras.remove(camera);
     }
 
