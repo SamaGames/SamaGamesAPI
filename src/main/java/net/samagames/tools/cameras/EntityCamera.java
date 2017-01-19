@@ -15,7 +15,7 @@ public class EntityCamera extends EntityBat
     }
 
     @Override
-    protected void r() {}
+    protected void M() {}
 
     @Override
     public void b(NBTTagCompound nbttagcompound) {}
