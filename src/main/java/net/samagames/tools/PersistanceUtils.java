@@ -2,11 +2,14 @@ package net.samagames.tools;
 
 import net.samagames.api.shops.IItemDescription;
 import org.bukkit.ChatColor;
+import org.bukkit.Color;
 import org.bukkit.Material;
 import org.bukkit.entity.EntityType;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.inventory.meta.LeatherArmorMeta;
+import org.bukkit.inventory.meta.SkullMeta;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.util.ArrayList;
@@ -29,6 +32,8 @@ public class PersistanceUtils
      * - B: Basic
      * - P: Potion
      * - E: Monster Egg
+     * - A: Leather armor
+     * - H: Player head
      *
      * Because of there are multiple way to create the different ItemStack,
      * we needed to set the first character as a type.
@@ -80,6 +85,38 @@ public class PersistanceUtils
             stack = MojangShitUtils.getMonsterEgg(entityType);
 
             if (itemData.length == 3 && itemData[2].equalsIgnoreCase("GLOW"))
+                GlowEffect.addGlow(stack);
+        }
+        else if (itemData[0].equalsIgnoreCase("A"))
+        {
+            Material material = Material.valueOf(itemData[1].toUpperCase());
+            int size = Integer.parseInt(itemData[2]);
+
+            int red = Integer.parseInt(itemData[3]);
+            int green = Integer.parseInt(itemData[4]);
+            int blue = Integer.parseInt(itemData[5]);
+
+            stack = new ItemStack(material, size);
+
+            LeatherArmorMeta meta = (LeatherArmorMeta) stack.getItemMeta();
+            meta.setColor(Color.fromRGB(red, green, blue));
+            stack.setItemMeta(meta);
+
+            if (itemData.length == 7 && itemData[6].equalsIgnoreCase("GLOW"))
+                GlowEffect.addGlow(stack);
+        }
+        else if (itemData[0].equalsIgnoreCase("H"))
+        {
+            int size = Integer.parseInt(itemData[1]);
+            String username = itemData[2];
+
+            stack = new ItemStack(Material.SKULL, size);
+
+            SkullMeta meta = (SkullMeta) stack.getItemMeta();
+            meta.setOwner(username);
+            stack.setItemMeta(meta);
+
+            if (itemData.length == 4 && itemData[3].equalsIgnoreCase("GLOW"))
                 GlowEffect.addGlow(stack);
         }
         else
