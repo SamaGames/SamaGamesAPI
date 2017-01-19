@@ -1,11 +1,11 @@
 package net.samagames.tools.cameras;
 
-import net.minecraft.server.v1_10_R1.Vector3f;
 import net.minecraft.server.v1_10_R1.World;
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.craftbukkit.v1_10_R1.CraftWorld;
+import org.bukkit.entity.ArmorStand;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.entity.CreatureSpawnEvent;
@@ -45,12 +45,12 @@ public class Camera
 
     public void move(Location to)
     {
-        this.entityCamera.teleportTo(to, false);
+        this.entityCamera.getBukkitEntity().teleport(to);
 
-        float headX = (float) Math.toRadians(to.getPitch());
-        float headY = (float) Math.toRadians(to.getYaw());
+        double headX = Math.toRadians(to.getPitch());
+        double headY = Math.toRadians(to.getYaw());
 
-        this.entityCamera.setHeadPose(new Vector3f(headX, headY, 0));
+        ((ArmorStand) this.entityCamera.getBukkitEntity()).setHeadPose(new EulerAngle(headX, headY, 0));
     }
 
     void remove(Location backPosition)
