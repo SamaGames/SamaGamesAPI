@@ -1,11 +1,8 @@
 package net.samagames.tools.cameras;
 
-import net.minecraft.server.v1_10_R1.EntityGuardian;
-import net.minecraft.server.v1_10_R1.NBTTagCompound;
-import net.minecraft.server.v1_10_R1.SoundEffect;
-import net.minecraft.server.v1_10_R1.World;
+import net.minecraft.server.v1_10_R1.*;
 
-public class EntityCamera extends EntityGuardian
+public class EntityCamera extends EntityBat
 {
     EntityCamera(World world)
     {
