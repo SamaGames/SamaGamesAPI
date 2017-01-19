@@ -5,11 +5,8 @@ import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.craftbukkit.v1_10_R1.CraftWorld;
-import org.bukkit.entity.Guardian;
 import org.bukkit.entity.Player;
 import org.bukkit.event.entity.CreatureSpawnEvent;
-import org.bukkit.potion.PotionEffect;
-import org.bukkit.potion.PotionEffectType;
 
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
@@ -38,7 +35,6 @@ public class Camera
 
         this.entityCamera.setPosition(initialPosition.getX(), initialPosition.getY(), initialPosition.getZ());
         world.addEntity(this.entityCamera, CreatureSpawnEvent.SpawnReason.CUSTOM);
-        ((Guardian) this.entityCamera.getBukkitEntity()).addPotionEffect(new PotionEffect(PotionEffectType.INVISIBILITY, Integer.MAX_VALUE, 1, false, false));
     }
 
     void remove(Location backPosition)
