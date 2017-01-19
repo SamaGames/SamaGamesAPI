@@ -45,6 +45,10 @@ public class PersistanceUtils
      *
      * For a monster egg: E:OCELOT
      *
+     * For a leather armor: A:CHESTPLATE:255:255:255
+     *
+     * For a player head: H:IamBlueSlime
+     *
      * @param itemId The item's id
      * @param itemName The item's name
      * @param itemDescription The item's description
@@ -89,34 +93,32 @@ public class PersistanceUtils
         }
         else if (itemData[0].equalsIgnoreCase("A"))
         {
-            Material material = Material.valueOf(itemData[1].toUpperCase());
-            int size = Integer.parseInt(itemData[2]);
+            Material material = Material.valueOf("LEATHER_" + itemData[1].toUpperCase());
 
-            int red = Integer.parseInt(itemData[3]);
-            int green = Integer.parseInt(itemData[4]);
-            int blue = Integer.parseInt(itemData[5]);
+            int red = Integer.parseInt(itemData[2]);
+            int green = Integer.parseInt(itemData[3]);
+            int blue = Integer.parseInt(itemData[4]);
 
-            stack = new ItemStack(material, size);
+            stack = new ItemStack(material, 1);
 
             LeatherArmorMeta meta = (LeatherArmorMeta) stack.getItemMeta();
             meta.setColor(Color.fromRGB(red, green, blue));
             stack.setItemMeta(meta);
 
-            if (itemData.length == 7 && itemData[6].equalsIgnoreCase("GLOW"))
+            if (itemData.length == 6 && itemData[5].equalsIgnoreCase("GLOW"))
                 GlowEffect.addGlow(stack);
         }
         else if (itemData[0].equalsIgnoreCase("H"))
         {
-            int size = Integer.parseInt(itemData[1]);
-            String username = itemData[2];
+            String username = itemData[1];
 
-            stack = new ItemStack(Material.SKULL, size);
+            stack = new ItemStack(Material.SKULL, 1);
 
             SkullMeta meta = (SkullMeta) stack.getItemMeta();
             meta.setOwner(username);
             stack.setItemMeta(meta);
 
-            if (itemData.length == 4 && itemData[3].equalsIgnoreCase("GLOW"))
+            if (itemData.length == 3 && itemData[2].equalsIgnoreCase("GLOW"))
                 GlowEffect.addGlow(stack);
         }
         else
