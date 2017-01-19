@@ -47,7 +47,9 @@ public class PersistanceUtils
      *
      * For a leather armor: A:CHESTPLATE:255:255:255
      *
-     * For a player head: H:IamBlueSlime
+     * For a player head: H:eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90
+     * ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvMjQ5NTY5MTczNTIxMzhjN2NmNDZmO
+     * TVlOGZkOTNhODUzNzJjN2ZiMjdmOWI2MWUxZTc1MDc3MTQ0NDQ5NTMyZiJ9fX0=
      *
      * @param itemId The item's id
      * @param itemName The item's name
@@ -110,13 +112,7 @@ public class PersistanceUtils
         }
         else if (itemData[0].equalsIgnoreCase("H"))
         {
-            String username = itemData[1];
-
-            stack = new ItemStack(Material.SKULL, 1);
-
-            SkullMeta meta = (SkullMeta) stack.getItemMeta();
-            meta.setOwner(username);
-            stack.setItemMeta(meta);
+            stack = ItemUtils.getCustomHead(itemData[1].toUpperCase());
 
             if (itemData.length == 3 && itemData[2].equalsIgnoreCase("GLOW"))
                 GlowEffect.addGlow(stack);
