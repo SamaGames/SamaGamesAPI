@@ -12,6 +12,8 @@ import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
 import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
 
 /**
  *                )\._.,--....,'``.
@@ -22,13 +24,13 @@ import java.util.*;
  */
 public class Camera
 {
-    private final Map<UUID, GameMode> viewers;
+    private final ConcurrentMap<UUID, GameMode> viewers;
     private final boolean fixed;
     private final EntityCamera entityCamera;
 
     public Camera(Location initialPosition, boolean fixed)
     {
-        this.viewers = new HashMap<>();
+        this.viewers = new ConcurrentHashMap<>();
         this.fixed = fixed;
 
         World world = ((CraftWorld) initialPosition.getWorld()).getHandle();
