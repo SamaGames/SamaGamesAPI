@@ -1,5 +1,6 @@
 package net.samagames.tools.cameras;
 
+import net.minecraft.server.v1_10_R1.Vector3f;
 import net.minecraft.server.v1_10_R1.World;
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
@@ -10,6 +11,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.entity.CreatureSpawnEvent;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
+import org.bukkit.util.EulerAngle;
 
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
@@ -39,6 +41,16 @@ public class Camera
         this.entityCamera.setPosition(initialPosition.getX(), initialPosition.getY(), initialPosition.getZ());
         world.addEntity(this.entityCamera, CreatureSpawnEvent.SpawnReason.CUSTOM);
         ((LivingEntity) this.entityCamera.getBukkitEntity()).addPotionEffect(new PotionEffect(PotionEffectType.INVISIBILITY, Integer.MAX_VALUE, 1, false, false));
+    }
+
+    public void move(Location to)
+    {
+        this.entityCamera.teleportTo(to, false);
+
+        float headX = (float) Math.toRadians(to.getPitch());
+        float headY = (float) Math.toRadians(to.getYaw());
+
+        this.entityCamera.setHeadPose(new Vector3f(headX, headY, 0));
     }
 
     void remove(Location backPosition)
