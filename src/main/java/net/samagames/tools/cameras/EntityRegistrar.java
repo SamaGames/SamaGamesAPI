@@ -18,7 +18,7 @@ class EntityRegistrar
 {
     private static final BiomeBase[] BIOMES;
 
-    static <E extends Entity> void registerEntity(String name, int id, Class<? extends E> nmsClass, Class<? extends E> customClass)
+    static <E extends Entity> void registerEntity(String name, int id, Class<E> nmsClass, Class<? extends E> customClass)
     {
         try
         {

@@ -1,6 +1,6 @@
 package net.samagames.tools.cameras;
 
-import net.minecraft.server.v1_10_R1.EntityArmorStand;
+import net.minecraft.server.v1_10_R1.EntityBat;
 import net.samagames.api.SamaGamesAPI;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -26,7 +26,7 @@ public class CameraManager implements Listener
     {
         this.cameras = new ArrayList<>();
 
-        EntityRegistrar.registerEntity("FakeCamera", 30, EntityArmorStand.class, EntityCamera.class);
+        EntityRegistrar.registerEntity("FakeCamera", 65, EntityBat.class, EntityCamera.class);
         Bukkit.getPluginManager().registerEvents(this, api.getPlugin());
     }
 
