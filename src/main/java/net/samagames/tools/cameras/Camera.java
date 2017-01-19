@@ -28,7 +28,7 @@ public class Camera
     private final boolean fixed;
     private final EntityCamera entityCamera;
 
-    public Camera(Location initialPosition, boolean fixed)
+    Camera(Location initialPosition, boolean fixed)
     {
         this.viewers = new ConcurrentHashMap<>();
         this.fixed = fixed;
