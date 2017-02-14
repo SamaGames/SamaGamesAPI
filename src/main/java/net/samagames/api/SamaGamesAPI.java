@@ -1,5 +1,8 @@
 package net.samagames.api;
 
+import in.ashwanthkumar.slack.webhook.Slack;
+import in.ashwanthkumar.slack.webhook.SlackAttachment;
+import in.ashwanthkumar.slack.webhook.SlackMessage;
 import net.samagames.api.achievements.IAchievementManager;
 import net.samagames.api.friends.IFriendsManager;
 import net.samagames.api.games.IGameManager;
@@ -21,6 +24,7 @@ import net.samagames.tools.npc.NPCManager;
 import org.bukkit.plugin.java.JavaPlugin;
 import redis.clients.jedis.Jedis;
 
+import java.io.IOException;
 import java.util.logging.Level;
 
 /**
@@ -200,6 +204,28 @@ public abstract class SamaGamesAPI
      * @return Instance
      */
     public abstract CameraManager getCameraManager();
+
+    public abstract Slack getSlackLogsPublisher();
+
+    public void slackLog(Level level, SlackMessage message)
+    {
+        String color;
+
+        if (level == Level.FINE)
+            color = "#2FA44F";
+        else if (level == Level.WARNING)
+            color = "#DE9E31";
+        else if (level == Level.SEVERE)
+            color = "#D50200";
+        else
+            color = "#28D7E5";
+
+        try
+        {
+            this.getSlackLogsPublisher().push(new SlackAttachment("").color(color).text(message));
+        }
+        catch (IOException ignored) {}
+    }
 
     /**
      * Get the root plugin of the API
