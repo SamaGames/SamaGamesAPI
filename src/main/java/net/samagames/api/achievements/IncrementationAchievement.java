@@ -38,11 +38,13 @@ public class IncrementationAchievement extends Achievement
     public void increment(UUID player, int amount)
     {
         AchievementProgress progress = this.progress.get(player);
+
         if (progress == null)
         {
             progress = new AchievementProgress(-1, 0, Timestamp.from(Instant.now()), null, true);
             this.progress.put(player, progress);
         }
+
         if (progress.getProgress() + amount > this.objective && progress.getUnlockTime() == null)
         {
             progress.unlock();
@@ -50,7 +52,9 @@ public class IncrementationAchievement extends Achievement
             this.sendRewardMessage(player);
         }
         else if (progress.getUnlockTime() == null)
+        {
             progress.setProgress(progress.getProgress() + amount);
+        }
     }
 
     /**

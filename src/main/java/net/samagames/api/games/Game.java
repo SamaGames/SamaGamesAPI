@@ -1,5 +1,6 @@
 package net.samagames.api.games;
 
+import in.ashwanthkumar.slack.webhook.SlackMessage;
 import net.samagames.api.SamaGamesAPI;
 import net.samagames.api.games.pearls.Pearl;
 import net.samagames.api.games.themachine.ICoherenceMachine;
@@ -17,6 +18,7 @@ import redis.clients.jedis.Jedis;
 import java.lang.reflect.InvocationTargetException;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
+import java.util.logging.Level;
 
 /**
  * This class represents the game executed by the plugin using this, if applicable.
@@ -161,6 +163,7 @@ public class Game<GAMEPLAYER extends GamePlayer>
         catch (InstantiationException | IllegalAccessException | InvocationTargetException | NoSuchMethodException e)
         {
             e.printStackTrace();
+            SamaGamesAPI.get().slackLog(Level.SEVERE, new SlackMessage("[" + SamaGamesAPI.get().getServerName() + "] Failed to handle '" + player.getName() + "'s login: " + e.getMessage()));
         }
 
         this.coherenceMachine.getMessageManager().writePlayerJoinToAll(player, !this.gameManager.isFreeMode());
@@ -310,6 +313,7 @@ public class Game<GAMEPLAYER extends GamePlayer>
         catch (Exception e)
         {
             e.printStackTrace();
+            SamaGamesAPI.get().slackLog(Level.SEVERE, new SlackMessage("[" + SamaGamesAPI.get().getServerName() + "] Failed to handle '" + SamaGamesAPI.get().getUUIDTranslator().getName(uuid) + "'s win: " + e.getMessage()));
         }
     }
 
@@ -463,6 +467,7 @@ public class Game<GAMEPLAYER extends GamePlayer>
      * @param stars The amount of stars.
      * @param reason The displayed reason of this credit.
      */
+    @Deprecated
     public void addStars(Player player, int stars, String reason)
     {
         if(this.gamePlayers.containsKey(player.getUniqueId()))
