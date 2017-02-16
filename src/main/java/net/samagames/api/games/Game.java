@@ -414,7 +414,7 @@ public class Game<GAMEPLAYER extends GamePlayer>
                 Pearl pearl = this.gameManager.getPearlManager().runGiveAlgorythm(Bukkit.getPlayer(playerUUID), (int) TimeUnit.MILLISECONDS.toSeconds(this.gameManager.getGameTime()), this.gameWinners.contains(playerUUID));
 
                 EarningMessageTemplate earningMessageTemplate = this.coherenceMachine.getTemplateManager().getEarningMessageTemplate();
-                earningMessageTemplate.execute(Bukkit.getPlayer(playerUUID), this.getPlayer(playerUUID).getCoins(), this.getPlayer(playerUUID).getStars(), pearl);
+                earningMessageTemplate.execute(Bukkit.getPlayer(playerUUID), this.getPlayer(playerUUID).getCoins(), pearl);
             });
         }, 20L * 3);
 
@@ -456,24 +456,6 @@ public class Game<GAMEPLAYER extends GamePlayer>
             this.gamePlayers.get(player.getUniqueId()).addCoins(coins, reason);
         else
             SamaGamesAPI.get().getPlayerManager().getPlayerData(player.getUniqueId()).creditCoins(coins, reason, true);
-    }
-
-    /**
-     * Credits stars to the given player. Works for offline players.
-     *
-     * Use {@link GamePlayer#addStars(int, String)} instead, if possible.
-     *
-     * @param player The receiver of the stars.
-     * @param stars The amount of stars.
-     * @param reason The displayed reason of this credit.
-     */
-    @Deprecated
-    public void addStars(Player player, int stars, String reason)
-    {
-        if(this.gamePlayers.containsKey(player.getUniqueId()))
-            this.gamePlayers.get(player.getUniqueId()).addStars(stars, reason);
-        else
-            SamaGamesAPI.get().getPlayerManager().getPlayerData(player.getUniqueId()).creditStars(stars, reason, false);
     }
 
     /**

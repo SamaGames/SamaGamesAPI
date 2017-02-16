@@ -18,21 +18,19 @@ public class EarningMessageTemplate
 {
     /**
      * Prepare a message to show how many
-     * coins and stars have been earned
+     * coins and the pearl have been earned
      *
      * @param coins Coins earned
-     * @param stars Stars earned
-     *              @param pearl The pearl earned, null if none
+     * @param pearl The pearl earned, null if none
      *
      * @return Formatted lines
      */
-    public List<String> prepare(int coins, int stars, Pearl pearl)
+    public List<String> prepare(int coins, Pearl pearl)
     {
         List<String> finalLines = new ArrayList<>();
         finalLines.add(ChatUtils.getCenteredText(ChatColor.WHITE + "•" + ChatColor.BOLD + " Récompenses " + ChatColor.RESET + ChatColor.WHITE + "•"));
         finalLines.add("");
         finalLines.add(ChatUtils.getCenteredText(ChatColor.GOLD + "Vous avez gagné " + coins + (coins == 1 ? " pièce !" : " pièces !")));
-        finalLines.add(ChatUtils.getCenteredText(ChatColor.AQUA + "Vous avez gagné " + stars + (stars == 1 ? " étoile !" : " étoiles !")));
         finalLines.add("");
 
         if (pearl != null)
@@ -47,13 +45,14 @@ public class EarningMessageTemplate
 
     /**
      * Prepare a message to show how many coins
-     * and stars have been earned to a given player
+     * and the pearl have been earned to a given player
      *
+     * @param player Player to send the message
      * @param coins Coins earned
-     * @param stars Stars earned
+     * @param pearl Pearl earned
      */
-    public void execute(Player player, int coins, int stars, Pearl pearl)
+    public void execute(Player player, int coins, Pearl pearl)
     {
-        new BasicMessageTemplate().prepare(this.prepare(coins, stars, pearl)).forEach(player::sendMessage);
+        new BasicMessageTemplate().prepare(this.prepare(coins, pearl)).forEach(player::sendMessage);
     }
 }
