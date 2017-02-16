@@ -14,8 +14,8 @@ import org.bukkit.event.entity.EntityDamageEvent;
 /**
  * Created by Silva on 18/12/2015.
  */
-public class CustomNPC extends EntityPlayer {
-
+public class CustomNPC extends EntityPlayer
+{
     private NPCInteractCallback callback;
 
     private Hologram hologram;
@@ -47,7 +47,7 @@ public class CustomNPC extends EntityPlayer {
 
     public void setLocation(Location loc)
     {
-        setLocation(loc.getX(), loc.getY(), loc.getZ(), loc.getYaw(), loc.getPitch());
+        setPositionRotation(loc.getX(), loc.getY(), loc.getZ(), loc.getYaw(), loc.getPitch());
     }
 
     @Override
