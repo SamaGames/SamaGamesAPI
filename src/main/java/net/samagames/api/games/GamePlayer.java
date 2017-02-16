@@ -2,14 +2,11 @@ package net.samagames.api.games;
 
 import net.samagames.api.SamaGamesAPI;
 import net.samagames.api.player.AbstractPlayerData;
-import net.samagames.tools.bossbar.BossBarAPI;
 import net.samagames.tools.chat.fanciful.FancyMessage;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.GameMode;
 import org.bukkit.OfflinePlayer;
-import org.bukkit.boss.BarColor;
-import org.bukkit.boss.BarStyle;
 import org.bukkit.entity.Player;
 
 import java.util.UUID;
@@ -25,9 +22,7 @@ public class GamePlayer
     protected final UUID uuid;
 
     protected int coins;
-    protected int stars;
     protected boolean spectator;
-    protected boolean moderator;
 
     protected long startTime;
     protected long playedTime;
@@ -37,9 +32,7 @@ public class GamePlayer
         this.uuid = player.getUniqueId();
 
         this.coins = 0;
-        this.stars = 0;
         this.spectator = false;
-        this.moderator = false;
 
         this.startTime = -1;
         this.playedTime = 0;
@@ -77,17 +70,6 @@ public class GamePlayer
     public void addCoins(int coins_, String reason)
     {
         SamaGamesAPI.get().getPlayerManager().getPlayerData(this.uuid).creditCoins(coins_, reason, true, (newAmount, difference, error) -> coins += difference);
-    }
-
-    /**
-     * Credits stars to this player.
-     *
-     * @param stars_ The amount of stars to credit.
-     * @param reason The displayed reason of the credit.
-     */
-    public void addStars(int stars_, String reason)
-    {
-        SamaGamesAPI.get().getPlayerManager().getPlayerData(this.uuid).creditStars(stars_, reason, false, (newAmount, difference, error) -> stars += difference);
     }
 
     /**
@@ -201,18 +183,6 @@ public class GamePlayer
     }
 
     /**
-     * Returns the stars this player earned <b>during this game</b>.
-     *
-     * To get the whole amount of coins this player have, use {@link AbstractPlayerData#getStars()}.
-     *
-     * @return The earned stars.
-     */
-    public int getStars()
-    {
-        return this.stars;
-    }
-
-    /**
      * Returns the time this player played <b>during this game</b>
      * in seconds.
      *
@@ -231,15 +201,5 @@ public class GamePlayer
     public boolean isSpectator()
     {
         return this.spectator;
-    }
-
-    /**
-     * Checks if this player is a moderator.
-     *
-     * @return {@code true} if moderator.
-     */
-    public boolean isModerator()
-    {
-        return this.moderator;
     }
 }

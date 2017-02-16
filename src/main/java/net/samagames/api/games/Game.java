@@ -42,6 +42,7 @@ public class Game<GAMEPLAYER extends GamePlayer>
     protected final Class<GAMEPLAYER> gamePlayerClass;
     protected final List<UUID> gameCreators;
     protected final List<UUID> gameWinners;
+    protected final List<UUID> gameModerators;
     protected final HashMap<UUID, GAMEPLAYER> gamePlayers;
     protected final HashMap<UUID, GAMEPLAYER> gameSpectators;
     protected final AdvertisingTask advertisingTask;
@@ -72,6 +73,7 @@ public class Game<GAMEPLAYER extends GamePlayer>
         this.gamePlayerClass = gamePlayerClass;
         this.gameCreators = gameCreators != null ? Arrays.asList(gameCreators) : null;
         this.gameWinners = new ArrayList<>();
+        this.gameModerators = new ArrayList<>();
         this.gamePlayers = new HashMap<>();
         this.gameSpectators = new HashMap<>();
         this.advertisingTask = new AdvertisingTask();
@@ -178,12 +180,15 @@ public class Game<GAMEPLAYER extends GamePlayer>
      */
     public void handleModeratorLogin(Player player)
     {
-        for(GamePlayer gamePlayer : this.gamePlayers.values())
+        for (GamePlayer gamePlayer : this.gamePlayers.values())
         {
             Player p = gamePlayer.getPlayerIfOnline();
+
             if (p != null)
                 p.hidePlayer(player);
         }
+
+        this.gameModerators.add(player.getUniqueId());
 
         player.setGameMode(GameMode.SPECTATOR);
         player.sendMessage(ChatColor.GREEN + "Vous êtes invisibles aux yeux de tous, attention à vos actions !");
@@ -210,14 +215,14 @@ public class Game<GAMEPLAYER extends GamePlayer>
             jedis.close();
         }
 
-        if(this.status == Status.FINISHED)
+        if (this.status == Status.FINISHED)
             return;
 
-        if(this.gamePlayers.containsKey(player.getUniqueId()))
+        if (this.gamePlayers.containsKey(player.getUniqueId()))
         {
-            if(!this.gamePlayers.get(player.getUniqueId()).isSpectator())
+            if (!this.gamePlayers.get(player.getUniqueId()).isSpectator())
             {
-                if(this.gameManager.isReconnectAllowed(player) && this.status == Status.IN_GAME)
+                if (this.gameManager.isReconnectAllowed(player) && this.status == Status.IN_GAME)
                 {
                     this.gameManager.getCoherenceMachine().getMessageManager().writePlayerDisconnected(player, this.gameManager.getMaxReconnectTime() * 60000);
                 }
@@ -230,10 +235,14 @@ public class Game<GAMEPLAYER extends GamePlayer>
             this.gamePlayers.get(player.getUniqueId()).handleLogout();
             this.advertisingTask.removePlayer(player);
 
-            if(this.status != Status.IN_GAME || !this.gameManager.isReconnectAllowed(player))
+            if (this.status != Status.IN_GAME || !this.gameManager.isReconnectAllowed(player))
                 this.gamePlayers.remove(player.getUniqueId());
 
             this.gameManager.refreshArena();
+        }
+        else if (this.gameModerators.contains(player.getUniqueId()))
+        {
+            this.gameModerators.remove(player.getUniqueId());
         }
     }
 
@@ -260,7 +269,7 @@ public class Game<GAMEPLAYER extends GamePlayer>
 
         this.gameManager.getCoherenceMachine().getMessageManager().writePlayerReconnected(player);
 
-        if (gamePlayer.isSpectator() && !gamePlayer.isModerator())
+        if (gamePlayer.isSpectator() && !this.gameModerators.contains(gamePlayer.getUUID()))
             gamePlayer.setSpectator();
         else
             gamePlayer.handleLogin(true);
@@ -414,7 +423,7 @@ public class Game<GAMEPLAYER extends GamePlayer>
                 Pearl pearl = this.gameManager.getPearlManager().runGiveAlgorythm(Bukkit.getPlayer(playerUUID), (int) TimeUnit.MILLISECONDS.toSeconds(this.gameManager.getGameTime()), this.gameWinners.contains(playerUUID));
 
                 EarningMessageTemplate earningMessageTemplate = this.coherenceMachine.getTemplateManager().getEarningMessageTemplate();
-                earningMessageTemplate.execute(Bukkit.getPlayer(playerUUID), this.getPlayer(playerUUID).getCoins(), this.getPlayer(playerUUID).getStars(), pearl);
+                earningMessageTemplate.execute(Bukkit.getPlayer(playerUUID), this.getPlayer(playerUUID).getCoins(), pearl);
             });
         }, 20L * 3);
 
@@ -456,24 +465,6 @@ public class Game<GAMEPLAYER extends GamePlayer>
             this.gamePlayers.get(player.getUniqueId()).addCoins(coins, reason);
         else
             SamaGamesAPI.get().getPlayerManager().getPlayerData(player.getUniqueId()).creditCoins(coins, reason, true);
-    }
-
-    /**
-     * Credits stars to the given player. Works for offline players.
-     *
-     * Use {@link GamePlayer#addStars(int, String)} instead, if possible.
-     *
-     * @param player The receiver of the stars.
-     * @param stars The amount of stars.
-     * @param reason The displayed reason of this credit.
-     */
-    @Deprecated
-    public void addStars(Player player, int stars, String reason)
-    {
-        if(this.gamePlayers.containsKey(player.getUniqueId()))
-            this.gamePlayers.get(player.getUniqueId()).addStars(stars, reason);
-        else
-            SamaGamesAPI.get().getPlayerManager().getPlayerData(player.getUniqueId()).creditStars(stars, reason, false);
     }
 
     /**
@@ -582,8 +573,7 @@ public class Game<GAMEPLAYER extends GamePlayer>
     }
 
     /**
-     * Return a map ({@link UUID} → {@link GamePlayer}) of the currently spectating players
-     * (moderators included).
+     * Return a map ({@link UUID} → {@link GamePlayer}) of the currently spectating players.
      *
      * This map does not contains offline players who are still able to login, if the
      * reconnection is allowed.
@@ -606,8 +596,7 @@ public class Game<GAMEPLAYER extends GamePlayer>
     }
 
     /**
-     * Return a map ({@link UUID} → {@link GamePlayer}) of the currently spectating players
-     * (moderators <strong>excluded</strong>).
+     * Return a map ({@link UUID} → {@link GamePlayer}) of the currently spectating players.
      *
      * This map does not contains offline players who are still able to login, if the
      * reconnection is allowed.
@@ -616,14 +605,14 @@ public class Game<GAMEPLAYER extends GamePlayer>
      */
     public Map<UUID, GAMEPLAYER> getVisibleSpectatingPlayers()
     {
-        HashMap<UUID, GAMEPLAYER> spectators = new HashMap<>();
+        Map<UUID, GAMEPLAYER> spectators = new HashMap<>();
 
-        for(UUID key : this.gamePlayers.keySet())
+        for (UUID key : this.gamePlayers.keySet())
         {
-            final GAMEPLAYER gPlayer = this.gamePlayers.get(key);
+            GAMEPLAYER gamePlayer = this.gamePlayers.get(key);
 
-            if(gPlayer.isSpectator() && !gPlayer.isModerator())
-                spectators.put(key, gPlayer);
+            if (gamePlayer.isSpectator() && !this.gameModerators.contains(gamePlayer.getUUID()))
+                spectators.put(key, gamePlayer);
         }
 
         return spectators;
@@ -661,8 +650,8 @@ public class Game<GAMEPLAYER extends GamePlayer>
     {
         int i = 0;
 
-        for(GamePlayer player : this.gamePlayers.values())
-            if(!player.isSpectator())
+        for (GamePlayer player : this.gamePlayers.values())
+            if (!player.isSpectator())
                 i++;
 
         return i;
@@ -737,7 +726,7 @@ public class Game<GAMEPLAYER extends GamePlayer>
      * Checks if the given player is spectating or not.
      *
      * @param player The player.
-     * @return {@code true} if spectating (moderators included).
+     * @return {@code true} if spectating.
      */
     public boolean isSpectator(Player player)
     {
@@ -745,6 +734,17 @@ public class Game<GAMEPLAYER extends GamePlayer>
             return this.gamePlayers.get(player.getUniqueId()).isSpectator();
         else
             return true;
+    }
+
+    /**
+     * Checks if the given player is moderating or not.
+     *
+     * @param player The player.
+     * @return {@code true} if moderating.
+     */
+    public boolean isModerator(Player player)
+    {
+        return this.gameModerators.contains(player.getUniqueId());
     }
 
     /**
