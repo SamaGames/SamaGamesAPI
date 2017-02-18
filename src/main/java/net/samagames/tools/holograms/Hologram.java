@@ -307,7 +307,6 @@ public class Hologram
         armorStand.setNoGravity(true);
         armorStand.setCustomName(text);
         armorStand.setCustomNameVisible(true);
-        armorStand.setMarker(true);
         armorStand.setLocation(loc.getX(), loc.getY() - 2, loc.getZ(), 0, 0);
 
         return armorStand;
