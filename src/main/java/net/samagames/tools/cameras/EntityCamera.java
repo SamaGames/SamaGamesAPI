@@ -4,7 +4,7 @@ import net.minecraft.server.v1_10_R1.*;
 
 public class EntityCamera extends EntityBat
 {
-    EntityCamera(World world)
+    public EntityCamera(World world)
     {
         super(world);
 
