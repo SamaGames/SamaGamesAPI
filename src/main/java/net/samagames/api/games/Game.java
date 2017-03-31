@@ -114,7 +114,12 @@ public class Game<GAMEPLAYER extends GamePlayer>
         this.beginTimer.cancel();
         this.setStatus(Status.IN_GAME);
 
-        this.gamePlayers.values().forEach(GamePlayer::initPlayedTimeCounter);
+        this.gamePlayers.values().forEach((gamePlayer) ->
+        {
+            gamePlayer.initPlayedTimeCounter();
+            gamePlayer.getPlayerIfOnline().setLevel(0);
+            gamePlayer.getPlayerIfOnline().setExp(0.0F);
+        });
 
         if (this.gameManager.getGameStatisticsHelper() != null)
             for (UUID uuid : this.gamePlayers.keySet())
