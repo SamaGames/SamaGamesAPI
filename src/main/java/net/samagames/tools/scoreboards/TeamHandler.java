@@ -394,7 +394,7 @@ public class TeamHandler
                 Reflection.setValue(packet, "c", team.getPrefix()); // Team prefix
                 Reflection.setValue(packet, "d", team.getSuffix()); // Team suffix
                 Reflection.setValue(packet, "j", 0); // Friendly fire
-                Reflection.setValue(packet, "e", "always");
+                Reflection.setValue(packet, "e", team.getHideToOtherTeams() ? "hideForOtherTeams" : "always"); // Name tag visible
 
                 if (Reflection.PackageType.getServerVersion().equals("v1_8_R3"))
                 {
@@ -431,6 +431,7 @@ public class TeamHandler
         private String display = "";
         private String prefix = ChatColor.GRAY + "";
         private String suffix = "";
+        private boolean hideToOtherTeams = false;
 
         private CopyOnWriteArrayList<String> players = new CopyOnWriteArrayList<>();
 
@@ -533,6 +534,16 @@ public class TeamHandler
         public void setRealName(String realName)
         {
             this.realName = realName;
+        }
+
+        public void setHideToOtherTeams(boolean hideToOtherTeams)
+        {
+            this.hideToOtherTeams = hideToOtherTeams;
+        }
+
+        public boolean getHideToOtherTeams()
+        {
+            return this.hideToOtherTeams;
         }
     }
 }
