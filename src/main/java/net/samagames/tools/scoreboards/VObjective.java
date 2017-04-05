@@ -22,7 +22,7 @@ public class VObjective
     private static Class<?> packetPlayOutScoreboardObjective = Reflection.getNMSClass("PacketPlayOutScoreboardObjective");
     private static Class<?> packetPlayOutScoreboardDisplayObjective = Reflection.getNMSClass("PacketPlayOutScoreboardDisplayObjective");
     private static Class<?> enumScoreboardHealthDisplayClass = Reflection.getNMSClass("IScoreboardCriteria$EnumScoreboardHealthDisplay");
-    private static Class<?> enumScoreboardActionClass = Reflection.getNMSClass("PacketPlayOutScoreboardScore.EnumScoreboardAction");
+    private static Class<?> enumScoreboardActionClass = Reflection.getNMSClass("PacketPlayOutScoreboardScore$EnumScoreboardAction");
 
     protected String name;
     protected String displayName;

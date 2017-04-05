@@ -1,5 +1,6 @@
 package net.samagames.tools.holograms;
 
+import net.minecraft.server.v1_8_R3.PacketPlayOutEntityDestroy;
 import net.samagames.api.SamaGamesAPI;
 import net.samagames.tools.Reflection;
 import org.bukkit.Bukkit;
@@ -126,7 +127,10 @@ public class Hologram
 
         try
         {
-            Object packet = packetPlayOutEntityDestroyClass.getDeclaredConstructor(int.class).newInstance(getIdMethod.invoke(entity));
+            int[] ids = new int[1];
+            ids[0] = (int) getIdMethod.invoke(entity);
+
+            Object packet = packetPlayOutEntityDestroyClass.getDeclaredConstructor(int[].class).newInstance(ids);
             Reflection.sendPacket(p, packet);
         }
         catch (IllegalAccessException | InstantiationException | InvocationTargetException | NoSuchMethodException e)
@@ -353,12 +357,13 @@ public class Hologram
 
         try
         {
+            Class<?> entityClass = Reflection.getNMSClass("Entity");
             Class<?> packetPlayOutSpawnEntityClass = Reflection.getNMSClass("PacketPlayOutSpawnEntity");
             Class<?> packetPlayOutEntityMetadataClass = Reflection.getNMSClass("PacketPlayOutEntityMetadata");
 
             Method getDataWatcherMethod = entityArmorStandClass.getMethod("getDataWatcher");
 
-            Object armorStandPacket = packetPlayOutSpawnEntityClass.getDeclaredConstructor(entity.getClass(), int.class).newInstance(entity, 78);
+            Object armorStandPacket = packetPlayOutSpawnEntityClass.getDeclaredConstructor(entityClass, int.class).newInstance(entity, 78);
             Object armorStandPacketMeta = packetPlayOutEntityMetadataClass.getDeclaredConstructor(int.class, getDataWatcherMethod.getReturnType(), boolean.class).newInstance(getIdMethod.invoke(entity), getDataWatcherMethod.invoke(entity), true);
 
             Reflection.sendPacket(p, armorStandPacket);
