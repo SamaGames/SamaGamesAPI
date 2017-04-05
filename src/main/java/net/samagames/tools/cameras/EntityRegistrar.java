@@ -1,5 +1,6 @@
 package net.samagames.tools.cameras;
 
+import net.minecraft.server.v1_8_R3.RegistryMaterials;
 import net.samagames.tools.Reflection;
 
 import java.lang.reflect.Field;
@@ -96,7 +97,7 @@ class EntityRegistrar
             Class<?> minecraftKeyClass = Reflection.getNMSClass("MinecraftKey");
             Class<?> registryMaterialsClass = Reflection.getNMSClass("RegistryMaterials");
             Method keySetMethod = registryMaterialsClass.getMethod("keySet");
-            Method getMethod = registryMaterialsClass.getMethod("get", minecraftKeyClass);
+            Method getMethod = registryMaterialsClass.getMethod("get", Object.class);
             Method sizeMethod = keySetMethod.getReturnType().getMethod("size");
             Field registryField = biomeBaseClass.getField("REGISTRY_ID");
 
