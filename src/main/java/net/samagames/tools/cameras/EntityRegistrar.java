@@ -1,6 +1,5 @@
 package net.samagames.tools.cameras;
 
-import net.minecraft.server.v1_8_R3.RegistryMaterials;
 import net.samagames.tools.Reflection;
 
 import java.lang.reflect.Field;
@@ -8,6 +7,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 /**
  *                )\._.,--....,'``.
@@ -107,7 +107,7 @@ class EntityRegistrar
 
             int i = 0;
 
-            for (Object key : (Object[]) keySetMethod.invoke(registry))
+            for (Object key : (Set) keySetMethod.invoke(registry))
             {
                 BIOMES[i] = getMethod.invoke(registry, key);
                 i++;
