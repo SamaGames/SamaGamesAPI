@@ -1,6 +1,7 @@
 package net.samagames.tools.npc.nms;
 
 import net.samagames.tools.holograms.Hologram;
+import net.samagames.tools.npc.NPCInteractCallback;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 
@@ -19,6 +20,8 @@ public interface ICustomNPC
     Player getBukkitEntity();
     String getName();
     Object getWorld();
+
+    ICustomNPC setCallback(NPCInteractCallback callback);
 
     void setHologram(Hologram hologram);
     Hologram getHologram();
