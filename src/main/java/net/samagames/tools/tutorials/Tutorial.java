@@ -39,9 +39,6 @@ import java.util.concurrent.ConcurrentHashMap;
  *             Order matter!
  *         </li>
  *         <li>
- *             {@link #setReadingTime(long)}—to change the time each chapter's part is displayed.
- *         </li>
- *         <li>
  *             {@link #setTutorialHour(Long)}—to change the day of time this tutorial will be
  *             played.
  *         </li>

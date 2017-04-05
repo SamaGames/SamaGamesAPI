@@ -1,7 +1,7 @@
 package net.samagames.tools.cameras;
 
-import net.minecraft.server.v1_10_R1.EntityBat;
 import net.samagames.api.SamaGamesAPI;
+import net.samagames.tools.Reflection;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
@@ -26,7 +26,9 @@ public class CameraManager implements Listener
     {
         this.cameras = new ArrayList<>();
 
-        EntityRegistrar.registerEntity("FakeCamera", 65, EntityBat.class, EntityCamera.class);
+        Class<?> entityBatClass = Reflection.getNMSClass("EntityBat");
+
+        EntityRegistrar.registerEntity("FakeCamera", 65, entityBatClass, EntityCamera.class);
         Bukkit.getPluginManager().registerEvents(this, api.getPlugin());
     }
 

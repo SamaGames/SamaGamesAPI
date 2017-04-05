@@ -1,19 +1,16 @@
 package net.samagames.tools.npc;
 
 import com.mojang.authlib.GameProfile;
-import net.minecraft.server.v1_10_R1.PacketPlayOutPlayerInfo;
-import net.minecraft.server.v1_10_R1.PlayerInteractManager;
-import net.minecraft.server.v1_10_R1.World;
 import net.samagames.api.SamaGamesAPI;
 import net.samagames.tools.CallBack;
+import net.samagames.tools.Reflection;
 import net.samagames.tools.gameprofile.ProfileLoader;
 import net.samagames.tools.holograms.Hologram;
-import net.samagames.tools.npc.nms.CustomNPC;
+import net.samagames.tools.npc.nms.ICustomNPC;
+import net.samagames.tools.npc.nms.compat.v1_8_R3.CustomNPC18;
+import net.samagames.tools.npc.nms.compat.v1_9_R2.CustomNPC19;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
-import org.bukkit.craftbukkit.v1_10_R1.CraftWorld;
-import org.bukkit.craftbukkit.v1_10_R1.entity.CraftEntity;
-import org.bukkit.craftbukkit.v1_10_R1.entity.CraftPlayer;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -21,6 +18,8 @@ import org.bukkit.event.entity.CreatureSpawnEvent;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.player.*;
 
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.util.*;
 
 /**
@@ -30,9 +29,9 @@ public class NPCManager implements Listener {
 
     public SamaGamesAPI api;
 
-    private Map<CustomNPC, Hologram> entities = new HashMap<>();
+    private Map<ICustomNPC, Hologram> entities = new HashMap<>();
 
-    private CallBack<CustomNPC> scoreBoardRegister;
+    private CallBack<ICustomNPC> scoreBoardRegister;
 
     public NPCManager(SamaGamesAPI api)
     {
@@ -41,7 +40,7 @@ public class NPCManager implements Listener {
         Bukkit.getPluginManager().registerEvents(this, api.getPlugin());
     }
 
-    private void updateForAllNPC(CustomNPC npc)
+    private void updateForAllNPC(ICustomNPC npc)
     {
         List<Player> players = new ArrayList<>();
         players.addAll(Bukkit.getOnlinePlayers());
@@ -51,15 +50,39 @@ public class NPCManager implements Listener {
         }*/
     }
 
-    public void sendNPC(Player p, CustomNPC npc)
+    public void sendNPC(Player p, ICustomNPC npc)
     {
-        ((CraftPlayer)p).getHandle().playerConnection.sendPacket(new PacketPlayOutPlayerInfo(PacketPlayOutPlayerInfo.EnumPlayerInfoAction.ADD_PLAYER, npc));
-        p.hidePlayer(npc.getBukkitEntity());
-        p.showPlayer(npc.getBukkitEntity());
-        this.api.getPlugin().getServer().getScheduler().runTaskLater(this.api.getPlugin(), () -> ((CraftPlayer)p).getHandle().playerConnection.sendPacket(new PacketPlayOutPlayerInfo(PacketPlayOutPlayerInfo.EnumPlayerInfoAction.REMOVE_PLAYER, npc)), 60L);
+        try
+        {
+            Class<?> entityClass = Reflection.getNMSClass("Entity");
+            Class<?> packetPlayOutPlayerInfoClass = Reflection.getNMSClass("PacketPlayOutPlayerInfo");
+            Class<?> enumPlayerInfoActionClass = Reflection.getNMSClass("PacketPlayOutPlayerInfo$EnumPlayerInfoAction");
+
+            Object packet = packetPlayOutPlayerInfoClass.getDeclaredConstructor(enumPlayerInfoActionClass, entityClass).newInstance(enumPlayerInfoActionClass.getField("ADD_PLAYER").get(null), npc);
+            Reflection.sendPacket(p, packet);
+
+            p.hidePlayer(npc.getBukkitEntity());
+            p.showPlayer(npc.getBukkitEntity());
+
+            this.api.getPlugin().getServer().getScheduler().runTaskLater(this.api.getPlugin(), () ->
+            {
+                try
+                {
+                    Object pa = packetPlayOutPlayerInfoClass.getDeclaredConstructor(enumPlayerInfoActionClass, entityClass).newInstance(enumPlayerInfoActionClass.getField("REMOVE_PLAYER").get(null), npc);
+                    Reflection.sendPacket(p, pa);
+                }
+                catch (InstantiationException | IllegalAccessException | NoSuchMethodException | InvocationTargetException | NoSuchFieldException e) {
+                    e.printStackTrace();
+                }
+            }, 60L);
+        }
+        catch (InstantiationException | InvocationTargetException | IllegalAccessException | NoSuchFieldException | NoSuchMethodException e)
+        {
+            e.printStackTrace();
+        }
     }
 
-    public void removeNPC(Player p, CustomNPC npc)
+    public void removeNPC(Player p, ICustomNPC npc)
     {
         p.hidePlayer(npc.getBukkitEntity());
     }
@@ -70,23 +93,30 @@ public class NPCManager implements Listener {
      * @param skinUUID
      * @return
      */
-    public CustomNPC createNPC(Location location, UUID skinUUID)
+    public ICustomNPC createNPC(Location location, UUID skinUUID)
     {
         return createNPC(location, skinUUID, new String[] { "[NPC] " + entities.size() });
     }
 
-    public CustomNPC createNPC(Location location, UUID skinUUID, String[] hologramLines)
+    public ICustomNPC createNPC(Location location, UUID skinUUID, String[] hologramLines)
     {
         return createNPC(location, skinUUID, hologramLines, true);
     }
 
-    public CustomNPC createNPC(Location location, UUID skinUUID, String[] hologramLines, boolean showByDefault)
+    public ICustomNPC createNPC(Location location, UUID skinUUID, String[] hologramLines, boolean showByDefault)
     {
-        final World w = ((CraftWorld) location.getWorld()).getHandle();
-
+        Object w = Reflection.getHandle(location.getWorld());
         GameProfile gameProfile = new ProfileLoader(skinUUID.toString(), "[NPC] " + entities.size(), skinUUID).loadProfile();
 
-        final CustomNPC npc = new CustomNPC(w, gameProfile, new PlayerInteractManager(w));
+        ICustomNPC npc;
+
+        if (Reflection.PackageType.getServerVersion().equals("v1_8_R3"))
+            npc = new CustomNPC18(w, gameProfile);
+        else if (Reflection.PackageType.getServerVersion().equals("v1_9_R2"))
+            npc = new CustomNPC19(w, gameProfile);
+        else
+            throw new UnsupportedOperationException("You can't use this API with your Minecraft version.");
+
         npc.setLocation(location);
 
         Hologram hologram = null;
@@ -97,7 +127,17 @@ public class NPCManager implements Listener {
             hologram.generateLines(location.clone().add(0.0D, 1.8D, 0.0D));
         }
 
-        w.addEntity(npc, CreatureSpawnEvent.SpawnReason.CUSTOM);
+        try
+        {
+            Class<?> entityClass = Reflection.getNMSClass("Entity");
+            Method addEntityMethod = w.getClass().getMethod("addEntity", entityClass, CreatureSpawnEvent.SpawnReason.class);
+
+            addEntityMethod.invoke(w, npc, CreatureSpawnEvent.SpawnReason.CUSTOM);
+        }
+        catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException e)
+        {
+            e.printStackTrace();
+        }
 
         npc.setHologram(hologram);
         entities.put(npc, hologram);
@@ -122,12 +162,11 @@ public class NPCManager implements Listener {
 
     public void removeNPC(String name)
     {
-        CustomNPC npc = getNPCEntity(name);
-
+        ICustomNPC npc = getNPCEntity(name);
         removeNPC(npc);
     }
 
-    public void removeNPC(CustomNPC npc)
+    public void removeNPC(ICustomNPC npc)
     {
         if (npc != null)
         {
@@ -138,28 +177,40 @@ public class NPCManager implements Listener {
             {
                 removeNPC(p, npc);
             }
-            npc.getWorld().removeEntity(npc);
+
+            try
+            {
+                Class<?> entityClass = Reflection.getNMSClass("Entity");
+                Object world = npc.getWorld();
+                Method removeEntityMethod = world.getClass().getMethod("removeEntity", entityClass);
+                removeEntityMethod.invoke(world, npc);
+            }
+            catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException e)
+            {
+                e.printStackTrace();
+            }
         }
     }
 
-    public CustomNPC getNPCEntity(String name)
+    public ICustomNPC getNPCEntity(String name)
     {
-        for (CustomNPC entity : entities.keySet())
+        for (ICustomNPC entity : entities.keySet())
             if (entity.getName().equals(name))
                 return entity;
+
         return null;
     }
 
-    public void setScoreBoardRegister(CallBack<CustomNPC> scoreBoardRegister) {
+    public void setScoreBoardRegister(CallBack<ICustomNPC> scoreBoardRegister) {
         this.scoreBoardRegister = scoreBoardRegister;
     }
 
     @EventHandler
     public void onPlayerHitNPC(EntityDamageByEntityEvent event)
     {
-        if (((CraftEntity)event.getEntity()).getHandle() instanceof CustomNPC && event.getDamager() instanceof Player)
+        if (Reflection.getHandle(event.getEntity()) instanceof ICustomNPC && event.getDamager() instanceof Player)
         {
-            CustomNPC npc = (CustomNPC) ((CraftEntity)event.getEntity()).getHandle();
+            ICustomNPC npc = (ICustomNPC) Reflection.getHandle(event.getEntity());
             npc.onInteract(false, (Player) event.getDamager());
         }
     }
@@ -167,9 +218,9 @@ public class NPCManager implements Listener {
     @EventHandler
     public void onPlayerInteractNPC(PlayerInteractEntityEvent event)
     {
-        if (((CraftEntity)event.getRightClicked()).getHandle() instanceof CustomNPC)
+        if (Reflection.getHandle(event.getRightClicked()) instanceof ICustomNPC)
         {
-            CustomNPC npc = (CustomNPC) ((CraftEntity)event.getRightClicked()).getHandle();
+            ICustomNPC npc = (ICustomNPC) Reflection.getHandle(event.getRightClicked());
             npc.onInteract(true, event.getPlayer());
         }
     }

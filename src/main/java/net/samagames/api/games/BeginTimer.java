@@ -1,6 +1,7 @@
 package net.samagames.api.games;
 
 import net.samagames.api.SamaGamesAPI;
+import net.samagames.tools.Reflection;
 import net.samagames.tools.Titles;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -134,10 +135,10 @@ public class BeginTimer implements Runnable
             player.setLevel(seconds);
 
             if (ring)
-                player.playSound(player.getLocation(), Sound.BLOCK_NOTE_HARP, 1, 1);
+                Reflection.playSound(player, player.getLocation(), Reflection.PackageType.getServerVersion().equals("v1_8_R3") ? "NOTE_PIANO" : "BLOCK_NOTE_HARP", 1L, 1L);
 
             if (seconds == 0)
-                player.playSound(player.getLocation(), Sound.BLOCK_NOTE_PLING, 1, 1);
+                Reflection.playSound(player, player.getLocation(), Reflection.PackageType.getServerVersion().equals("v1_8_R3") ? "NOTE_PLING" : "BLOCK_NOTE_PLING", 1L, 1L);
         }
     }
 

@@ -1,16 +1,17 @@
 package net.samagames.tools.cameras;
 
-import net.minecraft.server.v1_10_R1.World;
+import net.samagames.tools.Reflection;
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
-import org.bukkit.craftbukkit.v1_10_R1.CraftWorld;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.entity.CreatureSpawnEvent;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
@@ -26,19 +27,34 @@ public class Camera
 {
     private final ConcurrentMap<UUID, GameMode> viewers;
     private final boolean fixed;
-    private final EntityCamera entityCamera;
+    private EntityCamera entityCamera;
 
     Camera(Location initialPosition, boolean fixed)
     {
         this.viewers = new ConcurrentHashMap<>();
         this.fixed = fixed;
 
-        World world = ((CraftWorld) initialPosition.getWorld()).getHandle();
-        this.entityCamera = new EntityCamera(world);
+        try
+        {
+            Class<?> worldClass = Reflection.getNMSClass("World");
+            Class<?> entityClass = Reflection.getNMSClass("Entity");
+            Method addEntityMethod = worldClass.getMethod("addEntity", entityClass, CreatureSpawnEvent.SpawnReason.class);
+            Object world = Reflection.getHandle(initialPosition.getWorld());
 
-        this.entityCamera.setPosition(initialPosition.getX(), initialPosition.getY(), initialPosition.getZ());
-        world.addEntity(this.entityCamera, CreatureSpawnEvent.SpawnReason.CUSTOM);
-        ((LivingEntity) this.entityCamera.getBukkitEntity()).addPotionEffect(new PotionEffect(PotionEffectType.INVISIBILITY, Integer.MAX_VALUE, 1, false, false));
+            if (Reflection.PackageType.getServerVersion().equals("v1_9_R2"))
+                this.entityCamera = new EntityCamera(world);
+
+            this.entityCamera.setPosition(initialPosition.getX(), initialPosition.getY(), initialPosition.getZ());
+            addEntityMethod.invoke(this.entityCamera, CreatureSpawnEvent.SpawnReason.CUSTOM);
+            ((LivingEntity) this.entityCamera.getBukkitEntity()).addPotionEffect(new PotionEffect(PotionEffectType.INVISIBILITY, Integer.MAX_VALUE, 1, false, false));
+        }
+        catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException e)
+        {
+            e.printStackTrace();
+        }
+
+        if (this.entityCamera == null)
+            throw new UnsupportedOperationException("You cannot use this API with your Minecraft version.");
     }
 
     public void move(Location to)

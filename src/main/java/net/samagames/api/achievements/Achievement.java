@@ -1,6 +1,7 @@
 package net.samagames.api.achievements;
 
 import net.samagames.api.SamaGamesAPI;
+import net.samagames.tools.Reflection;
 import net.samagames.tools.chat.fanciful.FancyMessage;
 import org.bukkit.*;
 import org.bukkit.entity.Firework;
@@ -89,7 +90,7 @@ public class Achievement
             if (player == null)
                 return;
 
-            player.playSound(player.getLocation(), Sound.ENTITY_PLAYER_LEVELUP, 1.0F, 1.0F);
+            Reflection.playSound(player, player.getLocation(), Reflection.PackageType.getServerVersion().equals("v1_8_R3") ? "LEVEL_UP" : "ENTITY_PLAYER_LEVELUP", 1L, 1L);
 
             Firework firework = player.getWorld().spawn(player.getLocation(), Firework.class);
             FireworkMeta fireworkMeta = firework.getFireworkMeta();

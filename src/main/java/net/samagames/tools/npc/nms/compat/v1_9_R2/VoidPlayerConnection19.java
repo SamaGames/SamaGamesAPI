@@ -1,21 +1,25 @@
-package net.samagames.tools.npc.nms;
+package net.samagames.tools.npc.nms.compat.v1_9_R2;
 
-import net.minecraft.server.v1_10_R1.*;
+import net.minecraft.server.v1_9_R2.*;
+import net.samagames.tools.Reflection;
+import net.samagames.tools.npc.nms.compat.NullChannel;
+import net.samagames.tools.npc.nms.compat.NullSocketAddress;
 import org.bukkit.Location;
 
+import java.lang.reflect.Field;
 import java.util.Set;
 
 /**
  * Created by Silva on 19/12/2015.
  */
-public class VoidPlayerConnection extends PlayerConnection {
+public class VoidPlayerConnection19 extends PlayerConnection {
 
-    public VoidPlayerConnection(MinecraftServer minecraftserver, EntityPlayer entityplayer) {
+    public VoidPlayerConnection19(MinecraftServer minecraftserver, EntityPlayer entityplayer) {
         super(minecraftserver, new NPCNetworkManager(), entityplayer);
     }
 
     @Override
-    public void E_() {
+    public void c() {
 
     }
 
@@ -151,5 +155,19 @@ public class VoidPlayerConnection extends PlayerConnection {
     @Override
     public void a(PacketPlayInCustomPayload packetplayincustompayload) {
 
+    }
+
+    public static class NPCNetworkManager extends NetworkManager
+    {
+        public NPCNetworkManager()
+        {
+            super(EnumProtocolDirection.CLIENTBOUND); //MCP = isClientSide ---- SRG=field_150747_h
+
+            Field channel = Reflection.makeField(NetworkManager.class, "channel"); //MCP = channel ---- SRG=field_150746_k
+            Field address = Reflection.makeField(NetworkManager.class, "l"); //MCP = address ---- SRG=field_77527_e
+
+            Reflection.setField(channel, this, new NullChannel());
+            Reflection.setField(address, this, new NullSocketAddress());
+        }
     }
 }

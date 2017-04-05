@@ -8,6 +8,8 @@ import org.bukkit.boss.BarStyle;
 import org.bukkit.boss.BossBar;
 import org.bukkit.entity.Player;
 
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
@@ -21,6 +23,9 @@ import java.util.concurrent.ConcurrentMap;
 public class BossBarAPI
 {
     private static final ConcurrentMap<UUID, BossBar> bossBars = new ConcurrentHashMap<>();
+
+    // Stupid hack
+    private static Method createBossBarMethod;
 
     /**
      * Set a basic boss bar to all the players
@@ -61,22 +66,34 @@ public class BossBarAPI
      */
     public static Pair<UUID, BossBar> getBar(String message, BarColor color, BarStyle style, double progress, boolean darkenSky, boolean playMusic, boolean createFog)
     {
-        BossBar bossBar = Bukkit.createBossBar(message, color, style);
-        bossBar.setProgress(progress < 0 ? 0D : progress / 100.0D);
+        if (createBossBarMethod == null)
+            init();
 
-        if (darkenSky)
-            bossBar.addFlag(BarFlag.DARKEN_SKY);
+        try
+        {
+            BossBar bossBar = (BossBar) createBossBarMethod.invoke(null, message, color, style);
+            bossBar.setProgress(progress < 0 ? 0D : progress / 100.0D);
 
-        if (playMusic)
-            bossBar.addFlag(BarFlag.PLAY_BOSS_MUSIC);
+            if (darkenSky)
+                bossBar.addFlag(BarFlag.DARKEN_SKY);
 
-        if (createFog)
-            bossBar.addFlag(BarFlag.CREATE_FOG);
+            if (playMusic)
+                bossBar.addFlag(BarFlag.PLAY_BOSS_MUSIC);
 
-        UUID random = UUID.randomUUID();
-        bossBars.put(random, bossBar);
+            if (createFog)
+                bossBar.addFlag(BarFlag.CREATE_FOG);
 
-        return Pair.of(random, bossBar);
+            UUID random = UUID.randomUUID();
+            bossBars.put(random, bossBar);
+
+            return Pair.of(random, bossBar);
+        }
+        catch (IllegalAccessException | InvocationTargetException e)
+        {
+            e.printStackTrace();
+        }
+
+        return null;
     }
 
     /**
@@ -102,5 +119,17 @@ public class BossBarAPI
     {
         bossBars.values().forEach(BossBar::removeAll);
         bossBars.clear();
+    }
+
+    public static void init()
+    {
+        try
+        {
+            createBossBarMethod = Bukkit.class.getMethod("createBossBar", String.class, BarColor.class, BarStyle.class);
+        }
+        catch (NoSuchMethodException e)
+        {
+            e.printStackTrace();
+        }
     }
 }

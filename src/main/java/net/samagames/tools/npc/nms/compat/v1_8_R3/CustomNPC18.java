@@ -1,9 +1,10 @@
-package net.samagames.tools.npc.nms;
+package net.samagames.tools.npc.nms.compat.v1_8_R3;
 
 import com.mojang.authlib.GameProfile;
+import net.minecraft.server.v1_8_R3.*;
 import net.samagames.tools.holograms.Hologram;
-import net.minecraft.server.v1_10_R1.*;
 import net.samagames.tools.npc.NPCInteractCallback;
+import net.samagames.tools.npc.nms.ICustomNPC;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.WeatherType;
@@ -14,18 +15,23 @@ import org.bukkit.event.entity.EntityDamageEvent;
 /**
  * Created by Silva on 18/12/2015.
  */
-public class CustomNPC extends EntityPlayer
+public class CustomNPC18 extends EntityPlayer implements ICustomNPC
 {
     private NPCInteractCallback callback;
 
     private Hologram hologram;
 
-    public CustomNPC(World world, GameProfile gameprofile, PlayerInteractManager playerInteractManager)
+    public CustomNPC18(World world, GameProfile gameprofile, PlayerInteractManager playerInteractManager)
     {
         super(world.getServer().getServer(), (WorldServer) world, gameprofile, playerInteractManager);
-        playerInteractManager.b(EnumGamemode.SURVIVAL);
-        this.playerConnection = new VoidPlayerConnection(world.getServer().getServer(), this);
-        this.getDataWatcher().set(br, Byte.MAX_VALUE);
+        playerInteractManager.b(WorldSettings.EnumGamemode.SURVIVAL);
+        this.playerConnection = new VoidPlayerConnection18(world.getServer().getServer(), this);
+        // this.getDataWatcher().i(br, Byte.MAX_VALUE);
+    }
+
+    public CustomNPC18(Object world, GameProfile gameprofile)
+    {
+        this((World) world, gameprofile, new PlayerInteractManager((World) world));
     }
 
     public void onInteract(boolean rightClick, Player damager)
@@ -34,7 +40,7 @@ public class CustomNPC extends EntityPlayer
             callback.done(rightClick, damager);
     }
 
-    public CustomNPC setCallback(NPCInteractCallback callback)
+    public CustomNPC18 setCallback(NPCInteractCallback callback)
     {
         this.callback = callback;
         return this;
@@ -61,7 +67,7 @@ public class CustomNPC extends EntityPlayer
     }
 
     @Override
-    protected void v() {
+    protected void s() {
 
     }
 
@@ -71,7 +77,7 @@ public class CustomNPC extends EntityPlayer
     }
 
     @Override
-    public String A() {
+    public String w() {
         return "";
     }
 

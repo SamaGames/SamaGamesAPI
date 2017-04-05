@@ -18,12 +18,14 @@ package net.samagames.tools.gameprofile;
 import com.google.gson.*;
 import com.mojang.authlib.GameProfile;
 import com.mojang.authlib.properties.Property;
-import net.minecraft.server.v1_10_R1.MinecraftServer;
+import net.minecraft.server.v1_8_R3.MinecraftServer;
 import net.samagames.api.SamaGamesAPI;
+import net.samagames.tools.Reflection;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import redis.clients.jedis.Jedis;
 
+import java.lang.reflect.Method;
 import java.util.UUID;
 
 public class ProfileLoader {
@@ -61,8 +63,19 @@ public class ProfileLoader {
             GameProfile profile;
             if (json == null)
             {
+                Class<?> minecraftServerClass = Reflection.getClass("MinecraftServer");
+                Method getServerMethod = minecraftServerClass.getMethod("getServer");
+                Method getMinecraftSessionService;
+
+                if (Reflection.PackageType.getServerVersion().equals("v1_8_R3"))
+                    getMinecraftSessionService = minecraftServerClass.getMethod("aD");
+                else
+                    getMinecraftSessionService = minecraftServerClass.getMethod("ay");
+
+                Method fillProfilePropertiesMethod = getMinecraftSessionService.getReturnType().getMethod("fillProfileProperties", GameProfile.class, boolean.class);
+
                 //Requete
-                profile = MinecraftServer.getServer().ay().fillProfileProperties(new GameProfile(id, null), true);
+                profile = (GameProfile) fillProfilePropertiesMethod.invoke(getMinecraftSessionService.invoke(getServerMethod.invoke(null)), new GameProfile(id, null), true);
 
                 if (jedis != null && profile.getName() != null)//Don't save if didn't got data from mojang
                 {

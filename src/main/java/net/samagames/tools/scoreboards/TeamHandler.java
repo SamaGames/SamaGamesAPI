@@ -1,14 +1,10 @@
 package net.samagames.tools.scoreboards;
 
-import net.minecraft.server.v1_10_R1.PacketPlayOutScoreboardTeam;
-import net.minecraft.server.v1_10_R1.ScoreboardTeamBase;
 import net.samagames.tools.Reflection;
 import org.bukkit.ChatColor;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 
-import java.lang.reflect.Field;
-import java.lang.reflect.Method;
 import java.util.*;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.CopyOnWriteArrayList;
@@ -21,6 +17,8 @@ import java.util.concurrent.CopyOnWriteArrayList;
  */
 public class TeamHandler
 {
+    private static Class<?> packetPlayOutScoreboardTeam = Reflection.getNMSClass("PacketPlayOutScoreboardTeam");
+
     private ConcurrentLinkedQueue<VTeam> teams;
     private List<OfflinePlayer> receivers;
 
@@ -334,42 +332,24 @@ public class TeamHandler
 
     public static class RawTeam
     {
-        private static Method getEntityHandle;
-        private static Field getPlayerConnection;
-        private static Method sendPacket;
-
-        static
-        {
-            try
-            {
-                getEntityHandle = Reflection.getOBCClass("entity.CraftPlayer").getMethod("getHandle");
-                getPlayerConnection = Reflection.getNMSClass("EntityPlayer").getDeclaredField("playerConnection");
-                sendPacket = Reflection.getNMSClass("PlayerConnection").getMethod("sendPacket", Reflection.getNMSClass("Packet"));
-            }
-            catch (Exception e)
-            {
-                e.printStackTrace();
-            }
-        }
-
         public static void createTeam(Player p, VTeam team)
         {
-            sendPacket(makePacket(team, new ArrayList<>(), 0), p);
+            Reflection.sendPacket(p, makePacket(team, new ArrayList<>(), 0));
         }
 
         public static void sendTeam(Player p, VTeam team)
         {
-            sendPacket(makePacket(team, 3), p);
+            Reflection.sendPacket(p, makePacket(team, 3));
         }
 
         public static void removeTeam(Player p, VTeam team)
         {
-            sendPacket(makePacket(team, new ArrayList<>(), 1), p);
+            Reflection.sendPacket(p, makePacket(team, new ArrayList<>(), 1));
         }
 
         public static void changeTeam(Player p, VTeam team)
         {
-            sendPacket(makePacket(team, new ArrayList<>(), 2), p);
+            Reflection.sendPacket(p, makePacket(team, new ArrayList<>(), 2));
         }
 
         public static void addPlayerToTeam(Player receiver, VTeam team, Player toadd)
@@ -379,7 +359,7 @@ public class TeamHandler
 
         public static void addPlayerToTeam(Player receiver, VTeam team, String toadd)
         {
-            sendPacket(makePacket(team, Collections.singletonList(toadd), 3), receiver);
+            Reflection.sendPacket(receiver, makePacket(team, Collections.singletonList(toadd), 3));
         }
 
         public static void removePlayerFromTeam(Player receiver, VTeam team, Player toremove)
@@ -390,10 +370,10 @@ public class TeamHandler
         public static void removePlayerFromTeam(Player receiver, VTeam team, String toremove)
         {
             if (team.players.contains(toremove))
-                sendPacket(makePacket(team, Collections.singletonList(toremove), 4), receiver);
+                Reflection.sendPacket(receiver, makePacket(team, Collections.singletonList(toremove), 4));
         }
 
-        private static PacketPlayOutScoreboardTeam makePacket(VTeam team, List<String> news, int n)
+        private static Object makePacket(VTeam team, List<String> news, int n)
         {
             //0: Création de team
             //1: Suppression de team
@@ -404,46 +384,43 @@ public class TeamHandler
             if (news == null)
                 news = new ArrayList<>();
 
-            PacketPlayOutScoreboardTeam packet = new PacketPlayOutScoreboardTeam();
-
             try
             {
+                Object packet = packetPlayOutScoreboardTeam.newInstance();
+
                 Reflection.setValue(packet, "a", team.getRealName()); // Team display name
                 Reflection.setValue(packet, "i", n); // Action id
                 Reflection.setValue(packet, "b", team.getDisplayName()); // Team display name
                 Reflection.setValue(packet, "c", team.getPrefix()); // Team prefix
                 Reflection.setValue(packet, "d", team.getSuffix()); // Team suffix
                 Reflection.setValue(packet, "j", 0); // Friendly fire
-                Reflection.setValue(packet, "e", team.getNameVisible().e); // Name tag visibility
-                Reflection.setValue(packet, "f", team.getCollisionRule().e); // Collision rule
-                Reflection.setValue(packet, "g", news.size()); // Player count
-                Reflection.setValue(packet, "h", (Collection) news); // Players
+                Reflection.setValue(packet, "e", "always");
+
+                if (Reflection.PackageType.getServerVersion().equals("v1_8_R3"))
+                {
+                    Reflection.setValue(packet, "f", news.size()); // Player count
+                    Reflection.setValue(packet, "g", (Collection) news); // Players
+                }
+                else
+                {
+                    Reflection.setValue(packet, "f", "never"); // Collision rule
+                    Reflection.setValue(packet, "g", news.size()); // Player count
+                    Reflection.setValue(packet, "h", (Collection) news); // Players
+                }
+
+                return packet;
             }
             catch (Exception e)
             {
                 e.printStackTrace();
             }
 
-            return packet;
+            return null;
         }
 
-        private static PacketPlayOutScoreboardTeam makePacket(VTeam team, int n)
+        private static Object makePacket(VTeam team, int n)
         {
             return makePacket(team, team.getPlayers(), n);
-        }
-
-        public static void sendPacket(Object packet, Player player)
-        {
-            try
-            {
-                Object nms_player = getEntityHandle.invoke(player);
-                Object nms_connection = getPlayerConnection.get(nms_player);
-                sendPacket.invoke(nms_connection, packet);
-            }
-            catch (Exception e)
-            {
-                e.printStackTrace();
-            }
         }
     }
 
@@ -454,8 +431,6 @@ public class TeamHandler
         private String display = "";
         private String prefix = ChatColor.GRAY + "";
         private String suffix = "";
-        private ScoreboardTeamBase.EnumNameTagVisibility nameVisible = ScoreboardTeamBase.EnumNameTagVisibility.ALWAYS;
-        private ScoreboardTeamBase.EnumTeamPush collisionRule = ScoreboardTeamBase.EnumTeamPush.NEVER;
 
         private CopyOnWriteArrayList<String> players = new CopyOnWriteArrayList<>();
 
@@ -558,26 +533,6 @@ public class TeamHandler
         public void setRealName(String realName)
         {
             this.realName = realName;
-        }
-
-        public ScoreboardTeamBase.EnumNameTagVisibility getNameVisible()
-        {
-            return this.nameVisible;
-        }
-
-        public void setNameVisible(ScoreboardTeamBase.EnumNameTagVisibility nameVisible)
-        {
-            this.nameVisible = nameVisible;
-        }
-
-        public ScoreboardTeamBase.EnumTeamPush getCollisionRule()
-        {
-            return this.collisionRule;
-        }
-
-        public void setCollisionRule(ScoreboardTeamBase.EnumTeamPush collisionRule)
-        {
-            this.collisionRule = collisionRule;
         }
     }
 }

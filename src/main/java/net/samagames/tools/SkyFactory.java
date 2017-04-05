@@ -37,11 +37,11 @@ public class SkyFactory implements Listener
     {
         try
         {
-            packetPlayOutRespawn = getMCClass("PacketPlayOutRespawn").getConstructor(int.class, getMCClass("EnumDifficulty"), getMCClass("WorldType"), net.minecraft.server.v1_10_R1.EnumGamemode.class);
-            getHandle = getCraftClass("entity.CraftPlayer").getMethod("getHandle");
-            playerConnection = getMCClass("EntityPlayer").getDeclaredField("playerConnection");
-            sendPacket = getMCClass("PlayerConnection").getMethod("sendPacket", getMCClass("Packet"));
-            normal = getMCClass("WorldType").getDeclaredField("NORMAL");
+            packetPlayOutRespawn = Reflection.getNMSClass("PacketPlayOutRespawn").getConstructor(int.class, Reflection.getNMSClass("EnumDifficulty"), Reflection.getNMSClass("WorldType"), Reflection.getNMSClass("WorldSettings$EnumGamemode"));
+            getHandle = Reflection.getOBCClass("entity.CraftPlayer").getMethod("getHandle");
+            playerConnection = Reflection.getNMSClass("EntityPlayer").getDeclaredField("playerConnection");
+            sendPacket = Reflection.getNMSClass("PlayerConnection").getMethod("sendPacket", Reflection.getNMSClass("Packet"));
+            normal = Reflection.getNMSClass("WorldType").getDeclaredField("NORMAL");
         }
         catch (Exception e)
         {
@@ -131,7 +131,7 @@ public class SkyFactory implements Listener
 
     private Object getDifficulty(World w) throws ClassNotFoundException
     {
-        for (Object dif : getMCClass("EnumDifficulty").getEnumConstants())
+        for (Object dif : Reflection.getNMSClass("EnumDifficulty").getEnumConstants())
             if (dif.toString().equalsIgnoreCase(w.getDifficulty().toString()))
                 return dif;
 
@@ -140,7 +140,7 @@ public class SkyFactory implements Listener
 
     private Object getGameMode(Player p) throws ClassNotFoundException
     {
-        for (Object dif : net.minecraft.server.v1_10_R1.EnumGamemode.values())
+        for (Object dif : Reflection.getNMSClass("WorldSettings$EnumGamemode").getEnumConstants())
             if (dif.toString().equalsIgnoreCase(p.getGameMode().toString()))
                 return dif;
 
@@ -150,21 +150,5 @@ public class SkyFactory implements Listener
     private Object getLevel() throws ClassNotFoundException, IllegalArgumentException, IllegalAccessException
     {
         return normal.get(null);
-    }
-
-    private static Class<?> getMCClass(String name) throws ClassNotFoundException
-    {
-        String version = Bukkit.getServer().getClass().getPackage().getName().replace(".", ",").split(",")[3] + ".";
-        String className = "net.minecraft.server." + version + name;
-
-        return Class.forName(className);
-    }
-
-    private static Class<?> getCraftClass(String name) throws ClassNotFoundException
-    {
-        String version = Bukkit.getServer().getClass().getPackage().getName().replace(".", ",").split(",")[3] + ".";
-        String className = "org.bukkit.craftbukkit." + version + name;
-
-        return Class.forName(className);
     }
 }

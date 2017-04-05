@@ -1,6 +1,7 @@
 package net.samagames.tools.tutorials;
 
 import net.samagames.api.SamaGamesAPI;
+import net.samagames.tools.Reflection;
 import net.samagames.tools.Titles;
 import org.bukkit.ChatColor;
 import org.bukkit.Sound;
@@ -64,9 +65,8 @@ public class TutorialRunner implements Runnable
         if (currentText == 0)
         {
             chapter.teleport(player);
-            player.playSound(player.getLocation(), Sound.ENTITY_PLAYER_LEVELUP, 1L, 2L);
+            Reflection.playSound(player, player.getLocation(), Reflection.PackageType.getServerVersion().equals("v1_8_R3") ? "LEVEL_UP" : "ENTITY_PLAYER_LEVELUP", 1L, 2L);
         }
-
 
         // Title version
         Titles.sendTitle(

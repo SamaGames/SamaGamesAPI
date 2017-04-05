@@ -1,6 +1,7 @@
 package net.samagames.tools.powerups;
 
 import net.samagames.api.SamaGamesAPI;
+import net.samagames.tools.Reflection;
 import net.samagames.tools.Titles;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
@@ -110,7 +111,7 @@ public class PowerupManager
 
         for (Player player : this.plugin.getServer().getOnlinePlayers())
         {
-            player.playSound(player.getLocation(), Sound.ENTITY_ARROW_HIT_PLAYER, 1.0F, 1.0F);
+            Reflection.playSound(player, player.getLocation(), Reflection.PackageType.getServerVersion().equals("v1_8_R3") ? "ARROW_HIT" : "ENTITY_ARROW_HIT_PLAYER", 1L, 1L);
             Titles.sendTitle(player, 5, 30, 5, ChatColor.GOLD + "✯", "");
         }
 

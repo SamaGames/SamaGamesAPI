@@ -1,15 +1,16 @@
 package net.samagames.tools.holograms;
 
-import net.minecraft.server.v1_10_R1.*;
+import net.minecraft.server.v1_8_R3.Entity;
 import net.samagames.api.SamaGamesAPI;
+import net.samagames.tools.Reflection;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.OfflinePlayer;
-import org.bukkit.craftbukkit.v1_10_R1.CraftWorld;
-import org.bukkit.craftbukkit.v1_10_R1.entity.CraftPlayer;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitTask;
 
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -25,8 +26,22 @@ public class Hologram
 {
     private static final double distance = 0.24D;
 
+    private static Class<?> entityArmorStandClass;
+    private static Class<?> packetPlayOutEntityDestroyClass;
+    private static Class<?> packetPlayOutSpawnEntityClass;
+    private static Class<?> packetPlayOutEntityMetadataClass;
+
+    private static Method setSizeMethod;
+    private static Method setInvisibleMethod;
+    //private static Method setNoGravityMethod;
+    private static Method setCustomNameMethod;
+    private static Method setCustomNameVisibleMethod;
+    private static Method setLocationMethod;
+    private static Method getIdMethod;
+    private static Method getDataWatcherMethod;
+
     private HashMap<OfflinePlayer, Boolean> receivers;
-    private HashMap<Integer, Entity> entities;
+    private HashMap<Integer, Object> entities;
     private List<String> lines;
     private Location location;
     private BukkitTask taskID;
@@ -105,13 +120,20 @@ public class Hologram
      */
     public boolean removeLineForPlayer(Player p, int line)
     {
-        Entity entities = this.entities.get(line);
+        Object entity = this.entities.get(line);
 
-        if(entities == null)
+        if(entity == null)
             return false;
 
-        PacketPlayOutEntityDestroy packet = new PacketPlayOutEntityDestroy(entities.getId());
-        ((CraftPlayer) p).getHandle().playerConnection.sendPacket(packet);
+        try
+        {
+            Object packet = packetPlayOutEntityDestroyClass.getDeclaredConstructor(int.class).newInstance(getIdMethod.invoke(entity));
+            Reflection.sendPacket(p, packet);
+        }
+        catch (IllegalAccessException | InstantiationException | InvocationTargetException | NoSuchMethodException e)
+        {
+            e.printStackTrace();
+        }
 
         return true;
     }
@@ -298,36 +320,79 @@ public class Hologram
         return this.location;
     }
 
-    private static Entity generateEntitiesForLine(Location loc, String text)
+    private static Object generateEntitiesForLine(Location loc, String text)
     {
-        WorldServer world = ((CraftWorld) loc.getWorld()).getHandle();
-        EntityArmorStand armorStand = new EntityArmorStand(world);
-        armorStand.setSize(0.00001F, 0.00001F);
-        armorStand.setInvisible(true);
-        armorStand.setNoGravity(true);
-        armorStand.setCustomName(text);
-        armorStand.setCustomNameVisible(true);
-        armorStand.setLocation(loc.getX(), loc.getY() - 2, loc.getZ(), 0, 0);
+        try
+        {
+            Object world = Reflection.getHandle(loc.getWorld());
+            Object entity = entityArmorStandClass.getDeclaredConstructor(world.getClass()).newInstance(world);
 
-        return armorStand;
+            setSizeMethod.invoke(entity, 0.00001F, 0.00001F);
+            setInvisibleMethod.invoke(entity, true);
+            //setNoGravityMethod.invoke(entity, true);
+            setCustomNameMethod.invoke(entity, text);
+            setCustomNameVisibleMethod.invoke(entity, true);
+            setLocationMethod.invoke(entity, loc.getX(), loc.getY() - 2, loc.getZ(), 0, 0);
+
+            return entity;
+        }
+        catch (IllegalAccessException | InstantiationException | InvocationTargetException | NoSuchMethodException e)
+        {
+            e.printStackTrace();
+        }
+
+        return null;
     }
 
     private boolean sendPacketForLine(Player p, int line)
     {
-        Entity entities = this.entities.get(line);
+        Object entity = this.entities.get(line);
 
-        if(entities == null)
+        if(entity == null)
             return false;
 
-        EntityArmorStand armorStand = (EntityArmorStand) entities;
+        try
+        {
+            Class<?> packetPlayOutSpawnEntityClass = Reflection.getNMSClass("PacketPlayOutSpawnEntity");
+            Class<?> packetPlayOutEntityMetadataClass = Reflection.getNMSClass("PacketPlayOutEntityMetadata");
 
-        PacketPlayOutSpawnEntity armorStand_packet = new PacketPlayOutSpawnEntity(armorStand, 78);
-        PacketPlayOutEntityMetadata armorStand_packemeta = new PacketPlayOutEntityMetadata(armorStand.getId(), armorStand.getDataWatcher(), true);
+            Method getDataWatcherMethod = entityArmorStandClass.getMethod("getDataWatcher");
 
-        EntityPlayer nmsPlayer = ((CraftPlayer) p).getHandle();
-        nmsPlayer.playerConnection.sendPacket(armorStand_packet);
-        nmsPlayer.playerConnection.sendPacket(armorStand_packemeta);
+            Object armorStandPacket = packetPlayOutSpawnEntityClass.getDeclaredConstructor(entity.getClass(), int.class).newInstance(entity, 78);
+            Object armorStandPacketMeta = packetPlayOutEntityMetadataClass.getDeclaredConstructor(int.class, getDataWatcherMethod.getReturnType(), boolean.class).newInstance(getIdMethod.invoke(entity), getDataWatcherMethod.invoke(entity), true);
+
+            Reflection.sendPacket(p, armorStandPacket);
+            Reflection.sendPacket(p, armorStandPacketMeta);
+        }
+        catch (NoSuchMethodException | InstantiationException | InvocationTargetException | IllegalAccessException e)
+        {
+            e.printStackTrace();
+        }
 
         return true;
+    }
+
+    static
+    {
+        try
+        {
+            entityArmorStandClass = Reflection.getNMSClass("EntityArmorStand");
+            packetPlayOutEntityDestroyClass = Reflection.getNMSClass("PacketPlayOutEntityDestroy");
+            packetPlayOutSpawnEntityClass = Reflection.getNMSClass("PacketPlayOutSpawnEntity");
+            packetPlayOutEntityMetadataClass = Reflection.getNMSClass("PacketPlayOutEntityMetadata");
+
+            getDataWatcherMethod = entityArmorStandClass.getMethod("getDataWatcher");
+            setSizeMethod = entityArmorStandClass.getMethod("setSize", float.class, float.class);
+            setInvisibleMethod = entityArmorStandClass.getMethod("setInvisible", boolean.class);
+            //setNoGravityMethod = entityArmorStandClass.getMethod("setNoGravity", boolean.class);
+            setCustomNameMethod = entityArmorStandClass.getMethod("setCustomName", String.class);
+            setCustomNameVisibleMethod = entityArmorStandClass.getMethod("setCustomNameVisible", boolean.class);
+            setLocationMethod = entityArmorStandClass.getMethod("setLocation", int.class, int.class, int.class, float.class, float.class);
+            getIdMethod = entityArmorStandClass.getMethod("getId");
+        }
+        catch (NoSuchMethodException e)
+        {
+            e.printStackTrace();
+        }
     }
 }

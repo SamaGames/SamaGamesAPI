@@ -1,25 +1,28 @@
 package net.samagames.tools.chat;
 
-import net.minecraft.server.v1_10_R1.EntityPlayer;
-import net.minecraft.server.v1_10_R1.IChatBaseComponent;
-import net.minecraft.server.v1_10_R1.PacketPlayOutChat;
 import net.samagames.api.SamaGamesAPI;
+import net.samagames.tools.Reflection;
 import org.bukkit.Bukkit;
-import org.bukkit.craftbukkit.v1_10_R1.entity.CraftPlayer;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitTask;
 
+import java.lang.reflect.Method;
 import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
-
 
 /**
  * An utility class to send action bars to the players.
  */
 public final class ActionBarAPI
 {
-	private static boolean enabled = true;
+    private static Class<?> iChatBaseComponent;
+	private static Class<?> chatSerializerClass;
+	private static Class<?> packetPlayOutChat;
+
+	private static Method fromJsonMethod;
+
+    private static boolean enabled = true;
 
 	private static Map<UUID, String> actionMessages = new ConcurrentHashMap<>();
 
@@ -96,11 +99,10 @@ public final class ActionBarAPI
 
 		try
 		{
-			EntityPlayer entityPlayer = ((CraftPlayer) player).getHandle();
-			IChatBaseComponent chatComponent = IChatBaseComponent.ChatSerializer.a("{\"text\": \"" + message + "\"}");
-			PacketPlayOutChat packet = new PacketPlayOutChat(chatComponent, (byte) 2);
+			Object chatComponent = fromJsonMethod.invoke(null, "{\"text\": \"" + message + "\"}");
+			Object packet = packetPlayOutChat.getDeclaredConstructor(iChatBaseComponent, byte.class).newInstance(chatComponent, (byte) 2);
 
-			entityPlayer.playerConnection.sendPacket(packet);
+			Reflection.sendPacket(player, packet);
 		}
 		catch (Exception e)
 		{
@@ -204,4 +206,20 @@ public final class ActionBarAPI
 			actionMessagesUpdaterRunning = true;
 		}
 	}
+
+	static
+    {
+        try
+        {
+            iChatBaseComponent = Reflection.getNMSClass("IChatBaseComponent");
+            chatSerializerClass = Reflection.getNMSClass("IChatBaseComponent$ChatSerializer");
+            packetPlayOutChat = Reflection.getNMSClass("PacketPlayOutChat");
+
+            fromJsonMethod = chatSerializerClass.getMethod("a", String.class);
+        }
+        catch (NoSuchMethodException e)
+        {
+            e.printStackTrace();
+        }
+    }
 }

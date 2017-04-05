@@ -1,14 +1,11 @@
 package net.samagames.tools;
 
-import net.minecraft.server.v1_10_R1.IChatBaseComponent;
-import net.minecraft.server.v1_10_R1.PacketPlayOutPlayerListHeaderFooter;
-import net.minecraft.server.v1_10_R1.PacketPlayOutTitle;
-import net.minecraft.server.v1_10_R1.PlayerConnection;
 import org.bukkit.ChatColor;
-import org.bukkit.craftbukkit.v1_10_R1.entity.CraftPlayer;
 import org.bukkit.entity.Player;
 
 import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 
 /**
  * Titles utils class
@@ -18,6 +15,19 @@ import java.lang.reflect.Field;
  */
 public class Titles
 {
+    private static Class<?> iChatBaseComponentClass;
+    private static Class<?> packetPlayOutTitleClass;
+    private static Class<?> packetPlayOutPlayerListHeaderFooterClass;
+    private static Class<?> enumTitleActionClass;
+    private static Class<?> chatSerializerClass;
+
+    private static Method fromJsonMethod;
+
+    private static Field timesActionField;
+    private static Field subtitleActionField;
+    private static Field titleActionField;
+    private static Field subtitlePacketField;
+
     /**
      * Send title
      *
@@ -30,27 +40,37 @@ public class Titles
      */
     public static void sendTitle(Player player, Integer fadeIn, Integer stay, Integer fadeOut, String title, String subtitle)
     {
-        PlayerConnection connection = ((CraftPlayer) player).getHandle().playerConnection;
-
-        PacketPlayOutTitle packetPlayOutTimes = new PacketPlayOutTitle(PacketPlayOutTitle.EnumTitleAction.TIMES, null, fadeIn, stay, fadeOut);
-        connection.sendPacket(packetPlayOutTimes);
-
-        if (subtitle != null)
+        try
         {
-            subtitle = subtitle.replaceAll("%player%", player.getDisplayName());
-            subtitle = ChatColor.translateAlternateColorCodes('&', subtitle);
-            IChatBaseComponent titleSub = IChatBaseComponent.ChatSerializer.a("{\"text\": \"" + subtitle + "\"}");
-            PacketPlayOutTitle packetPlayOutSubTitle = new PacketPlayOutTitle(PacketPlayOutTitle.EnumTitleAction.SUBTITLE, titleSub);
-            connection.sendPacket(packetPlayOutSubTitle);
+            Object packet = packetPlayOutTitleClass.getDeclaredConstructor(enumTitleActionClass, iChatBaseComponentClass, int.class, int.class, int.class).newInstance(timesActionField.get(null), null, fadeIn, stay, fadeOut);
+
+            Reflection.sendPacket(player, packet);
+
+            if (subtitle != null)
+            {
+                subtitle = subtitle.replaceAll("%player%", player.getDisplayName());
+                subtitle = ChatColor.translateAlternateColorCodes('&', subtitle);
+
+                Object titleSub = fromJsonMethod.invoke(null, "{\"text\": \"" + subtitle + "\"}");
+                packet = packetPlayOutTitleClass.getDeclaredConstructor(enumTitleActionClass, iChatBaseComponentClass).newInstance(subtitleActionField.get(null), titleSub);
+
+                Reflection.sendPacket(player, packet);
+            }
+
+            if (title != null)
+            {
+                title = title.replaceAll("%player%", player.getDisplayName());
+                title = ChatColor.translateAlternateColorCodes('&', title);
+
+                Object titleMain = fromJsonMethod.invoke(null, "{\"text\": \"" + title + "\"}");
+                packet = packetPlayOutTitleClass.getDeclaredConstructor(enumTitleActionClass, iChatBaseComponentClass).newInstance(titleActionField.get(null), titleMain);
+
+                Reflection.sendPacket(player, packet);
+            }
         }
-
-        if (title != null)
+        catch (InstantiationException | InvocationTargetException | IllegalAccessException | NoSuchMethodException e)
         {
-            title = title.replaceAll("%player%", player.getDisplayName());
-            title = ChatColor.translateAlternateColorCodes('&', title);
-            IChatBaseComponent titleMain = IChatBaseComponent.ChatSerializer.a("{\"text\": \"" + title + "\"}");
-            PacketPlayOutTitle packetPlayOutTitle = new PacketPlayOutTitle(PacketPlayOutTitle.EnumTitleAction.TITLE, titleMain);
-            connection.sendPacket(packetPlayOutTitle);
+            e.printStackTrace();
         }
     }
 
@@ -72,24 +92,44 @@ public class Titles
         header = header.replaceAll("%player%", player.getDisplayName());
         footer = footer.replaceAll("%player%", player.getDisplayName());
 
-        PlayerConnection connection = ((CraftPlayer) player).getHandle().playerConnection;
-        IChatBaseComponent tabTitle = IChatBaseComponent.ChatSerializer.a("{\"text\": \"" + header + "\"}");
-        IChatBaseComponent tabFoot = IChatBaseComponent.ChatSerializer.a("{\"text\": \"" + footer + "\"}");
-        PacketPlayOutPlayerListHeaderFooter headerPacket = new PacketPlayOutPlayerListHeaderFooter(tabTitle);
-
         try
         {
-            Field field = headerPacket.getClass().getDeclaredField("b");
-            field.setAccessible(true);
-            field.set(headerPacket, tabFoot);
+            Object tabTitle = fromJsonMethod.invoke(null, "{\"text\": \"" + header + "\"}");
+            Object tabFoot = fromJsonMethod.invoke(null, "{\"text\": \"" + footer + "\"}");
+
+            Object packet = packetPlayOutPlayerListHeaderFooterClass.getDeclaredConstructor(iChatBaseComponentClass).newInstance(tabTitle);
+            subtitlePacketField.set(packet, tabFoot);
+
+            Reflection.sendPacket(player, packet);
         }
-        catch (NoSuchFieldException | SecurityException | IllegalArgumentException | IllegalAccessException e)
+        catch (NoSuchMethodException | InstantiationException | InvocationTargetException | IllegalAccessException e)
         {
             e.printStackTrace();
         }
-        finally
+    }
+
+    static
+    {
+        try
         {
-            connection.sendPacket(headerPacket);
+            iChatBaseComponentClass = Reflection.getNMSClass("IChatBaseComponent");
+            packetPlayOutTitleClass = Reflection.getNMSClass("PacketPlayOutTitle");
+            packetPlayOutPlayerListHeaderFooterClass = Reflection.getNMSClass("PacketPlayOutPlayerListHeaderFooter");
+            enumTitleActionClass = Reflection.getNMSClass("PacketPlayOutTitle$EnumTitleAction");
+            chatSerializerClass = Reflection.getNMSClass("IChatBaseComponent$ChatSerializer");
+
+            fromJsonMethod = chatSerializerClass.getMethod("a", String.class);
+
+            timesActionField = enumTitleActionClass.getField("TIMES");
+            subtitleActionField = enumTitleActionClass.getField("SUBTITLE");
+            titleActionField = enumTitleActionClass.getField("TITLE");
+            subtitlePacketField = packetPlayOutPlayerListHeaderFooterClass.getDeclaredField("b");
+
+            subtitlePacketField.setAccessible(true);
+        }
+        catch (NoSuchFieldException | NoSuchMethodException e)
+        {
+            e.printStackTrace();
         }
     }
 }

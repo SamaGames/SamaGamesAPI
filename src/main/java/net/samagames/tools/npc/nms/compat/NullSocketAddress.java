@@ -1,4 +1,4 @@
-package net.samagames.tools.npc.nms;
+package net.samagames.tools.npc.nms.compat;
 
 /**
  * Created by Silva on 19/12/2015.

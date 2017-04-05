@@ -1,6 +1,10 @@
 package net.samagames.tools;
 
 import org.bukkit.Bukkit;
+import org.bukkit.Location;
+import org.bukkit.Sound;
+import org.bukkit.craftbukkit.v1_8_R3.entity.CraftPlayer;
+import org.bukkit.entity.Player;
 
 import java.lang.reflect.*;
 import java.util.HashMap;
@@ -9,56 +13,52 @@ import java.util.Objects;
 
 public class Reflection {
 
-    public static String getVersion() {
-        String name = Bukkit.getServer().getClass().getPackage().getName();
-        return name.substring(name.lastIndexOf('.') + 1) + ".";
+    public static void playSound(Player player, Location location, String soundName, long volume, long pitch) {
+        try {
+            Class<?> soundClass = getOBCClass("Sound");
+            Sound sound = (Sound) soundClass.getField(soundName).get(null);
+
+            Method playSoundMethod = getMethod(player.getClass(), "playSound", Location.class, Sound.class, long.class, long.class);
+            playSoundMethod.invoke(player, location, sound, volume, pitch);
+        } catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException | NoSuchFieldException e) {
+            e.printStackTrace();
+        }
     }
 
     public static Class<?> getNMSClass(String className) {
-        String fullName = "net.minecraft.server." + getVersion() + className;
-        Class<?> clazz = null;
         try {
-            clazz = Class.forName(fullName);
-        } catch (Exception e) {
+            return PackageType.MINECRAFT_SERVER.getClass(className);
+        } catch (ClassNotFoundException e) {
             e.printStackTrace();
+            return null;
         }
-        return clazz;
     }
 
     public static Class<?> getOBCClass(String className) {
-        String fullName = "org.bukkit.craftbukkit." + getVersion() + className;
-        Class<?> clazz = null;
         try {
-            clazz = Class.forName(fullName);
-        } catch (Exception e) {
+            return PackageType.CRAFTBUKKIT.getClass(className);
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    public static void sendPacket(Player player, Object packet) {
+        try {
+            Class<?> packetClass = getNMSClass("Packet");
+            Class<?> entityPlayerClass = getNMSClass("EntityPlayer");
+            Field playerConnectionField = getField(entityPlayerClass, "playerConnection");
+            Method sendPacketMethod = getMethod(playerConnectionField.getType(), "sendPacket", packetClass);
+
+            Object entityPlayer = getHandle(player);
+            Object playerConnection = playerConnectionField.get(entityPlayer);
+
+            sendPacketMethod.invoke(playerConnection, packet);
+        } catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException e) {
             e.printStackTrace();
         }
-        return clazz;
     }
 
-    public static Class<?> getNmsClass(String name) {
-        String className = "net.minecraft.server." + getVersion() + "." + name;
-        return getClass(className);
-    }
-
-    public static Class<?> getCbClass(String name) {
-        String className = "org.bukkit.craftbukkit." + getVersion() + "." + name;
-        return getClass(className);
-    }
-
-    public static Class<?> getUtilClass(String name) {
-        try {
-            return Class.forName(name); //Try before 1.8 first
-        } catch (ClassNotFoundException ex) {
-            try {
-                return Class.forName("net.minecraft.util." + name); //Not 1.8
-            } catch (ClassNotFoundException ex2) {
-                return null;
-            }
-        }
-    }
-
-    //com.samagames.persistanceapi.Utils
     public static Method makeMethod(Class<?> clazz, String methodName, Class<?>... paramaters) {
         try {
             return clazz.getDeclaredMethod(methodName, paramaters);
@@ -605,7 +605,8 @@ public class Reflection {
          * @return The server version
          */
         public static String getServerVersion() {
-            return Bukkit.getServer().getClass().getPackage().getName().substring(23);
+            String name = Bukkit.getServer().getClass().getPackage().getName();
+            return name.substring(name.lastIndexOf('.') + 1);
         }
 
         /**
