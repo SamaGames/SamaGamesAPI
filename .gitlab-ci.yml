@@ -25,7 +25,6 @@ deploy-developement:
   stage: deploy
   only:
     - develop
-    - "1.10"
   script:
     - 'if [ "$HAS_TO_BE_PUT_IN_THE_DATA" == "true" ]; then if [ -f "build.gradle" ]; then cp -f build/libs/*.jar /home/www/static/templates/dependencies/; else cp -f target/*.jar /home/www/static/templates/dependencies/; fi; fi'
     - 'if [ "$HAS_TO_BE_PUBLISHED_INTO_ARTIFACTORY" == "true" ]; then if [ -f "build.gradle" ]; then artifactory-publish build/libs/${ARTIFACTORY_ARTIFACT_NAME}-${ARTIFACTORY_ARTIFACT_VERSION}.jar $ARTIFACTORY_REPOSITORY $ARTIFACTORY_ARTIFACT_DOMAIN/$ARTIFACTORY_ARTIFACT_GROUP $ARTIFACTORY_ARTIFACT_NAME $ARTIFACTORY_ARTIFACT_VERSION; else artifactory-publish target/${ARTIFACTORY_ARTIFACT_NAME}-${ARTIFACTORY_ARTIFACT_VERSION}.jar $ARTIFACTORY_REPOSITORY $ARTIFACTORY_ARTIFACT_DOMAIN/$ARTIFACTORY_ARTIFACT_GROUP $ARTIFACTORY_ARTIFACT_NAME $ARTIFACTORY_ARTIFACT_VERSION; fi ; fi'
