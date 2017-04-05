@@ -1,6 +1,5 @@
 package net.samagames.tools.holograms;
 
-import net.minecraft.server.v1_8_R3.Entity;
 import net.samagames.api.SamaGamesAPI;
 import net.samagames.tools.Reflection;
 import org.bukkit.Bukkit;
@@ -324,8 +323,9 @@ public class Hologram
     {
         try
         {
+            Class<?> worldClass = Reflection.getNMSClass("World");
             Object world = Reflection.getHandle(loc.getWorld());
-            Object entity = entityArmorStandClass.getDeclaredConstructor(world.getClass()).newInstance(world);
+            Object entity = entityArmorStandClass.getDeclaredConstructor(worldClass).newInstance(world);
 
             setSizeMethod.invoke(entity, 0.00001F, 0.00001F);
             setInvisibleMethod.invoke(entity, true);
@@ -387,7 +387,7 @@ public class Hologram
             //setNoGravityMethod = entityArmorStandClass.getMethod("setNoGravity", boolean.class);
             setCustomNameMethod = entityArmorStandClass.getMethod("setCustomName", String.class);
             setCustomNameVisibleMethod = entityArmorStandClass.getMethod("setCustomNameVisible", boolean.class);
-            setLocationMethod = entityArmorStandClass.getMethod("setLocation", int.class, int.class, int.class, float.class, float.class);
+            setLocationMethod = entityArmorStandClass.getMethod("setLocation", double.class, double.class, double.class, float.class, float.class);
             getIdMethod = entityArmorStandClass.getMethod("getId");
         }
         catch (NoSuchMethodException e)

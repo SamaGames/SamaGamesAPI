@@ -113,14 +113,15 @@ public class MojangShitUtils
     {
         try
         {
+            Class<?> nbtBaseClass = Reflection.getNMSClass("NBTBase");
+
             itemClass = Reflection.getNMSClass("Item");
             itemsClass = Reflection.getNMSClass("Items");
             itemStackClass = Reflection.getNMSClass("ItemStack");
             craftItemStackClass = Reflection.getOBCClass("inventory.CraftItemStack");
             nbtTagCompoundClass = Reflection.getNMSClass("NBTTagCompound");
-
             setStringMethod = nbtTagCompoundClass.getMethod("setString", String.class, String.class);
-            setMethod = nbtTagCompoundClass.getMethod("set", String.class, nbtTagCompoundClass);
+            setMethod = nbtTagCompoundClass.getMethod("set", String.class, nbtBaseClass);
             getStringMethod = nbtTagCompoundClass.getMethod("getString", String.class);
             hasKeyMethod = nbtTagCompoundClass.getMethod("hasKey", String.class);
             setTagMethod = itemStackClass.getMethod("setTag", nbtTagCompoundClass);
