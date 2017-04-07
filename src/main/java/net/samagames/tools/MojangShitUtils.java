@@ -32,6 +32,27 @@ public class MojangShitUtils
     private static Field potionField;
     private static Field spawnEggField;
 
+    public static ItemStack getPotion(String nmsPotionName, boolean splash)
+    {
+        try
+        {
+            Object itemStack = itemStackClass.getDeclaredConstructor(itemClass, int.class).newInstance(splash ? splashPotionField.get(null) : potionField.get(null), 1);
+
+            Object tag = nbtTagCompoundClass.newInstance();
+            setStringMethod.invoke(tag, "Potion", "minecraft:" + nmsPotionName);
+
+            setTagMethod.invoke(itemStack, tag);
+
+            return (ItemStack) asBukkitCopyMethod.invoke(null, itemStack);
+        }
+        catch (InstantiationException | InvocationTargetException | IllegalAccessException | NoSuchMethodException e)
+        {
+            e.printStackTrace();
+        }
+
+        return null;
+    }
+
     public static ItemStack getPotion(String nmsPotionName, boolean splash, boolean lingering)
     {
         try
