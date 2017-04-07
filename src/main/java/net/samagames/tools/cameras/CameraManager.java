@@ -2,6 +2,7 @@ package net.samagames.tools.cameras;
 
 import net.samagames.api.SamaGamesAPI;
 import net.samagames.tools.Reflection;
+import net.samagames.tools.cameras.compat.EntityCamera;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
@@ -10,6 +11,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerToggleSneakEvent;
 
 import java.util.*;
+import java.util.logging.Level;
 
 /**
  *                )\._.,--....,'``.
@@ -25,6 +27,12 @@ public class CameraManager implements Listener
     public CameraManager(SamaGamesAPI api)
     {
         this.cameras = new ArrayList<>();
+
+        if (Reflection.PackageType.getServerVersion().equals("v1_8_R3"))
+        {
+            api.log(Level.WARNING, "The Camera API is available only on 1.9 and more servers.");
+            return;
+        }
 
         Class<?> entityBatClass = Reflection.getNMSClass("EntityBat");
 
