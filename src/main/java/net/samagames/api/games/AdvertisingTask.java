@@ -1,23 +1,19 @@
 package net.samagames.api.games;
 
 import net.samagames.api.SamaGamesAPI;
-import net.samagames.tools.bossbar.BossBarAPI;
+import net.samagames.tools.bossbar.BarAPI;
 import org.bukkit.ChatColor;
-import org.bukkit.boss.BarColor;
-import org.bukkit.boss.BarStyle;
-import org.bukkit.boss.BossBar;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
 
 class AdvertisingTask extends BukkitRunnable
 {
-    private final BossBar advertisingBossBar;
+    private String lastMessage;
     private int style;
     private int loop;
 
     AdvertisingTask()
     {
-        this.advertisingBossBar = BossBarAPI.getBar(ChatColor.YELLOW + "Vous jouez sur " + ChatColor.GOLD + "mc.samagames.net" + ChatColor.YELLOW + " !", BarColor.RED, BarStyle.SOLID, 100.0D).getValue();
         this.style = 0;
         this.loop = 0;
 
@@ -30,25 +26,27 @@ class AdvertisingTask extends BukkitRunnable
         if (this.style == 0)
         {
             if (this.loop < 20)
-                this.advertisingBossBar.setTitle(ChatColor.YELLOW + "Vous jouez sur " + ChatColor.GOLD + "mc.samagames.net" + ChatColor.YELLOW + " !");
+                this.lastMessage = ChatColor.YELLOW + "Vous jouez sur " + ChatColor.GOLD + "mc.samagames.net" + ChatColor.YELLOW + " !";
             else if (this.loop < 22)
-                this.advertisingBossBar.setTitle(ChatColor.YELLOW + "Vous jouez sur " + ChatColor.RED + "mc.samagames.net" + ChatColor.YELLOW + " !");
+                this.lastMessage = ChatColor.YELLOW + "Vous jouez sur " + ChatColor.RED + "mc.samagames.net" + ChatColor.YELLOW + " !";
             else if (this.loop < 24)
-                this.advertisingBossBar.setTitle(ChatColor.YELLOW + "Vous jouez sur " + ChatColor.GOLD + "mc.samagames.net" + ChatColor.YELLOW + " !");
+                this.lastMessage = ChatColor.YELLOW + "Vous jouez sur " + ChatColor.GOLD + "mc.samagames.net" + ChatColor.YELLOW + " !";
             else if (this.loop < 26)
-                this.advertisingBossBar.setTitle(ChatColor.YELLOW + "Vous jouez sur " + ChatColor.RED + "mc.samagames.net" + ChatColor.YELLOW + " !");
+                this.lastMessage = ChatColor.YELLOW + "Vous jouez sur " + ChatColor.RED + "mc.samagames.net" + ChatColor.YELLOW + " !";
             else if (this.loop < 28)
-                this.advertisingBossBar.setTitle(ChatColor.YELLOW + "Vous jouez sur " + ChatColor.GOLD + "mc.samagames.net" + ChatColor.YELLOW + " !");
+                this.lastMessage = ChatColor.YELLOW + "Vous jouez sur " + ChatColor.GOLD + "mc.samagames.net" + ChatColor.YELLOW + " !";
             else if (this.loop < 30)
-                this.advertisingBossBar.setTitle(ChatColor.YELLOW + "Vous jouez sur " + ChatColor.RED + "mc.samagames.net" + ChatColor.YELLOW + " !");
+                this.lastMessage = ChatColor.YELLOW + "Vous jouez sur " + ChatColor.RED + "mc.samagames.net" + ChatColor.YELLOW + " !";
         }
         else if (this.style == 1)
         {
             if (this.loop < 20)
-                this.advertisingBossBar.setTitle(ChatColor.YELLOW + "Vous jouez sur " + ChatColor.GOLD + "mc.samagames.net" + ChatColor.YELLOW + " !");
+                this.lastMessage = ChatColor.YELLOW + "Vous jouez sur " + ChatColor.GOLD + "mc.samagames.net" + ChatColor.YELLOW + " !";
             else if (this.loop < 36)
-                this.advertisingBossBar.setTitle(ChatColor.YELLOW + "Vous jouez sur " + ChatColor.GOLD + this.colorIpAt() + ChatColor.YELLOW + " !");
+                this.lastMessage = ChatColor.YELLOW + "Vous jouez sur " + ChatColor.GOLD + this.colorIpAt() + ChatColor.YELLOW + " !";
         }
+
+        BarAPI.setMessage(this.lastMessage);
 
         this.loop++;
 
@@ -64,12 +62,12 @@ class AdvertisingTask extends BukkitRunnable
 
     public void addPlayer(Player player)
     {
-        this.advertisingBossBar.addPlayer(player);
+        BarAPI.setMessage(player, this.lastMessage);
     }
 
     public void removePlayer(Player player)
     {
-        this.advertisingBossBar.removePlayer(player);
+        BarAPI.removeBar(player);
     }
 
     private String colorIpAt()

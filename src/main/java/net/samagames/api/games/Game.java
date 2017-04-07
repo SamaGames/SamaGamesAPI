@@ -46,7 +46,7 @@ public class Game<GAMEPLAYER extends GamePlayer>
     protected final List<UUID> gameModerators;
     protected final HashMap<UUID, GAMEPLAYER> gamePlayers;
     protected final HashMap<UUID, GAMEPLAYER> gameSpectators;
-    protected AdvertisingTask advertisingTask;
+    protected final AdvertisingTask advertisingTask;
     protected BukkitTask beginTimer;
     protected BeginTimer beginObj;
 
@@ -77,10 +77,7 @@ public class Game<GAMEPLAYER extends GamePlayer>
         this.gameModerators = new ArrayList<>();
         this.gamePlayers = new HashMap<>();
         this.gameSpectators = new HashMap<>();
-
-        // TODO 1.8 ?
-        if (!Reflection.PackageType.getServerVersion().equals("v1_8_R3"))
-            this.advertisingTask = new AdvertisingTask();
+        this.advertisingTask = new AdvertisingTask();
 
         this.status = Status.WAITING_FOR_PLAYERS;
     }
@@ -169,9 +166,7 @@ public class Game<GAMEPLAYER extends GamePlayer>
             this.gamePlayers.put(player.getUniqueId(), gamePlayerObject);
 
             Titles.sendTitle(player, 20, 20 * 3, 20, ChatColor.DARK_AQUA + "" + ChatColor.BOLD + this.gameName, ChatColor.AQUA + this.gameDescription);
-
-            if (this.advertisingTask != null)
-                this.advertisingTask.addPlayer(player);
+            this.advertisingTask.addPlayer(player);
         }
         catch (InstantiationException | IllegalAccessException | InvocationTargetException | NoSuchMethodException e)
         {
@@ -244,9 +239,7 @@ public class Game<GAMEPLAYER extends GamePlayer>
             }
 
             this.gamePlayers.get(player.getUniqueId()).handleLogout();
-
-            if (this.advertisingTask != null)
-                this.advertisingTask.removePlayer(player);
+            this.advertisingTask.removePlayer(player);
 
             if (this.status != Status.IN_GAME || !this.gameManager.isReconnectAllowed(player))
                 this.gamePlayers.remove(player.getUniqueId());
