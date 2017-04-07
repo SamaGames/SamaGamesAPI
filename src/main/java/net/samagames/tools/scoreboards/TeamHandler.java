@@ -389,23 +389,25 @@ public class TeamHandler
                 Object packet = packetPlayOutScoreboardTeam.newInstance();
 
                 Reflection.setValue(packet, "a", team.getRealName()); // Team display name
-                Reflection.setValue(packet, "i", n); // Action id
                 Reflection.setValue(packet, "b", team.getDisplayName()); // Team display name
                 Reflection.setValue(packet, "c", team.getPrefix()); // Team prefix
                 Reflection.setValue(packet, "d", team.getSuffix()); // Team suffix
-                Reflection.setValue(packet, "j", 0); // Friendly fire
                 Reflection.setValue(packet, "e", team.getHideToOtherTeams() ? "hideForOtherTeams" : "always"); // Name tag visible
 
                 if (Reflection.PackageType.getServerVersion().equals("v1_8_R3"))
                 {
                     Reflection.setValue(packet, "f", news.size()); // Player count
                     Reflection.setValue(packet, "g", (Collection) news); // Players
+                    Reflection.setValue(packet, "h", n); // Action id
+                    Reflection.setValue(packet, "i", 0); // Friendly fire
                 }
                 else
                 {
                     Reflection.setValue(packet, "f", "never"); // Collision rule
                     Reflection.setValue(packet, "g", news.size()); // Player count
                     Reflection.setValue(packet, "h", (Collection) news); // Players
+                    Reflection.setValue(packet, "i", n); // Action id
+                    Reflection.setValue(packet, "j", 0); // Friendly fire
                 }
 
                 return packet;

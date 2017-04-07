@@ -169,7 +169,9 @@ public class Game<GAMEPLAYER extends GamePlayer>
             this.gamePlayers.put(player.getUniqueId(), gamePlayerObject);
 
             Titles.sendTitle(player, 20, 20 * 3, 20, ChatColor.DARK_AQUA + "" + ChatColor.BOLD + this.gameName, ChatColor.AQUA + this.gameDescription);
-            this.advertisingTask.addPlayer(player);
+
+            if (this.advertisingTask != null)
+                this.advertisingTask.addPlayer(player);
         }
         catch (InstantiationException | IllegalAccessException | InvocationTargetException | NoSuchMethodException e)
         {
@@ -242,7 +244,9 @@ public class Game<GAMEPLAYER extends GamePlayer>
             }
 
             this.gamePlayers.get(player.getUniqueId()).handleLogout();
-            this.advertisingTask.removePlayer(player);
+
+            if (this.advertisingTask != null)
+                this.advertisingTask.removePlayer(player);
 
             if (this.status != Status.IN_GAME || !this.gameManager.isReconnectAllowed(player))
                 this.gamePlayers.remove(player.getUniqueId());
