@@ -3,6 +3,8 @@ package net.samagames.tools;
 import org.bukkit.Material;
 import org.bukkit.entity.EntityType;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.potion.Potion;
+import org.bukkit.potion.PotionType;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
@@ -32,29 +34,11 @@ public class MojangShitUtils
     private static Field potionField;
     private static Field spawnEggField;
 
-    public static ItemStack getPotion(String nmsPotionName, boolean splash)
-    {
-        try
-        {
-            Object itemStack = itemStackClass.getDeclaredConstructor(itemClass, int.class).newInstance(splash ? splashPotionField.get(null) : potionField.get(null), 1);
-
-            Object tag = nbtTagCompoundClass.newInstance();
-            setStringMethod.invoke(tag, "Potion", "minecraft:" + nmsPotionName);
-
-            setTagMethod.invoke(itemStack, tag);
-
-            return (ItemStack) asBukkitCopyMethod.invoke(null, itemStack);
-        }
-        catch (InstantiationException | InvocationTargetException | IllegalAccessException | NoSuchMethodException e)
-        {
-            e.printStackTrace();
-        }
-
-        return null;
-    }
-
     public static ItemStack getPotion(String nmsPotionName, boolean splash, boolean lingering)
     {
+        if (Reflection.PackageType.getServerVersion().equals("v1_8_R3"))
+            return null;
+
         try
         {
             Object itemStack = itemStackClass.getDeclaredConstructor(itemClass, int.class).newInstance(splash ? splashPotionField.get(null) : lingering ? lingeringPotionField.get(null) : potionField.get(null), 1);
@@ -72,6 +56,19 @@ public class MojangShitUtils
         }
 
         return null;
+    }
+
+    public static ItemStack getPotionLegacy(PotionType type, int level, boolean extend, boolean splash)
+    {
+        Potion potion = new Potion(type, level);
+
+        if (extend)
+            potion.setHasExtendedDuration(true);
+
+        if (splash)
+            potion.setSplash(true);
+
+        return potion.toItemStack(1);
     }
 
     public static ItemStack getMonsterEgg(EntityType entityType)
@@ -152,10 +149,14 @@ public class MojangShitUtils
             asNMSCopyMethod = craftItemStackClass.getMethod("asNMSCopy", ItemStack.class);
             getCompoundMethod = nbtTagCompoundClass.getMethod("getCompound", String.class);
 
-            splashPotionField = itemsClass.getField("SPLASH_POTION");
-            lingeringPotionField = itemsClass.getField("LINGERING_POTION");
             potionField = itemsClass.getField("POTION");
             spawnEggField = itemsClass.getField("SPAWN_EGG");
+
+            if (!Reflection.PackageType.getServerVersion().equals("v1_8_R3"))
+            {
+                splashPotionField = itemsClass.getField("SPLASH_POTION");
+                lingeringPotionField = itemsClass.getField("LINGERING_POTION");
+            }
         }
         catch (NoSuchFieldException | NoSuchMethodException e)
         {
