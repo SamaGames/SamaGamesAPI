@@ -5,6 +5,7 @@ import net.samagames.api.SamaGamesAPI;
 import net.samagames.api.games.pearls.Pearl;
 import net.samagames.api.games.themachine.ICoherenceMachine;
 import net.samagames.api.games.themachine.messages.templates.EarningMessageTemplate;
+import net.samagames.tools.Reflection;
 import net.samagames.tools.Titles;
 import org.apache.commons.lang3.tuple.Pair;
 import org.bukkit.Bukkit;
@@ -45,7 +46,7 @@ public class Game<GAMEPLAYER extends GamePlayer>
     protected final List<UUID> gameModerators;
     protected final HashMap<UUID, GAMEPLAYER> gamePlayers;
     protected final HashMap<UUID, GAMEPLAYER> gameSpectators;
-    protected final AdvertisingTask advertisingTask;
+    protected AdvertisingTask advertisingTask;
     protected BukkitTask beginTimer;
     protected BeginTimer beginObj;
 
@@ -76,7 +77,10 @@ public class Game<GAMEPLAYER extends GamePlayer>
         this.gameModerators = new ArrayList<>();
         this.gamePlayers = new HashMap<>();
         this.gameSpectators = new HashMap<>();
-        this.advertisingTask = new AdvertisingTask();
+
+        // TODO 1.8 ?
+        if (!Reflection.PackageType.getServerVersion().equals("v1_8_R3"))
+            this.advertisingTask = new AdvertisingTask();
 
         this.status = Status.WAITING_FOR_PLAYERS;
     }
