@@ -2,7 +2,6 @@ package net.samagames.tools.cameras;
 
 import net.samagames.api.SamaGamesAPI;
 import net.samagames.tools.Reflection;
-import net.samagames.tools.cameras.compat.EntityCamera;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
