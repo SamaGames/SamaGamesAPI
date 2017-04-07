@@ -46,7 +46,7 @@ class AdvertisingTask extends BukkitRunnable
                 this.lastMessage = ChatColor.YELLOW + "Vous jouez sur " + ChatColor.GOLD + this.colorIpAt() + ChatColor.YELLOW + " !";
         }
 
-        BarAPI.setMessage(this.lastMessage, 0.0F);
+        BarAPI.setMessage(this.lastMessage);
 
         this.loop++;
 
@@ -62,7 +62,7 @@ class AdvertisingTask extends BukkitRunnable
 
     public void addPlayer(Player player)
     {
-        BarAPI.setMessage(player, this.lastMessage, 0.0F);
+        BarAPI.setMessage(player, this.lastMessage);
     }
 
     public void removePlayer(Player player)
