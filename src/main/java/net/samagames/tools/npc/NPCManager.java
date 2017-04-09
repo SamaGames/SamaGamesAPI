@@ -18,6 +18,8 @@ import org.bukkit.event.entity.CreatureSpawnEvent;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.player.*;
 
+import java.lang.reflect.Array;
+import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.*;
@@ -26,6 +28,10 @@ import java.util.*;
  * Created by Silva on 20/10/2015.
  */
 public class NPCManager implements Listener {
+    private static Class<?> entityPlayerClass;
+    private static Class<?> packetPlayOutPlayerInfoClass;
+    private static Class<?> enumPlayerInfoActionClass;
+    private static Constructor<?> packetPlayOutPlayerInfoConstructor;
 
     public SamaGamesAPI api;
 
@@ -54,11 +60,10 @@ public class NPCManager implements Listener {
     {
         try
         {
-            Class<?> entityClass = Reflection.getNMSClass("Entity");
-            Class<?> packetPlayOutPlayerInfoClass = Reflection.getNMSClass("PacketPlayOutPlayerInfo");
-            Class<?> enumPlayerInfoActionClass = Reflection.getNMSClass("PacketPlayOutPlayerInfo$EnumPlayerInfoAction");
+            Object[] array = (Object[]) Array.newInstance(entityPlayerClass, 1);
+            array[0] = npc;
 
-            Object packet = packetPlayOutPlayerInfoClass.getDeclaredConstructor(enumPlayerInfoActionClass, entityClass).newInstance(enumPlayerInfoActionClass.getField("ADD_PLAYER").get(null), npc);
+            Object packet = packetPlayOutPlayerInfoConstructor.newInstance(enumPlayerInfoActionClass.getField("ADD_PLAYER").get(null), array);
             Reflection.sendPacket(p, packet);
 
             p.hidePlayer(npc.getBukkitEntity());
@@ -68,15 +73,15 @@ public class NPCManager implements Listener {
             {
                 try
                 {
-                    Object pa = packetPlayOutPlayerInfoClass.getDeclaredConstructor(enumPlayerInfoActionClass, entityClass).newInstance(enumPlayerInfoActionClass.getField("REMOVE_PLAYER").get(null), npc);
+                    Object pa = packetPlayOutPlayerInfoConstructor.newInstance(enumPlayerInfoActionClass.getField("REMOVE_PLAYER").get(null), array);
                     Reflection.sendPacket(p, pa);
                 }
-                catch (InstantiationException | IllegalAccessException | NoSuchMethodException | InvocationTargetException | NoSuchFieldException e) {
+                catch (InstantiationException | IllegalAccessException | InvocationTargetException | NoSuchFieldException e) {
                     e.printStackTrace();
                 }
             }, 60L);
         }
-        catch (InstantiationException | InvocationTargetException | IllegalAccessException | NoSuchFieldException | NoSuchMethodException e)
+        catch (InstantiationException | InvocationTargetException | IllegalAccessException | NoSuchFieldException e)
         {
             e.printStackTrace();
         }
@@ -269,5 +274,23 @@ public class NPCManager implements Listener {
     public void onPlayerLeave(PlayerQuitEvent event)
     {
         this.entities.entrySet().forEach(customNPC -> customNPC.getValue().removeReceiver(event.getPlayer()));
+    }
+
+    static
+    {
+        try
+        {
+            entityPlayerClass = Reflection.getNMSClass("EntityPlayer");
+            packetPlayOutPlayerInfoClass = Reflection.getNMSClass("PacketPlayOutPlayerInfo");
+            enumPlayerInfoActionClass = Reflection.getNMSClass("PacketPlayOutPlayerInfo$EnumPlayerInfoAction");
+
+            Object array = Array.newInstance(entityPlayerClass, 1);
+
+            packetPlayOutPlayerInfoConstructor = packetPlayOutPlayerInfoClass.getConstructor(enumPlayerInfoActionClass, array.getClass());
+        }
+        catch (NoSuchMethodException e)
+        {
+            e.printStackTrace();
+        }
     }
 }
