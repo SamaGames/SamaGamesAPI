@@ -3,7 +3,6 @@ package net.samagames.tools;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Sound;
-import org.bukkit.craftbukkit.v1_8_R3.entity.CraftPlayer;
 import org.bukkit.entity.Player;
 
 import java.lang.reflect.*;
@@ -13,12 +12,12 @@ import java.util.Objects;
 
 public class Reflection {
 
-    public static void playSound(Player player, Location location, String soundName, long volume, long pitch) {
+    public static void playSound(Player player, Location location, String soundName, float volume, float pitch) {
         try {
             Class<?> soundClass = getClass("org.bukkit.Sound");
             Sound sound = (Sound) soundClass.getField(soundName).get(null);
 
-            Method playSoundMethod = getMethod(player.getClass(), "playSound", Location.class, Sound.class, long.class, long.class);
+            Method playSoundMethod = getMethod(player.getClass(), "playSound", Location.class, Sound.class, float.class, float.class);
             playSoundMethod.invoke(player, location, sound, volume, pitch);
         } catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException | NoSuchFieldException e) {
             e.printStackTrace();
