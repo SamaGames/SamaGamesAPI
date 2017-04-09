@@ -15,7 +15,7 @@ public class Reflection {
 
     public static void playSound(Player player, Location location, String soundName, long volume, long pitch) {
         try {
-            Class<?> soundClass = getOBCClass("Sound");
+            Class<?> soundClass = getClass("org.bukkit.Sound");
             Sound sound = (Sound) soundClass.getField(soundName).get(null);
 
             Method playSoundMethod = getMethod(player.getClass(), "playSound", Location.class, Sound.class, long.class, long.class);
@@ -576,7 +576,8 @@ public class Reflection {
         CRAFTBUKKIT_SCHEDULER(CRAFTBUKKIT, "scheduler"),
         CRAFTBUKKIT_SCOREBOARD(CRAFTBUKKIT, "scoreboard"),
         CRAFTBUKKIT_UPDATER(CRAFTBUKKIT, "updater"),
-        CRAFTBUKKIT_UTIL(CRAFTBUKKIT, "util");
+        CRAFTBUKKIT_UTIL(CRAFTBUKKIT, "util"),
+        BUKKIT("org.bukkit");
 
         private final String path;
 
