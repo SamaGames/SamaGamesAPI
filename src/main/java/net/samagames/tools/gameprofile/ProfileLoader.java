@@ -18,7 +18,6 @@ package net.samagames.tools.gameprofile;
 import com.google.gson.*;
 import com.mojang.authlib.GameProfile;
 import com.mojang.authlib.properties.Property;
-import net.minecraft.server.v1_8_R3.MinecraftServer;
 import net.samagames.api.SamaGamesAPI;
 import net.samagames.tools.Reflection;
 import org.bukkit.Bukkit;
@@ -29,6 +28,10 @@ import java.lang.reflect.Method;
 import java.util.UUID;
 
 public class ProfileLoader {
+    private static Method getServerMethod;
+    private static Method getMinecraftSessionService;
+    private static Method fillProfilePropertiesMethod;
+
     private final String uuid;
     private final String name;
     private final String skinOwner;
@@ -61,19 +64,9 @@ public class ProfileLoader {
         try(Jedis jedis = SamaGamesAPI.get().getBungeeResource()) {
             String json = jedis == null ? null : jedis.get("cacheSkin:" + uuid);
             GameProfile profile;
+
             if (json == null)
             {
-                Class<?> minecraftServerClass = Reflection.getClass("MinecraftServer");
-                Method getServerMethod = minecraftServerClass.getMethod("getServer");
-                Method getMinecraftSessionService;
-
-                if (Reflection.PackageType.getServerVersion().equals("v1_8_R3"))
-                    getMinecraftSessionService = minecraftServerClass.getMethod("aD");
-                else
-                    getMinecraftSessionService = minecraftServerClass.getMethod("ay");
-
-                Method fillProfilePropertiesMethod = getMinecraftSessionService.getReturnType().getMethod("fillProfileProperties", GameProfile.class, boolean.class);
-
                 //Requete
                 profile = (GameProfile) fillProfilePropertiesMethod.invoke(getMinecraftSessionService.invoke(getServerMethod.invoke(null)), new GameProfile(id, null), true);
 
@@ -127,5 +120,25 @@ public class ProfileLoader {
         // Correct uuid length, remove last dash
         builder.setLength(builder.length() - 1);
         return UUID.fromString(builder.toString());
+    }
+
+    static
+    {
+        try
+        {
+            Class<?> minecraftServerClass = Reflection.getNMSClass("MinecraftServer");
+            getServerMethod = minecraftServerClass.getMethod("getServer");
+
+            if (Reflection.PackageType.getServerVersion().equals("v1_8_R3"))
+                getMinecraftSessionService = minecraftServerClass.getMethod("aD");
+            else
+                getMinecraftSessionService = minecraftServerClass.getMethod("ay");
+
+            fillProfilePropertiesMethod = getMinecraftSessionService.getReturnType().getMethod("fillProfileProperties", GameProfile.class, boolean.class);
+        }
+        catch (NoSuchMethodException e)
+        {
+            e.printStackTrace();
+        }
     }
 }
