@@ -7,6 +7,7 @@ import net.samagames.tools.bossbar.nms.v1_9;
 import org.apache.commons.lang.Validate;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
+import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.boss.BossBar;
 import org.bukkit.entity.Player;
@@ -368,7 +369,11 @@ public class BarAPI implements Listener
         } else if (pitch <= -55) {
             loc.add(0, 300, 0);
         } else {
-            loc = loc.getBlock().getRelative(getDirection(loc), plugin.getServer().getViewDistance() * 16).getLocation();
+            BlockFace direction = getDirection(loc);
+            int viewDistance = plugin.getServer().getViewDistance() * 16;
+            Block relative = loc.getBlock().getRelative(direction, viewDistance);
+
+            loc = relative.getLocation();
         }
 
         return loc;
