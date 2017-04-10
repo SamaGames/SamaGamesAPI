@@ -370,7 +370,7 @@ public class BarAPI implements Listener
             loc.add(0, 300, 0);
         } else {
             BlockFace direction = getDirection(loc);
-            int viewDistance = plugin.getServer().getViewDistance() * 16;
+            int viewDistance = 14 * 16;
             Block relative = loc.getBlock().getRelative(direction, viewDistance);
 
             loc = relative.getLocation();
