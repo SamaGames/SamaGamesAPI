@@ -45,14 +45,14 @@ public interface IGameProperties
      *
      * @return The value
      */
-    JsonElement getOption(String key, JsonElement defaultValue);
+    JsonElement getGameOption(String key, JsonElement defaultValue);
 
     /**
      * Get the game options
      *
      * @return The options
      */
-    JsonObject getOptions();
+    JsonObject getGameOptions();
 
     /**
      * Get a game option
@@ -62,12 +62,12 @@ public interface IGameProperties
      *
      * @return The value
      */
-    JsonElement getConfig(String key, JsonElement defaultValue);
+    JsonElement getMapProperty(String key, JsonElement defaultValue);
     
     /**
      * Get the map properties
      * 
      * @return The properties
      */
-    JsonObject getConfigs();
+    JsonObject getMapProperties();
 }
