@@ -70,7 +70,7 @@ public class ItemUtils
      */
     public static String stackToStr(ItemStack stack)
     {
-        return stack.getType().name() + ", " + stack.getDurability();
+        return stack.getType().name() + ", " + stack.getAmount() + ", " + stack.getDurability();
     }
 
     /**
@@ -84,7 +84,7 @@ public class ItemUtils
     public static ItemStack strToStack(String string)
     {
         String[] data = string.split(", ");
-        return new ItemStack(Material.matchMaterial(data[0]), 1, Short.valueOf(data[1]));
+        return new ItemStack(Material.matchMaterial(data[0]), Integer.parseInt(data[1]), Short.parseShort(data[2]));
     }
 
     /**
