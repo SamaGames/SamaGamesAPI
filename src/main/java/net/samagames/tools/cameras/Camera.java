@@ -45,7 +45,7 @@ public class Camera
                 this.entityCamera = new EntityCamera(world);
 
             this.entityCamera.setPosition(initialPosition.getX(), initialPosition.getY(), initialPosition.getZ());
-            addEntityMethod.invoke(this.entityCamera, CreatureSpawnEvent.SpawnReason.CUSTOM);
+            addEntityMethod.invoke(world, this.entityCamera, CreatureSpawnEvent.SpawnReason.CUSTOM);
             ((LivingEntity) this.entityCamera.getBukkitEntity()).addPotionEffect(new PotionEffect(PotionEffectType.INVISIBILITY, Integer.MAX_VALUE, 1, false, false));
         }
         catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException e)
