@@ -14,7 +14,8 @@ variables:
 build:
   stage: build
   script:
-    - 'if [ -f "build.gradle" ]; then gradle build install --refresh-dependencies --stacktrace --info; else mvn install; fi'
+    - 'env'
+    - 'if [ -f "build.gradle" ]; then gradle build install --refresh-dependencies; else mvn install; fi'
   artifacts:
     paths:
       - build/libs/*.jar
