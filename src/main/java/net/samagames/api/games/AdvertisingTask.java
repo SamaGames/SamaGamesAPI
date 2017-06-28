@@ -1,18 +1,22 @@
 package net.samagames.api.games;
 
 import net.samagames.api.SamaGamesAPI;
+import net.samagames.tools.bossbar.BossBarAPI;
 import org.bukkit.ChatColor;
+import org.bukkit.boss.BossBar;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
 
 class AdvertisingTask extends BukkitRunnable
 {
+    private final BossBar bossBar;
     private String lastMessage;
     private int style;
     private int loop;
 
     AdvertisingTask()
     {
+        this.bossBar = BossBarAPI.getBar("").getValue();
         this.style = 0;
         this.loop = 0;
 
@@ -45,7 +49,7 @@ class AdvertisingTask extends BukkitRunnable
                 this.lastMessage = ChatColor.YELLOW + "Vous jouez sur " + ChatColor.GOLD + this.colorIpAt() + ChatColor.YELLOW + " !";
         }
 
-        BarAPI.setMessage(this.lastMessage);
+        this.bossBar.setTitle(this.lastMessage);
 
         this.loop++;
 
@@ -61,12 +65,12 @@ class AdvertisingTask extends BukkitRunnable
 
     public void addPlayer(Player player)
     {
-        BarAPI.setMessage(player, this.lastMessage);
+        this.bossBar.addPlayer(player);
     }
 
     public void removePlayer(Player player)
     {
-        BarAPI.removeBar(player);
+        this.bossBar.removePlayer(player);
     }
 
     private String colorIpAt()
