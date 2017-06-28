@@ -1,5 +1,6 @@
 package net.samagames.tools.scoreboards;
 
+import net.minecraft.server.v1_12_R1.PacketPlayOutScoreboardTeam;
 import net.samagames.tools.Reflection;
 import org.bukkit.ChatColor;
 import org.bukkit.OfflinePlayer;
@@ -17,8 +18,6 @@ import java.util.concurrent.CopyOnWriteArrayList;
  */
 public class TeamHandler
 {
-    private static Class<?> packetPlayOutScoreboardTeam = Reflection.getNMSClass("PacketPlayOutScoreboardTeam");
-
     private ConcurrentLinkedQueue<VTeam> teams;
     private List<OfflinePlayer> receivers;
 
@@ -386,29 +385,18 @@ public class TeamHandler
 
             try
             {
-                Object packet = packetPlayOutScoreboardTeam.newInstance();
+                PacketPlayOutScoreboardTeam packet = new PacketPlayOutScoreboardTeam();
 
                 Reflection.setValue(packet, "a", team.getRealName()); // Team display name
                 Reflection.setValue(packet, "b", team.getDisplayName()); // Team display name
                 Reflection.setValue(packet, "c", team.getPrefix()); // Team prefix
                 Reflection.setValue(packet, "d", team.getSuffix()); // Team suffix
                 Reflection.setValue(packet, "e", team.getHideToOtherTeams() ? "hideForOtherTeams" : "always"); // Name tag visible
-
-                if (Reflection.PackageType.getServerVersion().equals("v1_8_R3"))
-                {
-                    Reflection.setValue(packet, "f", news.size()); // Player count
-                    Reflection.setValue(packet, "g", (Collection) news); // Players
-                    Reflection.setValue(packet, "h", n); // Action id
-                    Reflection.setValue(packet, "i", 0); // Friendly fire
-                }
-                else
-                {
-                    Reflection.setValue(packet, "f", "never"); // Collision rule
-                    Reflection.setValue(packet, "g", news.size()); // Player count
-                    Reflection.setValue(packet, "h", (Collection) news); // Players
-                    Reflection.setValue(packet, "i", n); // Action id
-                    Reflection.setValue(packet, "j", 0); // Friendly fire
-                }
+                Reflection.setValue(packet, "f", "never"); // Collision rule
+                Reflection.setValue(packet, "g", news.size()); // Player count
+                Reflection.setValue(packet, "h", news); // Players
+                Reflection.setValue(packet, "i", n); // Action id
+                Reflection.setValue(packet, "j", 0); // Friendly fire
 
                 return packet;
             }

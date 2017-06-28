@@ -1,9 +1,11 @@
 package net.samagames.tools.cameras;
 
+import net.minecraft.server.v1_12_R1.World;
 import net.samagames.tools.Reflection;
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
+import org.bukkit.craftbukkit.v1_12_R1.CraftWorld;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.entity.CreatureSpawnEvent;
@@ -34,27 +36,11 @@ public class Camera
         this.viewers = new ConcurrentHashMap<>();
         this.fixed = fixed;
 
-        try
-        {
-            Class<?> worldClass = Reflection.getNMSClass("World");
-            Class<?> entityClass = Reflection.getNMSClass("Entity");
-            Method addEntityMethod = worldClass.getMethod("addEntity", entityClass, CreatureSpawnEvent.SpawnReason.class);
-            Object world = Reflection.getHandle(initialPosition.getWorld());
-
-            if (Reflection.PackageType.getServerVersion().equals("v1_9_R2"))
-                this.entityCamera = new EntityCamera(world);
-
-            this.entityCamera.setPosition(initialPosition.getX(), initialPosition.getY(), initialPosition.getZ());
-            addEntityMethod.invoke(world, this.entityCamera, CreatureSpawnEvent.SpawnReason.CUSTOM);
-            ((LivingEntity) this.entityCamera.getBukkitEntity()).addPotionEffect(new PotionEffect(PotionEffectType.INVISIBILITY, Integer.MAX_VALUE, 1, false, false));
-        }
-        catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException e)
-        {
-            e.printStackTrace();
-        }
-
-        if (this.entityCamera == null)
-            throw new UnsupportedOperationException("You cannot use this API with your Minecraft version.");
+        World world = ((CraftWorld) initialPosition.getWorld()).getHandle();
+        this.entityCamera = new EntityCamera(world);
+        this.entityCamera.setPosition(initialPosition.getX(), initialPosition.getY(), initialPosition.getZ());
+        world.addEntity(this.entityCamera, CreatureSpawnEvent.SpawnReason.CUSTOM);
+        ((LivingEntity) this.entityCamera.getBukkitEntity()).addPotionEffect(new PotionEffect(PotionEffectType.INVISIBILITY, Integer.MAX_VALUE, 1, false, false));
     }
 
     public void move(Location to)

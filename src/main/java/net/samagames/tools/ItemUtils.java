@@ -5,6 +5,8 @@ import com.mojang.authlib.properties.Property;
 import com.mojang.authlib.properties.PropertyMap;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
+import net.minecraft.server.v1_12_R1.PacketDataSerializer;
+import net.minecraft.server.v1_12_R1.PacketPlayOutCustomPayload;
 import org.bukkit.Material;
 import org.bukkit.SkullType;
 import org.bukkit.entity.Player;
@@ -24,9 +26,6 @@ import java.util.UUID;
  */
 public class ItemUtils
 {
-    private static Class<?> packetPlayOutCustomPayloadClass;
-    private static Class<?> packetDataSerializerClass;
-
     /**
      * Open the given written book
      *
@@ -45,17 +44,7 @@ public class ItemUtils
         buffer.setByte(0, (byte) 1);
         buffer.writerIndex(1);
 
-        try
-        {
-            Object packetDataSerializer = packetDataSerializerClass.getDeclaredConstructor(ByteBuf.class).newInstance(buffer);
-            Object packet = packetPlayOutCustomPayloadClass.getDeclaredConstructor(String.class, packetDataSerializerClass).newInstance("MC|BOpen", packetDataSerializer);
-
-            Reflection.sendPacket(player, packet);
-        }
-        catch (IllegalAccessException | InstantiationException | InvocationTargetException | NoSuchMethodException e)
-        {
-            e.printStackTrace();
-        }
+        Reflection.sendPacket(player, new PacketPlayOutCustomPayload("MC|BOpen", new PacketDataSerializer(buffer)));
 
         player.getInventory().setItemInHand(previous);
     }
@@ -168,11 +157,5 @@ public class ItemUtils
         propertyMap.put("textures", new Property("textures", new String(encodedData)));
 
         return profile;
-    }
-
-    static
-    {
-        packetPlayOutCustomPayloadClass = Reflection.getNMSClass("PacketPlayOutCustomPayload");
-        packetDataSerializerClass = Reflection.getNMSClass("PacketDataSerializer");
     }
 }

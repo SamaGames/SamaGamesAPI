@@ -1,9 +1,6 @@
 package net.samagames.tools.cameras;
 
-import net.minecraft.server.v1_9_R2.EntityBat;
-import net.minecraft.server.v1_9_R2.NBTTagCompound;
-import net.minecraft.server.v1_9_R2.SoundEffect;
-import net.minecraft.server.v1_9_R2.World;
+import net.minecraft.server.v1_12_R1.*;
 
 public class EntityCamera extends EntityBat
 {
@@ -13,8 +10,8 @@ public class EntityCamera extends EntityBat
 
         this.setInvisible(true);
         this.setInvulnerable(true);
-        // TODO: this.setNoGravity(true);
-        this.setAI(false);
+        this.setNoGravity(true);
+        this.setNoAI(true);
     }
 
     public EntityCamera(Object world)
@@ -46,8 +43,18 @@ public class EntityCamera extends EntityBat
     @Override
     public void f(NBTTagCompound nbttagcompound) {}
 
+    public SoundEffect F()
+    {
+        return null;
+    }
+
+    protected SoundEffect d(DamageSource var1)
+    {
+        return null;
+    }
+
     @Override
-    protected SoundEffect G()
+    protected SoundEffect cf()
     {
         return null;
     }

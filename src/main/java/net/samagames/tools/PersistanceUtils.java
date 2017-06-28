@@ -7,10 +7,10 @@ import org.bukkit.Material;
 import org.bukkit.entity.EntityType;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.ItemMeta;
-import org.bukkit.inventory.meta.LeatherArmorMeta;
-import org.bukkit.inventory.meta.SkullMeta;
+import org.bukkit.inventory.meta.*;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.bukkit.potion.PotionData;
+import org.bukkit.potion.PotionType;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -75,11 +75,16 @@ public class PersistanceUtils
         }
         else if (itemData[0].equalsIgnoreCase("P"))
         {
-            String nmsPotionName = itemData[1].toLowerCase();
+            String potionType = itemData[1].toUpperCase();
+            boolean potionExtended = Boolean.parseBoolean(itemData[2]);
+            boolean potionUpgraded = Boolean.parseBoolean(itemData[2]);
             boolean isSplash = Boolean.parseBoolean(itemData[2]);
             boolean isLingering = Boolean.parseBoolean(itemData[3]);
 
-            stack = MojangShitUtils.getPotion(nmsPotionName, isSplash, isLingering);
+            stack = new ItemStack(isSplash ? Material.SPLASH_POTION : isLingering ? Material.LINGERING_POTION : Material.POTION);
+            PotionMeta meta = (PotionMeta) stack.getItemMeta();
+            meta.setBasePotionData(new PotionData(PotionType.valueOf(potionType), potionExtended, potionUpgraded));
+            stack.setItemMeta(meta);
 
             if (itemData.length == 5 && itemData[4].equalsIgnoreCase("GLOW"))
                 GlowEffect.addGlow(stack);
@@ -88,7 +93,10 @@ public class PersistanceUtils
         {
             EntityType entityType = EntityType.valueOf(itemData[1].toUpperCase());
 
-            stack = MojangShitUtils.getMonsterEgg(entityType);
+            stack = new ItemStack(Material.MONSTER_EGG, 1);
+            SpawnEggMeta meta = (SpawnEggMeta) stack.getItemMeta();
+            meta.setSpawnedType(entityType);
+            stack.setItemMeta(meta);
 
             if (itemData.length == 3 && itemData[2].equalsIgnoreCase("GLOW"))
                 GlowEffect.addGlow(stack);

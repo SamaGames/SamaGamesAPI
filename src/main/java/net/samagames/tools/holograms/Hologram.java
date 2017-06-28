@@ -1,16 +1,18 @@
 package net.samagames.tools.holograms;
 
-import net.minecraft.server.v1_8_R3.PacketPlayOutEntityDestroy;
+import net.minecraft.server.v1_12_R1.EntityArmorStand;
+import net.minecraft.server.v1_12_R1.PacketPlayOutEntityDestroy;
+import net.minecraft.server.v1_12_R1.PacketPlayOutEntityMetadata;
+import net.minecraft.server.v1_12_R1.PacketPlayOutSpawnEntity;
 import net.samagames.api.SamaGamesAPI;
 import net.samagames.tools.Reflection;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.OfflinePlayer;
+import org.bukkit.craftbukkit.v1_12_R1.CraftWorld;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitTask;
 
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -26,22 +28,8 @@ public class Hologram
 {
     private static final double distance = 0.24D;
 
-    private static Class<?> entityArmorStandClass;
-    private static Class<?> packetPlayOutEntityDestroyClass;
-    private static Class<?> packetPlayOutSpawnEntityClass;
-    private static Class<?> packetPlayOutEntityMetadataClass;
-
-    private static Method setSizeMethod;
-    private static Method setInvisibleMethod;
-    //private static Method setNoGravityMethod;
-    private static Method setCustomNameMethod;
-    private static Method setCustomNameVisibleMethod;
-    private static Method setLocationMethod;
-    private static Method getIdMethod;
-    private static Method getDataWatcherMethod;
-
     private HashMap<OfflinePlayer, Boolean> receivers;
-    private HashMap<Integer, Object> entities;
+    private HashMap<Integer, EntityArmorStand> entities;
     private List<String> lines;
     private Location location;
     private BukkitTask taskID;
@@ -120,23 +108,12 @@ public class Hologram
      */
     public boolean removeLineForPlayer(Player p, int line)
     {
-        Object entity = this.entities.get(line);
+        EntityArmorStand entity = this.entities.get(line);
 
         if(entity == null)
             return false;
 
-        try
-        {
-            int[] ids = new int[1];
-            ids[0] = (int) getIdMethod.invoke(entity);
-
-            Object packet = packetPlayOutEntityDestroyClass.getDeclaredConstructor(int[].class).newInstance(ids);
-            Reflection.sendPacket(p, packet);
-        }
-        catch (IllegalAccessException | InstantiationException | InvocationTargetException | NoSuchMethodException e)
-        {
-            e.printStackTrace();
-        }
+        Reflection.sendPacket(p, new PacketPlayOutEntityDestroy(entity.getId()));
 
         return true;
     }
@@ -146,9 +123,9 @@ public class Hologram
      */
     public void removeLinesForPlayers()
     {
-        for(OfflinePlayer offlinePlayer : this.receivers.keySet())
+        for (OfflinePlayer offlinePlayer : this.receivers.keySet())
         {
-            if(!offlinePlayer.isOnline())
+            if (!offlinePlayer.isOnline())
                 continue;
 
             this.removeLines(offlinePlayer.getPlayer());
@@ -323,81 +300,29 @@ public class Hologram
         return this.location;
     }
 
-    private static Object generateEntitiesForLine(Location loc, String text)
+    private static EntityArmorStand generateEntitiesForLine(Location loc, String text)
     {
-        try
-        {
-            Class<?> worldClass = Reflection.getNMSClass("World");
-            Object world = Reflection.getHandle(loc.getWorld());
-            Object entity = entityArmorStandClass.getDeclaredConstructor(worldClass).newInstance(world);
+        EntityArmorStand entity = new EntityArmorStand(((CraftWorld) loc.getWorld()).getHandle());
+        entity.setSize(0.00001F, 0.00001F);
+        entity.setInvisible(true);
+        entity.setNoGravity(true);
+        entity.setCustomName(text);
+        entity.setCustomNameVisible(true);
+        entity.setLocation(loc.getX(), loc.getY() - 2, loc.getZ(), 0, 0);
 
-            setSizeMethod.invoke(entity, 0.00001F, 0.00001F);
-            setInvisibleMethod.invoke(entity, true);
-            //setNoGravityMethod.invoke(entity, true);
-            setCustomNameMethod.invoke(entity, text);
-            setCustomNameVisibleMethod.invoke(entity, true);
-            setLocationMethod.invoke(entity, loc.getX(), loc.getY() - 2, loc.getZ(), 0, 0);
-
-            return entity;
-        }
-        catch (IllegalAccessException | InstantiationException | InvocationTargetException | NoSuchMethodException e)
-        {
-            e.printStackTrace();
-        }
-
-        return null;
+        return entity;
     }
 
     private boolean sendPacketForLine(Player p, int line)
     {
-        Object entity = this.entities.get(line);
+        EntityArmorStand entity = this.entities.get(line);
 
         if(entity == null)
             return false;
 
-        try
-        {
-            Class<?> entityClass = Reflection.getNMSClass("Entity");
-            Class<?> packetPlayOutSpawnEntityClass = Reflection.getNMSClass("PacketPlayOutSpawnEntity");
-            Class<?> packetPlayOutEntityMetadataClass = Reflection.getNMSClass("PacketPlayOutEntityMetadata");
-
-            Method getDataWatcherMethod = entityArmorStandClass.getMethod("getDataWatcher");
-
-            Object armorStandPacket = packetPlayOutSpawnEntityClass.getDeclaredConstructor(entityClass, int.class).newInstance(entity, 78);
-            Object armorStandPacketMeta = packetPlayOutEntityMetadataClass.getDeclaredConstructor(int.class, getDataWatcherMethod.getReturnType(), boolean.class).newInstance(getIdMethod.invoke(entity), getDataWatcherMethod.invoke(entity), true);
-
-            Reflection.sendPacket(p, armorStandPacket);
-            Reflection.sendPacket(p, armorStandPacketMeta);
-        }
-        catch (NoSuchMethodException | InstantiationException | InvocationTargetException | IllegalAccessException e)
-        {
-            e.printStackTrace();
-        }
+        Reflection.sendPacket(p, new PacketPlayOutSpawnEntity(entity, 78));
+        Reflection.sendPacket(p, new PacketPlayOutEntityMetadata(entity.getId(), entity.getDataWatcher(), true));
 
         return true;
-    }
-
-    static
-    {
-        try
-        {
-            entityArmorStandClass = Reflection.getNMSClass("EntityArmorStand");
-            packetPlayOutEntityDestroyClass = Reflection.getNMSClass("PacketPlayOutEntityDestroy");
-            packetPlayOutSpawnEntityClass = Reflection.getNMSClass("PacketPlayOutSpawnEntity");
-            packetPlayOutEntityMetadataClass = Reflection.getNMSClass("PacketPlayOutEntityMetadata");
-
-            getDataWatcherMethod = entityArmorStandClass.getMethod("getDataWatcher");
-            setSizeMethod = entityArmorStandClass.getMethod("setSize", float.class, float.class);
-            setInvisibleMethod = entityArmorStandClass.getMethod("setInvisible", boolean.class);
-            //setNoGravityMethod = entityArmorStandClass.getMethod("setNoGravity", boolean.class);
-            setCustomNameMethod = entityArmorStandClass.getMethod("setCustomName", String.class);
-            setCustomNameVisibleMethod = entityArmorStandClass.getMethod("setCustomNameVisible", boolean.class);
-            setLocationMethod = entityArmorStandClass.getMethod("setLocation", double.class, double.class, double.class, float.class, float.class);
-            getIdMethod = entityArmorStandClass.getMethod("getId");
-        }
-        catch (NoSuchMethodException e)
-        {
-            e.printStackTrace();
-        }
     }
 }

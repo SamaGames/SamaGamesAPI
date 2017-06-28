@@ -1,13 +1,13 @@
 package net.samagames.tools.cameras;
 
-import net.samagames.tools.Reflection;
+import net.minecraft.server.v1_12_R1.BiomeBase;
+import net.minecraft.server.v1_12_R1.EntityInsentient;
+import net.minecraft.server.v1_12_R1.EntityTypes;
+import net.minecraft.server.v1_12_R1.MinecraftKey;
 
 import java.lang.reflect.Field;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 /**
  *                )\._.,--....,'``.
@@ -18,12 +18,7 @@ import java.util.Set;
  */
 class EntityRegistrar
 {
-    private static Object[] BIOMES;
-
-    private static Class<?> entityTypesClass;
-    private static Class<?> entityInsentientClass;
-    private static Class<?> biomeBaseClass;
-    private static Class<?> biomeMetaClass;
+    private static BiomeBase[] BIOMES;
 
     static void registerEntity(String name, int id, Class nmsClass, Class customClass)
     {
@@ -38,7 +33,7 @@ class EntityRegistrar
             return;
         }
 
-        if (entityInsentientClass.isAssignableFrom(nmsClass) && entityInsentientClass.isAssignableFrom(customClass))
+        if (EntityInsentient.class.isAssignableFrom(nmsClass) && EntityInsentient.class.isAssignableFrom(customClass))
         {
             for (Object biomeBase : BIOMES)
             {
@@ -49,11 +44,11 @@ class EntityRegistrar
                 {
                     try
                     {
-                        Field list = biomeBaseClass.getDeclaredField(field);
+                        Field list = BiomeBase.class.getDeclaredField(field);
                         list.setAccessible(true);
                         List<Object> mobList = (List<Object>) list.get(biomeBase);
 
-                        Field entityClassField = biomeMetaClass.getDeclaredField("b");
+                        Field entityClassField = BiomeBase.BiomeMeta.class.getDeclaredField("b");
 
                         for (Object mob : mobList)
                             if (nmsClass.getClass().equals(entityClassField.get(mob)))
@@ -70,11 +65,11 @@ class EntityRegistrar
 
     private static void registerEntityInEntityEnum(Class<?> paramClass, String paramString, int paramInt) throws Exception
     {
-        ((Map<String, Class<?>>) getPrivateStatic(entityTypesClass, "c")).put(paramString, paramClass);
-        ((Map<Class<?>, String>) getPrivateStatic(entityTypesClass, "d")).put(paramClass, paramString);
-        ((Map<Integer, Class<?>>) getPrivateStatic(entityTypesClass, "e")).put(paramInt, paramClass);
-        ((Map<Class<?>, Integer>) getPrivateStatic(entityTypesClass, "f")).put(paramClass, paramInt);
-        ((Map<String, Integer>) getPrivateStatic(entityTypesClass, "g")).put(paramString, paramInt);
+        ((Map<String, Class<?>>) getPrivateStatic(EntityTypes.class, "c")).put(paramString, paramClass);
+        ((Map<Class<?>, String>) getPrivateStatic(EntityTypes.class, "d")).put(paramClass, paramString);
+        ((Map<Integer, Class<?>>) getPrivateStatic(EntityTypes.class, "e")).put(paramInt, paramClass);
+        ((Map<Class<?>, Integer>) getPrivateStatic(EntityTypes.class, "f")).put(paramClass, paramInt);
+        ((Map<String, Integer>) getPrivateStatic(EntityTypes.class, "g")).put(paramString, paramInt);
     }
 
     private static Object getPrivateStatic(Class clazz, String f) throws Exception
@@ -87,35 +82,14 @@ class EntityRegistrar
 
     static
     {
-        try
+        BIOMES = new BiomeBase[BiomeBase.REGISTRY_ID.keySet().size()];
+
+        int i = 0;
+
+        for (MinecraftKey key : BiomeBase.REGISTRY_ID.keySet())
         {
-            entityTypesClass = Reflection.getNMSClass("EntityTypes");
-            entityInsentientClass = Reflection.getNMSClass("EntityInsentient");
-            biomeBaseClass = Reflection.getNMSClass("BiomeBase");
-            biomeMetaClass = Reflection.getNMSClass("BiomeBase$BiomeMeta");
-
-            Class<?> minecraftKeyClass = Reflection.getNMSClass("MinecraftKey");
-            Class<?> registryMaterialsClass = Reflection.getNMSClass("RegistryMaterials");
-            Method keySetMethod = registryMaterialsClass.getMethod("keySet");
-            Method getMethod = registryMaterialsClass.getMethod("get", Object.class);
-            Method sizeMethod = keySetMethod.getReturnType().getMethod("size");
-            Field registryField = biomeBaseClass.getField("REGISTRY_ID");
-
-            Object registry = registryField.get(null);
-
-            BIOMES = new Object[(int) sizeMethod.invoke(keySetMethod.invoke(registry))];
-
-            int i = 0;
-
-            for (Object key : (Set) keySetMethod.invoke(registry))
-            {
-                BIOMES[i] = getMethod.invoke(registry, key);
-                i++;
-            }
-        }
-        catch (NoSuchMethodException | IllegalAccessException | NoSuchFieldException | InvocationTargetException e)
-        {
-            e.printStackTrace();
+            BIOMES[i] = BiomeBase.REGISTRY_ID.get(key);
+            i++;
         }
     }
 }

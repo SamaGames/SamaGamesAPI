@@ -1,25 +1,23 @@
-package net.samagames.tools.npc.nms.compat.v1_9_R2;
+package net.samagames.tools.npc.nms;
 
-import net.minecraft.server.v1_9_R2.*;
+import net.minecraft.server.v1_12_R1.*;
 import net.samagames.tools.Reflection;
-import net.samagames.tools.npc.nms.compat.NullChannel;
-import net.samagames.tools.npc.nms.compat.NullSocketAddress;
 import org.bukkit.Location;
 
 import java.lang.reflect.Field;
-import java.util.Set;
 
 /**
  * Created by Silva on 19/12/2015.
  */
-public class VoidPlayerConnection19 extends PlayerConnection {
-
-    public VoidPlayerConnection19(MinecraftServer minecraftserver, EntityPlayer entityplayer) {
+public class VoidPlayerConnection extends PlayerConnection
+{
+    public VoidPlayerConnection(MinecraftServer minecraftserver, EntityPlayer entityplayer)
+    {
         super(minecraftserver, new NPCNetworkManager(), entityplayer);
     }
 
     @Override
-    public void c() {
+    public void e() {
 
     }
 
@@ -39,10 +37,6 @@ public class VoidPlayerConnection19 extends PlayerConnection {
 
     @Override
     public void a(double d0, double d1, double d2, float f, float f1) {
-    }
-
-    @Override
-    public void a(double d0, double d1, double d2, float f, float f1, Set<PacketPlayOutPosition.EnumPlayerTeleportFlags> set) {
     }
 
     @Override

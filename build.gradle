@@ -11,16 +11,12 @@ targetCompatibility = 1.8
 
 configurations {
     provided
-    compat18
-    compat19
 }
 
 compileJava.options.encoding = 'UTF-8'
 
 repositories {
     mavenCentral()
-
-    maven { url "http://maven.samagames.net/public/" }
 
     maven {
         url "http://maven.samagames.net/developpers/"
@@ -44,11 +40,7 @@ dependencies {
     compile group: 'redis.clients', name: 'jedis', version: '2.9.0'
     compile group: 'in.ashwanthkumar', name: 'slack-java-webhook', version: '0.0.7'
 
-    compat18(group: 'org.spigotmc', name: 'spigot', version: '1.8.8-R0.1-SNAPSHOT', changing: true) {
-        transitive = false
-    }
-
-    compat19(group: 'org.spigotmc', name: 'spigot', version: '1.9.4-R0.1-SNAPSHOT', changing: true) {
+    compile(group: 'org.spigotmc', name: 'spigot', version: '1.12-R0.1-SNAPSHOT', changing: true) {
         transitive = false
     }
 }
@@ -58,8 +50,6 @@ sourceSets {
         java {
             srcDir 'PersistanceGenerator/Generation'
             compileClasspath += configurations.provided
-            compileClasspath += configurations.compat18
-            compileClasspath += configurations.compat19
         }
     }
 }

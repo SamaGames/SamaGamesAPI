@@ -1,7 +1,7 @@
 package net.samagames.tools.cameras;
 
+import net.minecraft.server.v1_12_R1.EntityBat;
 import net.samagames.api.SamaGamesAPI;
-import net.samagames.tools.Reflection;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
@@ -10,7 +10,6 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerToggleSneakEvent;
 
 import java.util.*;
-import java.util.logging.Level;
 
 /**
  *                )\._.,--....,'``.
@@ -27,15 +26,7 @@ public class CameraManager implements Listener
     {
         this.cameras = new ArrayList<>();
 
-        if (Reflection.PackageType.getServerVersion().equals("v1_8_R3"))
-        {
-            api.log(Level.WARNING, "The Camera API is available only on 1.9 and more servers.");
-            return;
-        }
-
-        Class<?> entityBatClass = Reflection.getNMSClass("EntityBat");
-
-        EntityRegistrar.registerEntity("FakeCamera", 65, entityBatClass, EntityCamera.class);
+        EntityRegistrar.registerEntity("FakeCamera", 65, EntityBat.class, EntityCamera.class);
         Bukkit.getPluginManager().registerEvents(this, api.getPlugin());
     }
 

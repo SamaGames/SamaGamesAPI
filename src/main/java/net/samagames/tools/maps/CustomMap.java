@@ -1,15 +1,12 @@
 package net.samagames.tools.maps;
 
-import net.minecraft.server.v1_8_R3.PacketPlayOutMap;
+import net.minecraft.server.v1_12_R1.PacketPlayOutMap;
 import net.samagames.tools.Reflection;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
-import java.lang.reflect.Constructor;
-import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
-import java.util.Collection;
 
 /**
  * Created by Rigner on 04/09/2016 for project SamaGamesAPI.
@@ -17,8 +14,6 @@ import java.util.Collection;
  */
 public class CustomMap
 {
-    private static Class<?> packetPlayOutMapClass = Reflection.getNMSClass("PacketPlayOutMap");
-
     private int xSize;
     private int ySize;
     private int id;
@@ -56,17 +51,7 @@ public class CustomMap
      */
     public void sendToPlayer(Player player)
     {
-        try
-        {
-            Constructor<?> constructor = packetPlayOutMapClass.getDeclaredConstructor(int.class, byte.class, boolean.class, Collection.class, byte[].class, int.class, int.class, int.class, int.class);
-            Object packet = constructor.newInstance(this.id, (byte)0, false, new ArrayList<>(), this.bytes, 0, 0, this.xSize, this.ySize);
-
-            Reflection.sendPacket(player, packet);
-        }
-        catch (NoSuchMethodException | InvocationTargetException | InstantiationException | IllegalAccessException e)
-        {
-            e.printStackTrace();
-        }
+        Reflection.sendPacket(player, new PacketPlayOutMap(this.id, (byte)0, false, new ArrayList<>(), this.bytes, 0, 0, this.xSize, this.ySize));
     }
 
     /**

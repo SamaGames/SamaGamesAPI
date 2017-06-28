@@ -1,11 +1,13 @@
 package net.samagames.tools.scoreboards;
 
+import net.minecraft.server.v1_12_R1.IScoreboardCriteria;
+import net.minecraft.server.v1_12_R1.PacketPlayOutScoreboardDisplayObjective;
+import net.minecraft.server.v1_12_R1.PacketPlayOutScoreboardObjective;
+import net.minecraft.server.v1_12_R1.PacketPlayOutScoreboardScore;
 import net.samagames.tools.Reflection;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 
-import java.lang.reflect.Field;
-import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ConcurrentLinkedQueue;
@@ -18,15 +20,9 @@ import java.util.concurrent.ConcurrentLinkedQueue;
  */
 public class VObjective
 {
-    private static Class<?> packetPlayOutScoreboardScoreClass = Reflection.getNMSClass("PacketPlayOutScoreboardScore");
-    private static Class<?> packetPlayOutScoreboardObjective = Reflection.getNMSClass("PacketPlayOutScoreboardObjective");
-    private static Class<?> packetPlayOutScoreboardDisplayObjective = Reflection.getNMSClass("PacketPlayOutScoreboardDisplayObjective");
-    private static Class<?> enumScoreboardHealthDisplayClass = Reflection.getNMSClass("IScoreboardCriteria$EnumScoreboardHealthDisplay");
-    private static Class<?> enumScoreboardActionClass = Reflection.getNMSClass("PacketPlayOutScoreboardScore$EnumScoreboardAction");
-
     protected String name;
     protected String displayName;
-    protected Object format;
+    protected IScoreboardCriteria.EnumScoreboardHealthDisplay format = IScoreboardCriteria.EnumScoreboardHealthDisplay.INTEGER;
     protected ObjectiveLocation location = ObjectiveLocation.SIDEBAR;
     protected List<OfflinePlayer> receivers;
     protected ConcurrentLinkedQueue<VScore> scores;
@@ -41,16 +37,6 @@ public class VObjective
     {
         this.receivers = new ArrayList<>();
         this.scores = new ConcurrentLinkedQueue<>();
-
-        try
-        {
-            this.format = enumScoreboardHealthDisplayClass.getField("INTEGER").get(null);
-        }
-        catch (IllegalAccessException | NoSuchFieldException e)
-        {
-            e.printStackTrace();
-        }
-
         this.name = name;
         this.displayName = displayName;
     }
@@ -400,14 +386,7 @@ public class VObjective
 
         public static void removeObjective(Player p, String name)
         {
-            try
-            {
-                Reflection.sendPacket(p, makeScoreboardObjectivePacket(1, name, "", enumScoreboardHealthDisplayClass.getField("INTEGER").get(null)));
-            }
-            catch (IllegalAccessException | NoSuchFieldException e)
-            {
-                e.printStackTrace();
-            }
+            Reflection.sendPacket(p, makeScoreboardObjectivePacket(1, name, "", IScoreboardCriteria.EnumScoreboardHealthDisplay.INTEGER));
         }
 
         /* Objective Display */
@@ -445,26 +424,12 @@ public class VObjective
 
         public static void updateScoreObjective(Player p, VObjective objective, VScore score)
         {
-            try
-            {
-                Reflection.sendPacket(p, makeScoreboardScorePacket(objective.getName(), enumScoreboardActionClass.getField("CHANGE").get(null), score.getPlayerName(), score.getScore()));
-            }
-            catch (IllegalAccessException | NoSuchFieldException e)
-            {
-                e.printStackTrace();
-            }
+            Reflection.sendPacket(p, makeScoreboardScorePacket(objective.getName(), PacketPlayOutScoreboardScore.EnumScoreboardAction.CHANGE, score.getPlayerName(), score.getScore()));
         }
 
         public static void updateScoreObjective(Player p, VObjective objective, VScore score, int scoreValue)
         {
-            try
-            {
-                Reflection.sendPacket(p, makeScoreboardScorePacket(objective.getName(), enumScoreboardActionClass.getField("CHANGE").get(null), score.getPlayerName(), scoreValue));
-            }
-            catch (IllegalAccessException | NoSuchFieldException e)
-            {
-                e.printStackTrace();
-            }
+            Reflection.sendPacket(p, makeScoreboardScorePacket(objective.getName(), PacketPlayOutScoreboardScore.EnumScoreboardAction.CHANGE, score.getPlayerName(), scoreValue));
         }
 
         public static void removeScoreObjective(Player p, VObjective objective)
@@ -475,24 +440,17 @@ public class VObjective
 
         public static void removeScoreObjective(Player p, VObjective objective, VScore score)
         {
-            try
-            {
-                Reflection.sendPacket(p, makeScoreboardScorePacket(objective.getName(), enumScoreboardActionClass.getField("REMOVE").get(null), score.getPlayerName(), 0));
-            }
-            catch (IllegalAccessException | NoSuchFieldException e)
-            {
-                e.printStackTrace();
-            }
+            Reflection.sendPacket(p, makeScoreboardScorePacket(objective.getName(), PacketPlayOutScoreboardScore.EnumScoreboardAction.REMOVE, score.getPlayerName(), 0));
         }
 
-        public static Object makeScoreboardScorePacket(String objectiveName, Object action, String scoreName, int scoreValue)
+        public static PacketPlayOutScoreboardScore makeScoreboardScorePacket(String objectiveName, Object action, String scoreName, int scoreValue)
         {
             if(objectiveName == null)
                 objectiveName = "";
 
             try
             {
-                Object packet = packetPlayOutScoreboardScoreClass.newInstance();
+                PacketPlayOutScoreboardScore packet = new PacketPlayOutScoreboardScore();
 
                 Reflection.setValue(packet, "a", scoreName); //Nom du joueur
                 Reflection.setValue(packet, "b", objectiveName); //Nom de l'objective
@@ -509,11 +467,11 @@ public class VObjective
             return null;
         }
 
-        public static Object makeScoreboardObjectivePacket(int action, String objectiveName, String objectiveDisplayName,  Object format)
+        public static PacketPlayOutScoreboardObjective makeScoreboardObjectivePacket(int action, String objectiveName, String objectiveDisplayName, Object format)
         {
             try
             {
-                Object packet = packetPlayOutScoreboardObjective.newInstance();
+                PacketPlayOutScoreboardObjective packet = new PacketPlayOutScoreboardObjective();
 
                 Reflection.setValue(packet, "a", objectiveName); //Nom de l'objective
                 Reflection.setValue(packet, "b", objectiveDisplayName); //Nom affiché de l'objective
@@ -530,11 +488,11 @@ public class VObjective
             return null;
         }
 
-        public static Object makeScoreboardDisplayPacket(String objectiveName, int location)
+        public static PacketPlayOutScoreboardDisplayObjective makeScoreboardDisplayPacket(String objectiveName, int location)
         {
             try
             {
-                Object packet = packetPlayOutScoreboardDisplayObjective.newInstance();
+                PacketPlayOutScoreboardDisplayObjective packet = new PacketPlayOutScoreboardDisplayObjective();
 
                 Reflection.setValue(packet, "a", location); //Emplacement de l'objective - 0 = list, 1 = sidebar, 2 = belowName
                 Reflection.setValue(packet, "b", objectiveName); //Nom de l'objective

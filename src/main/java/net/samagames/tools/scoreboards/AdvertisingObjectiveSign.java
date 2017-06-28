@@ -32,7 +32,6 @@ public class AdvertisingObjectiveSign extends ObjectiveSign implements Runnable
         this.advertisingCursor = 0;
         this.advertisingState = false;
 
-
         plugin.getServer().getScheduler().runTaskTimer(plugin, this, 5L, 5L);
     }
 

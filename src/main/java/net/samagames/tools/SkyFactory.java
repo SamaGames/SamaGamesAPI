@@ -1,6 +1,9 @@
 package net.samagames.tools;
 
-import org.bukkit.Bukkit;
+import net.minecraft.server.v1_12_R1.EnumDifficulty;
+import net.minecraft.server.v1_12_R1.EnumGamemode;
+import net.minecraft.server.v1_12_R1.PacketPlayOutRespawn;
+import net.minecraft.server.v1_12_R1.WorldType;
 import org.bukkit.World;
 import org.bukkit.World.Environment;
 import org.bukkit.entity.Player;
@@ -11,10 +14,7 @@ import org.bukkit.event.player.PlayerRespawnEvent;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitRunnable;
 
-import java.lang.reflect.Constructor;
-import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -27,28 +27,6 @@ import java.util.Map;
  */
 public class SkyFactory implements Listener
 {
-    private static Constructor<?> packetPlayOutRespawn;
-    private static Method getHandle;
-    private static Field playerConnection;
-    private static Method sendPacket;
-    private static Field normal;
-
-    static
-    {
-        try
-        {
-            packetPlayOutRespawn = Reflection.getNMSClass("PacketPlayOutRespawn").getConstructor(int.class, Reflection.getNMSClass("EnumDifficulty"), Reflection.getNMSClass("WorldType"), Reflection.getNMSClass("WorldSettings$EnumGamemode"));
-            getHandle = Reflection.getOBCClass("entity.CraftPlayer").getMethod("getHandle");
-            playerConnection = Reflection.getNMSClass("EntityPlayer").getDeclaredField("playerConnection");
-            sendPacket = Reflection.getNMSClass("PlayerConnection").getMethod("sendPacket", Reflection.getNMSClass("Packet"));
-            normal = Reflection.getNMSClass("WorldType").getDeclaredField("NORMAL");
-        }
-        catch (Exception e)
-        {
-            e.printStackTrace();
-        }
-    }
-
     private final JavaPlugin plugin;
     private final Map<String, Environment> worldEnvironments = new HashMap<>();
 
@@ -76,12 +54,7 @@ public class SkyFactory implements Listener
         Player p = event.getPlayer();
 
         if (this.worldEnvironments.containsKey(p.getWorld().getName()))
-        {
-            Object nms_entity = getHandle.invoke(p);
-            Object nms_connection = playerConnection.get(nms_entity);
-
-            sendPacket.invoke(nms_connection, getPacket(p));
-        }
+            Reflection.sendPacket(p, getPacket(p));
     }
 
     @EventHandler
@@ -97,11 +70,7 @@ public class SkyFactory implements Listener
                     Player p = event.getPlayer();
 
                     if (worldEnvironments.containsKey(p.getWorld().getName()))
-                    {
-                        Object nms_entity = getHandle.invoke(p);
-                        Object nms_connection = playerConnection.get(nms_entity);
-                        sendPacket.invoke(nms_connection, getPacket(p));
-                    }
+                        Reflection.sendPacket(p, getPacket(p));
                 }
                 catch (Exception e)
                 {
@@ -114,7 +83,7 @@ public class SkyFactory implements Listener
     private Object getPacket(Player p) throws InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, ClassNotFoundException
     {
         World w = p.getWorld();
-        return packetPlayOutRespawn.newInstance(getID(this.worldEnvironments.get(w.getName())), this.getDifficulty(w), this.getLevel(), this.getGameMode(p));
+        return new PacketPlayOutRespawn(getID(this.worldEnvironments.get(w.getName())), this.getDifficulty(w), WorldType.NORMAL, this.getGameMode(p));
     }
 
     private int getID(Environment env)
@@ -129,26 +98,21 @@ public class SkyFactory implements Listener
             return -1;
     }
 
-    private Object getDifficulty(World w) throws ClassNotFoundException
+    private EnumDifficulty getDifficulty(World w) throws ClassNotFoundException
     {
-        for (Object dif : Reflection.getNMSClass("EnumDifficulty").getEnumConstants())
-            if (dif.toString().equalsIgnoreCase(w.getDifficulty().toString()))
-                return dif;
+        for (EnumDifficulty gamemode : EnumDifficulty.values())
+            if (gamemode.name().equals(w.getDifficulty().name()))
+                return gamemode;
 
         return null;
     }
 
-    private Object getGameMode(Player p) throws ClassNotFoundException
+    private EnumGamemode getGameMode(Player p) throws ClassNotFoundException
     {
-        for (Object dif : Reflection.getNMSClass("WorldSettings$EnumGamemode").getEnumConstants())
-            if (dif.toString().equalsIgnoreCase(p.getGameMode().toString()))
-                return dif;
+        for (EnumGamemode gamemode : EnumGamemode.values())
+            if (gamemode.name().equals(p.getGameMode().name()))
+                return gamemode;
 
         return null;
-    }
-
-    private Object getLevel() throws ClassNotFoundException, IllegalArgumentException, IllegalAccessException
-    {
-        return normal.get(null);
     }
 }
