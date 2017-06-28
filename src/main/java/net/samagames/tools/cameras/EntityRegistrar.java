@@ -37,7 +37,7 @@ class EntityRegistrar
                 if (biomeBase == null)
                     break;
 
-                for (String field : new String[]{"u", "v", "w", "x"})
+                for (String field : new String[]{"t", "u", "v", "w"})
                 {
                     try
                     {
