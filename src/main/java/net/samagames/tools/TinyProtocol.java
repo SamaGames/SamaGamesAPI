@@ -15,10 +15,12 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerLoginEvent;
 import org.bukkit.event.server.PluginDisableEvent;
 import org.bukkit.plugin.Plugin;
+import org.bukkit.scheduler.BukkitRunnable;
 
 import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.logging.Level;
+
 
 /**
  * Represents a very tiny alternative to ProtocolLib.
@@ -46,22 +48,28 @@ public abstract class TinyProtocol {
     // Packets we have to intercept
     private static final Class<?> PACKET_LOGIN_IN_START = TReflection.getMinecraftClass("PacketLoginInStart");
     private static final FieldAccessor<GameProfile> getGameProfile = TReflection.getField(PACKET_LOGIN_IN_START, GameProfile.class, 0);
-    protected volatile boolean closed;
-    protected Plugin plugin;
+
     // Speedup channel lookup
     private Map<String, Channel> channelLookup = new MapMaker().weakValues().makeMap();
     private Listener listener;
+
     // Channels that have already been removed
     private Set<Channel> uninjectedChannels = Collections.newSetFromMap(new MapMaker().weakKeys().<Channel, Boolean>makeMap());
+
     // List of network markers
     private List<Object> networkManagers;
+
     // Injected channel handlers
     private List<Channel> serverChannels = Lists.newArrayList();
     private ChannelInboundHandlerAdapter serverChannelHandler;
     private ChannelInitializer<Channel> beginInitProtocol;
     private ChannelInitializer<Channel> endInitProtocol;
+
     // Current handler name
     private String handlerName;
+
+    protected volatile boolean closed;
+    protected Plugin plugin;
 
     /**
      * Construct a new instance of TinyProtocol, and start intercepting packets for all connected clients and future clients.
@@ -70,7 +78,7 @@ public abstract class TinyProtocol {
      *
      * @param plugin - the plugin.
      */
-    public TinyProtocol(Plugin plugin) {
+    public TinyProtocol(final Plugin plugin) {
         this.plugin = plugin;
 
         // Compute handler name
@@ -78,8 +86,24 @@ public abstract class TinyProtocol {
 
         // Prepare existing players
         registerBukkitEvents();
-        registerChannelHandler();
-        registerPlayers(plugin);
+
+        try {
+            registerChannelHandler();
+            registerPlayers(plugin);
+        } catch (IllegalArgumentException ex) {
+            // Damn you, late bind
+            plugin.getLogger().info("[TinyProtocol] Delaying server channel injection due to late bind.");
+
+            // Damn you, late bind
+            new BukkitRunnable() {
+                @Override
+                public void run() {
+                    registerChannelHandler();
+                    registerPlayers(plugin);
+                    plugin.getLogger().info("[TinyProtocol] Late bind injection successful.");
+                }
+            }.runTask(plugin);
+        }
     }
 
     private void createServerChannelHandler() {
@@ -194,18 +218,25 @@ public abstract class TinyProtocol {
             final ChannelPipeline pipeline = serverChannel.pipeline();
 
             // Remove channel handler
-            serverChannel.eventLoop().execute(() -> {
-                try {
-                    pipeline.remove(serverChannelHandler);
-                } catch (NoSuchElementException e) {
-                    // That's fine
+            serverChannel.eventLoop().execute(new Runnable() {
+
+                @Override
+                public void run() {
+                    try {
+                        pipeline.remove(serverChannelHandler);
+                    } catch (NoSuchElementException e) {
+                        // That's fine
+                    }
                 }
+
             });
         }
     }
 
     private void registerPlayers(Plugin plugin) {
-        plugin.getServer().getOnlinePlayers().forEach(this::injectPlayer);
+        for (Player player : plugin.getServer().getOnlinePlayers()) {
+            injectPlayer(player);
+        }
     }
 
     /**
@@ -214,6 +245,7 @@ public abstract class TinyProtocol {
      * Note that this is not executed on the main thread.
      *
      * @param reciever - the receiving player, NULL for early login/status packets.
+     * @param channel - the channel that received the packet. Never NULL.
      * @param packet - the packet being sent.
      * @return The packet to send instead, or NULL to cancel the transmission.
      */
@@ -236,7 +268,10 @@ public abstract class TinyProtocol {
     }
 
     /**
-     * Send a packet to a particular player
+     * Send a packet to a particular player.
+     * <p>
+     * Note that {@link #onPacketOutAsync(Player, Object)} will be invoked with this packet.
+     *
      * @param player - the destination player.
      * @param packet - the packet to send.
      */
@@ -246,6 +281,8 @@ public abstract class TinyProtocol {
 
     /**
      * Send a packet to a particular client.
+     * <p>
+     * Note that {@link #onPacketOutAsync(Player, Object)} will be invoked with this packet.
      *
      * @param channel - client identified by a channel.
      * @param packet - the packet to send.
@@ -256,6 +293,8 @@ public abstract class TinyProtocol {
 
     /**
      * Pretend that a given packet has been received from a player.
+     * <p>
+     * Note that {@link #onPacketInAsync(Player, Object)} will be invoked with this packet.
      *
      * @param player - the player that sent the packet.
      * @param packet - the packet that will be received by the server.
@@ -266,6 +305,9 @@ public abstract class TinyProtocol {
 
     /**
      * Pretend that a given packet has been received from a given client.
+     * <p>
+     * Note that {@link #onPacketInAsync(Player, Object)} will be invoked with this packet.
+     *
      * @param channel - client identified by a channel.
      * @param packet - the packet that will be received by the server.
      */
@@ -298,6 +340,8 @@ public abstract class TinyProtocol {
     /**
      * Add a custom channel handler to the given channel.
      *
+     * @param player - the channel to inject.
+     * @return The intercepted channel, or NULL if it has already been injected.
      */
     public void injectChannel(Channel channel) {
         injectChannelInternal(channel);
@@ -306,6 +350,7 @@ public abstract class TinyProtocol {
     /**
      * Add a custom channel handler to the given channel.
      *
+     * @param player - the channel to inject.
      * @return The packet interceptor.
      */
     private PacketInterceptor injectChannelInternal(Channel channel) {
@@ -369,7 +414,14 @@ public abstract class TinyProtocol {
         }
 
         // See ChannelInjector in ProtocolLib, line 590
-        channel.eventLoop().execute(() -> channel.pipeline().remove(handlerName));
+        channel.eventLoop().execute(new Runnable() {
+
+            @Override
+            public void run() {
+                channel.pipeline().remove(handlerName);
+            }
+
+        });
     }
 
     /**
@@ -400,7 +452,9 @@ public abstract class TinyProtocol {
             closed = true;
 
             // Remove our handlers
-            plugin.getServer().getOnlinePlayers().forEach(this::uninjectPlayer);
+            for (Player player : plugin.getServer().getOnlinePlayers()) {
+                uninjectPlayer(player);
+            }
 
             // Clean up Bukkit
             HandlerList.unregisterAll(listener);

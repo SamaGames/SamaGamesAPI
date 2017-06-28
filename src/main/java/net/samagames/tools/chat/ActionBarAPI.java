@@ -1,5 +1,8 @@
 package net.samagames.tools.chat;
 
+import net.minecraft.server.v1_12_R1.ChatMessageType;
+import net.minecraft.server.v1_12_R1.IChatBaseComponent;
+import net.minecraft.server.v1_12_R1.PacketPlayOutChat;
 import net.samagames.api.SamaGamesAPI;
 import net.samagames.tools.Reflection;
 import org.bukkit.Bukkit;
@@ -16,12 +19,6 @@ import java.util.concurrent.ConcurrentHashMap;
  */
 public final class ActionBarAPI
 {
-    private static Class<?> iChatBaseComponent;
-	private static Class<?> chatSerializerClass;
-	private static Class<?> packetPlayOutChat;
-
-	private static Method fromJsonMethod;
-
     private static boolean enabled = true;
 
 	private static Map<UUID, String> actionMessages = new ConcurrentHashMap<>();
@@ -97,17 +94,7 @@ public final class ActionBarAPI
 		if (!enabled || player == null || message == null)
 			return;
 
-		try
-		{
-			Object chatComponent = fromJsonMethod.invoke(null, "{\"text\": \"" + message + "\"}");
-			Object packet = packetPlayOutChat.getDeclaredConstructor(iChatBaseComponent, byte.class).newInstance(chatComponent, (byte) 2);
-
-			Reflection.sendPacket(player, packet);
-		}
-		catch (Exception e)
-		{
-			e.printStackTrace();
-		}
+		Reflection.sendPacket(player, new PacketPlayOutChat(IChatBaseComponent.ChatSerializer.a("{\"text\": \"" + message + "\"}"), ChatMessageType.GAME_INFO));
 	}
 
 	/**
@@ -206,20 +193,4 @@ public final class ActionBarAPI
 			actionMessagesUpdaterRunning = true;
 		}
 	}
-
-	static
-    {
-        try
-        {
-            iChatBaseComponent = Reflection.getNMSClass("IChatBaseComponent");
-            chatSerializerClass = Reflection.getNMSClass("IChatBaseComponent$ChatSerializer");
-            packetPlayOutChat = Reflection.getNMSClass("PacketPlayOutChat");
-
-            fromJsonMethod = chatSerializerClass.getMethod("a", String.class);
-        }
-        catch (NoSuchMethodException e)
-        {
-            e.printStackTrace();
-        }
-    }
 }
