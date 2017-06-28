@@ -1,9 +1,6 @@
 package net.samagames.tools.cameras;
 
-import net.minecraft.server.v1_12_R1.BiomeBase;
-import net.minecraft.server.v1_12_R1.EntityInsentient;
-import net.minecraft.server.v1_12_R1.EntityTypes;
-import net.minecraft.server.v1_12_R1.MinecraftKey;
+import net.minecraft.server.v1_12_R1.*;
 
 import java.lang.reflect.Field;
 import java.util.List;
@@ -63,13 +60,12 @@ class EntityRegistrar
         }
     }
 
-    private static void registerEntityInEntityEnum(Class<?> paramClass, String paramString, int paramInt) throws Exception
+    private static void registerEntityInEntityEnum(Class<? extends Entity> customClass, String name, int id) throws Exception
     {
-        ((Map<String, Class<?>>) getPrivateStatic(EntityTypes.class, "c")).put(paramString, paramClass);
-        ((Map<Class<?>, String>) getPrivateStatic(EntityTypes.class, "d")).put(paramClass, paramString);
-        ((Map<Integer, Class<?>>) getPrivateStatic(EntityTypes.class, "e")).put(paramInt, paramClass);
-        ((Map<Class<?>, Integer>) getPrivateStatic(EntityTypes.class, "f")).put(paramClass, paramInt);
-        ((Map<String, Integer>) getPrivateStatic(EntityTypes.class, "g")).put(paramString, paramInt);
+        MinecraftKey key = new MinecraftKey(name.toLowerCase());
+        EntityTypes.b.a(id, key, customClass);
+        EntityTypes.d.add(key);
+        ((List<String>) getPrivateStatic(EntityTypes.class, "g")).set(id, name);
     }
 
     private static Object getPrivateStatic(Class clazz, String f) throws Exception

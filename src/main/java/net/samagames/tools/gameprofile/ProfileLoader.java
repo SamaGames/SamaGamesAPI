@@ -18,20 +18,15 @@ package net.samagames.tools.gameprofile;
 import com.google.gson.*;
 import com.mojang.authlib.GameProfile;
 import com.mojang.authlib.properties.Property;
+import net.minecraft.server.v1_12_R1.MinecraftServer;
 import net.samagames.api.SamaGamesAPI;
-import net.samagames.tools.Reflection;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import redis.clients.jedis.Jedis;
 
-import java.lang.reflect.Method;
 import java.util.UUID;
 
 public class ProfileLoader {
-    private static Method getServerMethod;
-    private static Method getMinecraftSessionService;
-    private static Method fillProfilePropertiesMethod;
-
     private final String uuid;
     private final String name;
     private final String skinOwner;
@@ -68,7 +63,7 @@ public class ProfileLoader {
             if (json == null)
             {
                 //Requete
-                profile = (GameProfile) fillProfilePropertiesMethod.invoke(getMinecraftSessionService.invoke(getServerMethod.invoke(null)), new GameProfile(id, null), true);
+                profile = MinecraftServer.getServer().az().fillProfileProperties(new GameProfile(id, null), true);
 
                 if (jedis != null && profile.getName() != null)//Don't save if didn't got data from mojang
                 {
@@ -120,25 +115,5 @@ public class ProfileLoader {
         // Correct uuid length, remove last dash
         builder.setLength(builder.length() - 1);
         return UUID.fromString(builder.toString());
-    }
-
-    static
-    {
-        try
-        {
-            Class<?> minecraftServerClass = Reflection.getNMSClass("MinecraftServer");
-            getServerMethod = minecraftServerClass.getMethod("getServer");
-
-            if (Reflection.PackageType.getServerVersion().equals("v1_8_R3"))
-                getMinecraftSessionService = minecraftServerClass.getMethod("aD");
-            else
-                getMinecraftSessionService = minecraftServerClass.getMethod("ay");
-
-            fillProfilePropertiesMethod = getMinecraftSessionService.getReturnType().getMethod("fillProfileProperties", GameProfile.class, boolean.class);
-        }
-        catch (NoSuchMethodException e)
-        {
-            e.printStackTrace();
-        }
     }
 }
