@@ -4,7 +4,6 @@ import net.minecraft.server.v1_12_R1.*;
 
 import java.lang.reflect.Field;
 import java.util.List;
-import java.util.Map;
 
 /**
  *                )\._.,--....,'``.
@@ -17,7 +16,7 @@ class EntityRegistrar
 {
     private static BiomeBase[] BIOMES;
 
-    static void registerEntity(String name, int id, Class nmsClass, Class customClass)
+    static <E extends Entity> void registerEntity(String name, int id, Class<? extends E> nmsClass, Class<? extends E> customClass)
     {
         try
         {
@@ -62,18 +61,11 @@ class EntityRegistrar
 
     private static void registerEntityInEntityEnum(Class<? extends Entity> customClass, String name, int id) throws Exception
     {
-        MinecraftKey key = new MinecraftKey(name.toLowerCase());
+        MinecraftKey key = new MinecraftKey(name);
         EntityTypes.b.a(id, key, customClass);
-        EntityTypes.d.add(key);
-        ((List<String>) getPrivateStatic(EntityTypes.class, "g")).set(id, name);
-    }
 
-    private static Object getPrivateStatic(Class clazz, String f) throws Exception
-    {
-        Field field = clazz.getDeclaredField(f);
-        field.setAccessible(true);
-
-        return field.get(null);
+        if (!EntityTypes.d.contains(key))
+            EntityTypes.d.add(key);
     }
 
     static
