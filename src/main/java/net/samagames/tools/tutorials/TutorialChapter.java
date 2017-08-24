@@ -10,13 +10,21 @@ import java.util.List;
 import java.util.UUID;
 
 
-/**
- * Represents a chapter of an in-game tutorial.
- * <p/>
- * A chapter contains a title, displayed the whole time above, and one or more
- * “pages”, displayed as subtitle of the {@code /title} command, ordered.
+/*
+ * This file is part of SamaGamesAPI.
  *
- * @author Amaury Carrade
+ * SamaGamesAPI is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * SamaGamesAPI is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with SamaGamesAPI.  If not, see <http://www.gnu.org/licenses/>.
  */
 public class TutorialChapter
 {

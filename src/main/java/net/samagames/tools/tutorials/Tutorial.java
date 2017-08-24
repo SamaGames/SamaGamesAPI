@@ -18,41 +18,21 @@ import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 
 
-/**
- * <h1>Tutorial API</h1>
+/*
+ * This file is part of SamaGamesAPI.
  *
- * <p>
- *     This API is used to display tutorials to any players.
- * </p>
- * <p>
- *     A tutorial is a set of {@code /title}s displayed to the players while they are frozen
- *     somewhere in the sky (or not). Tutorials are divided in chapters containing contents;
- *     each chapter contains a title displayed as the main {@code /title}, a location where
- *     the player is frozen during this chapter, and a list of “pages” displayed successively
- *     under that title.
- * </p>
- * <p>
- *     To use this, extend this class and use the following methods to create your tutorial.
- *     <ul>
- *         <li>
- *             {@link #addChapter(TutorialChapter)}—to add a chapter to this tutorial.
- *             Order matter!
- *         </li>
- *         <li>
- *             {@link #setTutorialHour(Long)}—to change the day of time this tutorial will be
- *             played.
- *         </li>
- *     </ul>
- * </p>
- * <p>
- *     Then, launch the tutorial using {@link #start(UUID)}.
- * </p>
- * <p>
- *     The tutorial can be force-stopped using {@link #stop(UUID)}. You can setup a callback
- *     executed when the tutorial is stopped by overriding {@link #onTutorialEnds(Player, boolean)}.
- * </p>
+ * SamaGamesAPI is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
  *
- * @author Amaury Carrade
+ * SamaGamesAPI is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with SamaGamesAPI.  If not, see <http://www.gnu.org/licenses/>.
  */
 public class Tutorial implements Listener
 {
