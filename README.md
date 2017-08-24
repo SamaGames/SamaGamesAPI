@@ -1,6 +1,6 @@
 ![SamaGames](https://assets.samagames.net/images/logo.png "SamaGames logo")
 
-## SamaGames - SamAdmin
+## SamaGames - SamaGamesAPI
 
 Ce projet vous est mis a disposition dans une volonté de partage suite à la fermeture du serveur Minecraft [**SamaGames**](http://samagames.net).
 
@@ -9,12 +9,12 @@ Pour plus de détails, référez-vous au texte de licence disponible [ici](LICEN
 
 ------------------------------------
 
-- Nom : SamAdmin
+- Nom : SamaGamesAPI
 - Type : Infrastructure
-- État : Terminé
-- Développeur(s) : BlueSlime
+- État : Progression continuelle
+- Développeur(s) : Silvanosky, BlueSlime, Rigner, AmauryPi, zyuiop
 - CDC (Si existant) : 
 
 
 ## Description
-SamAdmin est un projet permettant l'administration du serveur de jeu via un panneau de contrôle web.
+SamaGamesAPI est le projet offrant la couche abstraite de l'API utilisée sur les serveurs de jeu.
